@@ -25,7 +25,7 @@ axios.post(tokenUrl, new URLSearchParams(tokenPayload), {
   .then(tokenResponse => {
     // Obtain the access token
     const accessToken = tokenResponse.data.access_token;
-
+    console.log("Access Token ", accessToken);
     // Define the API endpoint and request body for step 2
     const apiUrl = `${apiUrlPrefix}/open-banking/v3.1/aisp/account-access-consents`;
     const requestBody = {
