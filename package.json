@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "await": "^0.2.6",
     "axios": "^1.6.5",
+    "esm": "^3.2.25",
     "open": "^10.0.3",
-    "openurl": "^1.1.1"
+    "openurl": "^1.1.1",
+    "puppeteer": "^21.7.0"
   }
 }
