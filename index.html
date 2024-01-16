@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access URL Fragment</title>
+</head>
+<body>
+  <p id="fragmentContent">Fragment Content: </p>
+
+  <script>
+    // Function to get the fragment identifier from the URL
+    function getFragment() {
+      return window.location.hash.substring(1); // Remove the '#' symbol
+    }
+
+    // Update the content on page load
+    document.getElementById('fragmentContent').innerText += getFragment();
+
+    // Attach an event listener to handle changes to the fragment identifier
+    window.addEventListener('hashchange', function() {
+      // Update the content when the fragment identifier changes
+      document.getElementById('fragmentContent').innerText = 'Fragment Content: ' + getFragment();
+    });
+  </script>
+</body>
+</html>
