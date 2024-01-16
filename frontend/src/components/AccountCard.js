@@ -12,7 +12,7 @@ useEffect(() => {
         setBalances(response.data) ;
         console.log(balances);
     })
-      .catch(error => console.error('Error fetching balance data:', error));
+      .catch(error => console.error('Error in fetching balance data:', error));
   }, []);
   
   return (
