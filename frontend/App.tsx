@@ -40,9 +40,9 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      
+       <AccountListScreen/>
     {/* <TransactionListScreen/> */}
-    <AccountListScreen/>
+   
 
     </SafeAreaView>
     </SafeAreaProvider>

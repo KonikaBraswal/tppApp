@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Title, Text } from 'react-native-paper';
+import { Card, Title, Text, Divider } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import axios from 'axios';
 
@@ -10,15 +10,17 @@ useEffect(() => {
       axios.get('http://192.168.1.5:3001/Data')
       .then((response) =>{ 
         setBalances(response.data) ;
-        console.log(balances);
+       // console.log(balances);
     })
       .catch(error => console.error('Error in fetching balance data:', error));
   }, []);
   
+
   return (
     <Card style={styles.card}>
       <Card.Content>
         <Title style={styles.title}>{account.Nickname}</Title>
+        <Text style={styles.text}>Account ID: {account.AccountId}</Text>
         <Text style={styles.text}>Account Type: {account.AccountType}</Text>
         <Text style={styles.text}>Sub Type: {account.AccountSubType}</Text>
        
