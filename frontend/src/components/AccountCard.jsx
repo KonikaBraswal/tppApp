@@ -10,11 +10,12 @@ useEffect(() => {
       axios.get('http://192.168.1.5:3001/Data')
       .then((response) =>{ 
         setBalances(response.data) ;
-       // console.log(balances);
+        //console.log(balances);
     })
       .catch(error => console.error('Error in fetching balance data:', error));
   }, []);
   
+ 
 
   return (
     <Card style={styles.card}>
@@ -23,7 +24,7 @@ useEffect(() => {
         <Text style={styles.text}>Account ID: {account.AccountId}</Text>
         <Text style={styles.text}>Account Type: {account.AccountType}</Text>
         <Text style={styles.text}>Sub Type: {account.AccountSubType}</Text>
-       
+    
       </Card.Content>
     </Card>
   );
