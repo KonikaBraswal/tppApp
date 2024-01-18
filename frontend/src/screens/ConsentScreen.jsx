@@ -71,6 +71,22 @@ const ConsentScreen = ({text}) => {
   const showDialog7 = () => setDialogVisible7(true);
   const hideDialog7 = () => setDialogVisible7(false);
 
+  const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
+  const showErrorDialog = () => setErrorDialogVisible(true);
+  const hideErrorDialog = () => setErrorDialogVisible(false);
+
+  const areAllCheckboxesChecked = () => {
+    return (
+      checked1 &&
+      checked2 &&
+      checked3 &&
+      checked4 &&
+      checked5 &&
+      checked6 &&
+      checked7
+    );
+  };
+
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
@@ -302,13 +318,29 @@ const ConsentScreen = ({text}) => {
             style={{marginRight: 10}}>
             Deny
           </Button>
+
           <Button
             icon="check-bold"
             mode="contained"
-            onPress={() => console.log('Confirm')}
+            onPress={() => {
+              if (areAllCheckboxesChecked()) {
+                console.log('Confirm');
+              } else {
+                showErrorDialog();
+                console.log('Please check all checkboxes before confirming.');
+              }
+            }}
             style={{marginLeft: 10}}>
             Confirm
           </Button>
+          {isErrorDialogVisible && (
+            <IconDialog
+              visible={isErrorDialogVisible}
+              hideDialog={hideErrorDialog}
+              title={'Please check all checkboxes before confirming.'}
+              text={''}
+            />
+          )}
         </View>
       </View>
     </ScrollView>
