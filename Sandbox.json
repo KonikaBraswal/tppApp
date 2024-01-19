@@ -1,0 +1,10 @@
+{
+    "grant_type":"client_credentials",
+    "scope": "accounts",
+    "tokenEndpoint":"token",
+    "accountRequestEndpoint":"open-banking/v3.1/aisp/account-access-consents",
+    "consentUrl":"https://api.sandbox.natwest.com/authorize",
+    "redirectUri":"http://localhost:8080",
+    "accountsEndpoint":"open-banking/v3.1/aisp/accounts"
+
+}
