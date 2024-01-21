@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Heebo-Black.ttf",
+      "sha1": "3eabd514b05e1468bdb300456d6afa68cd0793d1"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-Bold.ttf",
+      "sha1": "23d118deeedf818b3bd03c9899cd298801efdfad"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-ExtraBold.ttf",
+      "sha1": "9be3a5fb88abc9981c8d4192731a3d2ea1582fb2"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-ExtraLight.ttf",
+      "sha1": "36203048b16fb5d04fe3daac3c867c12e6e2a83a"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-Light.ttf",
+      "sha1": "5bdb119668da308632d29daed1e6273b61fca6a9"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-Medium.ttf",
+      "sha1": "1fd7c3a49f7b08b3d3da0eecbd49636a4e7d97b4"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-Regular.ttf",
+      "sha1": "0ffa1ec4e1bc83194160b5219749a360dec3090e"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-SemiBold.ttf",
+      "sha1": "157a30fa1f6924964c3b46a7e6c21031216e7c22"
+    },
+    {
+      "path": "src/assets/fonts/Heebo-Thin.ttf",
+      "sha1": "54994fe206a6528ca25937d75483774cf64a365e"
+    }
+  ]
+}
