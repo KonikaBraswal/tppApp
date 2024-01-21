@@ -2,6 +2,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import TransactionListScreen from '../screens/TransactionListScreen';
 import BottomTab from './BottomTab';
+import ConsentScreen from '../screens/ConsentScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -68,6 +69,24 @@ const AppDrawer = () => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="Consent"
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="content-save"
+              color={color}
+              size={28}
+            />
+          ),
+        }}>
+        {props => (
+          <ConsentScreen
+            {...props}
+            text="NWBank needs your explicit consent to access the following information from the accounts held at your bank or building society"
+          />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen
         name="Signout"
         component={TransactionListScreen}
