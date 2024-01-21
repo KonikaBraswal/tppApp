@@ -1,42 +1,42 @@
 {
-    "Data": {
+  "Data": {
+    "Account": [
+      {
+        "AccountId": "48901b2d-f748-40a9-b8e4-5a206590b6a5",
+        "Currency": "GBP",
+        "AccountType": "Personal",
+        "AccountSubType": "CurrentAccount",
+        "Description": "Personal",
+        "Nickname": "Sydney Beard",
         "Account": [
-            {
-                "AccountId": "48901b2d-f748-40a9-b8e4-5a206590b6a5",
-                "Currency": "GBP",
-                "AccountType": "Personal",
-                "AccountSubType": "CurrentAccount",
-                "Description": "Personal",
-                "Nickname": "Sydney Beard",
-                "Account": [
-                    {
-                        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-                        "Identification": "50000012345601",
-                        "Name": "Sydney Beard"
-                    }
-                ]
-            },
-            {
-                "AccountId": "ffa1dee0-2fbf-4362-abf6-37dbfeee2de2",
-                "Currency": "GBP",
-                "AccountType": "Personal",
-                "AccountSubType": "Savings",
-                "Description": "Personal",
-                "Nickname": "Sydney Beard",
-                "Account": [
-                    {
-                        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-                        "Identification": "50000012345602",
-                        "Name": "Sydney Beard"
-                    }
-                ]
-            }
+          {
+            "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+            "Identification": "50000012345601",
+            "Name": "Sydney Beard"
+          }
         ]
-    },
-    "Links": {
-        "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/aisp/accounts"
-    },
-    "Meta": {
-        "TotalPages": 1
-    }
+      },
+      {
+        "AccountId": "ffa1dee0-2fbf-4362-abf6-37dbfeee2de2",
+        "Currency": "GBP",
+        "AccountType": "Personal",
+        "AccountSubType": "Savings",
+        "Description": "Personal",
+        "Nickname": "Sydney Beard",
+        "Account": [
+          {
+            "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+            "Identification": "50000012345602",
+            "Name": "Sydney Beard"
+          }
+        ]
+      }
+    ]
+  },
+  "Links": {
+    "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/aisp/accounts"
+  },
+  "Meta": {
+    "TotalPages": 1
+  }
 }
