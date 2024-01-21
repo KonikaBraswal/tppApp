@@ -23,6 +23,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import TransactionListScreen from './src/screens/TransactionListScreen';
 import AccountListScreen from './src/screens/AccountListScreen';
+import SelectBank from './src/components/SelectBank';
+
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -40,9 +42,10 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-       <AccountListScreen/>
+       {/* <AccountListScreen/> */}
     {/* <TransactionListScreen/> */}
-   
+    <SelectBank/>
+
 
     </SafeAreaView>
     </SafeAreaProvider>

@@ -7,7 +7,7 @@ const AccountCard = ({ account }) => {
 const [balances, setBalances] = useState([]);
 
 useEffect(() => {
-      axios.get('http://192.168.1.5:3001/Data')
+      axios.get('http://localhost:3001/Data')
       .then((response) =>{ 
         setBalances(response.data) ;
        // console.log(balances);
