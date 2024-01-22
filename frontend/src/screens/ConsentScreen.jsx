@@ -7,11 +7,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ConsentScreen = ({text}) => {
+const ConsentScreen = () => {
+  const navigation = useNavigation();
+
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -86,12 +89,17 @@ const ConsentScreen = ({text}) => {
       checked7
     );
   };
-
+  const handleConfirmButtonClick = () => {
+    navigation.navigate('Accounts');
+  };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
-        <Text style={styles.textStyle}>{text}</Text>
+        <Text style={styles.textStyle}>
+          NWBank needs your explicit consent to access the following information
+          from the accounts held at your bank or building society
+        </Text>
 
         <List.Section>
           <List.Accordion
@@ -314,8 +322,8 @@ const ConsentScreen = ({text}) => {
           <Button
             icon="close"
             mode="contained"
-            onPress={() => console.log('Deny')}
-            style={{marginRight: 10}}>
+            style={{marginRight: 10}}
+            onPress={() => navigation.goBack()}>
             Deny
           </Button>
 
@@ -324,10 +332,9 @@ const ConsentScreen = ({text}) => {
             mode="contained"
             onPress={() => {
               if (areAllCheckboxesChecked()) {
-                console.log('Confirm');
+                handleConfirmButtonClick();
               } else {
                 showErrorDialog();
-                console.log('Please check all checkboxes before confirming.');
               }
             }}
             style={{marginLeft: 10}}>

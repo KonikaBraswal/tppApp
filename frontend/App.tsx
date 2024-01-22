@@ -25,6 +25,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import AppDrawer from './src/components/AppDrawer';
 import BottomTab from './src/components/BottomTab';
+import ConsentScreen from './src/screens/ConsentScreen';
+import SelectBank from './src/components/SelectBank';
+import AccountListScreen from './src/screens/AccountListScreen';
+import TransactionListScreen from './src/screens/TransactionListScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -46,7 +50,31 @@ function App(): React.JSX.Element {
             backgroundColor={backgroundStyle.backgroundColor}
           />
           <NavigationContainer>
-            <AppDrawer />
+            <Stack.Navigator
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: '#5a287d',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 22,
+                },
+                headerTitleAlign: 'center',
+              }}>
+              <Stack.Screen
+                name="Home"
+                component={AppDrawer}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen name="Consent" component={ConsentScreen} />
+              <Stack.Screen name="AddBank" component={SelectBank} />
+              <Stack.Screen name="Accounts" component={AccountListScreen} />
+              <Stack.Screen
+                name="Transactions"
+                component={TransactionListScreen}
+              />
+            </Stack.Navigator>
           </NavigationContainer>
 
           {/* <ConsentScreen text="NWBank needs your explicit consent to access the following information from the accounts held at your bank or building society"/> */}

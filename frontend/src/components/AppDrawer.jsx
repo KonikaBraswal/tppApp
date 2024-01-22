@@ -3,6 +3,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import TransactionListScreen from '../screens/TransactionListScreen';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
+import SelectBank from './SelectBank';
+
+import Dummy from '../screens/Dummy';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,15 +18,16 @@ const AppDrawer = () => {
           width: 250,
         },
         headerStyle: {
-          backgroundColor: '#f4ebfe',
+          backgroundColor: '#5a287d',
         },
-        headerTintColor: '#36013f',
+        headerTintColor: 'white',
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 22,
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+      headerMode="screen">
       <Drawer.Screen
         name="NWBank"
         component={BottomTab}
@@ -33,9 +37,27 @@ const AppDrawer = () => {
           ),
         }}
       />
+      {/* <Drawer.Screen
+        name="Home"
+        component={MyStack}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="home" color={color} size={28} />
+          ),
+        }}
+      /> */}
+      <Drawer.Screen
+        name="Add Bank"
+        component={SelectBank}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="bank-plus" color={color} size={28} />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="Notifications"
-        component={TransactionListScreen}
+        component={Dummy}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bell" color={color} size={28} />
@@ -44,7 +66,7 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="Messages"
-        component={TransactionListScreen}
+        component={Dummy}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="message" color={color} size={28} />
@@ -53,7 +75,7 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="Profile"
-        component={TransactionListScreen}
+        component={Dummy}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="account" color={color} size={28} />
@@ -62,37 +84,10 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="Updates"
-        component={TransactionListScreen}
+        component={Dummy}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="update" color={color} size={28} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="Consent"
-        options={{
-          drawerIcon: ({color}) => (
-            <MaterialCommunityIcons
-              name="content-save"
-              color={color}
-              size={28}
-            />
-          ),
-        }}>
-        {props => (
-          <ConsentScreen
-            {...props}
-            text="NWBank needs your explicit consent to access the following information from the accounts held at your bank or building society"
-          />
-        )}
-      </Drawer.Screen>
-      <Drawer.Screen
-        name="Signout"
-        component={TransactionListScreen}
-        options={{
-          drawerIcon: ({color}) => (
-            <MaterialCommunityIcons name="logout" color={color} size={28} />
           ),
         }}
       />

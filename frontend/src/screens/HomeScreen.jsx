@@ -1,15 +1,15 @@
 import React from 'react';
 import {View, StyleSheet, Text, Image} from 'react-native';
-import {Divider, Card, Icon, Surface} from 'react-native-paper';
-import SearchBar from '../components/SearchBar';
+import {Divider, Card, Surface, IconButton} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const handleAddBankClick = () => {
+    navigation.navigate('AddBank');
+  };
   return (
     <View style={styles.container}>
-      {/* <View style={{marginVertical: 25, marginHorizontal: 15}}>
-        <SearchBar />
-      </View> */}
-
       <View style={{flex: 1, flexDirection: 'column'}}>
         <Text style={styles.headerText}>Added Banks</Text>
         <View
@@ -53,13 +53,19 @@ const HomeScreen = () => {
           alignItems: 'center',
           marginTop: 80,
         }}>
-        <Icon source="bank-plus" color={'#551a8b'} size={60} />
+        <IconButton
+          icon="bank-plus"
+          iconColor={'#36013f'}
+          size={60}
+          onPress={handleAddBankClick}
+        />
         <Text
           style={{
             fontSize: 25,
             fontWeight: 'bold',
             color: '#36013f',
-          }}>
+          }}
+          onPress={handleAddBankClick}>
           Add Bank Account
         </Text>
       </View>

@@ -1,10 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 
 const AccountCard = ({account}) => {
+  const navigation = useNavigation();
   const [balances, setBalances] = useState([]);
+  const handleCardClick = () => {
+    navigation.navigate('Transactions');
+  };
 
   useEffect(() => {
     axios
@@ -17,7 +22,7 @@ const AccountCard = ({account}) => {
   }, []);
 
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={handleCardClick}>
       <Card.Content>
         <Title style={styles.title}>{account.Nickname}</Title>
         <Text style={styles.text}>Account ID: {account.AccountId}</Text>
