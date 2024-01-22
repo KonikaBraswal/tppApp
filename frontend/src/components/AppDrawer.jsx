@@ -37,15 +37,6 @@ const AppDrawer = () => {
           ),
         }}
       />
-      {/* <Drawer.Screen
-        name="Home"
-        component={MyStack}
-        options={{
-          drawerIcon: ({color}) => (
-            <MaterialCommunityIcons name="home" color={color} size={28} />
-          ),
-        }}
-      /> */}
       <Drawer.Screen
         name="Add Bank"
         component={SelectBank}

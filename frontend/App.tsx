@@ -76,8 +76,6 @@ function App(): React.JSX.Element {
               />
             </Stack.Navigator>
           </NavigationContainer>
-
-          {/* <ConsentScreen text="NWBank needs your explicit consent to access the following information from the accounts held at your bank or building society"/> */}
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
