@@ -3,6 +3,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import TransactionListScreen from '../screens/TransactionListScreen';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
+import Footer from './Footer';
 
 const Drawer = createDrawerNavigator();
 

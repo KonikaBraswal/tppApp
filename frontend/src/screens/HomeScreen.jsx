@@ -1,10 +1,18 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import {View, StyleSheet, Text, Image,TouchableOpacity} from 'react-native';
 import {Divider, Card, Icon, Surface} from 'react-native-paper';
 import SearchBar from '../components/SearchBar';
+import { useNavigation } from '@react-navigation/native';
+import SelectBank from '../components/SelectBank';
+import Footer from '../components/Footer';
 
 const HomeScreen = () => {
+  const navigation=useNavigation();
+  const handlePress=()=>{
+  navigation.navigate('SelectBank');
+  }
   return (
+    <>
     <View style={styles.container}>
       {/* <View style={{marginVertical: 25, marginHorizontal: 15}}>
         <SearchBar />
@@ -53,7 +61,9 @@ const HomeScreen = () => {
           alignItems: 'center',
           marginTop: 80,
         }}>
-        <Icon source="bank-plus" color={'#551a8b'} size={60} />
+        <TouchableOpacity onPress={handlePress}>
+      <Icon source="bank-plus" color={'#551a8b'} size={60} />
+    </TouchableOpacity>
         <Text
           style={{
             fontSize: 25,
@@ -97,6 +107,8 @@ const HomeScreen = () => {
         </Card>
       </View>
     </View>
+    <Footer/>
+    </>
   );
 };
 const styles = StyleSheet.create({

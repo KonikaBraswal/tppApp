@@ -11,7 +11,8 @@ import IconDialog from '../components/IconDialog';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ConsentScreen = ({text}) => {
+const ConsentScreen = ({ route }) => {
+  const { text } = route.params;
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
