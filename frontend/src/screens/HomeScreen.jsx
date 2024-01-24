@@ -1,23 +1,17 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image,TouchableOpacity} from 'react-native';
-import {Divider, Card, Icon, Surface} from 'react-native-paper';
-import SearchBar from '../components/SearchBar';
-import { useNavigation } from '@react-navigation/native';
-import SelectBank from '../components/SelectBank';
+import {View, StyleSheet, Text, Image} from 'react-native';
+import {Divider, Card, Surface, IconButton} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import Footer from '../components/Footer';
 
 const HomeScreen = () => {
-  const navigation=useNavigation();
-  const handlePress=()=>{
-  navigation.navigate('SelectBank');
-  }
+  const navigation = useNavigation();
+  const handleAddBankClick = () => {
+    navigation.navigate('AddBank');
+  };
   return (
     <>
     <View style={styles.container}>
-      {/* <View style={{marginVertical: 25, marginHorizontal: 15}}>
-        <SearchBar />
-      </View> */}
-
       <View style={{flex: 1, flexDirection: 'column'}}>
         <Text style={styles.headerText}>Added Banks</Text>
         <View
@@ -61,15 +55,19 @@ const HomeScreen = () => {
           alignItems: 'center',
           marginTop: 80,
         }}>
-        <TouchableOpacity onPress={handlePress}>
-      <Icon source="bank-plus" color={'#551a8b'} size={60} />
-    </TouchableOpacity>
+        <IconButton
+          icon="bank-plus"
+          iconColor={'#36013f'}
+          size={60}
+          onPress={handleAddBankClick}
+        />
         <Text
           style={{
             fontSize: 25,
             fontWeight: 'bold',
             color: '#36013f',
-          }}>
+          }}
+          onPress={handleAddBankClick}>
           Add Bank Account
         </Text>
       </View>
