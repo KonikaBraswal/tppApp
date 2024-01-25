@@ -9,7 +9,7 @@ const AccountListScreen = () => {
   useEffect(() => {
     async function fetchData() {
       axios
-        .get('http://192.168.1.5:3000/Data')
+        .get('http://192.168.1.7:3000/Data')
         .then(response => setAccounts(response.data.Account))
         .catch(error => console.error('Error fetching account data:', error));
     }

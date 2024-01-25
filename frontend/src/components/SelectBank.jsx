@@ -47,7 +47,7 @@ const SelectBank = () => {
       <Stack
         key={`row_${i}`}
         direction="row"
-        spacing={10}
+        //spacing={10}
         style={SelectBankStyle.row}>
         {rowBanks.map(bank => (
           <TouchableOpacity key={bank.id} onPress={handlePress}>
