@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Text, Image} from 'react-native';
 import {Divider, Card, Surface, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import Footer from '../components/Footer';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -9,6 +10,7 @@ const HomeScreen = () => {
     navigation.navigate('AddBank');
   };
   return (
+    <>
     <View style={styles.container}>
       <View style={{flex: 1, flexDirection: 'column'}}>
         <Text style={styles.headerText}>Added Banks</Text>
@@ -103,6 +105,8 @@ const HomeScreen = () => {
         </Card>
       </View>
     </View>
+    <Footer/>
+    </>
   );
 };
 const styles = StyleSheet.create({

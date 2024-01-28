@@ -36,8 +36,7 @@ const SelectBank = () => {
     setFilteredBanks(filtered);
   };
   const handlePress = () => {
-    const text =
-      'NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
+    // const text ='NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
     navigation.navigate('Consent');
   };
   const rows = [];

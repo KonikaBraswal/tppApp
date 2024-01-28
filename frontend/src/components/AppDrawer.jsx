@@ -1,6 +1,6 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import TransactionListScreen from '../screens/TransactionListScreen';
+import TransactionListScreen from './TransactionList';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';

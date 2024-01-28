@@ -8,12 +8,12 @@ const AccountCard = ({account}) => {
   const navigation = useNavigation();
   const [balances, setBalances] = useState([]);
   const handleCardClick = () => {
-    navigation.navigate('Transactions');
+    navigation.navigate('Details', {accountDetails: account});
   };
 
   useEffect(() => {
     axios
-      .get('http://192.168.1.7:3001/Data')
+      .get('http://192.168.1.5:3001/Data')
       .then(response => {
         setBalances(response.data);
         //console.log(balances);

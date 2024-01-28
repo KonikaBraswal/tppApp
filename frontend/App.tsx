@@ -18,8 +18,8 @@ import {
 } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {PaperProvider} from 'react-native-paper';
-
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -28,7 +28,9 @@ import BottomTab from './src/components/BottomTab';
 import ConsentScreen from './src/screens/ConsentScreen';
 import SelectBank from './src/components/SelectBank';
 import AccountListScreen from './src/screens/AccountListScreen';
-import TransactionListScreen from './src/screens/TransactionListScreen';
+import TransactionList from './src/components/TransactionList';
+import Landing from './src/screens/Landing';
+import MainScreen from './src/screens/MainScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -40,7 +42,7 @@ function App(): React.JSX.Element {
     flex: 1,
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-
+  const Stack = createNativeStackNavigator();
   return (
     <PaperProvider>
       <SafeAreaProvider>
@@ -68,17 +70,16 @@ function App(): React.JSX.Element {
                 options={{headerShown: false}}
               />
               <Stack.Screen name="Consent" component={ConsentScreen} />
-              <Stack.Screen name="AddBank" component={SelectBank} />
+              <Stack.Screen name="Select Your Bank" component={SelectBank} />
               <Stack.Screen name="Accounts" component={AccountListScreen} />
-              <Stack.Screen
-                name="Transactions"
-                component={TransactionListScreen}
-              />
+              <Stack.Screen name="Transactions" component={TransactionList} />
+              <Stack.Screen name="Details" component={MainScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
+    // <Landing/>
   );
 }
 
