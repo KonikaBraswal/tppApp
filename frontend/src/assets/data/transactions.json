@@ -27,7 +27,7 @@
       {
         "AccountId": "48901b2d-f748-40a9-b8e4-5a206590b6a5",
         "TransactionId": "982dbf52-4f8f-40db-a3cb-181db60283a6",
-        "CreditDebitIndicator": "Debit",
+        "CreditDebitIndicator": "Credit",
         "Status": "Booked",
         "BookingDateTime": "2024-01-14T11:42:39.374Z",
         "Amount": {

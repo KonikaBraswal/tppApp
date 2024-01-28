@@ -9,7 +9,7 @@ const TransactionList = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('http://192.168.1.5:3002/Data');
+        const response = await axios.get('http://192.168.219.223:3002/Data');
         setTransactions(response.data.Transaction);
         // console.log(response.data.Transaction);
       } catch (error) {

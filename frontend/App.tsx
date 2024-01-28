@@ -30,6 +30,8 @@ import SelectBank from './src/components/SelectBank';
 import AccountListScreen from './src/screens/AccountListScreen';
 import TransactionList from './src/components/TransactionList';
 import Landing from './src/screens/Landing';
+import MyComponent from './src/components/AllAccounts';
+import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 
 const Stack = createNativeStackNavigator();
@@ -74,12 +76,14 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Accounts" component={AccountListScreen} />
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Details" component={MainScreen} />
+              <Stack.Screen name="Your Accounts" component={AllAccounts} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
-    // <Landing/>
+    //  <AccountListScreen/>
+    // <MyComponent/>
   );
 }
 

@@ -331,12 +331,12 @@ const ConsentScreen = () => {
             icon="check-bold"
             mode="contained"
             onPress={() => {
-              // if (areAllCheckboxesChecked()) {
-              //   handleConfirmButtonClick();
-              // } else {
-              //   showErrorDialog();
-              // }
-              handleConfirmButtonClick();
+              if (areAllCheckboxesChecked()) {
+                handleConfirmButtonClick();
+              } else {
+                showErrorDialog();
+              }
+              //handleConfirmButtonClick();
             }}
             style={{marginLeft: 10}}>
             Confirm

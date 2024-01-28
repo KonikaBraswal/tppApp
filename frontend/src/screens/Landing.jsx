@@ -17,6 +17,8 @@ import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const Landing = () => {
+  const navigation = useNavigation();
+
   const cards = [
     {id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png')},
     {id: 2, name: 'Barclays', icon: require('../assets/icons/barclays.png')},
@@ -26,9 +28,17 @@ const Landing = () => {
   ];
 
   const renderCard = ({item}) => (
-    <Surface elevation={6} category="medium" style={styles.surface}>
-      <Image source={item.icon} style={styles.icon} />
-    </Surface>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('Your Accounts', {
+          selectedIcon: item.icon,
+          selectedBank: item.name,
+        })
+      }>
+      <Surface elevation={6} category="medium" style={styles.surface}>
+        <Image source={item.icon} style={styles.icon} />
+      </Surface>
+    </TouchableOpacity>
   );
 
   const snapToInterval = 100;
@@ -38,7 +48,7 @@ const Landing = () => {
   };
   const VRP = {name: 'VRP', image: require('../assets/icons/VRP.png')};
   const [searchQuery, setSearchQuery] = React.useState('');
-  const navigation = useNavigation();
+
   const AddBank = () => {
     navigation.navigate('Select Your Bank');
   };

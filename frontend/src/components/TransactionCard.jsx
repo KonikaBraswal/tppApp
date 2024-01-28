@@ -25,6 +25,7 @@ const TransactionCard = ({transaction}) => {
                 icon="arrow-top-right"
                 mode="contained-tonal"
                 iconColor="red"
+                style={{fontWeight: 'bold'}}
                 size={20}
               />
             ) : (
@@ -32,6 +33,7 @@ const TransactionCard = ({transaction}) => {
                 icon="arrow-bottom-left"
                 mode="contained-tonal"
                 iconColor="green"
+                style={{fontWeight: 'bold'}}
                 size={20}
               />
             )}
