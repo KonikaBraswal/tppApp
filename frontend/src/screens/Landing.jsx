@@ -6,25 +6,30 @@ import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Landing = () => {
+  const navigation=useNavigation();
+  const navigation1=useNavigation();
+
   const cards = [
     { id: 1, name: "Natwest", icon: require("../assets/icons/natwest.png") },
     { id: 2, name: "Barclays", icon: require("../assets/icons/barclays.png") },
     { id: 3, name: "Lloyds", icon: require("../assets/icons/lloyds.png") },
-    { id: 5, name: "Monzo", icon: require("../assets/icons/monzo.png") },
-    { id: 6, name: "Santander", icon: require("../assets/icons/santander.png") },
+    { id: 4, name: "Monzo", icon: require("../assets/icons/monzo.png") },
+    { id: 5, name: "Santander", icon: require("../assets/icons/santander.png") },
   ];
+ 
 
   const renderCard = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation1.navigate('Your Accounts',{selectedIcon:item.icon,selectedBank: item.name})}>
     <Surface elevation={6} category="medium" style={styles.surface}>
       <Image source={item.icon} style={styles.icon} />
     </Surface>
+    </TouchableOpacity>
   );
 
   const snapToInterval = 100;
   const Payments = { name: 'Payments', image: require("../assets/icons/payments.png") };
   const VRP = { name: 'VRP', image: require("../assets/icons/VRP.png") };
   const [searchQuery, setSearchQuery] = React.useState('');
-  const navigation=useNavigation();
   const AddBank=()=>{
     navigation.navigate('Select Your Bank');
   }

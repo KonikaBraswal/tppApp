@@ -1,56 +1,120 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+import {StyleSheet,View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import { Surface,Button} from '@react-native-material/core';
 import axios from 'axios';
+import read from '../jsonfiles/accounts.json';
+import { Icon } from 'react-native-paper';
 
-const AccountCard = ({account}) => {
-  const navigation = useNavigation();
+const AccountCard = ({item}) => {
+  // const navigation = useNavigation();
   const [balances, setBalances] = useState([]);
-  const handleCardClick = () => {
-    navigation.navigate('Transactions');
-  };
+  const [accounts, setAccounts] = useState([]);
+  const accountData = read?.Account;
+  // const handleCardClick = () => {
+  //   navigation.navigate('Transactions');
+  // };
 
   useEffect(() => {
-    axios
-      .get('http://192.168.1.6:3001/Data')
-      .then(response => {
-        setBalances(response.data);
-        //console.log(balances);
-      })
-      .catch(error => console.error('Error in fetching balance data:', error));
+    // axios
+    //   .get('http://192.168.1.6:3001/Data')
+    //   .then(response => {
+    //     setBalances(response.data);
+    //     //console.log(balances);
+    //   })
+    //   .catch(error => console.error('Error in fetching balance data:', error));
+    setAccounts(accountData);
   }, []);
 
   return (
-    <Card style={styles.card} onPress={handleCardClick}>
-      <Card.Content>
-        <Title style={styles.title}>{account.Nickname}</Title>
-        <Text style={styles.text}>Account ID: {account.AccountId}</Text>
-        <Text style={styles.text}>Account Type: {account.AccountType}</Text>
-        <Text style={styles.text}>Sub Type: {account.AccountSubType}</Text>
-      </Card.Content>
-    </Card>
+    <>
+    <View style={styles.container}>
+     
+  <Surface style={styles.card}>
+    <View style={styles.text}>
+      <Text key={item.AccountId} style={styles.text}>{item.Nickname}</Text>
+      <Text style={styles.smalltext}>{`${item.AccountType}`}{" "}{`${item.AccountSubType}`}</Text>
+      <Text>{`${item.AccountId}`}</Text>
+    </View>
+    <View style={styles.iconContainer}>
+      <Icon source="chevron-double-right" color="black" size={30}/>
+    </View>
+  </Surface>
+</View>
+</>
   );
 };
 
+// const styles = StyleSheet.create({
+//   card: {
+//     flexDirection:'row',
+//     flex:1,
+//     paddingTop: 30, marginVertical: 8, borderRadius: 8, elevation: 5,
+//     marginBottom:30,
+//     margin:5,
+//     paddingBottom: 30,
+//     padding:50,
+//     width:375,
+//     height:150,
+//     spacing:500,
+//     justifyContent:'center',
+//     alignContent:'center',
+//     backgroundColor:'#c8e1cc'
+//   },
+//   title: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+//   text: {
+//     fontSize: 20,
+//     fontWeight:'bold',
+//     marginVertical: 2,
+//   },
+//   smalltext: {
+//     fontSize: 15,
+//     fontWeight:'bold',
+//     marginVertical: 2,
+//   },
+//   iconContainer: {
+//     position:'relative',
+
+//   },
+// });
 const styles = StyleSheet.create({
-  card: {
-    margin: 6,
+  container: {
     padding: 10,
+    marginVertical: 8,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 30,
     borderRadius: 8,
-    elevation: 3, // for Android
-    shadowColor: '#000', // for iOS
-    shadowOffset: {width: 1, height: 1}, // for iOS
-    shadowOpacity: 0.3, // for iOS
-    backgroundColor: '#fff',
+    elevation: 5,
+    backgroundColor: '#c8e1cc',
+  },
+  text: {
+    flex: 1,
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
   },
   text: {
-    fontSize: 14,
+    fontSize: 20,
+    fontWeight: 'bold',
     marginVertical: 2,
+  },
+  smalltext: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginVertical: 2,
+  },
+  iconContainer: {
+    marginLeft: 'auto',
+    marginRight: 10, // Add some margin to the right to adjust the position
   },
 });
 
