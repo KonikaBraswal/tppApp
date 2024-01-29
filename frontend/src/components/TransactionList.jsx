@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, FlatList} from 'react-native';
+import {View} from 'react-native';
 import TransactionCard from './TransactionCard';
 import axios from 'axios';
 
@@ -9,9 +9,8 @@ const TransactionList = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('http://192.168.1.4:3002/Data');
+        const response = await axios.get('http://192.168.1.7:3002/Data');
         setTransactions(response.data.Transaction);
-        // console.log(response.data.Transaction);
       } catch (error) {
         console.error('Error fetching transactions:', error.message);
       }
@@ -22,14 +21,14 @@ const TransactionList = () => {
 
   return (
     <View style={{padding: 4, marginVertical: 8}}>
-      <FlatList
-        data={transactions}
-        keyExtractor={item => item.TransactionId}
-        renderItem={({item}) => <TransactionCard transaction={item} />}
-      />
+      {transactions.map(transaction => (
+        <TransactionCard
+          key={transaction.TransactionId}
+          transaction={transaction}
+        />
+      ))}
     </View>
   );
 };
 
 export default TransactionList;
-// json-server --watch ./src/assets/data/transactions.json --port 3002

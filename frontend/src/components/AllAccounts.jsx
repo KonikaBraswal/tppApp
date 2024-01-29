@@ -20,7 +20,6 @@ import RevolutAccounts from './AccountLists/RevolutAccounts';
 
 const AllAccounts = ({route}) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [accounts, setAccounts] = useState([]);
   const [checkedBanks, setCheckedBanks] = useState({
     natwest: false,
     barclays: false,
@@ -42,6 +41,8 @@ const AllAccounts = ({route}) => {
   ];
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
+  const accounts = route.params.accounts;
+
   useEffect(() => {
     setCheckedBanks(prevState => ({
       ...prevState,
@@ -127,7 +128,7 @@ const AllAccounts = ({route}) => {
               )}
             </View>
             {checkedBanks[selectedBank.toLowerCase()] &&
-              renderAccountComponent(selectedBank)}
+              renderAccountComponent(selectedBank, accounts)}
             {selectedBank.toLowerCase() !== 'barclays' &&
               checkedBanks.barclays && <BarclaysAccounts />}
             {selectedBank.toLowerCase() !== 'lloyds' && checkedBanks.lloyds && (
@@ -143,7 +144,9 @@ const AllAccounts = ({route}) => {
             {selectedBank.toLowerCase() !== 'starling' &&
               checkedBanks.starling && <StarlingAccounts />}
             {selectedBank.toLowerCase() !== 'natwest' &&
-              checkedBanks.natwest && <NatwestAccounts />}
+              checkedBanks.natwest && (
+                <NatwestAccounts accountsList={accounts} />
+              )}
           </View>
         </View>
       </ScrollView>
@@ -173,10 +176,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderAccountComponent = selectedBank => {
+const renderAccountComponent = (selectedBank, accounts) => {
   switch (selectedBank.toLowerCase()) {
     case 'natwest':
-      return <NatwestAccounts />;
+      return <NatwestAccounts accountsList={accounts} />;
     case 'barclays':
       return <BarclaysAccounts />;
     case 'lloyds':

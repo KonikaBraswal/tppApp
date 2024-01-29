@@ -9,19 +9,10 @@ import {Icon} from 'react-native-paper';
 
 const AccountCard = ({item}) => {
   const navigation = useNavigation();
-  const [accounts, setAccounts] = useState([]);
-  const handleCardClick = () => {
-    navigation.navigate('Details', {accountDetails: accounts});
-  };
 
-  useEffect(() => {
-    axios
-      .get('http://192.168.1.4:3000/Data')
-      .then(response => {
-        setAccounts(response.data.Account);
-      })
-      .catch(error => console.error('Error in fetching account data:', error));
-  }, []);
+  const handleCardClick = () => {
+    navigation.navigate('Details', {accountDetails: item});
+  };
 
   return (
     <View style={styles.container}>

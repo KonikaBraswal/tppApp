@@ -2,13 +2,23 @@ import React from 'react';
 import {Card, Title, Text} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 
-const AccountDetails = ({account}) => {
+const AccountDetails = props => {
+  const {
+    AccountId,
+    AccountSubType,
+    AccountType,
+    Currency,
+    Description,
+    Nickname,
+    Account,
+  } = props.account;
+
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Text style={{color: 'black'}}>{account[0].AccountType} Account</Text>
-        <Text style={styles.title}>{account[0].AccountSubType} Account</Text>
-        <Text style={styles.text}>{account[0].AccountId}</Text>
+        <Text style={{color: 'black'}}>{AccountType} Account</Text>
+        <Text style={styles.title}>{AccountSubType} Account</Text>
+        <Text style={styles.text}>{AccountId}</Text>
         <Text style={{fontSize: 18, marginVertical: 2, fontWeight: 'bold'}}>
           Available Balance:
         </Text>

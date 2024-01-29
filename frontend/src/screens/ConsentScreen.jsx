@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 
 const screenWidth = Dimensions.get('window').width;
-
+const mode = 'sandbox';
 const ConsentScreen = () => {
   const navigation = useNavigation();
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -89,11 +91,41 @@ const ConsentScreen = () => {
       checked7
     );
   };
-  const handleConfirmButtonClick = () => {
-    navigation.navigate('Your Accounts', {
-      selectedBank: 'Natwest',
-      selectedIcon: "'../assets/icons/natwest.png'",
-    });
+  const handleConfirmButtonClick = async () => {
+    // navigation.navigate('Your Accounts', {
+    //   selectedBank: 'Natwest',
+    //   selectedIcon: "'../assets/icons/natwest.png'",
+    // });
+    const apiFactory = new ApiFactory();
+    if (mode == 'sandbox') {
+      try {
+        const permissions = [
+          'ReadAccountsDetail',
+          'ReadBalances',
+          'ReadTransactionsCredits',
+          'ReadTransactionsDebits',
+          'ReadTransactionsDetail',
+        ];
+        setLoading(true);
+        setError(null);
+        const sandboxApiClient = apiFactory.createApiClient('sandbox');
+        const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+        console.log('Sandbox API 1 Data:', data);
+        //navigation.navigate('Accounts', {accountData: data});
+        navigation.navigate('Your Accounts', {
+          selectedBank: 'Natwest',
+          selectedIcon: "'../assets/icons/natwest.png'",
+          accounts: data,
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to retrieve access token.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      navigation.navigate('Consent');
+    }
   };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
@@ -334,12 +366,12 @@ const ConsentScreen = () => {
             icon="check-bold"
             mode="contained"
             onPress={() => {
-              if (areAllCheckboxesChecked()) {
-                handleConfirmButtonClick();
-              } else {
-                showErrorDialog();
-              }
-              //handleConfirmButtonClick();
+              // if (areAllCheckboxesChecked()) {
+              //   handleConfirmButtonClick();
+              // } else {
+              //   showErrorDialog();
+              // }
+              handleConfirmButtonClick();
             }}
             style={{marginLeft: 10}}>
             Confirm
