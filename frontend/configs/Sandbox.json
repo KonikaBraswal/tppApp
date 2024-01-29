@@ -1,12 +1,13 @@
 {
-  "grant_type": "client_credentials",
+  "grant_type":"client_credentials",
   "scope": "accounts",
-  "tokenEndpoint": "token",
-  "accountRequestEndpoint": "open-banking/v3.1/aisp/account-access-consents",
-  "consentUrl": "https://api.sandbox.natwest.com/authorize",
-  "redirectUri": "http://474d555f-6a31-40f8-8ee8-ee72699f1f74.example.org/redirect",
-  "accountsEndpoint": "open-banking/v3.1/aisp/accounts",
-  "teamDomain": "474d555f-6a31-40f8-8ee8-ee72699f1f74.example.org",
-  "customerId": "123456789012",
-  "psu": "123456789012@474d555f-6a31-40f8-8ee8-ee72699f1f74.example.org"
+  "tokenEndpoint":"token",
+  "accountRequestEndpoint":"open-banking/v3.1/aisp/account-access-consents",
+  "consentUrl":"https://api.sandbox.natwest.com/authorize",
+  "redirectUri":"http://localhost:8080",
+  "accountsEndpoint":"open-banking/v3.1/aisp/accounts",
+  "teamDomain":"474d555f-6a31-40f8-8ee8-ee72699f1f74.example.org",
+  "customerId":"123456789012",
+  "psu":"123456789012@474d555f-6a31-40f8-8ee8-ee72699f1f74.example.org"
+
 }
