@@ -6,15 +6,16 @@ import { Surface,Button} from '@react-native-material/core';
 import axios from 'axios';
 import read from '../jsonfiles/accounts.json';
 import { Icon } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const AccountCard = ({item}) => {
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const [balances, setBalances] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const accountData = read?.Account;
-  // const handleCardClick = () => {
-  //   navigation.navigate('Transactions');
-  // };
+  const handleCardClick = () => {
+    navigation.navigate('Transactions');
+  };
 
   useEffect(() => {
     // axios
@@ -30,7 +31,6 @@ const AccountCard = ({item}) => {
   return (
     <>
     <View style={styles.container}>
-     
   <Surface style={styles.card}>
     <View style={styles.text}>
       <Text key={item.AccountId} style={styles.text}>{item.Nickname}</Text>
@@ -46,41 +46,6 @@ const AccountCard = ({item}) => {
   );
 };
 
-// const styles = StyleSheet.create({
-//   card: {
-//     flexDirection:'row',
-//     flex:1,
-//     paddingTop: 30, marginVertical: 8, borderRadius: 8, elevation: 5,
-//     marginBottom:30,
-//     margin:5,
-//     paddingBottom: 30,
-//     padding:50,
-//     width:375,
-//     height:150,
-//     spacing:500,
-//     justifyContent:'center',
-//     alignContent:'center',
-//     backgroundColor:'#c8e1cc'
-//   },
-//   title: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-//   text: {
-//     fontSize: 20,
-//     fontWeight:'bold',
-//     marginVertical: 2,
-//   },
-//   smalltext: {
-//     fontSize: 15,
-//     fontWeight:'bold',
-//     marginVertical: 2,
-//   },
-//   iconContainer: {
-//     position:'relative',
-
-//   },
-// });
 const styles = StyleSheet.create({
   container: {
     padding: 10,

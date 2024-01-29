@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text,FlatList,Image,StyleSheet} from 'react-native';
+import { View, Text,FlatList,Image,StyleSheet,TouchableOpacity} from 'react-native';
 import { Surface } from '@react-native-material/core';
 import read from '../../jsonfiles/accounts.json';
 import AccountCard from '../AccountCard';
+import { useNavigation } from '@react-navigation/native';
+
 const NatwestAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {
     setAccounts(read?.Account);
     }, []);
+    const navigation=useNavigation();
   return (
     <View>
        <Surface elevation={6} category="medium" style={styles.surface}>
@@ -15,7 +18,11 @@ const NatwestAccounts = () => {
         </Surface>
            <FlatList
               data={accounts}
-              renderItem={({ item }) => <AccountCard item={item} />}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => navigation.navigate('Transactions')}>
+                  <AccountCard item={item} />
+                </TouchableOpacity>
+              )}
               keyExtractor={(item) => item.AccountId.toString()}
             />
     </View>

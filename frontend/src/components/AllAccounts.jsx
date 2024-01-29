@@ -72,11 +72,6 @@ const AllAccounts = ({ route: { params: { selectedIcon, selectedBank } } }) => {
                 onPress={toggleDropdown}
               />
             </TouchableOpacity>
-            {/* <FlatList
-              data={accounts}
-              renderItem={({ item }) => <AccountCard item={item} />}
-              keyExtractor={(item) => item.AccountId.toString()}
-            /> */}
             {showDropdown && (
               <ScrollView style={{ width: 200, maxHeight: 150, zIndex: 1, position: 'absolute', top: 50, elevation: 5, borderRadius: 10 }}>
                 {banks.map((bank) => (

@@ -32,6 +32,7 @@ import TransactionListScreen from './src/screens/TransactionListScreen';
 import Landing from './src/screens/Landing';
 import MyComponent from './src/components/AllAccounts';
 import AllAccounts from './src/components/AllAccounts';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -86,8 +87,6 @@ function App(): React.JSX.Element {
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
-  //  <AccountListScreen/>
-  // <MyComponent/>
   );
 }
 

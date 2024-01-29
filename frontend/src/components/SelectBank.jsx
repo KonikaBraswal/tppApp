@@ -52,7 +52,7 @@ const SelectBank = () => {
         {rowBanks.map(bank => (
           <TouchableOpacity key={bank.id} onPress={handlePress}>
             <Surface
-              elevation={1}
+              elevation={5}
               category="medium"
               style={SelectBankStyle.surface}>
               <Image source={bank.icon} style={SelectBankStyle.image} onPress />
@@ -145,7 +145,7 @@ const SelectBankStyle = StyleSheet.create({
 
     alignItems: 'center',
     borderWidth: 0.5,
-    borderColor: 'black',
+    borderColor: 'white',
     margin: 10,
   },
 
