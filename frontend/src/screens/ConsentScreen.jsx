@@ -23,11 +23,11 @@ const ConsentScreen = () => {
   const handlePress2 = () => setExpanded2(!expanded2);
   const handlePress3 = () => setExpanded3(!expanded3);
 
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
-  const [checked3, setChecked3] = useState(false);
-  const [checked4, setChecked4] = useState(false);
-  const [checked5, setChecked5] = useState(false);
+  const [checked1, setChecked1] = useState(true);
+  const [checked2, setChecked2] = useState(true);
+  const [checked3, setChecked3] = useState(true);
+  const [checked4, setChecked4] = useState(true);
+  const [checked5, setChecked5] = useState(true);
   const [checked6, setChecked6] = useState(false);
   const [checked7, setChecked7] = useState(false);
 
@@ -80,15 +80,12 @@ const ConsentScreen = () => {
 
   const areAllCheckboxesChecked = () => {
     return (
-      checked1 &&
-      checked2 &&
-      checked3 &&
-      checked4 &&
-      checked5 &&
+      (checked1 || checked2 || checked3 || checked4 || checked5) &&
       checked6 &&
       checked7
     );
   };
+  
   const handleConfirmButtonClick = () => {
     navigation.navigate('Your Accounts', {
       selectedBank: 'Natwest',
@@ -100,7 +97,7 @@ const ConsentScreen = () => {
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
         <Text style={styles.textStyle}>
-          NWBank needs your explicit consent to access the following information
+          NatWest Bank needs your explicit consent to access the following information
           from the accounts held at your bank or building society
         </Text>
 
@@ -348,7 +345,7 @@ const ConsentScreen = () => {
             <IconDialog
               visible={isErrorDialogVisible}
               hideDialog={hideErrorDialog}
-              title={'Please check all checkboxes before confirming.'}
+              title={'We need consent, Please check boxes under Reason for Access'}
               text={''}
             />
           )}
@@ -388,7 +385,7 @@ const styles = StyleSheet.create({
     width: screenWidth - 40,
     margin: 20,
     borderRadius: 10,
-    backgroundColor: '#D6B4FC',
+    backgroundColor: '#c8e1cc',
     elevation: 3,
   },
   accordionListStyle: {

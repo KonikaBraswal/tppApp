@@ -100,13 +100,27 @@ const Landing = () => {
             />
           </View>
           <View style={styles.addBankContainer}>
-            <Image
+            {/* <Image
               style={styles.addbank}
-              source={require('../assets/icons/bank.png')}
-            />
+              source={require('../assets/icons/bank.png.png')}
+            /> */}
+              <Surface
+              elevation={5}
+              category="medium"
+              style={styles.addbanksurface}>
+              <Image source={require('../assets/icons/bank.png')} style={styles.addbank} onPress />
+            </Surface>
             <FAB
               icon={() => <Icon source="plus" color="white" size={20} />}
-              style={{alignSelf: 'center', backgroundColor: 'black'}}
+              style={{
+                alignSelf: 'center',
+                backgroundColor: '#5a287d',
+                width: 40,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 20, // To make the FAB circular
+              }}
               onPress={AddBank}
             />
             <Text
@@ -181,6 +195,13 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     resizeMode: 'contain',
+  },
+  addbanksurface: {
+    width: 90,
+    height: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
   },
   addbank: {
     width: 100,

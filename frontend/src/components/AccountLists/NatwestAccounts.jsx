@@ -5,34 +5,39 @@ import axios from 'axios';
 import read from '../../jsonfiles/accounts.json';
 import AccountCard from '../AccountCard';
 import { useNavigation } from '@react-navigation/native';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 const NatwestAccounts = () => {
   const [accounts, setAccounts] = useState([]);
-  // useEffect(() => {
-  //   setAccounts(read?.Account);
-  // }, []);
   useEffect(() => {
-    async function fetchData() {
-      axios
-        .get('http://192.168.1.2:3000/Data')
-        .then(response => setAccounts(response.data.Account))
-        .catch(error => console.error('Error fetching account data:', error));
-    }
-    fetchData();
+    setAccounts(read?.Account);
   }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     axios
+  //       .get('http://192.168.1.2:3000/Data')
+  //       .then(response => setAccounts(response.data.Account))
+  //       .catch(error => console.error('Error fetching account data:', error));
+  //   }
+  //   fetchData();
+  // }, []);
   return (
-    <View>
+    <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
       <Surface elevation={6} category="medium" style={styles.surface}>
         <Image
           source={require('../../assets/icons/natwest.png')}
           style={styles.icon}
         />
       </Surface>
-      <FlatList
+      {/* <FlatList
         data={accounts}
         renderItem={({item}) => <AccountCard item={item} />}
         keyExtractor={item => item.AccountId.toString()}
-      />
+      /> */
+      }
+      {accounts.map(item => (
+        <AccountCard key={item.AccountId} item={item} />
+      ))}
     </View>
   );
 };

@@ -26,12 +26,12 @@ const MainScreen = ({route}) => {
         nestedScrollEnabled={true}
         style={{padding: 5, marginVertical: 8, flex: 1}}>
         <View style={styles.rowContainer}>
-          <Surface elevation={6} category="medium" style={styles.surface}>
-            <Image
-              source={require('../assets/icons/natwest.png')}
-              style={styles.icon}
-            />
-          </Surface>
+        <Surface elevation={6} category="medium" style={styles.surface}>
+        <Image
+          source={require('../assets/icons/natwest.png')}
+          style={styles.icon}
+        />
+      </Surface>
           <DropdownWithCheckboxes />
         </View>
         <AccountDetails account={accountDetails} />
@@ -90,15 +90,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   surface: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20,
+    margin: 10,
   },
   icon: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     resizeMode: 'contain',
   },
 });

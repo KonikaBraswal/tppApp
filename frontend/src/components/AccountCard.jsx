@@ -29,15 +29,15 @@ const AccountCard = ({item}) => {
         <Surface style={styles.card}>
           <View style={styles.text}>
             <Text key={item.AccountId} style={styles.text}>
-              {item.Nickname}
+            {`${item.AccountType}`} {`${item.AccountSubType}`}
             </Text>
             <Text style={styles.smalltext}>
-              {`${item.AccountType}`} {`${item.AccountSubType}`}
+              {item.Nickname}
             </Text>
             <Text>{`${item.AccountId}`}</Text>
           </View>
           <View style={styles.iconContainer}>
-            <Icon source="chevron-double-right" color="black" size={30} />
+            <Icon source="chevron-right" color="black" size={30} />
           </View>
         </Surface>
       </TouchableOpacity>
@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
     padding: 30,
     borderRadius: 8,
     elevation: 5,
+    height:150,
+    width:375,
     backgroundColor: '#c8e1cc',
   },
   text: {
