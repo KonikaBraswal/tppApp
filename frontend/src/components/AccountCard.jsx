@@ -7,12 +7,16 @@ import axios from 'axios';
 import read from '../jsonfiles/accounts.json';
 import {Icon} from 'react-native-paper';
 
-const AccountCard = ({item}) => {
+const AccountCard = props => {
   const navigation = useNavigation();
-
   const handleCardClick = () => {
-    navigation.navigate('Details', {accountDetails: item});
+    navigation.navigate('Details', {
+      accountDetails: props.item,
+      transactionDetails: props.accountTransactions,
+    });
   };
+
+  const item = props.item;
 
   return (
     <View style={styles.container}>

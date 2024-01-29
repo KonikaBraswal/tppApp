@@ -158,18 +158,19 @@ const ConsentScreen = () => {
     try {
       console.log(inputValue);
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
-      console.log(data);
+      // console.log(data);
+      const accountId = data.Account[0].AccountId;
+      // console.log(accountId, 'account Id');
+      const transactionData = await sandboxApiClient.allCalls(
+        '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
+      );
+      //console.log(transactionData);
       navigation.navigate('Your Accounts', {
         selectedBank: 'Natwest',
         selectedIcon: "'../assets/icons/natwest.png'",
         accounts: data,
+        transactions: transactionData,
       });
-      const accountId = data.Account[0].AccountId;
-      console.log(accountId, 'account Id');
-      const transactionData = await sandboxApiClient.allCalls(
-        '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
-      );
-      console.log(transactionData);
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to retrieve access token.');

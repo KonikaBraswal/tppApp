@@ -42,6 +42,7 @@ const AllAccounts = ({route}) => {
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
+  const transactions = route.params.transactions;
 
   useEffect(() => {
     setCheckedBanks(prevState => ({
@@ -128,7 +129,7 @@ const AllAccounts = ({route}) => {
               )}
             </View>
             {checkedBanks[selectedBank.toLowerCase()] &&
-              renderAccountComponent(selectedBank, accounts)}
+              renderAccountComponent(selectedBank, accounts, transactions)}
             {selectedBank.toLowerCase() !== 'barclays' &&
               checkedBanks.barclays && <BarclaysAccounts />}
             {selectedBank.toLowerCase() !== 'lloyds' && checkedBanks.lloyds && (
@@ -145,7 +146,10 @@ const AllAccounts = ({route}) => {
               checkedBanks.starling && <StarlingAccounts />}
             {selectedBank.toLowerCase() !== 'natwest' &&
               checkedBanks.natwest && (
-                <NatwestAccounts accountsList={accounts} />
+                <NatwestAccounts
+                  accountsList={accounts}
+                  transactionsList={transactions}
+                />
               )}
           </View>
         </View>
@@ -176,10 +180,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderAccountComponent = (selectedBank, accounts) => {
+const renderAccountComponent = (selectedBank, accounts, transactions) => {
   switch (selectedBank.toLowerCase()) {
     case 'natwest':
-      return <NatwestAccounts accountsList={accounts} />;
+      return (
+        <NatwestAccounts
+          accountsList={accounts}
+          transactionsList={transactions}
+        />
+      );
     case 'barclays':
       return <BarclaysAccounts />;
     case 'lloyds':

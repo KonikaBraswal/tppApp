@@ -30,10 +30,11 @@ const Landing = () => {
   const renderCard = ({item}) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('Your Accounts', {
-          selectedIcon: item.icon,
-          selectedBank: item.name,
-        })
+        // navigation.navigate('Your Accounts', {
+        //   selectedIcon: item.icon,
+        //   selectedBank: item.name,
+        // })
+        navigation.navigate('Consent')
       }>
       <Surface elevation={6} category="medium" style={styles.surface}>
         <Image source={item.icon} style={styles.icon} />

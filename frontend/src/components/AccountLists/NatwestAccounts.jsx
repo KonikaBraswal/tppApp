@@ -5,6 +5,7 @@ import AccountCard from '../AccountCard';
 
 const NatwestAccounts = props => {
   const accounts = props.accountsList.Account;
+  const transactions = props.transactionsList.Transaction;
 
   return (
     <View>
@@ -15,7 +16,11 @@ const NatwestAccounts = props => {
         />
       </Surface>
       {accounts.map(item => (
-        <AccountCard key={item.AccountId} item={item} />
+        <AccountCard
+          key={item.AccountId}
+          item={item}
+          accountTransactions={transactions}
+        />
       ))}
     </View>
   );

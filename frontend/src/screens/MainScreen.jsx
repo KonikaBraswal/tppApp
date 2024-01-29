@@ -16,6 +16,8 @@ import SortDropdown from '../components/SortDropdown';
 
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
+  const transactionDetails = route.params.transactionDetails;
+
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -76,7 +78,7 @@ const MainScreen = ({route}) => {
               alignSelf: 'center',
             }}
           />
-          <TransactionList />
+          <TransactionList transactionDetails={transactionDetails} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
