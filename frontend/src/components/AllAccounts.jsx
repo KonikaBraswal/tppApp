@@ -1,8 +1,14 @@
-
-import React, { useEffect, useState } from 'react';
-import { Checkbox, Icon } from 'react-native-paper';
-import { StyleSheet, Image, ScrollView, View, TouchableOpacity, FlatList } from 'react-native';
-import { ListItem, Button, Surface } from '@react-native-material/core';
+import React, {useEffect, useState} from 'react';
+import {Checkbox, Icon} from 'react-native-paper';
+import {
+  StyleSheet,
+  Image,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import {ListItem, Button, Surface} from '@react-native-material/core';
 import BarclaysComponent from './AccountLists/BarclaysAccounts';
 import NatwestAccounts from './AccountLists/NatwestAccounts';
 import BarclaysAccounts from './AccountLists/BarclaysAccounts';
@@ -12,7 +18,7 @@ import SantanderAccounts from './AccountLists/SantanderAccounts';
 import StarlingAccounts from './AccountLists/StarlingAccounts';
 import RevolutAccounts from './AccountLists/RevolutAccounts';
 
-const AllAccounts = ({ route: { params: { selectedIcon, selectedBank } } }) => {
+const AllAccounts = ({route}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [checkedBanks, setCheckedBanks] = useState({
@@ -34,9 +40,10 @@ const AllAccounts = ({ route: { params: { selectedIcon, selectedBank } } }) => {
     'Revolut',
     'Monzo',
   ];
-
+  const selectedBank = route.params.selectedBank;
+  const selectedIcon = route.params.selectedIcon;
   useEffect(() => {
-    setCheckedBanks((prevState) => ({
+    setCheckedBanks(prevState => ({
       ...prevState,
       [selectedBank.toLowerCase()]: true,
     }));
@@ -46,8 +53,8 @@ const AllAccounts = ({ route: { params: { selectedIcon, selectedBank } } }) => {
     setShowDropdown(!showDropdown);
   };
 
-  const handleCheck = (bank) => {
-    setCheckedBanks((prevState) => ({
+  const handleCheck = bank => {
+    setCheckedBanks(prevState => ({
       ...prevState,
       [bank]: !prevState[bank],
     }));
@@ -55,50 +62,90 @@ const AllAccounts = ({ route: { params: { selectedIcon, selectedBank } } }) => {
 
   return (
     <>
-    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-      <View style={{ backgroundColor: 'white' }}>
-        {/* <Surface elevation={6} category="medium" style={styles.surface}>
+      <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={{backgroundColor: 'white'}}>
+          {/* <Surface elevation={6} category="medium" style={styles.surface}>
           <Image source={selectedIcon} style={styles.icon} />
         </Surface> */}
 
-        <View style={{ padding: 10, marginVertical: 8, backgroundColor: 'white', height: '100%' }}>
-          <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-            <TouchableOpacity onPress={toggleDropdown}>
-              <Button
-                title="CONSOLIDATED"
-                style={{ width: 200 }}
-                color="#5a287d"
-                leading={<Icon source="gamepad-circle-outline" color="white" size={20} />}
-                onPress={toggleDropdown}
-              />
-            </TouchableOpacity>
-            {showDropdown && (
-              <ScrollView style={{ width: 200, maxHeight: 150, zIndex: 1, position: 'absolute', top: 50, elevation: 5, borderRadius: 10 }}>
-                {banks.map((bank) => (
-                  <ListItem
-                    key={bank}
-                    title={bank}
-                    leading={
-                      <Checkbox
-                        status={checkedBanks[bank.toLowerCase()] ? 'checked' : 'unchecked'}
-                        onPress={() => handleCheck(bank.toLowerCase())}
-                      />
-                    }
-                  />
-                ))}
-              </ScrollView>
+          <View
+            style={{
+              padding: 10,
+              marginVertical: 8,
+              backgroundColor: 'white',
+              height: '100%',
+            }}>
+            <View style={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+              <TouchableOpacity onPress={toggleDropdown}>
+                <Button
+                  title="CONSOLIDATED"
+                  style={{width: 200}}
+                  color="#5a287d"
+                  leading={
+                    <Icon
+                      source="gamepad-circle-outline"
+                      color="white"
+                      size={20}
+                    />
+                  }
+                  onPress={toggleDropdown}
+                />
+              </TouchableOpacity>
+              {/* <FlatList
+              data={accounts}
+              renderItem={({ item }) => <AccountCard item={item} />}
+              keyExtractor={(item) => item.AccountId.toString()}
+            /> */}
+              {showDropdown && (
+                <ScrollView
+                  style={{
+                    width: 200,
+                    maxHeight: 150,
+                    zIndex: 1,
+                    position: 'absolute',
+                    top: 50,
+                    elevation: 5,
+                    borderRadius: 10,
+                  }}>
+                  {banks.map(bank => (
+                    <ListItem
+                      key={bank}
+                      title={bank}
+                      leading={
+                        <Checkbox
+                          status={
+                            checkedBanks[bank.toLowerCase()]
+                              ? 'checked'
+                              : 'unchecked'
+                          }
+                          onPress={() => handleCheck(bank.toLowerCase())}
+                        />
+                      }
+                    />
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+            {checkedBanks[selectedBank.toLowerCase()] &&
+              renderAccountComponent(selectedBank)}
+            {selectedBank.toLowerCase() !== 'barclays' &&
+              checkedBanks.barclays && <BarclaysAccounts />}
+            {selectedBank.toLowerCase() !== 'lloyds' && checkedBanks.lloyds && (
+              <LloydsAccounts />
             )}
+            {selectedBank.toLowerCase() !== 'monzo' && checkedBanks.monzo && (
+              <MonzoAccounts />
+            )}
+            {selectedBank.toLowerCase() !== 'revolut' &&
+              checkedBanks.revolut && <RevolutAccounts />}
+            {selectedBank.toLowerCase() !== 'santander' &&
+              checkedBanks.santander && <SantanderAccounts />}
+            {selectedBank.toLowerCase() !== 'starling' &&
+              checkedBanks.starling && <StarlingAccounts />}
+            {selectedBank.toLowerCase() !== 'natwest' &&
+              checkedBanks.natwest && <NatwestAccounts />}
           </View>
-          {checkedBanks[selectedBank.toLowerCase()] && renderAccountComponent(selectedBank)}
-          {selectedBank.toLowerCase()!=="barclays" && checkedBanks.barclays && <BarclaysAccounts />}
-          {selectedBank.toLowerCase()!=="lloyds" && checkedBanks.lloyds && <LloydsAccounts />}
-          {selectedBank.toLowerCase()!=='monzo' && checkedBanks.monzo && <MonzoAccounts />}
-          {selectedBank.toLowerCase()!=='revolut' && checkedBanks.revolut && <RevolutAccounts />}
-          {selectedBank.toLowerCase()!=='santander' && checkedBanks.santander && <SantanderAccounts />}
-          {selectedBank.toLowerCase()!=='starling' && checkedBanks.starling && <StarlingAccounts />}
-          {selectedBank.toLowerCase()!=='natwest' && checkedBanks.natwest && <NatwestAccounts />}
         </View>
-      </View>
       </ScrollView>
     </>
   );
@@ -126,28 +173,26 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const renderAccountComponent = (selectedBank) => {
+const renderAccountComponent = selectedBank => {
   switch (selectedBank.toLowerCase()) {
     case 'natwest':
       return <NatwestAccounts />;
     case 'barclays':
       return <BarclaysAccounts />;
-      case 'lloyds':
-        return <LloydsAccounts/>;
-        case 'monzo':
-          return <MonzoAccounts/>;
-          case 'revolut':
-            return <RevolutAccounts/>;
-            case 'starling':
-              return <StarlingAccounts/>;
-              case 'santander':
-                return <SantanderAccounts/>;
-    
+    case 'lloyds':
+      return <LloydsAccounts />;
+    case 'monzo':
+      return <MonzoAccounts />;
+    case 'revolut':
+      return <RevolutAccounts />;
+    case 'starling':
+      return <StarlingAccounts />;
+    case 'santander':
+      return <SantanderAccounts />;
+
     default:
       return null;
   }
 };
 
 export default AllAccounts;
-

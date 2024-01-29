@@ -36,8 +36,7 @@ const SelectBank = () => {
     setFilteredBanks(filtered);
   };
   const handlePress = () => {
-    const text =
-      'NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
+    // const text ='NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
     navigation.navigate('Consent');
   };
   const rows = [];
@@ -47,7 +46,7 @@ const SelectBank = () => {
       <Stack
         key={`row_${i}`}
         direction="row"
-        spacing={10}
+        //spacing={10}
         style={SelectBankStyle.row}>
         {rowBanks.map(bank => (
           <TouchableOpacity key={bank.id} onPress={handlePress}>

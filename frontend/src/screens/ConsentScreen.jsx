@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Title, Text, List, Checkbox, Icon, Button} from 'react-native-paper';
 import {
   StyleSheet,
@@ -90,7 +90,10 @@ const ConsentScreen = () => {
     );
   };
   const handleConfirmButtonClick = () => {
-    navigation.navigate('Accounts');
+    navigation.navigate('Your Accounts', {
+      selectedBank: 'Natwest',
+      selectedIcon: "'../assets/icons/natwest.png'",
+    });
   };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
@@ -336,6 +339,7 @@ const ConsentScreen = () => {
               } else {
                 showErrorDialog();
               }
+              //handleConfirmButtonClick();
             }}
             style={{marginLeft: 10}}>
             Confirm

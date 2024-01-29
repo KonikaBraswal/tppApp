@@ -1,48 +1,47 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
-import {StyleSheet,View} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import { Surface,Button} from '@react-native-material/core';
+import {Surface, Button} from '@react-native-material/core';
 import axios from 'axios';
 import read from '../jsonfiles/accounts.json';
-import { Icon } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {Icon} from 'react-native-paper';
 
 const AccountCard = ({item}) => {
   const navigation = useNavigation();
-  const [balances, setBalances] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const accountData = read?.Account;
   const handleCardClick = () => {
-    navigation.navigate('Transactions');
+    navigation.navigate('Details', {accountDetails: accounts});
   };
 
   useEffect(() => {
-    // axios
-    //   .get('http://192.168.1.6:3001/Data')
-    //   .then(response => {
-    //     setBalances(response.data);
-    //     //console.log(balances);
-    //   })
-    //   .catch(error => console.error('Error in fetching balance data:', error));
-    setAccounts(accountData);
+    axios
+      .get('http://192.168.1.2:3000/Data')
+      .then(response => {
+        setAccounts(response.data.Account);
+      })
+      .catch(error => console.error('Error in fetching account data:', error));
   }, []);
 
   return (
-    <>
     <View style={styles.container}>
-  <Surface style={styles.card}>
-    <View style={styles.text}>
-      <Text key={item.AccountId} style={styles.text}>{item.Nickname}</Text>
-      <Text style={styles.smalltext}>{`${item.AccountType}`}{" "}{`${item.AccountSubType}`}</Text>
-      <Text>{`${item.AccountId}`}</Text>
+      <TouchableOpacity onPress={handleCardClick}>
+        <Surface style={styles.card}>
+          <View style={styles.text}>
+            <Text key={item.AccountId} style={styles.text}>
+              {item.Nickname}
+            </Text>
+            <Text style={styles.smalltext}>
+              {`${item.AccountType}`} {`${item.AccountSubType}`}
+            </Text>
+            <Text>{`${item.AccountId}`}</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <Icon source="chevron-double-right" color="black" size={30} />
+          </View>
+        </Surface>
+      </TouchableOpacity>
     </View>
-    <View style={styles.iconContainer}>
-      <Icon source="chevron-double-right" color="black" size={30}/>
-    </View>
-  </Surface>
-</View>
-</>
   );
 };
 

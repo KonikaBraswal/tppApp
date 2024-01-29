@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text,Image,StyleSheet } from 'react-native';
-import { Surface } from '@react-native-material/core';
+import {View, Text, Image, StyleSheet} from 'react-native';
+import {Surface} from '@react-native-material/core';
 
 const BarclaysAccounts = () => {
   return (
     <View>
       <Surface elevation={6} category="medium" style={styles.surface}>
-          <Image source={require('../../assets/icons/barclays.png')} style={styles.icon} />
-        </Surface>
-        <Text style={styles.text}>No Data</Text>
-       
+        <Image
+          source={require('../../assets/icons/barclays.png')}
+          style={styles.icon}
+        />
+      </Surface>
+      <Text style={styles.text}>No Data</Text>
     </View>
   );
 };
@@ -36,11 +38,10 @@ const styles = StyleSheet.create({
     height: 50,
     resizeMode: 'contain',
   },
-  text:{
+  text: {
     fontSize: 14,
-    fontWeight:'bold',
-    color:'black',
-    paddingLeft:150
-
-  }
+    fontWeight: 'bold',
+    color: 'black',
+    paddingLeft: 150,
+  },
 });
