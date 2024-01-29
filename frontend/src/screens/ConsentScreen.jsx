@@ -1,5 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {Title, Text, List, Checkbox, Icon, Button} from 'react-native-paper';
+import {
+  Title,
+  Text,
+  List,
+  Checkbox,
+  Icon,
+  Button,
+  Modal,
+  Dialog,
+  Portal,
+  TextInput,
+} from 'react-native-paper';
 import {
   StyleSheet,
   View,
@@ -13,9 +24,13 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
+const way='web';
+const apiFactory = new ApiFactory();
+  const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const ConsentScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [userInput, setUserInput] = useState('');
   const [error, setError] = useState(null);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
@@ -79,6 +94,12 @@ const ConsentScreen = () => {
   const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
   const showErrorDialog = () => setErrorDialogVisible(true);
   const hideErrorDialog = () => setErrorDialogVisible(false);
+  const [isInputDialogVisible, setInputDialogVisible] = useState(false);
+  const showInputDialog = () => setInputDialogVisible(true);
+  const hideInputDialog = () => setInputDialogVisible(false);
+
+  const [inputValue, setInputValue] = useState('');
+
 
   const areAllCheckboxesChecked = () => {
     return (
@@ -91,14 +112,13 @@ const ConsentScreen = () => {
       checked7
     );
   };
+
+
   const handleConfirmButtonClick = async () => {
-    // navigation.navigate('Your Accounts', {
-    //   selectedBank: 'Natwest',
-    //   selectedIcon: "'../assets/icons/natwest.png'",
-    // });
-    const apiFactory = new ApiFactory();
+   
     if (mode == 'sandbox') {
       try {
+        
         const permissions = [
           'ReadAccountsDetail',
           'ReadBalances',
@@ -108,15 +128,23 @@ const ConsentScreen = () => {
         ];
         setLoading(true);
         setError(null);
-        const sandboxApiClient = apiFactory.createApiClient('sandbox');
-        const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
-        console.log('Sandbox API 1 Data:', data);
-        //navigation.navigate('Accounts', {accountData: data});
+        
+        const consentData = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+        console.log('Consent id:', consentData);
+        if(way=='web'){
+          const consentUrl=await sandboxApiClient.manualUserConsent(consentData);
+          console.log(consentUrl);
+          showInputDialog()
+      }
+      else{
+        const data2=await sandboxApiClient.userConsentProgammatically();
+        //navigation.navigate('Accounts', {accountData: data2});
         navigation.navigate('Your Accounts', {
-          selectedBank: 'Natwest',
-          selectedIcon: "'../assets/icons/natwest.png'",
-          accounts: data,
-        });
+                  selectedBank: 'Natwest',
+                  selectedIcon: "'../assets/icons/natwest.png'",
+                  accounts: data2,
+                });
+      }
       } catch (error) {
         console.error('Error:', error);
         setError('Failed to retrieve access token.');
@@ -124,9 +152,68 @@ const ConsentScreen = () => {
         setLoading(false);
       }
     } else {
-      navigation.navigate('Consent');
+      navigation.navigate('Accounts');
     }
+    
   };
+
+  const handleSubmit = async () => {
+    try {
+      console.log(inputValue);
+      const data=await sandboxApiClient.exchangeAccessToken(inputValue);
+      console.log(data);
+      navigation.navigate('Accounts',{accountData: data});
+      const accountId = data.Account[0].AccountId;
+      console.log(accountId,"account Id");
+      const transactionData=await sandboxApiClient.allCalls("124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions");
+      console.log(transactionData);
+
+      
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to retrieve access token.');
+    } finally {
+      setLoading(false);
+    }
+    hideInputDialog();
+  };
+  // const handleConfirmButtonClick = async () => {
+  //   // navigation.navigate('Your Accounts', {
+  //   //   selectedBank: 'Natwest',
+  //   //   selectedIcon: "'../assets/icons/natwest.png'",
+  //   // });
+  //   const apiFactory = new ApiFactory();
+  //   if (mode == 'sandbox') {
+  //     try {
+  //       const permissions = [
+  //         'ReadAccountsDetail',
+  //         'ReadBalances',
+  //         'ReadTransactionsCredits',
+  //         'ReadTransactionsDebits',
+  //         'ReadTransactionsDetail',
+  //       ];
+  //       setLoading(true);
+  //       setError(null);
+  //       const sandboxApiClient = apiFactory.createApiClient('sandbox');
+  //       const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+  //       console.log('Sandbox API 1 Data:', data);
+  //       //navigation.navigate('Accounts', {accountData: data});
+  //       navigation.navigate('Your Accounts', {
+  //         selectedBank: 'Natwest',
+  //         selectedIcon: "'../assets/icons/natwest.png'",
+  //         accounts: data,
+  //       });
+  //     } catch (error) {
+  //       console.error('Error:', error);
+  //       setError('Failed to retrieve access token.');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     navigation.navigate('Consent');
+  //   }
+  // };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
@@ -384,6 +471,22 @@ const ConsentScreen = () => {
               text={''}
             />
           )}
+          <Portal>
+            <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+              <Dialog.Title>Redirect Input</Dialog.Title>
+              <Dialog.Content>
+                <TextInput
+                  label=" Paste URL from the browser"
+                  value={inputValue}
+                  onChangeText={text => setInputValue(text)}
+                />
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={hideInputDialog}>Cancel</Button>
+                <Button onPress={handleSubmit}>Submit</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
         </View>
       </View>
     </ScrollView>
