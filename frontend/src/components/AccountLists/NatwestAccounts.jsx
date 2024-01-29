@@ -1,23 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text,FlatList,Image,StyleSheet} from 'react-native';
-import { Surface } from '@react-native-material/core';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
+import {Surface} from '@react-native-material/core';
+import axios from 'axios';
 import read from '../../jsonfiles/accounts.json';
 import AccountCard from '../AccountCard';
 const NatwestAccounts = () => {
   const [accounts, setAccounts] = useState([]);
+  // useEffect(() => {
+  //   setAccounts(read?.Account);
+  // }, []);
   useEffect(() => {
-    setAccounts(read?.Account);
-    }, []);
+    async function fetchData() {
+      axios
+        .get('http://192.168.218.223:3000/Data')
+        .then(response => setAccounts(response.data.Account))
+        .catch(error => console.error('Error fetching account data:', error));
+    }
+    fetchData();
+  }, []);
   return (
     <View>
-       <Surface elevation={6} category="medium" style={styles.surface}>
-          <Image source={require('../../assets/icons/natwest.png')} style={styles.icon} />
-        </Surface>
-           <FlatList
-              data={accounts}
-              renderItem={({ item }) => <AccountCard item={item} />}
-              keyExtractor={(item) => item.AccountId.toString()}
-            />
+      <Surface elevation={6} category="medium" style={styles.surface}>
+        <Image
+          source={require('../../assets/icons/natwest.png')}
+          style={styles.icon}
+        />
+      </Surface>
+      <FlatList
+        data={accounts}
+        renderItem={({item}) => <AccountCard item={item} />}
+        keyExtractor={item => item.AccountId.toString()}
+      />
     </View>
   );
 };

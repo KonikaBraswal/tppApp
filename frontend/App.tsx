@@ -73,7 +73,7 @@ function App(): React.JSX.Element {
               />
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
-              <Stack.Screen name="Accounts" component={AccountListScreen} />
+              {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
