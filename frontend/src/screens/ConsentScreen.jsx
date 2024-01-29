@@ -24,9 +24,9 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
-const way='web';
+const way = 'web';
 const apiFactory = new ApiFactory();
-  const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const ConsentScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,6 @@ const ConsentScreen = () => {
 
   const [inputValue, setInputValue] = useState('');
 
-
   const areAllCheckboxesChecked = () => {
     return (
       checked1 &&
@@ -113,12 +112,9 @@ const ConsentScreen = () => {
     );
   };
 
-
   const handleConfirmButtonClick = async () => {
-   
     if (mode == 'sandbox') {
       try {
-        
         const permissions = [
           'ReadAccountsDetail',
           'ReadBalances',
@@ -128,23 +124,25 @@ const ConsentScreen = () => {
         ];
         setLoading(true);
         setError(null);
-        
-        const consentData = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+
+        const consentData = await sandboxApiClient.retrieveAccessToken(
+          permissions,
+        ); //here is data
         console.log('Consent id:', consentData);
-        if(way=='web'){
-          const consentUrl=await sandboxApiClient.manualUserConsent(consentData);
+        if (way == 'web') {
+          const consentUrl = await sandboxApiClient.manualUserConsent(
+            consentData,
+          );
           console.log(consentUrl);
-          showInputDialog()
-      }
-      else{
-        const data2=await sandboxApiClient.userConsentProgammatically();
-        //navigation.navigate('Accounts', {accountData: data2});
-        navigation.navigate('Your Accounts', {
-                  selectedBank: 'Natwest',
-                  selectedIcon: "'../assets/icons/natwest.png'",
-                  accounts: data2,
-                });
-      }
+          showInputDialog();
+        } else {
+          const data2 = await sandboxApiClient.userConsentProgammatically();
+          navigation.navigate('Your Accounts', {
+            selectedBank: 'Natwest',
+            selectedIcon: "'../assets/icons/natwest.png'",
+            accounts: data2,
+          });
+        }
       } catch (error) {
         console.error('Error:', error);
         setError('Failed to retrieve access token.');
@@ -152,24 +150,26 @@ const ConsentScreen = () => {
         setLoading(false);
       }
     } else {
-      navigation.navigate('Accounts');
+      navigation.navigate('Consent');
     }
-    
   };
 
   const handleSubmit = async () => {
     try {
       console.log(inputValue);
-      const data=await sandboxApiClient.exchangeAccessToken(inputValue);
+      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
       console.log(data);
-      navigation.navigate('Accounts',{accountData: data});
+      navigation.navigate('Your Accounts', {
+        selectedBank: 'Natwest',
+        selectedIcon: "'../assets/icons/natwest.png'",
+        accounts: data,
+      });
       const accountId = data.Account[0].AccountId;
-      console.log(accountId,"account Id");
-      const transactionData=await sandboxApiClient.allCalls("124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions");
+      console.log(accountId, 'account Id');
+      const transactionData = await sandboxApiClient.allCalls(
+        '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
+      );
       console.log(transactionData);
-
-      
-      
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to retrieve access token.');
