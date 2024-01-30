@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Title, Text} from 'react-native-paper';
+import {Card, Title, Text, Button} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 
 const AccountDetails = props => {
