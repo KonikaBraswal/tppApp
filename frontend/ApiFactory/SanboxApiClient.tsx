@@ -17,14 +17,13 @@ interface ResponseData {
   };
 }
 
-
 class SanboxApiClient {
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
   private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
   private permissions: string[] = [];
-  private apiAccess:string='';
+  private apiAccess: string = '';
   constructor(
     baseUrl: string,
     clientId: string,
@@ -36,7 +35,7 @@ class SanboxApiClient {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaders;
   }
-  
+
   async retrieveAccessToken(permission: string[]): Promise<string> {
     this.permissions = permission;
     try {
@@ -56,7 +55,7 @@ class SanboxApiClient {
           params: body,
         },
       );
-      console.log("Access token",response.data.access_token);
+      console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -83,22 +82,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-      return(response.data.Data?.ConsentId || '');
+      return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
 
-  async manualUserConsent(consentId:string):Promise<string>{
-    console.log("manual consent");
+  async manualUserConsent(consentId: string): Promise<string> {
+    console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
-
   }
   async userConsentProgammatically(consentId: string): Promise<string> {
     try {
-    
       console.log('ConsentID:', consentId);
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
@@ -156,14 +153,14 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-      this.apiAccess=apiAccessToken
+      this.apiAccess = apiAccessToken;
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
     }
   }
-  async allCalls(endPoint:string):Promise<any>{
-     try {
+  async allCalls(endPoint: string): Promise<any> {
+    try {
       const headers = {
         ...this.commonHeaders,
         Authorization: `Bearer ${this.apiAccess}`,

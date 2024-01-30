@@ -17,7 +17,7 @@ import SortDropdown from '../components/SortDropdown';
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
   const transactionDetails = route.params.transactionDetails;
-
+  const balanceDetails = route.params.balanceDetails;
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -36,7 +36,7 @@ const MainScreen = ({route}) => {
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails account={accountDetails} />
+        <AccountDetails account={accountDetails} balance={balanceDetails} />
 
         <View
           style={{

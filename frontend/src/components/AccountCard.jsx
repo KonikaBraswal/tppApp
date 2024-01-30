@@ -13,6 +13,7 @@ const AccountCard = props => {
     navigation.navigate('Details', {
       accountDetails: props.item,
       transactionDetails: props.accountTransactions,
+      balanceDetails: props.accountBalance,
     });
   };
 

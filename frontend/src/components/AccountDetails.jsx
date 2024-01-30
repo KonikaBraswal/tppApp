@@ -20,7 +20,7 @@ const AccountDetails = props => {
         <Text style={styles.title}>{AccountSubType} Account</Text>
         <Text style={styles.text}>{AccountId}</Text>
         <Text style={{fontSize: 18, marginVertical: 2, fontWeight: 'bold'}}>
-          Available Balance:
+          Available Balance:{props.balance[0].Amount.Amount}
         </Text>
       </Card.Content>
     </Card>
