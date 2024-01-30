@@ -338,6 +338,7 @@ const ConsentScreen = () => {
               }
               //handleConfirmButtonClick();
             }}
+            disabled={!areAllCheckboxesChecked()}
             style={{marginLeft: 10}}>
             Confirm
           </Button>
