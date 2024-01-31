@@ -39,6 +39,7 @@ const AllAccounts = ({route}) => {
     'Revolut',
     'Monzo',
   ];
+  console.log(route.params);
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;

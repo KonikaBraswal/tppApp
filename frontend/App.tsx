@@ -30,9 +30,10 @@ import SelectBank from './src/components/SelectBank';
 import AccountListScreen from './src/screens/AccountListScreen';
 import TransactionList from './src/components/TransactionList';
 import Landing from './src/screens/Landing';
-import MyComponent from './src/components/AllAccounts';
+
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
+import ViewAllAccounts from './src/screens/ViewAllAccounts';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -62,7 +63,7 @@ function App(): React.JSX.Element {
                 headerTintColor: '#fff',
                 headerTitleStyle: {
                   fontWeight: 'bold',
-                  fontSize: 22,
+                  fontSize: 21,
                 },
                 headerTitleAlign: 'center',
               }}>
@@ -77,6 +78,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
+              <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

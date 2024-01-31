@@ -83,7 +83,7 @@ const Landing = () => {
             {cards.map(item => (
               <TouchableOpacity
                 key={item.id}
-                onPress={() => navigation.navigate('Consent')}>
+                onPress={() => navigation.navigate('Bank Accounts')}>
                 <Surface elevation={6} category="medium" style={styles.surface}>
                   <Image source={item.icon} style={styles.icon} />
                 </Surface>
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#5a28d',
+    backgroundColor: '#5a287d',
   },
   surface: {
     width: 90,

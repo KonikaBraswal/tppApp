@@ -247,13 +247,12 @@ import {
 import {Icon, Checkbox} from 'react-native-paper';
 import {ListItem} from '@react-native-material/core';
 import AccountCard from '../components/AccountCard';
-import read from '../jsonfiles/accounts.json';
+
 import axios from 'axios';
 
 const AccountListScreen = () => {
   const [accounts, setAccounts] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const accountData = read?.Account;
 
   const dropdownItems = [
     {id: 1, name: 'Natwest'},
@@ -302,7 +301,7 @@ const AccountListScreen = () => {
         {showDropdown && (
           <ScrollView style={styles.dropdownContainer}>
             <ListItem
-              title="hii"
+              title="Barclays"
               trailing={
                 <Checkbox
                   status={checked ? 'checked' : 'unchecked'}
