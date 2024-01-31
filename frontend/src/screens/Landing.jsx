@@ -10,11 +10,13 @@ import {
   Platform,
   Keyboard,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import {Surface, FAB} from '@react-native-material/core';
-import {Icon, Searchbar} from 'react-native-paper';
+import {Icon, Searchbar, Card} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import ViewAll from '../components/ViewAll';
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -67,58 +69,51 @@ const Landing = () => {
           style={styles.searchbar}
         />
         <View style={styles.container}>
-          <View
-            style={{
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+            snapToInterval={snapToInterval}
+            contentContainerStyle={{
+              ...styles.ListContainer,
               backgroundColor: '#c8e1cc',
-              width: '100%',
-              height: '500',
-              borderRadius: 20,
-              padding: 10,
-              margin: 10,
+              justifyContent: 'space-around',
+              alignItems: 'center',
             }}>
-            <Text
+            {cards.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => navigation.navigate('Consent')}>
+                <Surface elevation={6} category="medium" style={styles.surface}>
+                  <Image source={item.icon} style={styles.icon} />
+                </Surface>
+              </TouchableOpacity>
+            ))}
+            <View
               style={{
-                fontWeight: 'bold',
-                fontSize: 20,
-                color: 'black',
-                margin: 10,
+                flexDirection: 'column',
+                marginTop: 45,
+                marginLeft: 10,
               }}>
-              Added Banks
-            </Text>
-            <FlatList
-              data={cards}
-              renderItem={renderCard}
-              keyExtractor={item => String(item.id)}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              pagingEnabled
-              snapToInterval={snapToInterval}
-              contentContainerStyle={{
-                ...styles.flatListContainer,
-                backgroundColor: '#c8e1cc',
-                justifyContent: 'space-around',
-              }}
-            />
-          </View>
+              <FAB
+                icon={() => <Icon source="plus" color="white" size={20} />}
+                style={{alignSelf: 'center', backgroundColor: 'black'}}
+                onPress={AddBank}
+              />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  marginBottom: 40,
+                  marginTop: 10,
+                }}>
+                Add Bank Account
+              </Text>
+            </View>
+          </ScrollView>
+
           <View style={styles.addBankContainer}>
-            <Image
-              style={styles.addbank}
-              source={require('../assets/icons/bank.png')}
-            />
-            <FAB
-              icon={() => <Icon source="plus" color="white" size={20} />}
-              style={{alignSelf: 'center', backgroundColor: 'black'}}
-              onPress={AddBank}
-            />
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: 'black',
-                marginBottom: 40,
-                marginTop: 10,
-              }}>
-              Add Bank Account
-            </Text>
+            <ViewAll />
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
@@ -183,23 +178,21 @@ const styles = StyleSheet.create({
     height: 80,
     resizeMode: 'contain',
   },
-  addbank: {
-    width: 100,
-    height: 100,
+  addBankContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: 'white',
     resizeMode: 'contain',
   },
-  flatListContainer: {
+  ListContainer: {
     paddingHorizontal: 5,
   },
-  addBankContainer: {
-    alignItems: 'center',
-  },
+
   lastrowBackground: {
     backgroundColor: '#5a287d',
     width: '100%',
-    height: 300,
-    borderRadius: 10,
-    // marginTop:100
+    height: 200,
+    borderRadius: 5,
   },
   lastrow: {
     flexDirection: 'row',
@@ -211,7 +204,7 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 80,
+    marginTop: 40,
   },
   images: {
     width: 110,

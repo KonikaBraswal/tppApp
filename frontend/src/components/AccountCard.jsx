@@ -4,7 +4,6 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Surface, Button} from '@react-native-material/core';
 import axios from 'axios';
-import read from '../jsonfiles/accounts.json';
 import {Icon} from 'react-native-paper';
 
 const AccountCard = props => {

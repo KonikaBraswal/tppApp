@@ -29,7 +29,7 @@ const AppDrawer = () => {
       }}
       headerMode="screen">
       <Drawer.Screen
-        name="NWBank"
+        name="ONEBank"
         component={BottomTab}
         options={{
           drawerIcon: ({color}) => (
