@@ -109,6 +109,8 @@ const Landing = () => {
                     navigation.navigate('Your Natwest Accounts');
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
+                  } else {
+                    navigation.navigate('Bank Accounts');
                   }
                 }}>
                 <Surface elevation={6} category="medium" style={styles.surface}>
