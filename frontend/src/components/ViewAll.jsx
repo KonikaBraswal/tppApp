@@ -2,23 +2,28 @@ import React from 'react';
 import {ScrollView, View, StyleSheet} from 'react-native';
 import {Card, Title, Paragraph, Text, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import readNatwestAccount from '../assets/data/accounts.json';
+import readNatwestBalance from '../assets/data/balances.json';
+
+const NatwestAccountData = readNatwestAccount?.Data?.Account;
+const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
 
 const ViewAll = () => {
   const navigation = useNavigation();
 
   const cards = [
     {
-      id: 1,
+      AccountId: '48901b2d-f748-40a9-b8e4-5a206590b6a5',
       subType: 'Savings',
-      accountNumber: '456XXXXXX909',
-      balance: '$11980',
+      accountNumber: '456XXXXXXXX909',
+      balance: '$19606.40 GBP',
       imageUrl: require('../assets/images/card2.png'),
     },
     {
-      id: 2,
+      AccountId: 'ffa1dee0-2fbf-4362-abf6-37dbfeee2de20',
       subType: 'Current',
-      accountNumber: '456XXXXXX909',
-      balance: '$11980',
+      accountNumber: '507XXXXXXXXX602',
+      balance: '15060.90 GBP',
       imageUrl: require('../assets/images/card1.jpg'),
     },
   ];
@@ -30,7 +35,14 @@ const ViewAll = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{padding: 8}}>
         {cards.map(card => (
-          <Card key={card.id} style={styles.card}>
+          <Card
+            key={card.AccountId}
+            style={styles.card}
+            onPress={() => {
+              navigation.navigate('View Details', {
+                AccountId: card.AccountId,
+              });
+            }}>
             <Card.Cover source={card.imageUrl} style={styles.coverImage} />
             <Card.Content style={styles.cardContent}>
               <Title style={styles.title}>{card.subType} Account</Title>

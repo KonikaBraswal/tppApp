@@ -17,27 +17,21 @@ import {
   Paragraph,
   IconButton,
 } from 'react-native-paper';
-import readNatwestAccount from '../assets/data/accounts.json';
-import readNatwestBalance from '../assets/data/balances.json';
 import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../assets/data/barclaysBalances.json';
 
-const ViewAllAccounts = () => {
+const ViewBarclaysAccounts = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const NatwestAccountData = readNatwestAccount?.Data?.Account;
-  const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
   const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
   const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
-  const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
-  const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = mergedAccounts.filter(account =>
+  const filteredAccounts = BarclaysAccountData.filter(account =>
     account.AccountId.includes(searchQuery),
   );
   const findAccountBalances = accountId => {
-    const foundBalances = mergedBalances.filter(
+    const foundBalances = BarclaysBalanceData.filter(
       balance => balance.AccountId === accountId,
     );
 
@@ -77,20 +71,10 @@ const ViewAllAccounts = () => {
                       {account.AccountSubType} Account
                     </Title>
 
-                    {BarclaysAccountData.find(
-                      barclaysAccount =>
-                        barclaysAccount.AccountId === account.AccountId,
-                    ) ? (
-                      <Image
-                        source={require('../assets/images/barclays2.png')}
-                        style={styles.iconBarclays}
-                      />
-                    ) : (
-                      <Image
-                        source={require('../assets/images/natwest2.png')}
-                        style={styles.iconNatwest}
-                      />
-                    )}
+                    <Image
+                      source={require('../assets/images/barclays2.png')}
+                      style={styles.iconBarclays}
+                    />
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View style={{marginTop: -10}}>
@@ -202,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ViewAllAccounts;
+export default ViewBarclaysAccounts;
