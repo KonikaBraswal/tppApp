@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {Surface, FAB} from '@react-native-material/core';
-import {Icon, Searchbar, Card} from 'react-native-paper';
+import {Icon, Searchbar, Card, Title} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from '../components/ViewAll';
@@ -80,20 +80,11 @@ const Landing = () => {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            {cards.map(item => (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => navigation.navigate('Bank Accounts')}>
-                <Surface elevation={6} category="medium" style={styles.surface}>
-                  <Image source={item.icon} style={styles.icon} />
-                </Surface>
-              </TouchableOpacity>
-            ))}
             <View
               style={{
                 flexDirection: 'column',
                 marginTop: 45,
-                marginLeft: 10,
+                marginHorizontal: 10,
               }}>
               <FAB
                 icon={() => <Icon source="plus" color="white" size={20} />}
@@ -110,6 +101,15 @@ const Landing = () => {
                 Add Bank Account
               </Text>
             </View>
+            {cards.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => navigation.navigate('Bank Accounts')}>
+                <Surface elevation={6} category="medium" style={styles.surface}>
+                  <Image source={item.icon} style={styles.icon} />
+                </Surface>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
 
           <View style={styles.addBankContainer}>

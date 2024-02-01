@@ -17,27 +17,27 @@ import {
   Paragraph,
   IconButton,
 } from 'react-native-paper';
-import readAccount from '../assets/data/accounts.json';
-import readBalance from '../assets/data/balances.json';
+import readNatwestAccount from '../assets/data/accounts.json';
+import readNatwestBalance from '../assets/data/balances.json';
+import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
+import readBarclaysBalance from '../assets/data/barclaysBalances.json';
 
 const ViewAllAccounts = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [accounts, setAccounts] = useState([]);
-  const [balances, setBalances] = useState([]);
 
-  const accountData = readAccount?.Data?.Account;
-  const balanceData = readBalance?.Data?.Balance;
-  useEffect(() => {
-    setAccounts(accountData);
-    setBalances(balanceData);
-  }, []);
+  const NatwestAccountData = readNatwestAccount?.Data?.Account;
+  const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
+  const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
+  const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
+  const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
+  const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = accounts.filter(account =>
+  const filteredAccounts = mergedAccounts.filter(account =>
     account.AccountId.includes(searchQuery),
   );
   const findAccountBalance = accountId => {
-    const foundBalance = balances.find(
+    const foundBalance = mergedBalances.find(
       balance => balance.AccountId === accountId,
     );
 
@@ -77,10 +77,21 @@ const ViewAllAccounts = () => {
                       }}>
                       {account.AccountSubType} Account
                     </Title>
-                    <Image
-                      source={require('../assets/images/natwest2.png')}
-                      style={styles.icon}
-                    />
+
+                    {BarclaysAccountData.find(
+                      barclaysAccount =>
+                        barclaysAccount.AccountId === account.AccountId,
+                    ) ? (
+                      <Image
+                        source={require('../assets/images/barclays2.png')}
+                        style={styles.iconBarclays}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../assets/images/natwest2.png')}
+                        style={styles.iconNatwest}
+                      />
+                    )}
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View style={{marginTop: -10}}>
@@ -158,9 +169,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 10,
   },
-  icon: {
+  iconNatwest: {
     width: 55,
     height: 55,
+    resizeMode: 'contain',
+  },
+  iconBarclays: {
+    width: 60,
+    height: 60,
     resizeMode: 'contain',
   },
   footer: {
