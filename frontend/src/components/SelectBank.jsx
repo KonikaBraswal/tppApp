@@ -37,40 +37,35 @@ const SelectBank = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const [filteredBanks, setFilteredBanks] = useState(commonbanks);
-  const [filteredAllBanks,setFilteredAllBanks]=useState(allbanks);
-  // const onChangeSearch = query => {
-  //   setSearchQuery(query);
-  //   const filtered = commonbanks.filter(bank =>
-  //     bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-  //   );
-  //   setFilteredBanks(filtered);
-  // };
   const onChangeSearch = query => {
     setSearchQuery(query);
-
-    // Search in common banks
-    const filteredCommonBanks = commonbanks.filter(bank =>
+    const filtered = commonbanks.filter(bank =>
       bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
     );
-
-    // Search in all banks
-    const filteredAllBanks = allbanks.filter(bank =>
-      bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-    );
-
-    // Combine the results from both arrays
-    const combinedFilteredBanks = [...filteredCommonBanks, ...filteredAllBanks];
-
-    // Remove duplicates based on bank name
-    const uniqueFilteredBanks = combinedFilteredBanks.reduce((acc, bank) => {
-      if (!acc.find(existingBank => existingBank.name === bank.name)) {
-        acc.push(bank);
-      }
-      return acc;
-    }, []);
-
-    setFilteredBanks(uniqueFilteredBanks);
+    setFilteredBanks(filtered);
   };
+  // const onChangeSearch = query => {
+  //   setSearchQuery(query);
+
+  //   const filteredCommonBanks = commonbanks.filter(bank =>
+  //     bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+  //   );
+
+  //   const filteredAllBanks = allbanks.filter(bank =>
+  //     bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+  //   );
+
+  //   const combinedFilteredBanks = [...filteredCommonBanks, ...filteredAllBanks];
+
+  //   const uniqueFilteredBanks = combinedFilteredBanks.reduce((acc, bank) => {
+  //     if (!acc.find(existingBank => existingBank.name === bank.name)) {
+  //       acc.push(bank);
+  //     }
+  //     return acc;
+  //   }, []);
+
+  //   setFilteredBanks(uniqueFilteredBanks);
+  // };
 
   const handlePress = () => {
     // const text ='NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
