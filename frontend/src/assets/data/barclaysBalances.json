@@ -7,7 +7,7 @@
         "Type": "Expected",
         "DateTime": "2024-01-15T11:44:06.420Z",
         "Amount": {
-          "Amount": "3000.40",
+          "Amount": "3000.20",
           "Currency": "GBP"
         }
       },
@@ -17,7 +17,7 @@
         "Type": "ForwardAvailable",
         "DateTime": "2024-01-15T11:44:06.420Z",
         "Amount": {
-          "Amount": "8996.40",
+          "Amount": "8996.0",
           "Currency": "GBP"
         }
       }

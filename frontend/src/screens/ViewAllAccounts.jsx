@@ -36,18 +36,17 @@ const ViewAllAccounts = () => {
   const filteredAccounts = mergedAccounts.filter(account =>
     account.AccountId.includes(searchQuery),
   );
-  const findAccountBalance = accountId => {
-    const foundBalance = mergedBalances.find(
+  const findAccountBalances = accountId => {
+    const foundBalances = mergedBalances.filter(
       balance => balance.AccountId === accountId,
     );
 
-    if (foundBalance && foundBalance.Amount) {
-      return foundBalance.Amount.Amount;
+    if (foundBalances.length > 0) {
+      return foundBalances;
     } else {
       return null;
     }
   };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -98,7 +97,10 @@ const ViewAllAccounts = () => {
                       <Paragraph>{account.AccountId}</Paragraph>
                       <Paragraph>{account.Account[0].Name}</Paragraph>
                       <Paragraph>
-                        Balance:{findAccountBalance(account.AccountId)} GBP
+                        Balance:
+                        {findAccountBalances(account.AccountId)?.[0]?.Amount
+                          ?.Amount ?? 0}
+                        GBP
                       </Paragraph>
                     </View>
                     <Card.Actions>
@@ -107,7 +109,9 @@ const ViewAllAccounts = () => {
                         size={24}
                         color="#5a287d"
                         onPress={() => {
-                          // Handle chevron icon press
+                          navigation.navigate('View Details', {
+                            AccountId: account.AccountId,
+                          });
                         }}
                         style={{marginRigh: -15}}
                       />
