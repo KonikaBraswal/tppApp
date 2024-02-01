@@ -104,7 +104,13 @@ const Landing = () => {
             {cards.map(item => (
               <TouchableOpacity
                 key={item.id}
-                onPress={() => navigation.navigate('Bank Accounts')}>
+                onPress={() => {
+                  if (item.name === 'Natwest') {
+                    navigation.navigate('Your Natwest Accounts');
+                  } else if (item.name === 'Barclays') {
+                    navigation.navigate('Your Barclays Accounts');
+                  }
+                }}>
                 <Surface elevation={6} category="medium" style={styles.surface}>
                   <Image source={item.icon} style={styles.icon} />
                 </Surface>

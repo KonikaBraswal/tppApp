@@ -35,6 +35,8 @@ import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 import ViewAllAccounts from './src/screens/ViewAllAccounts';
 import ViewAllDetails from './src/screens/ViewAllDetails';
+import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
+import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -81,6 +83,14 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
               <Stack.Screen name="View Details" component={ViewAllDetails} />
+              <Stack.Screen
+                name="Your Natwest Accounts"
+                component={ViewNatwestAccounts}
+              />
+              <Stack.Screen
+                name="Your Barclays Accounts"
+                component={ViewBarclaysAccounts}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
