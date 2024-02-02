@@ -16,7 +16,7 @@ const ViewAll = () => {
       AccountId: '48901b2d-f748-40a9-b8e4-5a206590b6a5',
       subType: 'Savings',
       accountNumber: '456XXXXXXXX909',
-      balance: '$19606.40 GBP',
+      balance: '19606.40 GBP',
       imageUrl: require('../assets/images/card2.png'),
     },
     {

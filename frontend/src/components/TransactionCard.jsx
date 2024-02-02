@@ -8,7 +8,6 @@ import {
   MD3Colors,
 } from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
-import read from'../assets/data/transactions.json';
 
 const TransactionCard = ({transaction}) => {
   return (
@@ -21,7 +20,7 @@ const TransactionCard = ({transaction}) => {
             alignItems: 'center',
           }}>
           <View style={{flexDirection: 'row', marginLeft: -10}}>
-            {read.CreditDebitIndicator === 'Debit' ? (
+            {transaction.CreditDebitIndicator === 'Debit' ? (
               <IconButton
                 icon="arrow-top-right"
                 mode="contained-tonal"
@@ -46,11 +45,11 @@ const TransactionCard = ({transaction}) => {
                 marginTop: 9,
                 marginLeft: 5,
               }}>
-              {read.CreditDebitIndicator}ed
+              {transaction.CreditDebitIndicator}ed
             </Text>
           </View>
           <Text style={{fontWeight: 'bold', fontSize: 18}}>
-            {read.Amount.Currency} {read.Amount.Amount}
+            {transaction.Amount.Currency} {transaction.Amount.Amount}
           </Text>
         </View>
       </Card.Content>
@@ -61,10 +60,10 @@ const TransactionCard = ({transaction}) => {
       />
       <Card.Content>
         <View>
-          <Text style={styles.title}>{read.TransactionInformation}</Text>
-          <Text style={styles.text}>{read.AccountId}</Text>
+          <Text style={styles.title}>{transaction.TransactionInformation}</Text>
+          <Text style={styles.text}>{transaction.AccountId}</Text>
           <Text style={styles.text}>
-            Transaction ID: {read.TransactionId}
+            Transaction ID: {transaction.TransactionId}
           </Text>
           <View
             style={{
@@ -74,10 +73,10 @@ const TransactionCard = ({transaction}) => {
               marginTop: 10,
             }}>
             <Text style={styles.text}>
-              {new Date(read.BookingDateTime).toLocaleDateString()}
+              {new Date(transaction.BookingDateTime).toLocaleDateString()}
             </Text>
             <Text style={styles.text}>
-              {new Date(read.BookingDateTime).toLocaleTimeString()}
+              {new Date(transaction.BookingDateTime).toLocaleTimeString()}
             </Text>
           </View>
         </View>
