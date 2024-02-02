@@ -107,7 +107,7 @@ function App(): React.JSX.Element {
                 name="Consent For Payment"
                 component={PaymentConscent}
               />
-              <Stack.Screen name="Make Transfer" component={MakeTransfer} />
+              <Stack.Screen name="Transfer Money" component={MakeTransfer} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

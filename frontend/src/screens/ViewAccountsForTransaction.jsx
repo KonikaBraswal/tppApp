@@ -109,7 +109,7 @@ const ViewAccountsForTransactions = () => {
                         size={24}
                         color="#5a287d"
                         onPress={() => {
-                          navigation.navigate('Make Transfer');
+                          navigation.navigate('Transfer Money');
                         }}
                         style={{marginLeft: 70}}
                       />
