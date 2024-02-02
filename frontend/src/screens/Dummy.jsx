@@ -1,7 +1,10 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text} from 'react-native';
+import {Button} from 'react-native-paper';
 
 const Dummy = () => {
+  const navigation = useNavigation();
   return (
     <View>
       <Text
@@ -15,6 +18,9 @@ const Dummy = () => {
           color: 'black',
         }}>
         Dummy Page
+        <Button onPress={() => navigation.navigate('Transaction Successfull')}>
+          press
+        </Button>
       </Text>
     </View>
   );

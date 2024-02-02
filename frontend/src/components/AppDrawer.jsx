@@ -4,7 +4,7 @@ import TransactionListScreen from './TransactionList';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';
-import { Icon } from 'react-native-paper';
+import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 
 const Drawer = createDrawerNavigator();
@@ -29,7 +29,7 @@ const AppDrawer = () => {
       }}
       headerMode="screen">
       <Drawer.Screen
-        name="NWBank"
+        name="ONEBank"
         component={BottomTab}
         options={{
           drawerIcon: ({color}) => (
@@ -82,22 +82,22 @@ const AppDrawer = () => {
           ),
         }}
       />
-       <Drawer.Screen
+      <Drawer.Screen
         name="Environment"
         component={Dummy}
         options={{
           drawerIcon: ({color}) => (
-            <Icon source="code-tags"   color={color} size={28}/>
+            <Icon source="code-tags" color={color} size={28} />
           ),
         }}
       />
-       <Drawer.Screen
+      <Drawer.Screen
         name="API Logs"
         component={Dummy}
         options={{
           drawerIcon: ({color}) => (
             // <MaterialCommunityIcons name="settings" color={color} size={28} />
-            <Icon source="database-cog"   color={color} size={28}/>
+            <Icon source="database-cog" color={color} size={28} />
           ),
         }}
       />

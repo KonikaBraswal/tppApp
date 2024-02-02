@@ -37,6 +37,7 @@ import ViewAllAccounts from './src/screens/ViewAllAccounts';
 import ViewAllDetails from './src/screens/ViewAllDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
+import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -90,6 +91,10 @@ function App(): React.JSX.Element {
               <Stack.Screen
                 name="Your Barclays Accounts"
                 component={ViewBarclaysAccounts}
+              />
+              <Stack.Screen
+                name="Transaction Successfull"
+                component={SuccessfullTransaction}
               />
             </Stack.Navigator>
           </NavigationContainer>
