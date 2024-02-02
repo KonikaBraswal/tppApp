@@ -125,7 +125,10 @@ const Landing = () => {
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Added Accounts');
+                }}>
                 <Surface
                   elevation={1}
                   category="medium"

@@ -19,19 +19,25 @@ import {
 } from 'react-native-paper';
 import readNatwestAccount from '../assets/data/accounts.json';
 import readNatwestBalance from '../assets/data/balances.json';
+import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
+import readBarclaysBalance from '../assets/data/barclaysBalances.json';
 
-const ViewNatwestAccounts = () => {
+const ViewAccountsForTransactions = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const NatwestAccountData = readNatwestAccount?.Data?.Account;
   const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
+  const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
+  const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
+  const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
+  const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = NatwestAccountData.filter(account =>
+  const filteredAccounts = mergedAccounts.filter(account =>
     account.AccountId.includes(searchQuery),
   );
   const findAccountBalances = accountId => {
-    const foundBalances = NatwestBalanceData.filter(
+    const foundBalances = mergedBalances.filter(
       balance => balance.AccountId === accountId,
     );
 
@@ -70,10 +76,21 @@ const ViewNatwestAccounts = () => {
                       }}>
                       {account.AccountSubType} Account
                     </Title>
-                    <Image
-                      source={require('../assets/images/natwest2.png')}
-                      style={styles.iconNatwest}
-                    />
+
+                    {BarclaysAccountData.find(
+                      barclaysAccount =>
+                        barclaysAccount.AccountId === account.AccountId,
+                    ) ? (
+                      <Image
+                        source={require('../assets/images/barclays2.png')}
+                        style={styles.iconBarclays}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../assets/images/natwest2.png')}
+                        style={styles.iconNatwest}
+                      />
+                    )}
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View style={{marginTop: -10}}>
@@ -92,9 +109,7 @@ const ViewNatwestAccounts = () => {
                         size={24}
                         color="#5a287d"
                         onPress={() => {
-                          navigation.navigate('View Details', {
-                            AccountId: account.AccountId,
-                          });
+                          navigation.navigate('Make Transfer');
                         }}
                         style={{marginLeft: 70}}
                       />
@@ -185,4 +200,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ViewNatwestAccounts;
+export default ViewAccountsForTransactions;

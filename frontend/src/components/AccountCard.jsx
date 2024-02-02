@@ -4,7 +4,7 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Surface, Button} from '@react-native-material/core';
 import axios from 'axios';
-import {Icon} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 
 const AccountCard = props => {
   const navigation = useNavigation();
@@ -24,15 +24,20 @@ const AccountCard = props => {
         <Surface style={styles.card}>
           <View style={styles.text}>
             <Text key={item.AccountId} style={styles.text}>
-              {item.Nickname}
+              {`${item.AccountSubType}`}
             </Text>
-            <Text style={styles.smalltext}>
-              {`${item.AccountType}`} {`${item.AccountSubType}`}
-            </Text>
+
+            <Text style={styles.smalltext}>{`${item.AccountType}`}</Text>
+            <Text style={styles.smalltext}>{item.Nickname}</Text>
             <Text>{`${item.AccountId}`}</Text>
           </View>
           <View style={styles.iconContainer}>
-            <Icon source="chevron-double-right" color="black" size={30} />
+            <IconButton
+              icon="chevron-right"
+              mode="outlined"
+              iconColor={'black'}
+              size={30}
+            />
           </View>
         </Surface>
       </TouchableOpacity>

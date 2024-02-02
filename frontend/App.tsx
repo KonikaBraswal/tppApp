@@ -38,6 +38,9 @@ import ViewAllDetails from './src/screens/ViewAllDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
 import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
+import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
+import PaymentConscent from './src/screens/PaymentConscent';
+import MakeTransfer from './src/screens/MakeTransfer';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -96,6 +99,15 @@ function App(): React.JSX.Element {
                 name="Transaction Successfull"
                 component={SuccessfullTransaction}
               />
+              <Stack.Screen
+                name="Added Accounts"
+                component={ViewAccountsForTransactions}
+              />
+              <Stack.Screen
+                name="Consent For Payment"
+                component={PaymentConscent}
+              />
+              <Stack.Screen name="Make Transfer" component={MakeTransfer} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

@@ -97,7 +97,7 @@ const ViewBarclaysAccounts = () => {
                             AccountId: account.AccountId,
                           });
                         }}
-                        style={{marginRigh: -15}}
+                        style={{marginLeft: 70}}
                       />
                     </Card.Actions>
                   </View>
