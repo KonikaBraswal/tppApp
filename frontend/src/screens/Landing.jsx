@@ -78,6 +78,7 @@ const Landing = () => {
               }}
             />
           </View>
+          <Text style={{margin:5,marginLeft:10,fontWeight:'bold',color:'#5a287d',fontSize:17}}>Added Banks</Text>
         <View style={styles.container}>
           <ScrollView
             horizontal
@@ -90,7 +91,7 @@ const Landing = () => {
               justifyContent:'space-around',
               alignItems: 'center',
               maxHeight:175,
-              marginTop:20,
+              marginTop:5,
               borderRadius:200
             }}>
             <View
@@ -101,7 +102,7 @@ const Landing = () => {
               }}>
               <FAB
                 icon={() => <Icon source="plus" color="white" size={20}  />}
-                style={{alignSelf: 'center', backgroundColor: 'black',marginTop:10}}
+                style={{alignSelf: 'center', backgroundColor: '#5a287d',marginTop:10}}
                 onPress={AddBank}
               />
               <Text
