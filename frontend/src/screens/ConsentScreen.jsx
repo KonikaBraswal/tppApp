@@ -231,7 +231,7 @@ const ConsentScreen = () => {
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
         <Text style={styles.textStyle}>
-          ONEank needs your explicit consent to access the following information
+          ONEBank needs your explicit consent to access the following information
           from the accounts held at your bank or building society
         </Text>
 

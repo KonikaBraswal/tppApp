@@ -62,12 +62,22 @@ const Landing = () => {
       contentContainerStyle={{flexGrow: 1}}
       keyboardShouldPersistTaps="handled">
       <View style={{flex: 1}}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchbar}
-        />
+      <View
+            style={{
+              backgroundColor: '#5a287d',
+              padding: 10,
+            }}>
+            <Searchbar
+              placeholder="Search here"
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+              icon={() => <Icon source="magnify" color="black" size={20} />}
+              style={{
+                borderRadius: 5,
+                backgroundColor: '#f4ebfe',
+              }}
+            />
+          </View>
         <View style={styles.container}>
           <ScrollView
             horizontal
@@ -77,18 +87,21 @@ const Landing = () => {
             contentContainerStyle={{
               ...styles.ListContainer,
               backgroundColor: '#c8e1cc',
-              justifyContent: 'space-around',
+              justifyContent:'space-around',
               alignItems: 'center',
+              maxHeight:175,
+              marginTop:20,
+              borderRadius:200
             }}>
             <View
               style={{
                 flexDirection: 'column',
-                marginTop: 45,
+                marginTop: 40,
                 marginHorizontal: 10,
               }}>
               <FAB
-                icon={() => <Icon source="plus" color="white" size={20} />}
-                style={{alignSelf: 'center', backgroundColor: 'black'}}
+                icon={() => <Icon source="plus" color="white" size={20}  />}
+                style={{alignSelf: 'center', backgroundColor: 'black',marginTop:10}}
                 onPress={AddBank}
               />
               <Text
@@ -175,14 +188,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#5a287d',
   },
   surface: {
     width: 90,
     height: 90,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
+    margin:10
   },
   icon: {
     width: 80,

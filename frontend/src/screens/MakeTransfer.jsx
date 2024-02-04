@@ -7,7 +7,7 @@ import {
   Button,
   TextInput,
   StyleSheet,
-  TouchableOpacity,
+  TouchableOpacity,ScrollView
 } from 'react-native';
 
 const MakeTransfer = () => {
@@ -33,8 +33,11 @@ const MakeTransfer = () => {
   };
 
   return (
+    
     <View style={styles.container}>
+            <ScrollView>
       <View style={{padding: 20}}>
+
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>First Name</Text>
           <TextInput
@@ -95,6 +98,7 @@ const MakeTransfer = () => {
           />
         </View>
       </View>
+      </ScrollView>
       <TouchableOpacity
         onPress={handleSubmit}
         style={styles.footer}
@@ -104,6 +108,7 @@ const MakeTransfer = () => {
 
       {/* <Button title="Proceed to Pay" onPress={handleSubmit} color="#5a287d" style/> */}
     </View>
+    
   );
 };
 

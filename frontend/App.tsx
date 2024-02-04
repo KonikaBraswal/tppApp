@@ -96,7 +96,7 @@ function App(): React.JSX.Element {
                 component={ViewBarclaysAccounts}
               />
               <Stack.Screen
-                name="Transaction Successfull"
+                name="Transaction Successful"
                 component={SuccessfullTransaction}
               />
               <Stack.Screen

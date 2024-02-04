@@ -87,7 +87,7 @@ const PaymentConscent = () => {
   };
 
   const handleConfirmButtonClick = () => {
-    navigation.navigate('Transaction Successfull');
+    navigation.navigate('Transaction Successful');
   };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>

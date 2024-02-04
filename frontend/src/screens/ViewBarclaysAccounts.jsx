@@ -15,7 +15,7 @@ import {
   Card,
   Title,
   Paragraph,
-  IconButton,
+  IconButton,Icon
 } from 'react-native-paper';
 import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../assets/data/barclaysBalances.json';
@@ -45,16 +45,27 @@ const ViewBarclaysAccounts = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
+         <View
+            style={{
+              backgroundColor: '#5a287d',
+              padding: 10,
+            }}>
+              {/* //changed searchBar */}
+            <Searchbar
+              placeholder="Search account by ID"
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+              icon={() => <Icon source="magnify" color="black" size={20} />}
+              style={{
+                borderRadius: 5,
+                backgroundColor: '#f4ebfe',
+              }}
+            />
+          </View>
       <View style={styles.container}>
         <View style={styles.mainContent}>
           <View style={styles.rowContainer}>
             <View style={styles.searchBarContainer}>
-              <Searchbar
-                placeholder="Search Bank Account"
-                onChangeText={setSearchQuery}
-                value={searchQuery}
-                style={styles.searchBar}
-              />
             </View>
           </View>
           <ScrollView style={styles.scrollContainer}>
@@ -84,7 +95,7 @@ const ViewBarclaysAccounts = () => {
                         Balance:
                         {findAccountBalances(account.AccountId)?.[0]?.Amount
                           ?.Amount ?? 0}
-                        GBP
+                        <Text> GBP</Text>
                       </Paragraph>
                     </View>
                     <Card.Actions>
@@ -97,7 +108,7 @@ const ViewBarclaysAccounts = () => {
                             AccountId: account.AccountId,
                           });
                         }}
-                        style={{marginLeft: 70}}
+                        style={{marginLeft: 15}}
                       />
                     </Card.Actions>
                   </View>

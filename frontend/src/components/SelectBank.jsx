@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, KeyboardAvoidingView} from 'react-native';
-import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';
+import {Surface, Stack,Divider,ListItem} from '@react-native-material/core';
 import {Image} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar} from 'react-native-paper';
 import ConsentScreen from '../screens/ConsentScreen';
-import {Icon, ScrollView} from 'react-native-paper';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {all} from 'axios';
+import {Icon,ScrollView} from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { all } from 'axios';
 const commonbanks = [
   {id: 1, name: 'Natwest', icon: require('../assets/images/natwest.png')},
   {id: 2, name: 'Barclays', icon: require('../assets/images/barclays.png')},
@@ -18,7 +18,7 @@ const commonbanks = [
   {id: 7, name: 'Revolut', icon: require('../assets/images/revolut.png')},
   {id: 8, name: 'Starling', icon: require('../assets/images/starling.png')},
 ];
-const allbanks = [
+const allbanks=[
   {id: 101, name: 'Barclays', icon: require('../assets/images/barclays.png')},
   {id: 102, name: 'Lloyds', icon: require('../assets/images/lloyds.png')},
   {id: 103, name: 'Monzo', icon: require('../assets/images/monzo.png')},
@@ -26,7 +26,7 @@ const allbanks = [
   {id: 105, name: 'Revolut', icon: require('../assets/images/revolut.png')},
   {id: 106, name: 'Santander', icon: require('../assets/images/santander.png')},
   {id: 107, name: 'Starling', icon: require('../assets/images/starling.png')},
-];
+]
 
 const SelectBank = () => {
   const navigation = useNavigation();
@@ -44,31 +44,8 @@ const SelectBank = () => {
     );
     setFilteredBanks(filtered);
   };
-  // const onChangeSearch = query => {
-  //   setSearchQuery(query);
-
-  //   const filteredCommonBanks = commonbanks.filter(bank =>
-  //     bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-  //   );
-
-  //   const filteredAllBanks = allbanks.filter(bank =>
-  //     bank.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-  //   );
-
-  //   const combinedFilteredBanks = [...filteredCommonBanks, ...filteredAllBanks];
-
-  //   const uniqueFilteredBanks = combinedFilteredBanks.reduce((acc, bank) => {
-  //     if (!acc.find(existingBank => existingBank.name === bank.name)) {
-  //       acc.push(bank);
-  //     }
-  //     return acc;
-  //   }, []);
-
-  //   setFilteredBanks(uniqueFilteredBanks);
-  // };
 
   const handlePress = () => {
-    // const text ='NatWest Bank needs your explicit consent to access the following information from the accounts held at your bank or building society';
     navigation.navigate('Consent');
   };
   const rows = [];
@@ -81,15 +58,15 @@ const SelectBank = () => {
         //spacing={10}
         style={SelectBankStyle.row}>
         {rowBanks.map(bank => (
-          <Surface key={`surface_${bank.id}`}>
-            <TouchableOpacity
-              key={`touchableOpacity_${bank.id}`}
-              onPress={handlePress}>
-              <Surface category="medium" style={SelectBankStyle.surface}>
-                <Image source={bank.icon} style={SelectBankStyle.image} />
-              </Surface>
-            </TouchableOpacity>
-          </Surface>
+      
+        <TouchableOpacity key={bank.id} onPress={handlePress}>
+  <Surface
+    category="medium"
+    style={SelectBankStyle.surface}
+  >
+    <Image source={bank.icon} style={SelectBankStyle.image} />
+  </Surface>
+</TouchableOpacity>
         ))}
       </Stack>
     );
@@ -98,11 +75,12 @@ const SelectBank = () => {
 
   return (
     <>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        enableOnAndroid
-        enableAutomaticScroll
-        extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}>
+       <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid
+      enableAutomaticScroll
+      extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}
+    >
         <View>
           <View
             style={{
@@ -119,55 +97,53 @@ const SelectBank = () => {
                 backgroundColor: '#f4ebfe',
               }}
             />
-            {/* <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>
-              Select Your Bank
-            </Text> */}
           </View>
         </View>
-        <Stack fill left style={{backgroundColor: 'white', padding: 10}}>
-          <Surface elevation={10} category="medium">
-            <Text
-              style={{
-                fontSize: 18,
-                padding: 15,
-                color: 'black',
-                fontWeight: 'bold',
-              }}>
-              Most Common
-            </Text>
+        <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+  <Surface elevation={10} category="medium">
+    <Text
+      style={{
+        fontSize: 18,
+        padding: 15,
+        color: 'black',
+        fontWeight: 'bold',
+      }}
+    >
+      Most Common
+    </Text>
+{/* 
+    {rows} */}
+    {rows.map((row, index) => (
+    <View key={`row_${index}`}>{row}</View>
+  ))}
+  </Surface>
+</Stack>
 
-            {rows}
-          </Surface>
-        </Stack>
+        <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+  <Surface elevation={10} category="medium">
+    <Text
+      style={{
+        fontSize: 18,
+        padding: 15,
+        color: 'black',
+        fontWeight: 'bold',
+        padding:20
+      }}
+    >
+      All Banks
+    </Text>
+      {allbanks.map(bank => (
+        <ListItem
+          key={`row_${bank.id}`}
+          title={bank.name}
+          leading={<Image source={bank.icon} style={{ height: 30, width: 30, resizeMode: 'contain' }} />}
+          trailing={<Icon source="chevron-right" size={24}/>}
+        />
+      ))}
+  </Surface>
+</Stack>
 
-        <Stack fill left style={{backgroundColor: 'white', padding: 10}}>
-          <Surface elevation={10} category="medium">
-            <Text
-              style={{
-                fontSize: 18,
-                padding: 15,
-                color: 'black',
-                fontWeight: 'bold',
-                padding: 20,
-              }}>
-              All Banks
-            </Text>
-            {allbanks.map(bank => (
-              <ListItem
-                key={bank.id}
-                title={bank.name}
-                leading={
-                  <Image
-                    source={bank.icon}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
-                }
-                trailing={<Icon source="chevron-right" size={24} />}
-              />
-            ))}
-          </Surface>
-        </Stack>
-      </KeyboardAwareScrollView>
+</KeyboardAwareScrollView>
     </>
   );
 };
@@ -188,7 +164,7 @@ const SelectBankStyle = StyleSheet.create({
     backgroundColor: 'white',
     width: 80,
 
-    height: 80,
+    height:80,
 
     justifyContent: 'center',
 

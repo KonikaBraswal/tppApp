@@ -10,12 +10,12 @@ const NatwestAccounts = props => {
 
   return (
     <View>
-      <Surface elevation={6} category="medium" style={styles.surface}>
+      {/* <Surface elevation={6} category="medium" style={styles.surface}>
         <Image
           source={require('../../assets/icons/natwest.png')}
           style={styles.icon}
         />
-      </Surface>
+      </Surface> */}
       {accounts.map(item => (
         <AccountCard
           key={item.AccountId}

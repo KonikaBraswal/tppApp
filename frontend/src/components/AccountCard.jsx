@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity,Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Surface, Button} from '@react-native-material/core';
 import axios from 'axios';
@@ -22,21 +22,26 @@ const AccountCard = props => {
     <View style={styles.container}>
       <TouchableOpacity onPress={handleCardClick}>
         <Surface style={styles.card}>
+        
           <View style={styles.text}>
+         
             <Text key={item.AccountId} style={styles.text}>
               {`${item.AccountSubType}`}
             </Text>
-
-            <Text style={styles.smalltext}>{`${item.AccountType}`}</Text>
             <Text style={styles.smalltext}>{item.Nickname}</Text>
             <Text>{`${item.AccountId}`}</Text>
+            <Text>Balance:19129.04 GBP</Text>
           </View>
           <View style={styles.iconContainer}>
+          <Image source={require('../assets/images/natwest2.png')}
+                      style={styles.iconNatwest}
+                    />
             <IconButton
               icon="chevron-right"
               mode="outlined"
               iconColor={'black'}
               size={30}
+              style={{marginTop:5}}
             />
           </View>
         </Surface>
@@ -45,57 +50,18 @@ const AccountCard = props => {
   );
 };
 
-// const styles = StyleSheet.create({
-//   card: {
-//     flexDirection:'row',
-//     flex:1,
-//     paddingTop: 30, marginVertical: 8, borderRadius: 8, elevation: 5,
-//     marginBottom:30,
-//     margin:5,
-//     paddingBottom: 30,
-//     padding:50,
-//     width:375,
-//     height:150,
-//     spacing:500,
-//     justifyContent:'center',
-//     alignContent:'center',
-//     backgroundColor:'#c8e1cc'
-//   },
-//   title: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-//   text: {
-//     fontSize: 20,
-//     fontWeight:'bold',
-//     marginVertical: 2,
-//   },
-//   smalltext: {
-//     fontSize: 15,
-//     fontWeight:'bold',
-//     marginVertical: 2,
-//   },
-//   iconContainer: {
-//     position:'relative',
-
-//   },
-// });
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    marginVertical: 8,
+    padding: 15,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 30,
+    padding: 20,
     borderRadius: 8,
     elevation: 5,
     backgroundColor: '#c8e1cc',
-  },
-  text: {
-    flex: 1,
   },
   title: {
     fontSize: 16,
@@ -104,16 +70,23 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 2,
+    marginVertical: 3,
   },
   smalltext: {
     fontSize: 15,
     fontWeight: 'bold',
-    marginVertical: 2,
+    marginVertical: 3,
   },
   iconContainer: {
-    marginLeft: 'auto',
-    marginRight: 10, // Add some margin to the right to adjust the position
+    marginLeft: 15,
+    marginRight: 10,
+    marginTop:10 // Add some margin to the right to adjust the position
+  },
+  iconNatwest: {
+    width: 55,
+    height: 55,
+    marginBottom:7,
+    resizeMode: 'contain',
   },
 });
 

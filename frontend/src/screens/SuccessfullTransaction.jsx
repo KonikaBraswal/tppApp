@@ -19,9 +19,11 @@ const SuccessfullTransaction = () => {
         containerColor="green"
         size={30}
       />
-      <Text style={{marginTop: 10, fontSize: 16}}>
+      <View >
+      <Text style={{marginTop: 10, fontSize: 16,justifyContent:'center',alignItems:'center',textAlign:'center'}}>
         You have successfully transferred money from ONEBank App
       </Text>
+      </View>
       <TouchableOpacity onPress={handlePress}>
         <Text style={styles.linkText}>Go to Accounts and Transactions</Text>
       </TouchableOpacity>
