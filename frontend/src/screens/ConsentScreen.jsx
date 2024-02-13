@@ -163,25 +163,11 @@ const ConsentScreen = () => {
     try {
       console.log(inputValue);
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
-      console.log(data);
-      const accountId = data.Account[0].AccountId;
-      // console.log(accountId, 'account Id');
-      const transactionData = await sandboxApiClient.allCalls(
-        '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
-      );
-      console.log(transactionData);
-      const balanceData = await sandboxApiClient.allCalls(
-        '124b77ad-a58a-4d0c-9cf4-354f56eaec01/balances',
-      );
       navigation.navigate('Your Accounts', {
         selectedBank: 'Natwest',
         selectedIcon: "'../assets/icons/natwest.png'",
         accounts: data,
-        transactions: transactionData,
-        balances: balanceData,
       });
-      console.log(balanceData);
-      // console.log(balanceData.Balance[1].Amount.Amount);
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to retrieve access token.');
@@ -190,49 +176,14 @@ const ConsentScreen = () => {
     }
     hideInputDialog();
   };
-  // const handleConfirmButtonClick = async () => {
-  //   // navigation.navigate('Your Accounts', {
-  //   //   selectedBank: 'Natwest',
-  //   //   selectedIcon: "'../assets/icons/natwest.png'",
-  //   // });
-  //   const apiFactory = new ApiFactory();
-  //   if (mode == 'sandbox') {
-  //     try {
-  //       const permissions = [
-  //         'ReadAccountsDetail',
-  //         'ReadBalances',
-  //         'ReadTransactionsCredits',
-  //         'ReadTransactionsDebits',
-  //         'ReadTransactionsDetail',
-  //       ];
-  //       setLoading(true);
-  //       setError(null);
-  //       const sandboxApiClient = apiFactory.createApiClient('sandbox');
-  //       const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
-  //       console.log('Sandbox API 1 Data:', data);
-  //       //navigation.navigate('Accounts', {accountData: data});
-  //       navigation.navigate('Your Accounts', {
-  //         selectedBank: 'Natwest',
-  //         selectedIcon: "'../assets/icons/natwest.png'",
-  //         accounts: data,
-  //       });
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //       setError('Failed to retrieve access token.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     navigation.navigate('Consent');
-  //   }
-  // };
+
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
         <Text style={styles.textStyle}>
-          ONEBank needs your explicit consent to access the following information
-          from the accounts held at your bank or building society
+          ONEBank needs your explicit consent to access the following
+          information from the accounts held at your bank or building society
         </Text>
 
         <List.Section>

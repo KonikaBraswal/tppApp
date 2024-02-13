@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Checkbox, Icon,Searchbar} from 'react-native-paper';
+import {Checkbox, Icon, Searchbar} from 'react-native-paper';
 import {
   StyleSheet,
   Image,
@@ -7,7 +7,8 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  KeyboardAvoidingView,Text
+  KeyboardAvoidingView,
+  Text,
 } from 'react-native';
 import {ListItem, Button, Surface} from '@react-native-material/core';
 import BarclaysComponent from './AccountLists/BarclaysAccounts';
@@ -18,10 +19,10 @@ import MonzoAccounts from './AccountLists/MonzoAccounts';
 import SantanderAccounts from './AccountLists/SantanderAccounts';
 import StarlingAccounts from './AccountLists/StarlingAccounts';
 import RevolutAccounts from './AccountLists/RevolutAccounts';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const AllAccounts = ({route}) => {
-  const navigation=useNavigation();
+  const navigation = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [checkedBanks, setCheckedBanks] = useState({
     natwest: false,
@@ -42,12 +43,12 @@ const AllAccounts = ({route}) => {
     'Revolut',
     'Monzo',
   ];
-  console.log(route.params);
+  //console.log(route.params);
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
-  const transactions = route.params.transactions;
-  const balances = route.params.balances;
+  // const transactions = route.params.transactions;
+  // const balances = route.params.balances;
   // useEffect(() => {
   //   setCheckedBanks(prevState => ({
   //     ...prevState,
@@ -69,50 +70,45 @@ const AllAccounts = ({route}) => {
 
   return (
     <>
-       <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
-          <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <View
+          style={{
+            backgroundColor: '#5a287d',
+            padding: 10,
+          }}>
+          {/* //changed searchBar */}
+          <Searchbar
+            placeholder="Search account by ID"
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            icon={() => <Icon source="magnify" color="black" size={20} />}
             style={{
-              backgroundColor: '#5a287d',
-              padding: 10,
-            }}>
-              {/* //changed searchBar */}
-            <Searchbar
-              placeholder="Search account by ID"
-              onChangeText={setSearchQuery}
-              value={searchQuery}
-              icon={() => <Icon source="magnify" color="black" size={20} />}
-              style={{
-                borderRadius: 5,
-                backgroundColor: '#f4ebfe',
-              }}
-            />
-          </View>
-      <View style={styles.container}>
-        <View style={styles.mainContent}>
-          <View style={styles.rowContainer}>
-            <View style={styles.searchBarContainer}>
-            </View>
-          </View>
-          <ScrollView style={styles.scrollContainer}>
-          <NatwestAccounts
-                  accountsList={accounts}
-                  transactionsList={transactions}
-                  balancesList={balances}
-                />
-          </ScrollView>
+              borderRadius: 5,
+              backgroundColor: '#f4ebfe',
+            }}
+          />
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Select Your Bank');
-          }}
-          style={styles.footer}
-          activeOpacity={1}>
-          <Text style={styles.footerText}>Add New Bank Account</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+        <View style={styles.container}>
+          <View style={styles.mainContent}>
+            <View style={styles.rowContainer}>
+              <View style={styles.searchBarContainer}></View>
+            </View>
+            <ScrollView style={styles.scrollContainer}>
+              <NatwestAccounts accountsList={accounts} />
+            </ScrollView>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Select Your Bank');
+            }}
+            style={styles.footer}
+            activeOpacity={1}>
+            <Text style={styles.footerText}>Add New Bank Account</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -163,10 +159,9 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 0,
     width: 385,
-    margin:10,
-   
+    margin: 10,
   },
-  searchBarContainer: {marginLeft: 2, backgroundColor:'#5a287d'},
+  searchBarContainer: {marginLeft: 2, backgroundColor: '#5a287d'},
   scrollContainer: {
     flex: 1,
     padding: 2,
@@ -198,8 +193,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-
 });
-
 
 export default AllAccounts;

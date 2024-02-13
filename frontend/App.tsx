@@ -34,7 +34,7 @@ import Landing from './src/screens/Landing';
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 import ViewAllAccounts from './src/screens/ViewAllAccounts';
-import ViewAllDetails from './src/screens/ViewAllDetails';
+import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
 import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
@@ -86,7 +86,10 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
-              <Stack.Screen name="View Details" component={ViewAllDetails} />
+              <Stack.Screen
+                name="View Details"
+                component={ViewAllLocalDetails}
+              />
               <Stack.Screen
                 name="Your Natwest Accounts"
                 component={ViewNatwestAccounts}

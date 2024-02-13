@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,11 +13,16 @@ import AccountDetails from '../components/AccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import TransactionList from '../components/TransactionList';
 import SortDropdown from '../components/SortDropdown';
+import ApiFactory from '../../ApiFactory/ApiFactory';
+
+const mode = 'sandbox';
+const way = 'web';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
-  const transactionDetails = route.params.transactionDetails;
-  const balanceDetails = route.params.balanceDetails;
+  const {AccountId} = route.params.accountDetails;
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -36,7 +41,7 @@ const MainScreen = ({route}) => {
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails account={accountDetails} balance={balanceDetails} />
+        <AccountDetails account={accountDetails} />
 
         <View
           style={{
@@ -78,7 +83,7 @@ const MainScreen = ({route}) => {
               alignSelf: 'center',
             }}
           />
-          <TransactionList transactionDetails={transactionDetails} />
+          <TransactionList accountId={AccountId} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
