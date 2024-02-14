@@ -17,18 +17,26 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import IconDialog from '../components/IconDialog';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = wp('100%');
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
+
 const ConsentScreen = () => {
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [error, setError] = useState(null);
@@ -96,7 +104,9 @@ const ConsentScreen = () => {
   const hideErrorDialog = () => setErrorDialogVisible(false);
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
   const showInputDialog = () => setInputDialogVisible(true);
-  const hideInputDialog = () => setInputDialogVisible(false);
+  const hideInputDialog = () => {
+    setInputDialogVisible(false);
+  };
 
   const [inputValue, setInputValue] = useState('');
 
@@ -111,13 +121,31 @@ const ConsentScreen = () => {
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
       try {
-        const permissions = [
-          'ReadAccountsDetail',
-          'ReadBalances',
-          'ReadTransactionsCredits',
-          'ReadTransactionsDebits',
-          'ReadTransactionsDetail',
-        ];
+        // const permissions = [
+        //   'ReadAccountsDetail',
+        //   'ReadBalances',
+        //   'ReadTransactionsCredits',
+        //   'ReadTransactionsDebits',
+        //   'ReadTransactionsDetail',
+        // ];
+        const permissions = new Array();
+        if (checked1) {
+          permissions.push('ReadAccountsDetail');
+        }
+        if (checked2) {
+          permissions.push('ReadBalances');
+        }
+        if (checked3) {
+          permissions.push('ReadTransactionsDebits');
+        }
+        if (checked4) {
+          permissions.push('ReadTransactionsCredits');
+        }
+        if (checked5) {
+          permissions.push('ReadTransactionsDetail');
+        }
+        console.log(permissions);
+
         setLoading(true);
         setError(null);
 
@@ -188,6 +216,7 @@ const ConsentScreen = () => {
 
         <List.Section>
           <List.Accordion
+            theme={{colors: {background: 'white'}}}
             title="Your Account Details"
             titleStyle={styles.titleStyle}
             left={props => (
@@ -252,6 +281,7 @@ const ConsentScreen = () => {
             />
           </List.Accordion>
           <List.Accordion
+            theme={{colors: {background: 'white'}}}
             title="Your Transaction Details"
             titleStyle={styles.titleStyle}
             left={props => (
@@ -343,6 +373,7 @@ const ConsentScreen = () => {
             />
           </List.Accordion>
           <List.Accordion
+            theme={{colors: {background: 'white'}}}
             title="Reason For Access"
             titleStyle={styles.titleStyle}
             left={props => (
@@ -421,7 +452,6 @@ const ConsentScreen = () => {
               } else {
                 showErrorDialog();
               }
-              //handleConfirmButtonClick();
             }}
             disabled={!areAllCheckboxesChecked()}
             style={{marginLeft: 10}}>
@@ -458,44 +488,42 @@ const ConsentScreen = () => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
+    marginTop: hp('4%'),
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: wp('5%'),
     backgroundColor: '#fff',
-    marginTop: 30,
   },
   headerText: {
-    fontSize: 28,
+    fontSize: wp('8%'),
     fontWeight: 'bold',
     color: '#36013f',
-    margin: 20,
+    paddingTop: wp('4%'),
   },
   textStyle: {
     textAlign: 'center',
-    padding: 10,
-    fontSize: 17,
+    padding: wp('2%'),
+    fontSize: hp('2.5%'),
+    color: '#454545',
   },
   titleStyle: {
-    fontSize: 18,
+    fontSize: wp('4.5%'),
     fontWeight: 'bold',
     color: '#000',
   },
   accordionStyle: {
-    width: screenWidth - 40,
-    margin: 20,
-    borderRadius: 10,
+    width: wp('85%'),
+    margin: wp('5%'),
+    borderRadius: wp('2%'),
     backgroundColor: '#c8e1cc',
     elevation: 3,
   },
   accordionListStyle: {
-    width: screenWidth - 40,
-    marginLeft: 20,
+    width: wp('90%'),
+    marginLeft: wp('5%'),
   },
 });
-
 export default ConsentScreen;
