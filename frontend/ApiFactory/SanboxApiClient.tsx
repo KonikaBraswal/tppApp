@@ -2,6 +2,8 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
 import {Linking, Alert} from 'react-native';
+import { addDetails } from '../database/Database';
+import { updateDetails } from '../database/Database';
 
 interface BodyData {
   Data: {
@@ -16,6 +18,8 @@ interface ResponseData {
     ConsentId?: string;
   };
 }
+
+// const userIdToUpdate = 1001;
 
 class SanboxApiClient {
   private baseUrl: string;
@@ -55,6 +59,16 @@ class SanboxApiClient {
           params: body,
         },
       );
+      
+      const scope= response.data.scope;
+
+      const details1 = {
+        userId: 1001,
+        scope: scope
+      }; 
+
+      addDetails(details1);
+
       console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -82,6 +96,34 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+       
+      const Status= response.data.Data?.Status;
+      const Payload= response.data.Data
+      const ConsentId = response.data.Data?.ConsentId || '';
+
+      const updatedDetails1 = {
+        bankname: 'Natwest',
+        consentid: ConsentId,
+        status: Status,
+        consentpayload: JSON.stringify(Payload),
+
+      };
+
+      const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
+
+      await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
+      // const details1 = {
+      //   userId: 1001,
+      //   // scope: 'Aisp',
+      //   bankname: 'Natwest', 
+      //   consentid: ConsentId,
+      //   status: Status,
+      //   consentpayload: JSON.stringify(Payload),
+      // };     
+      // // Call the addDetails function with the details object
+      // addDetails(details1);
+
+
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -131,6 +173,21 @@ class SanboxApiClient {
           params: body,
         },
       );
+
+      const RefreshToken = response.data.refresh_token;
+      const consentExpiresIn= response.data.expires_in;
+      const Scope= response.data.scope;
+      
+      const updatedDetails2 = {
+        refreshedtoken: RefreshToken,
+        status: 'Authorised',
+        consentexpiry: consentExpiresIn
+
+      };
+
+      const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+
+      await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
 
       console.log('Api access token', response.data.access_token);
       //console.log('Api refresh token', response.data.refresh_token);
@@ -187,6 +244,26 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+
+
+
+      const acDetails=accountResponse.data.Data;
+      const accountIds = acDetails.Account.map(account => account.AccountId);
+      const allAccountDetails = acDetails.Account;
+
+      const updatedDetails3 = {
+        account_customer_consented: accountIds,
+        account_details: JSON.stringify(allAccountDetails)
+
+      };
+
+      const columnsToUpdate3 = ['account_customer_consented', 'account_details'];
+
+      await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
+
+
+
+
       this.apiAccess = apiAccessToken;
       return accountResponse.data.Data;
     } catch (error) {
@@ -206,12 +283,12 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
     }
   }
 }
+
 
 export default SanboxApiClient;
