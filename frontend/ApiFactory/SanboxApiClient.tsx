@@ -133,11 +133,45 @@ class SanboxApiClient {
       );
 
       console.log('Api access token', response.data.access_token);
+      //console.log('Api refresh token', response.data.refresh_token);
 
       return this.fetchAccounts(response.data.access_token);
+      //return this.refreshToken(response.data.refresh_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
+  }
+
+  async refreshToken(refreshToken:string):Promise<any>{
+    try {
+      const body: Record<string, string> = {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        //redirect_uri: sandboxConfig.redirectUri,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        null,
+        {
+          headers: headers,
+          params: body,
+        },
+      );
+
+      console.log('Refresh call response', responseRefresh.data);
+
+      return this.fetchAccounts(responseRefresh.data.access_token);
+      //return responseRefresh.data.access_token;
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+
   }
 
   async fetchAccounts(apiAccessToken: string): Promise<any> {

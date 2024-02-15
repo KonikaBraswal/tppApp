@@ -1,12 +1,8 @@
 // ApiFactory.ts
-import axios from 'axios';
 import config from '../configs/config.json';
-import sandboxConfig from '../configs/Sandbox.json';
-import {Linking} from 'react-native';
-import {TextInput, Button, View, Text} from 'react-native';
 import SanboxApiClient from './SanboxApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
-
+import PispApiClient from './PispApiClient';
 let permissions: string[] = [];
 
 class ApiFactory {
@@ -32,14 +28,14 @@ class ApiFactory {
           this.commonHeaders,
         );
       // Add other cases if needed
-      case 'local':
-        return new SanboxApiClient(
+      case 'sit':
+        return new PispApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,
           this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
         );
-      case 'sit':
+      case 'local':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,
