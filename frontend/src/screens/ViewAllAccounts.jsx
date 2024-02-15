@@ -15,7 +15,8 @@ import {
   Card,
   Title,
   Paragraph,
-  IconButton,Icon
+  IconButton,
+  Icon,
 } from 'react-native-paper';
 import readNatwestAccount from '../assets/data/accounts.json';
 import readNatwestBalance from '../assets/data/balances.json';
@@ -51,28 +52,27 @@ const ViewAllAccounts = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
-          <View
-            style={{
-              backgroundColor: '#5a287d',
-              padding: 10,
-            }}>
-              {/* //changed searchBar */}
-            <Searchbar
-              placeholder="Search account by ID"
-              onChangeText={setSearchQuery}
-              value={searchQuery}
-              icon={() => <Icon source="magnify" color="black" size={20} />}
-              style={{
-                borderRadius: 5,
-                backgroundColor: '#f4ebfe',
-              }}
-            />
-          </View>
+      <View
+        style={{
+          backgroundColor: '#5a287d',
+          padding: 10,
+        }}>
+        {/* //changed searchBar */}
+        <Searchbar
+          placeholder="Search account by ID"
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          icon={() => <Icon source="magnify" color="black" size={20} />}
+          style={{
+            borderRadius: 5,
+            backgroundColor: '#f4ebfe',
+          }}
+        />
+      </View>
       <View style={styles.container}>
         <View style={styles.mainContent}>
           <View style={styles.rowContainer}>
-            <View style={styles.searchBarContainer}>
-            </View>
+            <View style={styles.searchBarContainer}></View>
           </View>
           <ScrollView style={styles.scrollContainer}>
             {filteredAccounts.map(account => (
@@ -111,7 +111,7 @@ const ViewAllAccounts = () => {
                         Balance:
                         {findAccountBalances(account.AccountId)?.[0]?.Amount
                           ?.Amount ?? 0}
-                           <Text> GBP</Text>
+                        <Text> GBP</Text>
                       </Paragraph>
                     </View>
                     <Card.Actions>

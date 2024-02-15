@@ -2,6 +2,7 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
 import {Linking, Alert} from 'react-native';
+import * as Keychain from 'react-native-keychain';
 
 interface BodyData {
   Data: {
@@ -15,6 +16,11 @@ interface ResponseData {
   Data?: {
     ConsentId?: string;
   };
+}
+
+interface UserCredentials {
+  username: string;
+  password: string;
 }
 
 class SanboxApiClient {
@@ -133,7 +139,6 @@ class SanboxApiClient {
       );
 
       console.log('Api access token', response.data.access_token);
-
       return this.fetchAccounts(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -154,12 +159,19 @@ class SanboxApiClient {
         },
       );
       this.apiAccess = apiAccessToken;
+      await this.storeAccessToken(apiAccessToken);
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
     }
   }
   async allCalls(endPoint: string): Promise<any> {
+    const access_token = await this.getAccessToken();
+    if (access_token !== null) {
+      this.apiAccess = access_token;
+    } else {
+      console.log('No access token stored');
+    }
     try {
       const headers = {
         ...this.commonHeaders,
@@ -176,6 +188,32 @@ class SanboxApiClient {
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
+    }
+  }
+
+  async storeAccessToken(accessToken: string) {
+    try {
+      await Keychain.setGenericPassword('access_token', accessToken);
+      console.log('Access token stored or updated successfully for user');
+    } catch (error) {
+      console.error('Error storing or updating access token for user', error);
+    }
+  }
+
+  async getAccessToken() {
+    const key = 'access_token';
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials && credentials.username === key) {
+        // console.log('Access token:', credentials.password);
+        return credentials.password;
+      } else {
+        console.log(`No access token stored`);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error retrieving access token for user', error);
+      return null;
     }
   }
 }

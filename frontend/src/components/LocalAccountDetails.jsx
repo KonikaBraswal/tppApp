@@ -1,14 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Card, Title, Text, Button} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
-import ApiFactory from '../../ApiFactory/ApiFactory';
 
-const mode = 'sandbox';
-const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
-const AccountDetails = props => {
+const LocalAccountDetails = props => {
   const {
     AccountId,
     AccountSubType,
@@ -18,21 +12,6 @@ const AccountDetails = props => {
     Nickname,
     Account,
   } = props.account;
-  const [balanceDetails, setBalanceDetails] = useState(null);
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const response = await sandboxApiClient.allCalls(
-          `${AccountId}/balances`,
-        );
-        setBalanceDetails(response);
-      } catch (error) {
-        console.error('Error fetching balance:', error);
-      }
-    };
-
-    fetchBalance();
-  }, [AccountId]);
 
   return (
     <Card style={styles.card}>
@@ -41,11 +20,7 @@ const AccountDetails = props => {
         <Text style={styles.title}>{AccountSubType} Account</Text>
         <Text style={styles.text}>{AccountId}</Text>
         <Text style={{fontSize: 16, marginVertical: 2, fontWeight: 'bold'}}>
-          Available Balance:{' '}
-          {balanceDetails?.Balance?.[0]?.Amount?.Amount ??
-            props?.balance?.[0]?.Amount?.Amount ??
-            0}
-          GBP
+          Available Balance: {props?.balance?.[0]?.Amount?.Amount ?? 0} GBP
         </Text>
       </Card.Content>
     </Card>
@@ -62,7 +37,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 1, height: 1}, // for iOS
     shadowOpacity: 0.3, // for iOS
     backgroundColor: '#c8e1cc',
-    zIndex:1
   },
   title: {
     fontSize: 20,
@@ -75,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccountDetails;
+export default LocalAccountDetails;

@@ -9,9 +9,8 @@ import {
 } from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {Surface} from '@react-native-material/core';
-import AccountDetails from '../components/AccountDetails';
+import LocalAccountDetails from '../components/LocalAccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
-import TransactionList from '../components/TransactionList';
 import SortDropdown from '../components/SortDropdown';
 import readNatwestAccount from '../assets/data/accounts.json';
 import readNatwestBalance from '../assets/data/balances.json';
@@ -19,6 +18,7 @@ import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../assets/data/barclaysBalances.json';
 import readNatwestTransaction from '../assets/data/transactions.json';
 import readBarclaysTransaction from '../assets/data/barclaysTransactions.json';
+import LocalTransactionList from '../components/LocalTransactionList';
 
 const NatwestAccountData = readNatwestAccount?.Data?.Account;
 const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
@@ -55,7 +55,7 @@ findAccountTransactions = accountId => {
   }
 };
 
-const ViewAllDetails = ({route}) => {
+const ViewAllLocalDetails = ({route}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const accountId = route.params.AccountId;
   const accountDetails = mergedAccounts.find(
@@ -87,7 +87,7 @@ const ViewAllDetails = ({route}) => {
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails
+        <LocalAccountDetails
           account={accountDetails}
           balance={findAccountBalances(accountId)}
         />
@@ -132,7 +132,7 @@ const ViewAllDetails = ({route}) => {
               alignSelf: 'center',
             }}
           />
-          <TransactionList transactionDetails={transactionDetails} />
+          <LocalTransactionList transactionDetails={transactionDetails} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -159,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ViewAllDetails;
+export default ViewAllLocalDetails;

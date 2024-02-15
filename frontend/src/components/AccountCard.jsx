@@ -1,18 +1,39 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
-import {StyleSheet, View, TouchableOpacity,Image} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Surface, Button} from '@react-native-material/core';
 import axios from 'axios';
 import {IconButton} from 'react-native-paper';
+import ApiFactory from '../../ApiFactory/ApiFactory';
+
+const mode = 'sandbox';
+const way = 'web';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const AccountCard = props => {
   const navigation = useNavigation();
-  const handleCardClick = () => {
+  const accountId = props.item.AccountId;
+  const [accountBalance, setAccountBalance] = useState(null);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await sandboxApiClient.allCalls(
+          `${accountId}/balances`,
+        );
+        setAccountBalance(response);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+      }
+    };
+
+    fetchBalance();
+  }, [accountId]);
+
+  const handleCardClick = async accountId => {
     navigation.navigate('Details', {
       accountDetails: props.item,
-      transactionDetails: props.accountTransactions,
-      balanceDetails: props.accountBalance,
     });
   };
 
@@ -20,28 +41,31 @@ const AccountCard = props => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleCardClick}>
+      <TouchableOpacity onPress={() => handleCardClick(item.AccountId)}>
         <Surface style={styles.card}>
-        
           <View style={styles.text}>
-         
             <Text key={item.AccountId} style={styles.text}>
               {`${item.AccountSubType}`}
             </Text>
             <Text style={styles.smalltext}>{item.Nickname}</Text>
             <Text>{`${item.AccountId}`}</Text>
-            <Text>Balance:19129.04 GBP</Text>
+            <Text>
+              Balance:
+              {accountBalance?.Balance?.[0]?.Amount?.Amount ?? 0}
+              <Text> GBP</Text>
+            </Text>
           </View>
           <View style={styles.iconContainer}>
-          <Image source={require('../assets/images/natwest2.png')}
-                      style={styles.iconNatwest}
-                    />
+            <Image
+              source={require('../assets/images/natwest2.png')}
+              style={styles.iconNatwest}
+            />
             <IconButton
               icon="chevron-right"
               mode="outlined"
               iconColor={'black'}
               size={30}
-              style={{marginTop:5}}
+              style={{marginTop: 5}}
             />
           </View>
         </Surface>
@@ -80,12 +104,12 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginLeft: 15,
     marginRight: 10,
-    marginTop:10 // Add some margin to the right to adjust the position
+    marginTop: 10,
   },
   iconNatwest: {
     width: 55,
     height: 55,
-    marginBottom:7,
+    marginBottom: 7,
     resizeMode: 'contain',
   },
 });
