@@ -21,6 +21,8 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
 import ApiFactory from '../../ApiFactory/ApiFactory';
+import { updateDetails } from '../../database/Database';
+
 
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
@@ -118,6 +120,20 @@ const ConsentScreen = () => {
           'ReadTransactionsDebits',
           'ReadTransactionsDetail',
         ];
+
+
+
+
+        // Storing checked items
+      const checkedItems = [];
+      if (checked1) checkedItems.push('Your Account Details');
+      if (checked2) checkedItems.push('Your Balance Details');
+      if (checked3) checkedItems.push('Your Transaction Debits');
+      if (checked4) checkedItems.push('Your Transaction Credits');
+      if (checked5) checkedItems.push('Your Transaction Details');
+      if (checked6) checkedItems.push('I Am a Tpp So I Need Access');
+      if (checked7) checkedItems.push('I Am The Owner Of the Account');
+
         setLoading(true);
         setError(null);
 
@@ -125,6 +141,14 @@ const ConsentScreen = () => {
           permissions,
         ); //here is data
         console.log('Consent id:', consentData);
+
+        // Update the consentpayload in the database with checked items
+      const userId = 1001; // replace with the actual user ID
+      await updateDetails({ consentpayload: JSON.stringify(checkedItems) }, userId, ['consentpayload']);
+
+
+
+      
         if (way == 'web') {
           const consentUrl = await sandboxApiClient.manualUserConsent(
             consentData,
