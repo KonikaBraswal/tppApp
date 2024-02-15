@@ -11,8 +11,9 @@ interface BodyData {
   };
   Risk: {}; // Adjust this if Risk has a specific structure
 }
-
+var refreshTokenExists=false;
 interface ResponseData {
+  refresh_token: string;
   access_token: string;
   Data?: {
     ConsentId?: string;
@@ -59,7 +60,8 @@ class SanboxApiClient {
           params: body,
         },
       );
-      
+      //store
+      //storing scope in database
       const scope= response.data.scope;
 
       const details1 = {
@@ -68,7 +70,7 @@ class SanboxApiClient {
       }; 
 
       addDetails(details1);
-
+      // store 
       console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -80,9 +82,9 @@ class SanboxApiClient {
     try {
       const body: BodyData = {
         Data: {
-          Permissions: this.permissions,
+          Permissions: this.permissions,//get permissions from db
         },
-        Risk: {},
+        Risk: {},// get risks from db
       };
       const headers = {
         ...this.commonHeaders,
@@ -96,7 +98,7 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-       
+       //store
       const Status= response.data.Data?.Status;
       const Payload= response.data.Data
       const ConsentId = response.data.Data?.ConsentId || '';
@@ -106,7 +108,6 @@ class SanboxApiClient {
         consentid: ConsentId,
         status: Status,
         consentpayload: JSON.stringify(Payload),
-
       };
 
       const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
@@ -123,7 +124,7 @@ class SanboxApiClient {
       // // Call the addDetails function with the details object
       // addDetails(details1);
 
-
+      //store
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -173,7 +174,7 @@ class SanboxApiClient {
           params: body,
         },
       );
-
+      //store
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn= response.data.expires_in;
       const Scope= response.data.scope;
@@ -189,6 +190,12 @@ class SanboxApiClient {
 
       await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
 
+
+      //store
+
+
+      //setting flag after storing refresh token in db
+      refreshTokenExists=true;
       console.log('Api access token', response.data.access_token);
       //console.log('Api refresh token', response.data.refresh_token);
 
@@ -244,9 +251,7 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
-
-
+      //store
       const acDetails=accountResponse.data.Data;
       const accountIds = acDetails.Account.map(account => account.AccountId);
       const allAccountDetails = acDetails.Account;
@@ -260,10 +265,7 @@ class SanboxApiClient {
       const columnsToUpdate3 = ['account_customer_consented', 'account_details'];
 
       await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
-
-
-
-
+      //store
       this.apiAccess = apiAccessToken;
       return accountResponse.data.Data;
     } catch (error) {
