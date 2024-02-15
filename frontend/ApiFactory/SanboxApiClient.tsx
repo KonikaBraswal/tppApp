@@ -60,6 +60,15 @@ class SanboxApiClient {
         },
       );
       
+      const scope= response.data.scope;
+
+      const details1 = {
+        userId: 1001,
+        scope: scope
+      }; 
+
+      addDetails(details1);
+
       console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -87,18 +96,32 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
-
+       
+      const Status= response.data.Data?.Status;
+      const Payload= response.data.Data
       const ConsentId = response.data.Data?.ConsentId || '';
-      const details1 = {
-        userId: 1001,
-        scope: 'Aisp',
-        bankname: 'Natwest', 
+
+      const updatedDetails1 = {
+        bankname: 'Natwest',
         consentid: ConsentId,
-        status: 'Authorisation Required'
-      };     
-      // Call the addDetails function with the details object
-      addDetails(details1);
+        status: Status,
+        consentpayload: JSON.stringify(Payload),
+
+      };
+
+      const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
+
+      await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
+      // const details1 = {
+      //   userId: 1001,
+      //   // scope: 'Aisp',
+      //   bankname: 'Natwest', 
+      //   consentid: ConsentId,
+      //   status: Status,
+      //   consentpayload: JSON.stringify(Payload),
+      // };     
+      // // Call the addDetails function with the details object
+      // addDetails(details1);
 
 
       return response.data.Data?.ConsentId || '';
@@ -153,17 +176,18 @@ class SanboxApiClient {
 
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn= response.data.expires_in;
+      const Scope= response.data.scope;
       
-      const updatedDetails1 = {
+      const updatedDetails2 = {
         refreshedtoken: RefreshToken,
         status: 'Authorised',
         consentexpiry: consentExpiresIn
 
       };
 
-      const columnsToUpdate1 = ['refreshedtoken', 'status', 'consentexpiry'];
+      const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
 
-      await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
+      await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
 
       console.log('Api access token', response.data.access_token);
 
@@ -193,15 +217,15 @@ class SanboxApiClient {
       const accountIds = acDetails.Account.map(account => account.AccountId);
       const allAccountDetails = acDetails.Account;
 
-      const updatedDetails2 = {
+      const updatedDetails3 = {
         account_customer_consented: accountIds,
         account_details: JSON.stringify(allAccountDetails)
 
       };
 
-      const columnsToUpdate2 = ['account_customer_consented', 'account_details'];
+      const columnsToUpdate3 = ['account_customer_consented', 'account_details'];
 
-      await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
+      await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
 
 
 
