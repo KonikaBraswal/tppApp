@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 1, height: 1}, // for iOS
     shadowOpacity: 0.3, // for iOS
     backgroundColor: '#c8e1cc',
+    zIndex:1
   },
   title: {
     fontSize: 20,

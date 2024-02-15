@@ -28,13 +28,13 @@ const MainScreen = ({route}) => {
         nestedScrollEnabled={true}
         style={{padding: 5, marginVertical: 8, flex: 1}}>
         <View style={styles.rowContainer}>
-          <Surface elevation={6} category="medium" style={styles.surface}>
+          {/* <Surface elevation={6} category="medium" style={styles.surface}>
             <Image
               source={require('../assets/icons/natwest.png')}
               style={styles.icon}
             />
-          </Surface>
-          <DropdownWithCheckboxes />
+          </Surface> */}
+          {/* <DropdownWithCheckboxes /> */}
         </View>
         <AccountDetails account={accountDetails} balance={balanceDetails} />
 
@@ -82,6 +82,8 @@ const MainScreen = ({route}) => {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+  
+ 
   );
 };
 
