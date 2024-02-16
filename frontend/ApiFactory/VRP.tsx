@@ -37,7 +37,7 @@ const VRP = () => {
     };
     const fetchConsentID = async (access_token: string) => {
         const id = uuidv4({
-            
+            // random:getRandomBase64
         });
         try {
             setLoading(true);
@@ -47,7 +47,7 @@ const VRP = () => {
                 Authorization: `Bearer ${access_token}`,
                 'Content-Type': 'application/json',
                 'x-jws-signature': 'DUMMY_SIG',
-                'x-idempotency-key': `${id}`,
+                'x-idempotency-key': 'b1f4d64f-8c68-4a64-a6d3-030841311763',
                 'x-fapi-financial-id': '0015800000jfwxXAAQ'
 
                 // Add any other headers as needed
@@ -98,13 +98,34 @@ const VRP = () => {
             const response = await axios.post('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrp-consents', requestBody, { headers });
             setConsentId(response.data);
             console.log(response.data);
+            getConsentApprove(response.data.ConsentId);
         } catch (error) {
             console.log("error in id", error);
         } finally {
             setLoading(false);
         }
     };
+    const getConsentApprove = async (consentId: string) => {
+        try {
+            setLoading(true);
+            // const headers = {
+            //     'Content-Type': 'application/x-www-form-urlencoded',
+            //     // Add any other headers as needed
+            // };
 
+            const client_id = 'E91BESzQl1bSPp6qWTd-zG4x2dBx1IkntsoRHNoF2ks=';
+            // Define request body (if needed)
+            
+            const response = await axios.get(`https://api.sandbox.natwest.com/authorize?client_id=${client_id}&response_type=code id_token&scope=openid payments&redirect_uri=https%3A%2F%2F5e87cf78-a50c-4dc1-92cc-730ad350de6b.example.org%2Fredirect&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=123456789012@5e87cf78-a50c-4dc1-92cc-730ad350de6b.example.org&authorization_account=50000012345601`);
+            setData(response.data);
+            // fetchConsentID(response.data.access_token);
+            console.log(response.data);
+        } catch (error) {
+            console.log("error in access");
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <View>
             <Button title="Make API Call" onPress={fetchAccessToken} />
