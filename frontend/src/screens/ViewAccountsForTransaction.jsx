@@ -122,7 +122,7 @@ const ViewAccountsForTransactions = () => {
                         onPress={() => {
                           navigation.navigate('Transfer Money');
                         }}
-                        style={{marginLeft: 15}}
+                        style={{marginLeft: 0}}
                       />
                     </Card.Actions>
                   </View>

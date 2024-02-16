@@ -15,25 +15,29 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const AccountCard = props => {
   const navigation = useNavigation();
   const accountId = props.item.AccountId;
+  const permissions = props.permissions;
+
   const [accountBalance, setAccountBalance] = useState(null);
   useEffect(() => {
     const fetchBalance = async () => {
-      try {
-        const response = await sandboxApiClient.allCalls(
-          `${accountId}/balances`,
-        );
-        setAccountBalance(response);
-      } catch (error) {
-        console.error('Error fetching balance:', error);
+      if (permissions.includes('ReadBalances')) {
+        try {
+          const response = await sandboxApiClient.allCalls(
+            `${accountId}/balances`,
+          );
+          setAccountBalance(response);
+        } catch (error) {
+          console.error('Error fetching balance:', error);
+        }
       }
     };
-
     fetchBalance();
   }, [accountId]);
 
   const handleCardClick = async accountId => {
     navigation.navigate('Details', {
       accountDetails: props.item,
+      permissions: permissions,
     });
   };
 
@@ -48,12 +52,16 @@ const AccountCard = props => {
               {`${item.AccountSubType}`}
             </Text>
             <Text style={styles.smalltext}>{item.Nickname}</Text>
-            <Text>{`${item.AccountId}`}</Text>
-            <Text>
-              Balance:
-              {accountBalance?.Balance?.[0]?.Amount?.Amount ?? 0}
-              <Text> GBP</Text>
-            </Text>
+            <Text style={{marginTop: 10}}>{`${item.AccountId}`}</Text>
+            {permissions.includes('ReadBalances') ? (
+              <Text style={{marginTop: 10}}>
+                Balance:
+                {accountBalance?.Balance?.[0]?.Amount?.Amount ?? 0}
+                <Text> GBP</Text>
+              </Text>
+            ) : (
+              <Text></Text>
+            )}
           </View>
           <View style={styles.iconContainer}>
             <Image
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 3,
+    marginVertical: 4,
   },
   smalltext: {
     fontSize: 15,

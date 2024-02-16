@@ -22,6 +22,7 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
+  const permissions = route.params.permissions;
   const {AccountId} = route.params.accountDetails;
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -41,7 +42,7 @@ const MainScreen = ({route}) => {
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails account={accountDetails} />
+        <AccountDetails account={accountDetails} permissions={permissions} />
 
         <View
           style={{
@@ -83,7 +84,7 @@ const MainScreen = ({route}) => {
               alignSelf: 'center',
             }}
           />
-          <TransactionList accountId={AccountId} />
+          <TransactionList accountId={AccountId} permissions={permissions} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

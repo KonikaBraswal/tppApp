@@ -47,6 +47,7 @@ const AllAccounts = ({route}) => {
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
+  const permissions = route.params.permissions;
   // const transactions = route.params.transactions;
   // const balances = route.params.balances;
   // useEffect(() => {
@@ -96,7 +97,10 @@ const AllAccounts = ({route}) => {
               <View style={styles.searchBarContainer}></View>
             </View>
             <ScrollView style={styles.scrollContainer}>
-              <NatwestAccounts accountsList={accounts} />
+              <NatwestAccounts
+                accountsList={accounts}
+                permissions={permissions}
+              />
             </ScrollView>
           </View>
           <TouchableOpacity

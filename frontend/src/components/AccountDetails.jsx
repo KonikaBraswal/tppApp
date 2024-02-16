@@ -18,16 +18,19 @@ const AccountDetails = props => {
     Nickname,
     Account,
   } = props.account;
+  const permissions = props.permissions;
   const [balanceDetails, setBalanceDetails] = useState(null);
   useEffect(() => {
     const fetchBalance = async () => {
-      try {
-        const response = await sandboxApiClient.allCalls(
-          `${AccountId}/balances`,
-        );
-        setBalanceDetails(response);
-      } catch (error) {
-        console.error('Error fetching balance:', error);
+      if (permissions.includes('ReadBalances')) {
+        try {
+          const response = await sandboxApiClient.allCalls(
+            `${AccountId}/balances`,
+          );
+          setBalanceDetails(response);
+        } catch (error) {
+          console.error('Error fetching balance:', error);
+        }
       }
     };
 
@@ -40,13 +43,17 @@ const AccountDetails = props => {
         <Text style={{color: 'black'}}>{AccountType} Account</Text>
         <Text style={styles.title}>{AccountSubType} Account</Text>
         <Text style={styles.text}>{AccountId}</Text>
-        <Text style={{fontSize: 16, marginVertical: 2, fontWeight: 'bold'}}>
-          Available Balance:{' '}
-          {balanceDetails?.Balance?.[0]?.Amount?.Amount ??
-            props?.balance?.[0]?.Amount?.Amount ??
-            0}
-          GBP
-        </Text>
+        {permissions.includes('ReadBalances') ? (
+          <Text style={{fontSize: 16, marginVertical: 2, fontWeight: 'bold'}}>
+            Available Balance:{' '}
+            {balanceDetails?.Balance?.[0]?.Amount?.Amount ??
+              props?.balance?.[0]?.Amount?.Amount ??
+              0}
+            GBP
+          </Text>
+        ) : (
+          <Text></Text>
+        )}
       </Card.Content>
     </Card>
   );

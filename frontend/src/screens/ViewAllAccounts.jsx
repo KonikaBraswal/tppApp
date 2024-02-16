@@ -124,7 +124,7 @@ const ViewAllAccounts = () => {
                             AccountId: account.AccountId,
                           });
                         }}
-                        style={{marginLeft: 15}}
+                        style={{marginLeft: 0}}
                       />
                     </Card.Actions>
                   </View>
