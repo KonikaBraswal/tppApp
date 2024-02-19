@@ -112,12 +112,10 @@ const ConsentScreen = () => {
   const [inputValue, setInputValue] = useState('');
 
   const areAllCheckboxesChecked = () => {
-    return (
-      (checked1 || checked2 || checked5) &&
-      (checked3 || checked4) &&
-      checked6 &&
-      checked7
-    );
+    const condition1 = checked1 && checked6 && checked7;
+    const condition2 = (checked3 || checked4) && checked5;
+    const condition3 = !checked3 && !checked4 && !checked5;
+    return condition1 && (condition2 || condition3);
   };
 
   const handleConfirmButtonClick = async () => {
@@ -235,6 +233,7 @@ const ConsentScreen = () => {
                 <Checkbox.Android
                   status={checked1 ? 'checked' : 'unchecked'}
                   onPress={handleCheckbox1}
+                  disabled={true}
                 />
               )}
               title="Your Account Details"
@@ -354,7 +353,6 @@ const ConsentScreen = () => {
                 <Checkbox.Android
                   status={checked5 ? 'checked' : 'unchecked'}
                   onPress={handleCheckbox5}
-                  disabled={true}
                 />
               )}
               title="Your Transaction Details"
