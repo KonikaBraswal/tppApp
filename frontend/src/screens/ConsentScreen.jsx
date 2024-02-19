@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerText: {
-    fontSize: wp('8%'),
+    fontSize: wp('7%'),
     fontWeight: 'bold',
     color: '#36013f',
     paddingTop: wp('4%'),
