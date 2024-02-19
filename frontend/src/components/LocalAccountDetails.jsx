@@ -1,5 +1,9 @@
 import React from 'react';
 import {Card, Title, Text, Button} from 'react-native-paper';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import {StyleSheet} from 'react-native';
 
 const LocalAccountDetails = props => {
@@ -16,10 +20,10 @@ const LocalAccountDetails = props => {
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Text style={{color: 'black'}}>{AccountType} Account</Text>
+        <Text style={styles.accountType}>{AccountType} Account</Text>
         <Text style={styles.title}>{AccountSubType} Account</Text>
         <Text style={styles.text}>{AccountId}</Text>
-        <Text style={{fontSize: 16, marginVertical: 2, fontWeight: 'bold'}}>
+        <Text style={styles.balanceText}>
           Available Balance: {props?.balance?.[0]?.Amount?.Amount ?? 0} GBP
         </Text>
       </Card.Content>
@@ -29,24 +33,33 @@ const LocalAccountDetails = props => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 8,
-    padding: 5,
-    borderRadius: 8,
-    elevation: 3, // for Android
-    shadowColor: '#000', // for iOS
-    shadowOffset: {width: 1, height: 1}, // for iOS
-    shadowOpacity: 0.3, // for iOS
+    marginHorizontal: wp('2%'),
+    marginVertical: hp('1%'),
+    padding: wp('2%'),
+    borderRadius: wp('2%'),
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.3,
     backgroundColor: '#c8e1cc',
   },
+  accountType: {
+    fontSize: wp('4%'),
+    color: 'black',
+  },
   title: {
-    fontSize: 20,
+    fontSize: wp('5%'),
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginVertical: hp('1%'),
   },
   text: {
-    fontSize: 16,
-    marginVertical: 2,
+    fontSize: wp('4%'),
+    marginVertical: hp('0.5%'),
+  },
+  balanceText: {
+    fontSize: wp('4%'),
+    marginVertical: hp('0.5%'),
+    fontWeight: 'bold',
   },
 });
-
 export default LocalAccountDetails;

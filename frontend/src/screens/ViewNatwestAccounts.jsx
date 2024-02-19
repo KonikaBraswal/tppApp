@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -18,8 +19,14 @@ import {
   IconButton,
   Icon,
 } from 'react-native-paper';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import readNatwestAccount from '../assets/data/accounts.json';
 import readNatwestBalance from '../assets/data/balances.json';
+const {width} = Dimensions.get('window');
+const cardWidth = width * 0.93;
 
 const ViewNatwestAccounts = () => {
   const navigation = useNavigation();
@@ -65,26 +72,23 @@ const ViewNatwestAccounts = () => {
       <View style={styles.container}>
         <View style={styles.mainContent}>
           <View style={styles.rowContainer}></View>
-          <ScrollView style={styles.scrollContainer}>
+          <ScrollView
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
             {filteredAccounts.map(account => (
               <Card key={account.AccountId} style={styles.card}>
                 <Card.Content>
                   <View style={styles.cardHeader}>
-                    <Title
-                      style={{
-                        color: 'black',
-                        fontWeight: 'bold',
-                        marginTop: -10,
-                      }}>
+                    <Title style={styles.title}>
                       {account.AccountSubType} Account
                     </Title>
                     <Image
                       source={require('../assets/images/natwest2.png')}
-                      style={styles.iconNatwest}
+                      style={styles.icon}
                     />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{marginTop: -10}}>
+                  <View style={styles.cardContent}>
+                    <View style={styles.textContainer}>
                       <Paragraph>{account.AccountId}</Paragraph>
                       <Paragraph>{account.Account[0].Name}</Paragraph>
                       <Paragraph>
@@ -104,7 +108,7 @@ const ViewNatwestAccounts = () => {
                             AccountId: account.AccountId,
                           });
                         }}
-                        style={{marginLeft: 0}}
+                        style={styles.iconButton}
                       />
                     </Card.Actions>
                   </View>
@@ -133,8 +137,6 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    width: '100%',
-    padding: 10,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -154,42 +156,51 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   card: {
-    marginBottom: 16,
+    marginHorizontal: wp('3%'),
+    marginBottom: hp('2%'),
     backgroundColor: '#c8e1cc',
-  },
-  surface: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
-  },
-  iconNatwest: {
-    width: 55,
-    height: 55,
-    resizeMode: 'contain',
-  },
-  iconBarclays: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-  },
-  footer: {
-    backgroundColor: '#5a287d',
-    padding: 15,
-    width: '100%',
-    alignItems: 'center',
-  },
-  footerText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
+    borderRadius: 10,
+    elevation: 3,
+    width: cardWidth,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    paddingHorizontal: wp('3%'),
+  },
+  title: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  icon: {
+    width: wp('14.5%'),
+    height: wp('14.5%'),
+    resizeMode: 'contain',
+    marginRight: -wp('4.5%'),
+    marginLeft: wp('2%'),
+  },
+  cardContent: {
+    flexDirection: 'row',
+    paddingHorizontal: wp('3%'),
+  },
+  textContainer: {
+    flex: 1,
+  },
+  iconButton: {
+    marginLeft: wp('2%'),
+    marginRight: -wp('4.5%'),
+  },
+  footer: {
+    backgroundColor: '#5a287d',
+    padding: wp('4.2%'),
+    alignItems: 'center',
+    width: '100%',
+  },
+  footerText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: wp('5%'),
   },
 });
 

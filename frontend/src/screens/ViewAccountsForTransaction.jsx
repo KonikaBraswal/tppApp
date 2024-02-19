@@ -74,7 +74,9 @@ const ViewAccountsForTransactions = () => {
           <View style={styles.rowContainer}>
             <View style={styles.searchBarContainer}></View>
           </View>
-          <ScrollView style={styles.scrollContainer}>
+          <ScrollView
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
             {filteredAccounts.map(account => (
               <Card key={account.AccountId} style={styles.card}>
                 <Card.Content>

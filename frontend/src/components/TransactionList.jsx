@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, ActivityIndicator} from 'react-native-paper';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import TransactionCard from './TransactionCard';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
@@ -42,19 +43,12 @@ const TransactionList = props => {
   }, [AccountId]);
   const transactions = transactionDetails;
   return (
-    <View style={{padding: 4, marginVertical: 8}}>
+    <View style={styles.container}>
       {loading ? (
-        <>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color="green" />
-          <Text
-            style={{
-              textAlign: 'center',
-              marginTop: 10,
-              fontWeight: 'bold',
-            }}>
-            Fetching Transactions
-          </Text>
-        </>
+          <Text style={styles.loadingText}>Fetching Transactions</Text>
+        </View>
       ) : transactions?.Transaction ? (
         transactions.Transaction.map(transaction => (
           <TransactionCard
@@ -63,19 +57,33 @@ const TransactionList = props => {
           />
         ))
       ) : (
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 18,
-            marginTop: 10,
-            fontWeight: 'bold',
-            color: 'green',
-          }}>
-          {transactionText}
-        </Text>
+        <Text style={styles.statusText}>{transactionText}</Text>
       )}
     </View>
   );
 };
 
+styles = StyleSheet.create({
+  container: {
+    padding: 4,
+    marginVertical: hp('1%'),
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('2%'),
+  },
+  loadingText: {
+    textAlign: 'center',
+    marginTop: hp('2%'),
+    fontWeight: 'bold',
+  },
+  statusText: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: hp('2%'),
+    fontWeight: 'bold',
+    color: 'green',
+  },
+});
 export default TransactionList;
