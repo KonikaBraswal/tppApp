@@ -23,7 +23,6 @@ import IconDialog from '../components/IconDialog';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 // import { updateDetails } from '../../database/Database';
 
-
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
 const way = 'web';
@@ -121,39 +120,33 @@ const ConsentScreen = () => {
           'ReadTransactionsDetail',
         ];
 
+        //   // Storing checked items
+        // const checkedItems = [];
+        // if (checked1) checkedItems.push('Your Account Details');
+        // if (checked2) checkedItems.push('Your Balance Details');
+        // if (checked3) checkedItems.push('Your Transaction Debits');
+        // if (checked4) checkedItems.push('Your Transaction Credits');
+        // if (checked5) checkedItems.push('Your Transaction Details');
+        // if (checked6) checkedItems.push('I Am a Tpp So I Need Access');
+        // if (checked7) checkedItems.push('I Am The Owner Of the Account');
 
+        //   setLoading(true);
+        //   setError(null);
 
+        //   const consentData = await sandboxApiClient.retrieveAccessToken(
+        //     permissions,
+        //   ); //here is data
+        //   console.log('Consent id:', consentData);
 
-      //   // Storing checked items
-      // const checkedItems = [];
-      // if (checked1) checkedItems.push('Your Account Details');
-      // if (checked2) checkedItems.push('Your Balance Details');
-      // if (checked3) checkedItems.push('Your Transaction Debits');
-      // if (checked4) checkedItems.push('Your Transaction Credits');
-      // if (checked5) checkedItems.push('Your Transaction Details');
-      // if (checked6) checkedItems.push('I Am a Tpp So I Need Access');
-      // if (checked7) checkedItems.push('I Am The Owner Of the Account');
+        //   // Update the consentpayload in the database with checked items
+        // const userId = 1001; // replace with the actual user ID
+        // await updateDetails({ consentpayload: JSON.stringify(checkedItems) }, userId, ['consentpayload']);
 
-      //   setLoading(true);
-      //   setError(null);
+        const consentData = await sandboxApiClient.retrieveAccessToken(
+          permissions,
+        ); //here is data
+        console.log('Consent id:', consentData);
 
-      //   const consentData = await sandboxApiClient.retrieveAccessToken(
-      //     permissions,
-      //   ); //here is data
-      //   console.log('Consent id:', consentData);
-
-      //   // Update the consentpayload in the database with checked items
-      // const userId = 1001; // replace with the actual user ID
-      // await updateDetails({ consentpayload: JSON.stringify(checkedItems) }, userId, ['consentpayload']);
-
-      
-
-         const consentData = await sandboxApiClient.retrieveAccessToken(
-           permissions,
-         ); //here is data
-         console.log('Consent id:', consentData);
-
-      
         if (way == 'web') {
           const consentUrl = await sandboxApiClient.manualUserConsent(
             consentData,
@@ -260,8 +253,8 @@ const ConsentScreen = () => {
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
         <Text style={styles.textStyle}>
-          ONEBank needs your explicit consent to access the following information
-          from the accounts held at your bank or building society
+          ONEBank needs your explicit consent to access the following
+          information from the accounts held at your bank or building society
         </Text>
 
         <List.Section>

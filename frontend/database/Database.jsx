@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, Button, Alert} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
-const db = SQLite.openDatabase({ name: 'dbSandbox.db', location: 'default' });
+const db = SQLite.openDatabase({name: 'dbSandbox.db', location: 'default'});
 
 const initDatabase = () => {
   db.transaction(tx => {
@@ -29,12 +29,12 @@ const initDatabase = () => {
       },
       error => {
         console.error('Error creating userconsent_sandbox table: ', error);
-      }
+      },
     );
   });
 };
 
-export const addDetails = (details) => {
+export const addDetails = details => {
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
@@ -75,7 +75,7 @@ export const addDetails = (details) => {
       },
       (_, error) => {
         console.error('Error adding details: ', error);
-      }
+      },
     );
   });
 };
@@ -91,9 +91,11 @@ export const updateDetails = (details, userId, columnsToUpdate) => {
   }
 
   return new Promise((resolve, reject) => {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       // Construct SET clause dynamically based on columnsToUpdate
-      const setClause = columnsToUpdate.map(column => `${column} = ?`).join(', ');
+      const setClause = columnsToUpdate
+        .map(column => `${column} = ?`)
+        .join(', ');
 
       // Add last_updated_date and last_updated_time to SET clause
       const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
@@ -121,20 +123,18 @@ export const updateDetails = (details, userId, columnsToUpdate) => {
         (_, error) => {
           console.error('Error updating details: ', error);
           reject(error);
-        }
+        },
       );
     });
   });
 };
 
-
-
 // export const updateDetails = (details, userId) => {
 //   console.log('Updating details for userId:', userId);
 //   db.transaction((tx) => {
 //     tx.executeSql(
-//       `UPDATE userconsent_sandbox 
-//        SET 
+//       `UPDATE userconsent_sandbox
+//        SET
 //         refreshedtoken = ?,
 //         consentexpiry = ?,
 //         paymentid = ?,
@@ -163,7 +163,6 @@ export const updateDetails = (details, userId, columnsToUpdate) => {
 //   });
 // };
 
-
 const displayResults = () => {
   db.transaction(tx => {
     tx.executeSql(
@@ -184,7 +183,7 @@ const displayResults = () => {
       },
       (_, error) => {
         console.error('Error querying database: ', error);
-      }
+      },
     );
   });
 };
@@ -196,7 +195,7 @@ const deleteAllEntries = () => {
       [],
       (_, results) => {
         console.log('All entries deleted successfully');
-        
+
         // Reset auto-increment ID after deleting all entries
         tx.executeSql(
           'DELETE FROM sqlite_sequence WHERE name = "userconsent_sandbox";',
@@ -206,12 +205,12 @@ const deleteAllEntries = () => {
           },
           (_, error) => {
             console.error('Error resetting auto-increment ID: ', error);
-          }
+          },
         );
       },
       (_, error) => {
         console.error('Error deleting entries: ', error);
-      }
+      },
     );
   });
 };
@@ -255,9 +254,9 @@ const deleteAllEntries = () => {
 
 export var globalRefreshedToken;
 
-export const fetchRefreshedToken = (userId) => {
+export const fetchRefreshedToken = userId => {
   return new Promise((resolve, reject) => {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       tx.executeSql(
         'SELECT refreshedtoken FROM userconsent_sandbox WHERE userId = ?;',
         [userId],
@@ -280,19 +279,21 @@ export const fetchRefreshedToken = (userId) => {
         (_, error) => {
           console.error('Error fetching refreshedtoken: ', error);
           reject(error);
-        }
+        },
       );
     });
   });
 };
 
-
 const userIdToFetch = 1001;
 
 fetchRefreshedToken(userIdToFetch)
-  .then((refreshedtoken) => {
+  .then(refreshedtoken => {
     if (refreshedtoken !== null) {
-      console.log(`Refreshed Token for userId ${userIdToFetch}:`, refreshedtoken);
+      console.log(
+        `Refreshed Token for userId ${userIdToFetch}:`,
+        refreshedtoken,
+      );
       processRefreshedToken();
     } else {
       console.log(`No entry found for userId ${userIdToFetch}.`);
@@ -301,13 +302,13 @@ fetchRefreshedToken(userIdToFetch)
     }
     processRefreshedToken();
   })
-  .catch((error) => {
+  .catch(error => {
     console.error('Error fetching Refreshed Token:', error);
   });
 
-  export const processRefreshedToken = () => {
-    console.log('Refreshed Token:', globalRefreshedToken);
-  };
+export const processRefreshedToken = () => {
+  console.log('Refreshed Token:', globalRefreshedToken);
+};
 
 const Database = () => {
   useEffect(() => {

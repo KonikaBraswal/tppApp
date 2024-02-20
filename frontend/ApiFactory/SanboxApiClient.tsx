@@ -2,8 +2,8 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
 import {Linking, Alert} from 'react-native';
-import { addDetails } from '../database/Database';
-import { updateDetails } from '../database/Database';
+import {addDetails} from '../database/Database';
+import {updateDetails} from '../database/Database';
 
 interface BodyData {
   Data: {
@@ -11,15 +11,19 @@ interface BodyData {
   };
   Risk: {}; // Adjust this if Risk has a specific structure
 }
-var refreshTokenExists=false;
+var refreshTokenExists = false;
+//DB
 interface ResponseData {
   refresh_token: string;
   access_token: string;
+  scope: string;
+  expires_in: number;
   Data?: {
     ConsentId?: string;
+    Status: string;
   };
 }
-
+//DB
 // const userIdToUpdate = 1001;
 
 class SanboxApiClient {
@@ -62,15 +66,15 @@ class SanboxApiClient {
       );
       //store
       //storing scope in database
-      const scope= response.data.scope;
+      const scope = response.data.scope;
 
       const details1 = {
         userId: 1001,
-        scope: scope
-      }; 
+        scope: scope,
+      };
 
       addDetails(details1);
-      // store 
+      // store
       console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -82,9 +86,9 @@ class SanboxApiClient {
     try {
       const body: BodyData = {
         Data: {
-          Permissions: this.permissions,//get permissions from db
+          Permissions: this.permissions, //get permissions from db
         },
-        Risk: {},// get risks from db
+        Risk: {}, // get risks from db
       };
       const headers = {
         ...this.commonHeaders,
@@ -98,9 +102,9 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-       //store
-      const Status= response.data.Data?.Status;
-      const Payload= response.data.Data
+      //store
+      const Status = response.data.Data?.Status;
+      const Payload = response.data.Data;
       const ConsentId = response.data.Data?.ConsentId || '';
 
       const updatedDetails1 = {
@@ -116,11 +120,11 @@ class SanboxApiClient {
       // const details1 = {
       //   userId: 1001,
       //   // scope: 'Aisp',
-      //   bankname: 'Natwest', 
+      //   bankname: 'Natwest',
       //   consentid: ConsentId,
       //   status: Status,
       //   consentpayload: JSON.stringify(Payload),
-      // };     
+      // };
       // // Call the addDetails function with the details object
       // addDetails(details1);
 
@@ -176,26 +180,23 @@ class SanboxApiClient {
       );
       //store
       const RefreshToken = response.data.refresh_token;
-      const consentExpiresIn= response.data.expires_in;
-      const Scope= response.data.scope;
-      
+      const consentExpiresIn = response.data.expires_in;
+      const Scope = response.data.scope;
+
       const updatedDetails2 = {
         refreshedtoken: RefreshToken,
         status: 'Authorised',
-        consentexpiry: consentExpiresIn
-
+        consentexpiry: consentExpiresIn,
       };
 
       const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
 
       await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
 
-
       //store
 
-
       //setting flag after storing refresh token in db
-      refreshTokenExists=true;
+      refreshTokenExists = true;
       console.log('Api access token', response.data.access_token);
       //console.log('Api refresh token', response.data.refresh_token);
 
@@ -206,7 +207,7 @@ class SanboxApiClient {
     }
   }
 
-  async refreshToken(refreshToken:string):Promise<any>{
+  async refreshToken(refreshToken: string): Promise<any> {
     try {
       const body: Record<string, string> = {
         client_id: this.clientId,
@@ -235,7 +236,6 @@ class SanboxApiClient {
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
-
   }
 
   async fetchAccounts(apiAccessToken: string): Promise<any> {
@@ -252,17 +252,21 @@ class SanboxApiClient {
         },
       );
       //store
-      const acDetails=accountResponse.data.Data;
-      const accountIds = acDetails.Account.map(account => account.AccountId);
+      const acDetails = accountResponse.data.Data;
+      const accountIds = acDetails.Account.map(
+        (account: any) => account.AccountId,
+      );
       const allAccountDetails = acDetails.Account;
 
       const updatedDetails3 = {
         account_customer_consented: accountIds,
-        account_details: JSON.stringify(allAccountDetails)
-
+        account_details: JSON.stringify(allAccountDetails),
       };
 
-      const columnsToUpdate3 = ['account_customer_consented', 'account_details'];
+      const columnsToUpdate3 = [
+        'account_customer_consented',
+        'account_details',
+      ];
 
       await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
       //store
@@ -291,6 +295,5 @@ class SanboxApiClient {
     }
   }
 }
-
 
 export default SanboxApiClient;
