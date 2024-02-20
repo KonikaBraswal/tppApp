@@ -123,9 +123,7 @@ const ViewAccountsForTransaction = () => {
                         size={22}
                         color="#5a287d"
                         onPress={() => {
-                          navigation.navigate('View Details', {
-                            AccountId: account.AccountId,
-                          });
+                          navigation.navigate('Transfer Money');
                         }}
                         style={styles.iconButton}
                       />

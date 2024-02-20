@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: hp('2%'),
     backgroundColor: '#c8e1cc',
+    width: cardWidth,
   },
   icon: {
     width: wp('15%'),
