@@ -148,7 +148,7 @@ const VRP = () => {
             };
 
             const response = await axios.post('https://ob.sandbox.natwest.com/token', body, { headers });
-            setApiAccessToken(response.data);
+            setApiAccessToken(response.data.access_token);
             await getAllPayments(response.data.access_token);
             console.log(response.data);
         } catch (error) {
@@ -213,7 +213,7 @@ const VRP = () => {
          const response=await axios.post('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',body,{headers});
          console.log("4th call",response.data); 
          setPayments(response.data);
-         getDomesticPayments(data);
+         getDomesticPayments(response.data.Links.Self);
         }catch (error) {
             console.log("error in access in vrp payments",error);
         } finally {
@@ -221,14 +221,14 @@ const VRP = () => {
         }
 
     };
-    const getDomesticPayments= async(data:string)=>{
+    const getDomesticPayments= async(url:string)=>{
         try{
             setLoading(true);
             const headers={
-                Authorization:`Bearer ${data}`,
+                Authorization:`Bearer ${apiAccessToken}`,
             'x-fapi-financial-id':'0015800000jfwxXAAQ',
             };
-            const response=await axios.get('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps/cb077d7f-9613-482b-a79b-7176228fb202',{headers});
+            const response=await axios.get(url,{headers});
             console.log("response",response.data);
             setgetData(response.data);
 

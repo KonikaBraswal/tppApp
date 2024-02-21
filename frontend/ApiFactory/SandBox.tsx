@@ -209,14 +209,14 @@ class SandBox {
                 },
             );
             this.apiAccess = apiAccessToken;
-            console.log("payments-->", vrpPaymentResponse.data);
-            return this.getAllVrpPayments();
+            console.log("payments-->", vrpPaymentResponse.data.Links.Self);
+            return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
         } catch (error) {
             throw new Error(`Failed to fetch data for vrp payments: ${error}`);
         }
     }
 
-    async getAllVrpPayments(): Promise<any> {
+    async getAllVrpPayments(url:string): Promise<any> {
         try {
 
             const headers = {
@@ -224,7 +224,7 @@ class SandBox {
                 'x-fapi-financial-id': '0015800000jfwxXAAQ',
             };
             const allVrpPaymentsResponse = await axios.get(
-                `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}/${sandboxConfig.allVrpPayments}`,
+                url,
                 {
                     headers: headers
                 });
