@@ -5,6 +5,7 @@ import sandboxConfig from '../configs/Sandbox.json';
 import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';
 import SanboxApiClient from './SanboxApiClient';
+import SandBox from './SandBox';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
 
 let permissions: string[] = [];
@@ -25,7 +26,7 @@ class ApiFactory {
   createApiClient(type: string) {
     switch (type) {
       case 'sandbox':
-        return new SanboxApiClient(
+        return new SandBox(
           this.baseUrl,
           this.clientId,
           this.clientSecret,

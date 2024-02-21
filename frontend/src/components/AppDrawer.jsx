@@ -7,6 +7,8 @@ import SelectBank from './SelectBank';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 import VRP from '../../ApiFactory/VRP';
+import vrpConsent from '../screens/vrpConsent';
+import VrpConsentScreen from '../screens/vrpConsent';
 
 const Drawer = createDrawerNavigator();
 
@@ -94,7 +96,7 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="VRP"
-        component={VRP}
+        component={VrpConsentScreen}
         options={{
           drawerIcon: ({color}) => (
             <Icon source="code-tags" color={color} size={28} />

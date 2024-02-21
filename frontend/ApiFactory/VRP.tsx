@@ -101,7 +101,7 @@ const VRP = () => {
             console.log("body", requestBody);
             const response = await axios.post('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrp-consents', requestBody, { headers });
             setConsentId(response.data);
-            console.log("consent",ConsentId.Data.ConsentId);
+            console.log("consent",ConsentId);
             console.log(response.data.Data.ConsentId);
             // getConsentApprove(response.data.Data.ConsentId);
             manualConsent(response.data.Data.ConsentId);
@@ -211,7 +211,7 @@ const VRP = () => {
           };
           console.log("body",body);
          const response=await axios.post('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',body,{headers});
-         console.log(response.data); 
+         console.log("4th call",response.data); 
          setPayments(response.data);
          getDomesticPayments(data);
         }catch (error) {
@@ -229,7 +229,7 @@ const VRP = () => {
             'x-fapi-financial-id':'0015800000jfwxXAAQ',
             };
             const response=await axios.get('https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps/cb077d7f-9613-482b-a79b-7176228fb202',{headers});
-            console.log("response",response);
+            console.log("response",response.data);
             setgetData(response.data);
 
         }catch (error) {
