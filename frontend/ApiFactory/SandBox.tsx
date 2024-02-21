@@ -27,6 +27,7 @@ interface AccessTokenRequestParams {
     scope: string;
     headers: Record<string, string>;
     body: string; // Adjust the type according to your actual body structure
+    consentUrl:string;
 }
 
 class SandBox {
@@ -37,7 +38,7 @@ class SandBox {
     private permissions!: string;
     private apiAccess: string = '';
     private consentId: string = '';
-
+    private accessToken:string = '';
     constructor(
         baseUrl: string,
         clientId: string,
@@ -67,24 +68,25 @@ class SandBox {
             }
             );
             console.log('Access token', response.data.access_token);
-            return this.accountRequest(response.data.access_token);
+            this.accessToken=response.data.access_token;
+            return this.accountRequest(params.accessTokenParams.consentUrl);
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
         }
     }
 
-    async accountRequest(accessToken: string): Promise<string> {
+    async accountRequest(url: string): Promise<string> {
         try {
             const body = this.permissions;
             const id = uuid.v4();
             const headers = {
                 ...config.vrpHeaders,
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + this.accessToken,
                 'x-idempotency-key': `${id}`,
             };
             console.log(body);
             const response: AxiosResponse<ResponseData> = await axios.post(
-                `${this.baseUrl}/${sandboxConfig.paymentRequestEndPoint}`,
+                `${this.baseUrl}/${url}`,
                 body,
                 {
                     headers: headers,
@@ -98,9 +100,9 @@ class SandBox {
         }
     }
 
-    async manualUserConsent(consentId: string): Promise<string> {
-        console.log('manual consent');
-        let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
+    async manualUserConsent(scope: string): Promise<string> {
+        // console.log('manual consent');
+        let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
         Linking.openURL(consentUrlWithVariables);
         return consentUrlWithVariables;
     }

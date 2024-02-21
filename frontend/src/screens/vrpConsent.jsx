@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// import sandboxConfig from '../configs/Sandbox.json';
+import sandboxConfig from '../../configs/Sandbox.json';
 import {
     Title,
     Text,
@@ -159,15 +161,17 @@ const VrpConsentScreen = () => {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         // other headers here
                     },
-                    body: permissions
+                    body: permissions,
+                    consentUrl:sandboxConfig.paymentRequestEndPoint
                 };
                 const consentData = await sandboxApiClient.retrieveAccessToken(
                     { accessTokenParams },
                 ); //here is data
                 console.log('Consent id:', consentData);
                 if (way == 'web') {
+                    const Vrpscope='openid payments';
                     const consentUrl = await sandboxApiClient.manualUserConsent(
-                        consentData,
+                        Vrpscope,
                     );
                     console.log(consentUrl);
                     showInputDialog();
