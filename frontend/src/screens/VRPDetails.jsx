@@ -26,9 +26,9 @@ const VRPDetails = ({ route }) => {
         category="medium"
         style={{ width: '100%', height: '25%' }}
       >
-        {/* Use LinearGradient for a fluid color effect */}
+    
         <LinearGradient
-          colors={['#5a287d', '#74429e']} // Add more colors as needed
+          colors={['#5a287d', '#74429e']} 
           style={{
             flex: 1,
             alignItems: 'center',
