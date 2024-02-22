@@ -35,13 +35,15 @@ import Landing from './src/screens/Landing';
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 import ViewAllAccounts from './src/screens/ViewAllAccounts';
-import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails';
+import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails'
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
 import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 import PaymentConscent from './src/screens/PaymentConscent';
 import MakeTransfer from './src/screens/MakeTransfer';
+import AccountsforVRP from './src/screens/AccountsforVRP';
+import CreditorDetailsforVRP from './src/screens/CreditorDetailsforVRP';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -113,6 +115,8 @@ function App(): React.JSX.Element {
                 component={PaymentConscent}
               />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
+              <Stack.Screen name="Accounts for VRP" component={AccountsforVRP} />
+              <Stack.Screen name="Enter creditor Details" component={CreditorDetailsforVRP} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

@@ -172,11 +172,11 @@ const Landing = () => {
                   <Image source={Payments.image} style={styles.images} />
                 </Surface>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{navigation.navigate("Accounts for VRP")}}>
                 <Surface
                   elevation={1}
                   category="medium"
-                  style={styles.cardsurface}>
+                  style={styles.cardsurface} >
                   <Text
                     style={{
                       fontSize: 16,
