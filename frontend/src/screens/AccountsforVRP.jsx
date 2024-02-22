@@ -49,6 +49,7 @@ const AccountsforVRP = () => {
     }
   };
   return (
+    <ScrollView>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
@@ -120,7 +121,7 @@ const AccountsforVRP = () => {
                         size={24}
                         color="#5a287d"
                         onPress={() => {
-                          navigation.navigate('Details of VRP');
+                          navigation.navigate('Enter creditor Details');
                         }}
                         style={{marginLeft: 15}}
                       />
@@ -141,6 +142,7 @@ const AccountsforVRP = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({

@@ -107,19 +107,19 @@ class SandBox {
         return consentUrlWithVariables;
     }
 
-    async userConsentProgammatically(consentId: string): Promise<string> {
+    async userConsentProgammatically(consentId: string,formData:any): Promise<string> {
         try {
             console.log('ConsentID:', consentId);
             const accountResponse: AxiosResponse<any> = await axios.get(
                 `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
             );
-            return this.exchangeAccessToken(accountResponse.data.redirectUri);
+            return this.exchangeAccessToken(accountResponse.data.redirectUri,formData);
         } catch (error) {
             throw new Error(`Failed to fetch data for accounts: ${error}`);
         }
     }
 
-    async exchangeAccessToken(authTokenUrl: string): Promise<string> {
+    async exchangeAccessToken(authTokenUrl: string,formData: any): Promise<string> {
         try {
             const start = authTokenUrl.indexOf('=') + 1;
             const end = authTokenUrl.indexOf('&');
@@ -148,14 +148,14 @@ class SandBox {
 
             console.log('Api access token', response.data.access_token);
 
-            return this.vrpPayments(response.data.access_token);
+            return this.vrpPayments(response.data.access_token,formData);
 
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
         }
     }
 
-    async vrpPayments(apiAccessToken: string): Promise<any> {
+    async vrpPayments(apiAccessToken: string,formData:any): Promise<any> {
         try {
             const id = uuid.v4();
             const headers = {
@@ -172,7 +172,7 @@ class SandBox {
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": "ACME DIY",
+                            "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {
@@ -184,13 +184,13 @@ class SandBox {
                         "InstructionIdentification": "instr-identification",
                         "EndToEndIdentification": "e2e-identification",
                         "InstructedAmount": {
-                            "Amount": "5.00",
+                            "Amount":formData.amount,
                             "Currency": "GBP"
                         },
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": "ACME DIY",
+                            "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {

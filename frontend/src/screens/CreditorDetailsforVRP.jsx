@@ -20,16 +20,18 @@ const CreditorDetailsforVRP = () => {
   const [amount, setAmount] = useState('');
 
   const handleSubmit = () => {
-    console.log('Form submitted:', {
-      firstName,
-      lastName,
-      sortCode,
-      accountNumber,
-      reference,
-      amount,
-    });
+    const formData = {
+        firstName,
+        lastName,
+        sortCode,
+        accountNumber,
+        reference,
+        amount,
+      };
+    
+      console.log('Form submitted:', formData);
 
-    navigation.navigate('Consent For Payment');
+    navigation.navigate('Consent for VRP',{formData});
   };
 
   return (

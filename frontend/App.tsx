@@ -44,6 +44,9 @@ import PaymentConscent from './src/screens/PaymentConscent';
 import MakeTransfer from './src/screens/MakeTransfer';
 import AccountsforVRP from './src/screens/AccountsforVRP';
 import CreditorDetailsforVRP from './src/screens/CreditorDetailsforVRP';
+import VRPConscent from './src/screens/VRPConsent';
+import VRPConsent from './src/screens/VRPConsent';
+import VRPDetails from './src/screens/VRPDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -117,6 +120,8 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="Accounts for VRP" component={AccountsforVRP} />
               <Stack.Screen name="Enter creditor Details" component={CreditorDetailsforVRP} />
+              <Stack.Screen name="Consent for VRP" component={VRPConsent} />
+              <Stack.Screen name="VRP Details" component={VRPDetails} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
