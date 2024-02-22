@@ -55,6 +55,7 @@ const ConsentScreen = () => {
   const [checked5, setChecked5] = useState(true);
   const [checked6, setChecked6] = useState(false);
   const [checked7, setChecked7] = useState(false);
+  const [permission, setPermission] = useState([]);
 
   const handleCheckbox1 = () => setChecked1(!checked1);
   const handleCheckbox2 = () => setChecked2(!checked2);
@@ -111,11 +112,10 @@ const ConsentScreen = () => {
   const [inputValue, setInputValue] = useState('');
 
   const areAllCheckboxesChecked = () => {
-    return (
-      (checked1 || checked2 || checked3 || checked4 || checked5) &&
-      checked6 &&
-      checked7
-    );
+    const condition1 = checked1 && checked6 && checked7;
+    const condition2 = (checked3 || checked4) && checked5;
+    const condition3 = !checked3 && !checked4 && !checked5;
+    return condition1 && (condition2 || condition3);
   };
 
   const handleConfirmButtonClick = async () => {
@@ -144,7 +144,8 @@ const ConsentScreen = () => {
         if (checked5) {
           permissions.push('ReadTransactionsDetail');
         }
-        console.log(permissions);
+        // console.log(permissions);
+        setPermission(permissions);
 
         setLoading(true);
         setError(null);
@@ -158,7 +159,7 @@ const ConsentScreen = () => {
             consentData,
           );
           console.log(consentUrl);
-          showInputDialog();
+          showInputDialog(permissions);
         } else {
           const data2 = await sandboxApiClient.userConsentProgammatically();
           const transactionData = await sandboxApiClient.allCalls(
@@ -187,14 +188,16 @@ const ConsentScreen = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async permission => {
     try {
-      console.log(inputValue);
+      // console.log(inputValue);
+      // console.log(permission);
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
       navigation.navigate('Your Accounts', {
         selectedBank: 'Natwest',
         selectedIcon: "'../assets/icons/natwest.png'",
         accounts: data,
+        permissions: permission,
       });
     } catch (error) {
       console.error('Error:', error);
@@ -230,6 +233,7 @@ const ConsentScreen = () => {
                 <Checkbox.Android
                   status={checked1 ? 'checked' : 'unchecked'}
                   onPress={handleCheckbox1}
+                  disabled={true}
                 />
               )}
               title="Your Account Details"
@@ -479,7 +483,12 @@ const ConsentScreen = () => {
               </Dialog.Content>
               <Dialog.Actions>
                 <Button onPress={hideInputDialog}>Cancel</Button>
-                <Button onPress={handleSubmit}>Submit</Button>
+                <Button
+                  onPress={() => {
+                    handleSubmit(permission);
+                  }}>
+                  Submit
+                </Button>
               </Dialog.Actions>
             </Dialog>
           </Portal>
@@ -498,7 +507,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerText: {
-    fontSize: wp('8%'),
+    fontSize: wp('7%'),
     fontWeight: 'bold',
     color: '#36013f',
     paddingTop: wp('4%'),

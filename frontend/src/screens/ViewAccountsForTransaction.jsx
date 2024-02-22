@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -18,12 +19,17 @@ import {
   IconButton,
   Icon,
 } from 'react-native-paper';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import readNatwestAccount from '../assets/data/accounts.json';
 import readNatwestBalance from '../assets/data/balances.json';
 import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../assets/data/barclaysBalances.json';
-
-const ViewAccountsForTransactions = () => {
+const {width} = Dimensions.get('window');
+const cardWidth = width * 0.93;
+const ViewAccountsForTransaction = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -74,17 +80,14 @@ const ViewAccountsForTransactions = () => {
           <View style={styles.rowContainer}>
             <View style={styles.searchBarContainer}></View>
           </View>
-          <ScrollView style={styles.scrollContainer}>
+          <ScrollView
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
             {filteredAccounts.map(account => (
               <Card key={account.AccountId} style={styles.card}>
                 <Card.Content>
                   <View style={styles.cardHeader}>
-                    <Title
-                      style={{
-                        color: 'black',
-                        fontWeight: 'bold',
-                        marginTop: -10,
-                      }}>
+                    <Title style={[styles.title, {marginTop: -10}]}>
                       {account.AccountSubType} Account
                     </Title>
 
@@ -103,26 +106,26 @@ const ViewAccountsForTransactions = () => {
                       />
                     )}
                   </View>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{marginTop: -10}}>
+                  <View style={styles.cardContent}>
+                    <View style={styles.textContainer}>
                       <Paragraph>{account.AccountId}</Paragraph>
                       <Paragraph>{account.Account[0].Name}</Paragraph>
                       <Paragraph>
-                        Balance:
+                        Balance:{' '}
                         {findAccountBalances(account.AccountId)?.[0]?.Amount
-                          ?.Amount ?? 0}
-                        <Text> GBP</Text>
+                          ?.Amount ?? 0}{' '}
+                        GBP
                       </Paragraph>
                     </View>
                     <Card.Actions>
                       <IconButton
                         icon="chevron-right"
-                        size={24}
+                        size={22}
                         color="#5a287d"
                         onPress={() => {
                           navigation.navigate('Transfer Money');
                         }}
-                        style={{marginLeft: 15}}
+                        style={styles.iconButton}
                       />
                     </Card.Actions>
                   </View>
@@ -151,64 +154,78 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    width: '100%',
-    padding: 10,
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: hp('1%'),
   },
-
   searchBar: {
-    height: 62,
+    height: hp('8%'),
     borderRadius: 0,
-    width: 373,
+    width: wp('90%'),
   },
-  searchBarContainer: {margin: 2},
+  searchBarContainer: {
+    margin: wp('1%'),
+  },
   scrollContainer: {
     flex: 1,
-    padding: 2,
+    padding: wp('1%'),
   },
   card: {
-    marginBottom: 16,
+    marginBottom: hp('2%'),
     backgroundColor: '#c8e1cc',
-  },
-  surface: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
-  },
-  iconNatwest: {
-    width: 55,
-    height: 55,
-    resizeMode: 'contain',
-  },
-  iconBarclays: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-  },
-  footer: {
-    backgroundColor: '#5a287d',
-    padding: 15,
-    width: '100%',
-    alignItems: 'center',
-  },
-  footerText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
+    borderRadius: wp('2%'),
+    elevation: 3,
+    width: cardWidth,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    paddingHorizontal: wp('3%'),
+  },
+  title: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  iconBarclays: {
+    width: wp('14.5%'),
+    height: wp('14.5%'),
+    resizeMode: 'contain',
+    marginRight: -wp('4.5%'),
+    marginLeft: wp('2%'),
+  },
+  iconNatwest: {
+    width: wp('14.5%'),
+    height: wp('14.5%'),
+    resizeMode: 'contain',
+    marginRight: -wp('4.5%'),
+    marginLeft: wp('2%'),
+  },
+  cardContent: {
+    flexDirection: 'row',
+    paddingHorizontal: wp('3%'),
+  },
+  textContainer: {
+    flex: 1,
+  },
+  iconButton: {
+    marginRight: -wp('4.5%'),
+    marginLeft: wp('2%'),
+  },
+  footer: {
+    backgroundColor: '#5a287d',
+    padding: wp('4.2%'),
+    alignItems: 'center',
+    width: '100%',
+  },
+  footerText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: wp('5%'),
   },
 });
 
-export default ViewAccountsForTransactions;
+export default ViewAccountsForTransaction;

@@ -7,6 +7,10 @@ import {
   Text,
   KeyboardAvoidingView,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {Searchbar} from 'react-native-paper';
 import {Surface} from '@react-native-material/core';
 import LocalAccountDetails from '../components/LocalAccountDetails';
@@ -65,10 +69,8 @@ const ViewAllLocalDetails = ({route}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1, backgroundColor: 'white'}}>
-      <ScrollView
-        nestedScrollEnabled={true}
-        style={{padding: 5, marginVertical: 8, flex: 1}}>
+      style={styles.container}>
+      <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
         <View style={styles.rowContainer}>
           <Surface elevation={6} category="medium" style={styles.surface}>
             {BarclaysAccountData.find(
@@ -92,45 +94,16 @@ const ViewAllLocalDetails = ({route}) => {
           balance={findAccountBalances(accountId)}
         />
 
-        <View
-          style={{
-            flexDirection: 'column',
-            backgroundColor: '#c8e1cc',
-            borderRadius: 10,
-            padding: 3,
-            margin: 10,
-            shadowOpacity: 0.3,
-            elevation: 3,
-            shadowColor: '#000',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: 8,
-            }}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                color: 'black',
-                marginLeft: 15,
-              }}>
-              Transactions
-            </Text>
+        <View style={styles.transactionsContainer}>
+          <View style={styles.transactionsHeader}>
+            <Text style={styles.transactionsHeaderText}>Transactions</Text>
             <SortDropdown />
           </View>
           <Searchbar
             placeholder="Search Transaction"
             onChangeText={setSearchQuery}
             value={searchQuery}
-            style={{
-              borderRadius: 10,
-              width: '95%',
-              marginTop: 12,
-              alignSelf: 'center',
-            }}
+            style={styles.searchbar}
           />
           <LocalTransactionList transactionDetails={transactionDetails} />
         </View>
@@ -140,22 +113,62 @@ const ViewAllLocalDetails = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollView: {
+    padding: wp('1%'),
+    marginVertical: hp('1%'),
+    flex: 1,
+  },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   surface: {
-    width: 50,
-    height: 50,
+    width: wp('17%'),
+    height: wp('17%'),
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20,
+    margin: wp('3%'),
   },
   icon: {
-    width: 80,
-    height: 80,
+    width: wp('16%'),
+    height: wp('16%'),
     resizeMode: 'contain',
+    marginVertical: wp('1.2%'),
+  },
+  transactionsContainer: {
+    flexDirection: 'column',
+    backgroundColor: '#c8e1cc',
+    borderRadius: wp('2%'),
+    padding: wp('1%'),
+    margin: wp('2%'),
+    shadowOpacity: 0.3,
+    elevation: 3,
+    shadowColor: '#000',
+  },
+  transactionsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: hp('1%'),
+    marginLeft: wp('3%'),
+    marginRight: wp('3%'),
+  },
+  transactionsHeaderText: {
+    fontSize: wp('5%'),
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  searchbar: {
+    borderRadius: wp('2%'),
+    width: '95%',
+    marginTop: hp('1%'),
+    alignSelf: 'center',
   },
 });
 

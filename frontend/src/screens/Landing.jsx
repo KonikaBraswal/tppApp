@@ -62,23 +62,32 @@ const Landing = () => {
       contentContainerStyle={{flexGrow: 1}}
       keyboardShouldPersistTaps="handled">
       <View style={{flex: 1}}>
-      <View
+        <View
+          style={{
+            backgroundColor: '#5a287d',
+            padding: 10,
+          }}>
+          <Searchbar
+            placeholder="Search here"
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            icon={() => <Icon source="magnify" color="black" size={20} />}
             style={{
-              backgroundColor: '#5a287d',
-              padding: 10,
-            }}>
-            <Searchbar
-              placeholder="Search here"
-              onChangeText={setSearchQuery}
-              value={searchQuery}
-              icon={() => <Icon source="magnify" color="black" size={20} />}
-              style={{
-                borderRadius: 5,
-                backgroundColor: '#f4ebfe',
-              }}
-            />
-          </View>
-          <Text style={{margin:5,marginLeft:10,fontWeight:'bold',color:'#5a287d',fontSize:17}}>Added Banks</Text>
+              borderRadius: 5,
+              backgroundColor: '#f4ebfe',
+            }}
+          />
+        </View>
+        <Text
+          style={{
+            margin: 5,
+            marginLeft: 10,
+            fontWeight: 'bold',
+            color: '#5a287d',
+            fontSize: 17,
+          }}>
+          Added Banks
+        </Text>
         <View style={styles.container}>
           <ScrollView
             horizontal
@@ -88,11 +97,11 @@ const Landing = () => {
             contentContainerStyle={{
               ...styles.ListContainer,
               backgroundColor: '#c8e1cc',
-              justifyContent:'space-around',
+              justifyContent: 'space-around',
               alignItems: 'center',
-              maxHeight:175,
-              marginTop:5,
-              borderRadius:200
+              maxHeight: 175,
+              marginTop: 5,
+              borderRadius: 200,
             }}>
             <View
               style={{
@@ -101,8 +110,12 @@ const Landing = () => {
                 marginHorizontal: 10,
               }}>
               <FAB
-                icon={() => <Icon source="plus" color="white" size={20}  />}
-                style={{alignSelf: 'center', backgroundColor: '#5a287d',marginTop:10}}
+                icon={() => <Icon source="plus" color="white" size={20} />}
+                style={{
+                  alignSelf: 'center',
+                  backgroundColor: '#5a287d',
+                  marginTop: 10,
+                }}
                 onPress={AddBank}
               />
               <Text
@@ -195,7 +208,7 @@ const styles = StyleSheet.create({
     height: 90,
     justifyContent: 'center',
     alignItems: 'center',
-    margin:10
+    margin: 10,
   },
   icon: {
     width: 80,

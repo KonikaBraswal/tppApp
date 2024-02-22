@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -20,7 +21,13 @@ import {
 } from 'react-native-paper';
 import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../assets/data/barclaysBalances.json';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
+const {width} = Dimensions.get('window');
+const cardWidth = width * 0.93;
 const ViewBarclaysAccounts = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,30 +72,24 @@ const ViewBarclaysAccounts = () => {
       </View>
       <View style={styles.container}>
         <View style={styles.mainContent}>
-          <View style={styles.rowContainer}>
-            <View style={styles.searchBarContainer}></View>
-          </View>
-          <ScrollView style={styles.scrollContainer}>
+          <View style={styles.rowContainer}></View>
+          <ScrollView
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
             {filteredAccounts.map(account => (
               <Card key={account.AccountId} style={styles.card}>
                 <Card.Content>
                   <View style={styles.cardHeader}>
-                    <Title
-                      style={{
-                        color: 'black',
-                        fontWeight: 'bold',
-                        marginTop: -10,
-                      }}>
+                    <Title style={styles.title}>
                       {account.AccountSubType} Account
                     </Title>
-
                     <Image
                       source={require('../assets/images/barclays2.png')}
-                      style={styles.iconBarclays}
+                      style={styles.icon}
                     />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
-                    <View style={{marginTop: -10}}>
+                  <View style={styles.cardContent}>
+                    <View style={styles.textContainer}>
                       <Paragraph>{account.AccountId}</Paragraph>
                       <Paragraph>{account.Account[0].Name}</Paragraph>
                       <Paragraph>
@@ -108,7 +109,7 @@ const ViewBarclaysAccounts = () => {
                             AccountId: account.AccountId,
                           });
                         }}
-                        style={{marginLeft: 15}}
+                        style={styles.iconButton}
                       />
                     </Card.Actions>
                   </View>
@@ -129,6 +130,7 @@ const ViewBarclaysAccounts = () => {
     </KeyboardAvoidingView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -138,62 +140,62 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     width: '100%',
-    padding: 10,
+    padding: wp('2%'),
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: hp('1%'),
   },
-
-  searchBar: {
-    height: 62,
-    borderRadius: 0,
-    width: 373,
-  },
-  searchBarContainer: {margin: 2},
   scrollContainer: {
     flex: 1,
-    padding: 2,
+    padding: wp('1%'),
   },
   card: {
-    marginBottom: 16,
+    marginBottom: hp('2%'),
     backgroundColor: '#c8e1cc',
+    width: cardWidth,
   },
-  surface: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
+  icon: {
+    width: wp('15%'),
+    height: wp('15%'),
+    resizeMode: 'contain',
+    marginRight: -wp('3%'),
+    marginLeft: wp('2%'),
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    margin: 10,
+    marginBottom: hp('1%'),
   },
-  iconNatwest: {
-    width: 55,
-    height: 55,
-    resizeMode: 'contain',
+  title: {
+    color: 'black',
+    fontWeight: 'bold',
   },
-  iconBarclays: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
+  cardContent: {
+    flexDirection: 'row',
+    paddingHorizontal: wp('1%'),
+  },
+  textContainer: {
+    flex: 1,
+    marginTop: -hp('1%'),
+  },
+  iconButton: {
+    marginLeft: wp('2%'),
+    marginRight: -wp('3%'),
   },
   footer: {
     backgroundColor: '#5a287d',
-    padding: 15,
+    padding: wp('4.2%'),
     width: '100%',
     alignItems: 'center',
   },
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
+    fontSize: wp('4.5%'),
   },
 });
 

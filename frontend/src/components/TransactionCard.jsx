@@ -7,57 +7,47 @@ import {
   IconButton,
   MD3Colors,
 } from 'react-native-paper';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import {StyleSheet, View} from 'react-native';
 
 const TransactionCard = ({transaction}) => {
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', marginLeft: -10}}>
+        <View style={styles.transactionRow}>
+          <View style={styles.transactionDetail}>
             {transaction.CreditDebitIndicator === 'Debit' ? (
               <IconButton
                 icon="arrow-top-right"
                 mode="contained-tonal"
                 iconColor="red"
-                style={{fontWeight: 'bold'}}
-                size={20}
+                style={styles.icon}
+                size={wp('5%')}
               />
             ) : (
               <IconButton
                 icon="arrow-bottom-left"
                 mode="contained-tonal"
                 iconColor="green"
-                style={{fontWeight: 'bold'}}
-                size={20}
+                style={styles.icon}
+                size={wp('5%')}
               />
             )}
-            <Text
-              style={{
-                color: '#5a287d',
-                fontSize: 20,
-                fontWeight: 'bold',
-                marginTop: 9,
-                marginLeft: 5,
-              }}>
+            <Text style={styles.indicatorText}>
               {transaction.CreditDebitIndicator}ed
             </Text>
           </View>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>
+          <Text style={styles.amountText}>
             {transaction.Amount.Currency} {transaction.Amount.Amount}
           </Text>
         </View>
       </Card.Content>
 
-      <Divider
-        bold="true"
-        style={{borderBottomWidth: 3, borderBottomColor: '#d3d3d3', margin: 3}}
-      />
+      <Divider style={styles.divider} />
+
       <Card.Content>
         <View>
           <Text style={styles.title}>{transaction.TransactionInformation}</Text>
@@ -65,13 +55,7 @@ const TransactionCard = ({transaction}) => {
           <Text style={styles.text}>
             Transaction ID: {transaction.TransactionId}
           </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: 10,
-            }}>
+          <View style={styles.dateTimeContainer}>
             <Text style={styles.text}>
               {new Date(transaction.BookingDateTime).toLocaleDateString()}
             </Text>
@@ -87,23 +71,57 @@ const TransactionCard = ({transaction}) => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 6,
-    padding: 3,
-    borderRadius: 8,
-    elevation: 3, // for Android
-    shadowColor: '#000', // for iOS
-    shadowOffset: {width: 1, height: 1}, // for iOS
-    shadowOpacity: 0.3, // for iOS
+    margin: wp('1%'),
+    padding: wp('1%'),
+    borderRadius: wp('1%'),
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.3,
+  },
+  transactionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  transactionDetail: {
+    flexDirection: 'row',
+    marginLeft: wp('1%'),
+  },
+  indicatorText: {
+    color: '#5a287d',
+    fontSize: wp('4.6%'),
+    fontWeight: 'bold',
+    marginTop: hp('1.2%'),
+    marginLeft: wp('1%'),
+  },
+  icon: {
+    fontWeight: 'bold',
+    marginLeft: -wp('1.5%'),
+  },
+  amountText: {
+    fontWeight: 'bold',
+    fontSize: wp('4%'),
+  },
+  divider: {
+    borderBottomWidth: wp('0.6%'),
+    borderBottomColor: '#d3d3d3',
+    margin: wp('0.8%'),
   },
   title: {
-    fontSize: 16,
+    fontSize: wp('4.4%'),
     fontWeight: 'bold',
-    marginVertical: 5,
+    marginVertical: hp('1%'),
   },
   text: {
-    fontSize: 14,
-    marginVertical: 2,
-    marginVertical: 3,
+    fontSize: wp('3.6%'),
+    marginVertical: hp('0.5%'),
+  },
+  dateTimeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: hp('1%'),
   },
 });
 

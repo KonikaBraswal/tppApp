@@ -2,15 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {Checkbox, Icon, Searchbar} from 'react-native-paper';
 import {
   StyleSheet,
-  Image,
   ScrollView,
   View,
   TouchableOpacity,
-  FlatList,
   KeyboardAvoidingView,
   Text,
 } from 'react-native';
-import {ListItem, Button, Surface} from '@react-native-material/core';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import BarclaysComponent from './AccountLists/BarclaysAccounts';
 import NatwestAccounts from './AccountLists/NatwestAccounts';
 import BarclaysAccounts from './AccountLists/BarclaysAccounts';
@@ -43,29 +44,11 @@ const AllAccounts = ({route}) => {
     'Revolut',
     'Monzo',
   ];
-  //console.log(route.params);
+
   const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
-  // const transactions = route.params.transactions;
-  // const balances = route.params.balances;
-  // useEffect(() => {
-  //   setCheckedBanks(prevState => ({
-  //     ...prevState,
-  //     [selectedBank.toLowerCase()]: true,
-  //   }));
-  // }, [selectedBank]);
-
-  // const toggleDropdown = () => {
-  //   setShowDropdown(!showDropdown);
-  // };
-
-  // const handleCheck = bank => {
-  //   setCheckedBanks(prevState => ({
-  //     ...prevState,
-  //     [bank]: !prevState[bank],
-  //   }));
-  // };
+  const permissions = route.params.permissions;
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -73,32 +56,22 @@ const AllAccounts = ({route}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
-        <View
-          style={{
-            backgroundColor: '#5a287d',
-            padding: 10,
-          }}>
-          {/* //changed searchBar */}
+        <View style={styles.headerContainer}>
           <Searchbar
             placeholder="Search account by ID"
             onChangeText={setSearchQuery}
             value={searchQuery}
-            icon={() => <Icon source="magnify" color="black" size={20} />}
-            style={{
-              borderRadius: 5,
-              backgroundColor: '#f4ebfe',
-            }}
+            icon={() => <Icon source="magnify" color="black" size={wp('5%')} />}
+            style={styles.searchBar}
           />
         </View>
         <View style={styles.container}>
-          <View style={styles.mainContent}>
-            <View style={styles.rowContainer}>
-              <View style={styles.searchBarContainer}></View>
-            </View>
-            <ScrollView style={styles.scrollContainer}>
-              <NatwestAccounts accountsList={accounts} />
-            </ScrollView>
-          </View>
+          <ScrollView style={styles.scrollContainer}>
+            <NatwestAccounts
+              accountsList={accounts}
+              permissions={permissions}
+            />
+          </ScrollView>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('Select Your Bank');
@@ -114,84 +87,32 @@ const AllAccounts = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#5a287d',
+    padding: wp('2%'),
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#5a28d',
-  },
-  surface: {
-    width: 60,
-    height: 60,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
-  },
-  icon: {
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
+
+    paddingTop: hp('1%'),
   },
   footer: {
     backgroundColor: '#5a287d',
-    padding: 15,
-    width: '100%',
+    padding: wp('4.2%'),
     alignItems: 'center',
   },
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: wp('4.5%'),
   },
-  mainContent: {
-    flex: 1,
-    width: '100%',
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-
   searchBar: {
-    height: 62,
-    borderRadius: 0,
-    width: 385,
-    margin: 10,
+    borderRadius: wp('2%'),
+    backgroundColor: '#f4ebfe',
   },
-  searchBarContainer: {marginLeft: 2, backgroundColor: '#5a287d'},
   scrollContainer: {
     flex: 1,
-    padding: 2,
-  },
-  // card: {
-  //   marginBottom: 16,
-  //   backgroundColor: '#c8e1cc',
-  // },
-  // surface: {
-  //   width: 60,
-  //   height: 60,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   margin: 10,
-  // },
-  iconNatwest: {
-    width: 55,
-    height: 55,
-    resizeMode: 'contain',
-  },
-  // iconBarclays: {
-  //   width: 60,
-  //   height: 60,
-  //   resizeMode: 'contain',
-  // },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
+    padding: wp('1%'),
   },
 });
 
