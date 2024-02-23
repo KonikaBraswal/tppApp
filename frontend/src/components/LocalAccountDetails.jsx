@@ -23,9 +23,15 @@ const LocalAccountDetails = props => {
         <Text style={styles.accountType}>{AccountType} Account</Text>
         <Text style={styles.title}>{AccountSubType} Account</Text>
         <Text style={styles.text}>{AccountId}</Text>
-        <Text style={styles.balanceText}>
-          Available Balance: {props?.balance?.[0]?.Amount?.Amount ?? 0} GBP
-        </Text>
+        {props?.balance?.[0]?.Amount?.Amount ? (
+          <Text style={styles.balanceText}>
+            Available Balance:
+            {props?.balance?.[0]?.Amount?.Amount ?? 0}
+            GBP
+          </Text>
+        ) : (
+          <Text style={styles.balanceText}></Text>
+        )}
       </Card.Content>
     </Card>
   );

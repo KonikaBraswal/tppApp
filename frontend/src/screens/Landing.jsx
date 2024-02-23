@@ -133,7 +133,7 @@ const Landing = () => {
                 key={item.id}
                 onPress={() => {
                   if (item.name === 'Natwest') {
-                    navigation.navigate('Your Natwest Accounts');
+                    navigation.navigate('Added Bank Accounts');
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
                   } else {

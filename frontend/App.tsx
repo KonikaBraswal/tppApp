@@ -42,11 +42,17 @@ import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 import PaymentConscent from './src/screens/PaymentConscent';
 import MakeTransfer from './src/screens/MakeTransfer';
+import {initDatabase} from './database/Database';
+import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
+import ViewDetailsWithRefreshToken from './src/screens/ViewDetailsWithRefreshToken';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 function App(): React.JSX.Element {
+  useEffect(() => {
+    initDatabase();
+  }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -89,8 +95,16 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
               <Stack.Screen
+                name="Added Bank Accounts"
+                component={AccountListWithRefreshToken}
+              />
+              <Stack.Screen
                 name="View Details"
                 component={ViewAllLocalDetails}
+              />
+              <Stack.Screen
+                name="View Added Bank Details"
+                component={ViewDetailsWithRefreshToken}
               />
               <Stack.Screen
                 name="Your Natwest Accounts"

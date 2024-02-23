@@ -49,7 +49,7 @@ const AccountDetails = props => {
         <Text style={styles.text}>{AccountId}</Text>
         {permissions.includes('ReadBalances') ? (
           <Text style={styles.balanceText}>
-            Available Balance:{' '}
+            Available Balance:
             {balanceDetails?.Balance?.[0]?.Amount?.Amount ??
               props?.balance?.[0]?.Amount?.Amount ??
               0}

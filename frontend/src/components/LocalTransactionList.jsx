@@ -9,7 +9,7 @@ const LocalTransactionList = props => {
   return (
     <View style={styles.container}>
       {transactions ? (
-        transactions.map(transaction => (
+        transactions?.Transaction.map(transaction => (
           <TransactionCard
             key={transaction.TransactionId}
             transaction={transaction}
