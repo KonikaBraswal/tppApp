@@ -23,6 +23,7 @@ import readBarclaysBalance from '../assets/data/barclaysBalances.json';
 import readNatwestTransaction from '../assets/data/transactions.json';
 import readBarclaysTransaction from '../assets/data/barclaysTransactions.json';
 import LocalTransactionList from '../components/LocalTransactionList';
+import BarclaysLocalTransactionList from '../components/BarclaysLocalTransactionList';
 
 const NatwestAccountData = readNatwestAccount?.Data?.Account;
 const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
@@ -66,6 +67,7 @@ const ViewAllLocalDetails = ({route}) => {
     account => account.AccountId == accountId,
   );
   const transactionDetails = findAccountTransactions(accountId);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -105,7 +107,9 @@ const ViewAllLocalDetails = ({route}) => {
             value={searchQuery}
             style={styles.searchbar}
           />
-          <LocalTransactionList transactionDetails={transactionDetails} />
+          <BarclaysLocalTransactionList
+            transactionDetails={transactionDetails}
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
