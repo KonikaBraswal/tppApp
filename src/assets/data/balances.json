@@ -1,0 +1,32 @@
+{
+  "Data": {
+    "Balance": [
+      {
+        "AccountId": "48901b2d-f748-40a9-b8e4-5a206590b6a5",
+        "CreditDebitIndicator": "Credit",
+        "Type": "Expected",
+        "DateTime": "2024-01-15T11:44:06.420Z",
+        "Amount": {
+          "Amount": "19606.40",
+          "Currency": "GBP"
+        }
+      },
+      {
+        "AccountId": "ffa1dee0-2fbf-4362-abf6-37dbfeee2de20",
+        "CreditDebitIndicator": "Credit",
+        "Type": "ForwardAvailable",
+        "DateTime": "2024-01-15T11:44:06.420Z",
+        "Amount": {
+          "Amount": "15060.90",
+          "Currency": "GBP"
+        }
+      }
+    ]
+  },
+  "Links": {
+    "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/aisp/accounts/48901b2d-f748-40a9-b8e4-5a206590b6a5/balances"
+  },
+  "Meta": {
+    "TotalPages": 1
+  }
+}

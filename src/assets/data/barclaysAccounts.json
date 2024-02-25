@@ -1,0 +1,42 @@
+{
+  "Data": {
+    "Account": [
+      {
+        "AccountId": "678uh788-743b5-agy6-578900129r3v625",
+        "Currency": "GBP",
+        "AccountType": "Personal",
+        "AccountSubType": "Current",
+        "Description": "Personal",
+        "Nickname": "Thomas Jackson",
+        "Account": [
+          {
+            "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+            "Identification": "50000012345601",
+            "Name": "Sydney Beard"
+          }
+        ]
+      },
+      {
+        "AccountId": "bb467890-de8e0-4fre-4962-pbp0-4rbofxe",
+        "Currency": "GBP",
+        "AccountType": "Personal",
+        "AccountSubType": "Savings",
+        "Description": "Personal",
+        "Nickname": "Thomas Jackson",
+        "Account": [
+          {
+            "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+            "Identification": "50000012345602",
+            "Name": "Sydney Beard"
+          }
+        ]
+      }
+    ]
+  },
+  "Links": {
+    "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/aisp/accounts"
+  },
+  "Meta": {
+    "TotalPages": 1
+  }
+}
