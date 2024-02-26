@@ -1,8 +1,6 @@
 // ApiFactory.ts
 import config from '../configs/config.json';
 import SanboxApiClient from './SanboxApiClient';
-//import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
-import PispApiClient from './PispApiClient';
 let permissions: string[] = [];
 
 class ApiFactory {
@@ -29,7 +27,7 @@ class ApiFactory {
         );
       // Add other cases if needed
       case 'sit':
-        return new PispApiClient(
+        return new SanboxApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,

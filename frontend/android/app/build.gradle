@@ -89,6 +89,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+         release {
+            storeFile file('frontend.keystore') // Path to your keystore file
+            storePassword 'rio123' // Keystore password
+            keyAlias 'frontend_key' // Key alias
+            keyPassword 'rio123' // Key password
+        }
     }
     buildTypes {
         debug {
