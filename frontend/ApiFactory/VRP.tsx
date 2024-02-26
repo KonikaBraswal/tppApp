@@ -63,7 +63,7 @@ const VRP = () => {
                 "Data": {
                     "ControlParameters": {
                         "VRPType": [
-                            "UK.OBIE.VRPType.Other"
+                            "UK.OBIE.VRPType.Other"//sweeping
                         ],
                         "PSUAuthenticationMethods": [
                             "UK.OBIE.SCANotRequired"
@@ -71,7 +71,7 @@ const VRP = () => {
                         "ValidFromDateTime": "2021-08-01T23:06:53.599Z",
                         "ValidToDateTime": "2024-08-01T23:06:53.599Z",
                         "MaximumIndividualAmount": {
-                            "Amount": 200.00,
+                            "Amount": 200.00,//make dynamic in ui
                             "Currency": "GBP"
                         },
                         "PeriodicLimits": [
