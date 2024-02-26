@@ -1,8 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
-import config from '../configs/config.json';
-import sandboxConfig from '../configs/Sandbox.json';
+import config from '../configs_AISP/config.json';
+import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 

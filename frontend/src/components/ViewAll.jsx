@@ -7,11 +7,15 @@ import {RetrieveData} from '../../database/Database';
 const ViewAll = () => {
   const navigation = useNavigation();
   const [retrievedData, setRetrievedData] = useState([]);
+  const filterDataByScope = data => {
+    return data.filter(obj => obj.scope === 'accounts');
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await RetrieveData();
-        setRetrievedData(data);
+        const filteredData = filterDataByScope(data);
+        setRetrievedData(filteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

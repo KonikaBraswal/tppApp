@@ -1,7 +1,7 @@
 // ApiFactory.ts
 import axios from 'axios';
-import config from '../configs/config.json';
-import sandboxConfig from '../configs/Sandbox.json';
+import config from '../configs_AISP/config.json';
+import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';
 import SanboxApiClient from './SanboxApiClient';

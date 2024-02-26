@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import TransactionCard from './TransactionCard';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();

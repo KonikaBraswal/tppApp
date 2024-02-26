@@ -17,7 +17,7 @@ import AccountDetails from '../components/AccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import TransactionList from '../components/TransactionList';
 import SortDropdown from '../components/SortDropdown';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';

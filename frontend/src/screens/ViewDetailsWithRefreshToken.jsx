@@ -19,7 +19,7 @@ import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import SortDropdown from '../components/SortDropdown';
 import LocalTransactionList from '../components/LocalTransactionList';
 import {fetchRefreshedToken, RetrieveData} from '../../database/Database';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
@@ -32,6 +32,9 @@ const ViewDetailsWithRefreshToken = ({route}) => {
   const [balanceDetails, setBalanceDetails] = useState(null);
   const [retrievedData, setRetrievedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const filterDataByScope = data => {
+    return data.filter(obj => obj.scope === 'accounts');
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,12 +43,11 @@ const ViewDetailsWithRefreshToken = ({route}) => {
         const access_token = await sandboxApiClient.refreshToken(refresh_token);
 
         const databaseResponse = await RetrieveData();
-        setRetrievedData(databaseResponse);
+        const filteredData = filterDataByScope(databaseResponse);
+        setRetrievedData(filteredData);
         const permissions =
-          databaseResponse &&
-          databaseResponse[0] &&
-          databaseResponse[0].consentpayload
-            ? JSON.parse(databaseResponse[0].consentpayload).Permissions
+          filteredData && filteredData[0] && filteredData[0].consentpayload
+            ? JSON.parse(filteredData[0].consentpayload).Permissions
             : null;
         console.log(permissions);
 

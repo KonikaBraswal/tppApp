@@ -32,11 +32,18 @@ const AccountListWithRefreshToken = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const [retrievedData, setRetrievedData] = useState([]);
+  const filterDataByScope = data => {
+    return data.filter(obj => obj.scope === 'accounts');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await RetrieveData();
-        setRetrievedData(data);
+        // data.map(obj => console.log(obj.account_customer_consented));
+        // data.map(obj => console.log(obj.scope));
+        const filteredData = filterDataByScope(data);
+        setRetrievedData(filteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

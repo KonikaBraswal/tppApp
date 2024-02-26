@@ -25,7 +25,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import IconDialog from '../components/IconDialog';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 
 const screenWidth = wp('100%');
 const mode = 'sandbox';

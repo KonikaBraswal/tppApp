@@ -40,7 +40,7 @@ import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
 import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
-import PaymentConscent from './src/screens/PaymentConscent';
+import PaymentConsent from './src/screens/PaymentConsent';
 import MakeTransfer from './src/screens/MakeTransfer';
 import {initDatabase} from './database/Database';
 import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
@@ -124,7 +124,7 @@ function App(): React.JSX.Element {
               />
               <Stack.Screen
                 name="Consent For Payment"
-                component={PaymentConscent}
+                component={PaymentConsent}
               />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
             </Stack.Navigator>

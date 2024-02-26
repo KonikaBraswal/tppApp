@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {globalRefreshedToken} from '../../database/Database';
 import {View, Text} from 'react-native';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();

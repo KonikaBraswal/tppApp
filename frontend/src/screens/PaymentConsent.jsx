@@ -1,20 +1,45 @@
 import React, {useState, useEffect} from 'react';
-import {Title, Text, List, Checkbox, Icon, Button} from 'react-native-paper';
+import {
+  Title,
+  Text,
+  List,
+  Checkbox,
+  Icon,
+  Button,
+  Modal,
+  Dialog,
+  Portal,
+  TextInput,
+} from 'react-native-paper';
 import {
   StyleSheet,
   View,
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import IconDialog from '../components/IconDialog';
+import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = wp('100%');
+const mode = 'sandbox';
+const way = 'web';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
-const PaymentConscent = () => {
+const PaymentConsent = () => {
   const navigation = useNavigation();
-
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const [loading, setLoading] = useState(false);
+  const [userInput, setUserInput] = useState('');
+  const [error, setError] = useState(null);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -30,6 +55,7 @@ const PaymentConscent = () => {
   const [checked5, setChecked5] = useState(true);
   const [checked6, setChecked6] = useState(false);
   const [checked7, setChecked7] = useState(false);
+  const [permission, setPermission] = useState([]);
 
   const handleCheckbox1 = () => setChecked1(!checked1);
   const handleCheckbox2 = () => setChecked2(!checked2);
@@ -77,30 +103,93 @@ const PaymentConscent = () => {
   const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
   const showErrorDialog = () => setErrorDialogVisible(true);
   const hideErrorDialog = () => setErrorDialogVisible(false);
+  const [isInputDialogVisible, setInputDialogVisible] = useState(false);
+  const showInputDialog = () => setInputDialogVisible(true);
+  const hideInputDialog = () => {
+    setInputDialogVisible(false);
+  };
+
+  const [inputValue, setInputValue] = useState('');
 
   const areAllCheckboxesChecked = () => {
-    return (
-      (checked1 || checked2 || checked3 || checked4 || checked5) &&
-      checked6 &&
-      checked7
-    );
+    const condition1 = checked1 && checked6 && checked7;
+    const condition2 = (checked3 || checked4) && checked5;
+    const condition3 = !checked3 && !checked4 && !checked5;
+    return condition1 && (condition2 || condition3);
   };
 
-  const handleConfirmButtonClick = () => {
-    navigation.navigate('Transaction Successful');
+  const handleConfirmButtonClick = async () => {
+    if (mode == 'sandbox') {
+      try {
+        const permissions = new Array();
+        if (checked1) {
+          permissions.push('ReadAccountsDetail');
+        }
+        if (checked2) {
+          permissions.push('ReadBalances');
+        }
+        if (checked3) {
+          permissions.push('ReadTransactionsDebits');
+        }
+        if (checked4) {
+          permissions.push('ReadTransactionsCredits');
+        }
+        if (checked5) {
+          permissions.push('ReadTransactionsDetail');
+        }
+        setPermission(permissions);
+
+        setLoading(true);
+        setError(null);
+
+        const consentData = await sandboxApiClient.retrieveAccessToken(
+          'payments',
+        );
+        console.log('Consent id:', consentData);
+        if (way == 'web') {
+          const consentUrl = await sandboxApiClient.manualUserConsent(
+            consentData,
+          );
+          console.log(consentUrl);
+          showInputDialog(permissions);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to retrieve access token.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      navigation.navigate('Consent');
+    }
   };
+
+  const handleSubmit = async permission => {
+    try {
+      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      navigation.navigate('Transaction Successful');
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to retrieve access token.');
+    } finally {
+      setLoading(false);
+    }
+    hideInputDialog();
+  };
+
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <Title style={styles.headerText}>We Need Your Consent</Title>
         <Text style={styles.textStyle}>
-          NatWest Bank needs your explicit consent to access the following
+          ONEBank needs your explicit consent to access the following
           information from the accounts held at your bank or building society
         </Text>
 
         <List.Section>
           <List.Accordion
-            title="Your Payment Details"
+            theme={{colors: {background: 'white'}}}
+            title="Your Account Details"
             titleStyle={styles.titleStyle}
             left={props => (
               <List.Icon {...props} icon="account-cash" color="#36013f" />
@@ -113,6 +202,7 @@ const PaymentConscent = () => {
                 <Checkbox.Android
                   status={checked1 ? 'checked' : 'unchecked'}
                   onPress={handleCheckbox1}
+                  disabled={true}
                 />
               )}
               title="Your Account Details"
@@ -164,6 +254,7 @@ const PaymentConscent = () => {
             />
           </List.Accordion>
           <List.Accordion
+            theme={{colors: {background: 'white'}}}
             title="Your Transaction Details"
             titleStyle={styles.titleStyle}
             left={props => (
@@ -255,6 +346,7 @@ const PaymentConscent = () => {
             />
           </List.Accordion>
           <List.Accordion
+            theme={{colors: {background: 'white'}}}
             title="Reason For Access"
             titleStyle={styles.titleStyle}
             left={props => (
@@ -333,7 +425,6 @@ const PaymentConscent = () => {
               } else {
                 showErrorDialog();
               }
-              //handleConfirmButtonClick();
             }}
             disabled={!areAllCheckboxesChecked()}
             style={{marginLeft: 10}}>
@@ -349,49 +440,68 @@ const PaymentConscent = () => {
               text={''}
             />
           )}
+          <Portal>
+            <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+              <Dialog.Title>Redirect Input</Dialog.Title>
+              <Dialog.Content>
+                <TextInput
+                  label=" Paste URL from the browser"
+                  value={inputValue}
+                  onChangeText={text => setInputValue(text)}
+                />
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={hideInputDialog}>Cancel</Button>
+                <Button
+                  onPress={() => {
+                    handleSubmit(permission);
+                  }}>
+                  Submit
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
         </View>
       </View>
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
+    marginTop: hp('4%'),
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: wp('5%'),
     backgroundColor: '#fff',
-    marginTop: 30,
   },
   headerText: {
-    fontSize: 28,
+    fontSize: wp('7%'),
     fontWeight: 'bold',
     color: '#36013f',
-    margin: 20,
+    paddingTop: wp('4%'),
   },
   textStyle: {
     textAlign: 'center',
-    padding: 10,
-    fontSize: 17,
+    padding: wp('2%'),
+    fontSize: hp('2.5%'),
+    color: '#454545',
   },
   titleStyle: {
-    fontSize: 18,
+    fontSize: wp('4.5%'),
     fontWeight: 'bold',
     color: '#000',
   },
   accordionStyle: {
-    width: screenWidth - 40,
-    margin: 20,
-    borderRadius: 10,
+    width: wp('85%'),
+    margin: wp('5%'),
+    borderRadius: wp('2%'),
     backgroundColor: '#c8e1cc',
     elevation: 3,
   },
   accordionListStyle: {
-    width: screenWidth - 40,
-    marginLeft: 20,
+    width: wp('90%'),
+    marginLeft: wp('5%'),
   },
 });
-
-export default PaymentConscent;
+export default PaymentConsent;
