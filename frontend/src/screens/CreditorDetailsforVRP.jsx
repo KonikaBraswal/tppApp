@@ -22,7 +22,7 @@ const CreditorDetailsforVRP = () => {
   const handleSubmit = () => {
     const formData = {
         firstName,
-        lastName,
+        // lastName,
         sortCode,
         accountNumber,
         reference,
@@ -42,17 +42,17 @@ const CreditorDetailsforVRP = () => {
       <View style={{padding: 20}}>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>First Name</Text>
-          <TextInput  variant="outlined" label="First Name" style={{ margin: 5 }}
+          <Text style={styles.sectionTitle}>Full Name</Text>
+          <TextInput  variant="outlined" label="Full Name" style={{ margin: 5 }}
             value={firstName}
             onChangeText={setFirstName}  />
         </View>
-        <View style={styles.sectionContainer}>
+        {/* <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Last Name</Text>
           <TextInput variant="outlined" label="Last Name" style={{ margin: 1 }}
            onChangeText={setLastName} 
            value={lastName}/>
-        </View>
+        </View> */}
 
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Account Number</Text>
