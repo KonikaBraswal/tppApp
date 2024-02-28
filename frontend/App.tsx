@@ -42,11 +42,11 @@ import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 import PaymentConscent from './src/screens/PaymentConscent';
 import MakeTransfer from './src/screens/MakeTransfer';
-import AccountsforVRP from './src/screens/AccountsforVRP';
-import CreditorDetailsforVRP from './src/screens/CreditorDetailsforVRP';
-import VRPConscent from './src/screens/VRPConsent';
-import VRPConsent from './src/screens/VRPConsent';
-import VRPDetails from './src/screens/VRPDetails';
+import CreditorDetailsforVRP from './src/screens/VRP/CreditorDetailsforVRP';
+import VRPConsent from './src/screens/VRP/VRPConsent';
+import VRPDetails from './src/screens/VRP/VRPDetails';
+import ConsentsforVRP from './src/screens/VRP/ConsentsforVRP';
+import GrantedForm from './src/screens/VRP/GrantedForm';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -118,17 +118,16 @@ function App(): React.JSX.Element {
                 component={PaymentConscent}
               />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
-              <Stack.Screen name="Accounts for VRP" component={AccountsforVRP} />
-              <Stack.Screen name="Enter creditor Details" component={CreditorDetailsforVRP} />
-              <Stack.Screen name="Consent for VRP" component={VRPConsent} />
+              <Stack.Screen name="ConsentsforVRP" component={ConsentsforVRP} />
+              <Stack.Screen name="CreditorDetails" component={CreditorDetailsforVRP} />
+              <Stack.Screen name="GrantedForm" component={GrantedForm} />
+              <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
-    //  <AccountListScreen/>
-    // <MyComponent/>
   );
 }
 

@@ -1,0 +1,49 @@
+{
+    "Data": {
+        "DomesticVRPId": "ab374f3c-0426-4777-9d8d-cf8ab3a16632",
+        "ConsentId": "VRP-6bab9f5b-7d19-4cb0-9f0b-d26dc77257e4",
+        "CreationDateTime": "2024-02-21T08:22:46.040Z",
+        "Status": "AcceptedSettlementCompleted",
+        "StatusUpdateDateTime": "2024-02-21T08:22:46.059Z",
+        "Initiation": {
+            "CreditorAccount": {
+                "SchemeName": "SortCodeAccountNumber",
+                "Identification": "50499910000998",
+                "Name": "ACME DIY",
+                "SecondaryIdentification": "secondary-identif"
+            },
+            "RemittanceInformation": {
+                "Unstructured": "Tools",
+                "Reference": "Tools"
+            }
+        },
+        "Instruction": {
+            "InstructionIdentification": "instr-identification",
+            "EndToEndIdentification": "e2e-identification",
+            "RemittanceInformation": {
+                "Unstructured": "Tools",
+                "Reference": "Tools"
+            },
+            "InstructedAmount": {
+                "Amount": "5.00",
+                "Currency": "GBP"
+            },
+            "CreditorAccount": {
+                "SchemeName": "SortCodeAccountNumber",
+                "Identification": "50499910000998",
+                "Name": "ACME DIY",
+                "SecondaryIdentification": "secondary-identif"
+            }
+        },
+        "DebtorAccount": {
+            "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+            "Identification": "50000012345601",
+            "Name": "Sydney Beard"
+        }
+    },
+    "Risk": {},
+    "Links": {
+        "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps/ab374f3c-0426-4777-9d8d-cf8ab3a16632"
+    },
+    "Meta": {}
+}

@@ -500,7 +500,7 @@
 // export default VRPConsent;
 import React, { useState, useEffect } from 'react';
 // import sandboxConfig from '../configs/Sandbox.json';
-import sandboxConfig from '../../configs/Sandbox.json';
+import sandboxConfig from '../../../configs/Sandbox.json';
 import {
     Title,
     Text,
@@ -521,8 +521,8 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import IconDialog from '../components/IconDialog';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import IconDialog from '../../components/IconDialog';
+import ApiFactory from '../../../ApiFactory/ApiFactory';
 import { all } from 'axios';
 
 const screenWidth = Dimensions.get('window').width;

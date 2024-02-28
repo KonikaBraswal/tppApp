@@ -172,7 +172,7 @@ const Landing = () => {
                   <Image source={Payments.image} style={styles.images} />
                 </Surface>
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{navigation.navigate("Accounts for VRP")}}>
+              <TouchableOpacity onPress={()=>{navigation.navigate('ConsentsforVRP')}}>
                 <Surface
                   elevation={1}
                   category="medium"

@@ -31,14 +31,16 @@ const CreditorDetailsforVRP = () => {
     
       console.log('Form submitted:', formData);
 
-    navigation.navigate('Consent for VRP',{formData});
+    navigation.navigate('Review Creditor',{formData});
   };
 
   return (
     
     <View style={styles.container}>
             <ScrollView>
-            <Text>Enter the Creditor Details</Text>
+            <View style={{alignItems:'center'}}>
+          <Text style={{fontSize:20}}>Enter creditor details</Text>
+          </View>
       <View style={{padding: 20}}>
 
         <View style={styles.sectionContainer}>
