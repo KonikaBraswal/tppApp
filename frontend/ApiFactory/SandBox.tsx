@@ -3,13 +3,14 @@ import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
 import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
+import {addDetails,updateDetailsForVrp} from '../Database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
 //   };
 //   Risk: {}; // Adjust this if Risk has a specific structure
 // }
-
+var refreshTokenExists = false;
 interface ResponseData {
     access_token: string;
     Data?: {
@@ -24,10 +25,11 @@ interface ApiHeaders {
     'x-fapi-financial-id': string;
 }
 interface AccessTokenRequestParams {
+    accessTokenParams: any;
     scope: string;
     headers: Record<string, string>;
     body: string; // Adjust the type according to your actual body structure
-    consentUrl:string;
+    consentUrl: string;
 }
 
 class SandBox {
@@ -38,7 +40,7 @@ class SandBox {
     private permissions!: string;
     private apiAccess: string = '';
     private consentId: string = '';
-    private accessToken:string = '';
+    private accessToken: string = '';
     constructor(
         baseUrl: string,
         clientId: string,
@@ -67,8 +69,17 @@ class SandBox {
                 headers: params.accessTokenParams.headers
             }
             );
+            // const scope = response.data.scope;
+
+            // const details1 = {
+            //     userId: 1005,
+            //     scope: params.accessTokenParams.scope,
+            // };
+            // console.log("details",details1);
+            // addDetails(details1);
+
             console.log('Access token', response.data.access_token);
-            this.accessToken=response.data.access_token;
+            this.accessToken = response.data.access_token;
             return this.accountRequest(params.accessTokenParams.consentUrl);
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
@@ -92,7 +103,20 @@ class SandBox {
                     headers: headers,
                 },
             );
-            this.consentId = response.data.Data?.ConsentId;
+            const Status = response.data.Data?.Status;
+            const Payload = response.data.Data;
+            this.consentId = response.data.Data?.ConsentId || '';
+            const details1 = {
+                bankname: 'Natwest',
+                consentid: this.consentId,
+                status: Status,
+                consentpayload: JSON.stringify(Payload),
+                scope: 'payments',
+            };
+            console.log("details",details1);
+            addDetails(details1);
+            
+
             console.log("response of consent", this.consentId);
             return response.data.Data?.ConsentId || '';
         } catch (error) {
@@ -107,19 +131,19 @@ class SandBox {
         return consentUrlWithVariables;
     }
 
-    async userConsentProgammatically(consentId: string,formData:any): Promise<string> {
+    async userConsentProgammatically(consentId: string): Promise<string> {
         try {
             console.log('ConsentID:', consentId);
             const accountResponse: AxiosResponse<any> = await axios.get(
                 `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
             );
-            return this.exchangeAccessToken(accountResponse.data.redirectUri,formData);
+            return this.exchangeAccessToken(accountResponse.data.redirectUri);
         } catch (error) {
             throw new Error(`Failed to fetch data for accounts: ${error}`);
         }
     }
 
-    async exchangeAccessToken(authTokenUrl: string,formData: any): Promise<string> {
+    async exchangeAccessToken(authTokenUrl: string): Promise<string> {
         try {
             const start = authTokenUrl.indexOf('=') + 1;
             const end = authTokenUrl.indexOf('&');
@@ -147,15 +171,69 @@ class SandBox {
             );
 
             console.log('Api access token', response.data.access_token);
+            const RefreshToken = response.data.refresh_token;
+            const consentExpiresIn = response.data.expires_in;
+            const Scope = response.data.scope;
 
-            return this.vrpPayments(response.data.access_token,formData);
+            const updatedDetails2 = {
+                refreshedtoken: RefreshToken,
+                status: 'Authorised',
+                consentexpiry: consentExpiresIn,
+            };
+
+            const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+
+            await updateDetailsForVrp(updatedDetails2, this.consentId, columnsToUpdate2);
+            refreshTokenExists = true;
+            return this.vrpPayments(response.data.access_token,this.consentId);
 
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
         }
     }
 
-    async vrpPayments(apiAccessToken: string,formData:any): Promise<any> {
+    async refreshToken(refreshToken: string): Promise<any> {//here also pass consent id to pass it other calls
+        try {
+          const body: Record<string, string> = {
+            client_id: this.clientId,
+            client_secret: this.clientSecret,
+            //redirect_uri: sandboxConfig.redirectUri,
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken.refreshtoken,
+          };
+          const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          };
+    
+          const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+            `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+            null,
+            {
+              headers: headers,
+              params: body,
+            },
+          );
+    
+          console.log('Refresh call response', responseRefresh.data);
+          const RefreshToken = responseRefresh.data.refresh_token;
+          //console.log(refreshToken);
+          const updatedDetails3 = {
+            refreshedtoken: RefreshToken,
+          };
+    
+          const columnsToUpdate3 = ['refreshedtoken'];
+    
+          await updateDetailsForVrp(updatedDetails3,refreshToken.consentid , columnsToUpdate3);
+          
+          //return this.fetchAccounts(responseRefresh.data.access_token);
+          return this.vrpPayments(responseRefresh.data.access_token,refreshToken.consentid);
+
+        } catch (error) {
+          throw new Error(`Failed to fetch data: ${error}`);
+        }
+      }
+
+    async vrpPayments(apiAccessToken: string,consentid:string): Promise<any> {
         try {
             const id = uuid.v4();
             const headers = {
@@ -163,16 +241,16 @@ class SandBox {
                 Authorization: `Bearer ${apiAccessToken}`,
                 'x-idempotency-key': `${id}`
             };
-            console.log("hhh", headers);
+            
             const body = {
                 "Data": {
-                    "ConsentId": `${this.consentId}`,
+                    "ConsentId": `${consentid}`,
                     "PSUAuthenticationMethod": "UK.OBIE.SCANotRequired",
                     "Initiation": {
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": formData.firstName,
+                            "Name": "nishi",
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {
@@ -184,13 +262,13 @@ class SandBox {
                         "InstructionIdentification": "instr-identification",
                         "EndToEndIdentification": "e2e-identification",
                         "InstructedAmount": {
-                            "Amount":formData.amount,
+                            "Amount": 20.00,
                             "Currency": "GBP"
                         },
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": formData.firstName,
+                            "Name": "nishi",
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {
@@ -203,7 +281,7 @@ class SandBox {
                 }
             };
 
-
+            console.log("body",body);
             const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
                 `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`, body,
                 {
@@ -218,7 +296,7 @@ class SandBox {
         }
     }
 
-    async getAllVrpPayments(url:string): Promise<any> {
+    async getAllVrpPayments(url: string): Promise<any> {
         try {
 
             const headers = {

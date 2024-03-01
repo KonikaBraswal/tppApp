@@ -47,11 +47,14 @@ import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
 import ConsentsforVRP from './src/screens/VRP/ConsentsforVRP';
 import GrantedForm from './src/screens/VRP/GrantedForm';
-
+import { initDatabase } from './Database/Database';
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 function App(): React.JSX.Element {
+  useEffect(() => {
+    initDatabase();
+  }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -132,3 +135,4 @@ function App(): React.JSX.Element {
 }
 
 export default App;
+

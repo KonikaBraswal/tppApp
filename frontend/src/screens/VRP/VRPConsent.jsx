@@ -643,7 +643,7 @@ const VRPConsent = ({route}) => {
                             "CreditorAccount": {
                                 "SchemeName": "SortCodeAccountNumber",
                                 "Identification": "50499910000998",
-                                "Name":formData.firstName,
+                                "Name":"nishi",
                                 "SecondaryIdentification": "secondary-identif"
                             },
                             "RemittanceInformation": {
@@ -692,7 +692,7 @@ const VRPConsent = ({route}) => {
     const handleSubmit = async () => {
         try {
             console.log(inputValue);
-            const data = await sandboxApiClient.exchangeAccessToken(inputValue,formData);
+            const data = await sandboxApiClient.exchangeAccessToken(inputValue);
             setAllPayments(data);
             
             navigation.navigate('VRP Details',{data});

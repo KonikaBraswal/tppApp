@@ -6,6 +6,7 @@ import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
+import Database from '../../Database/Database';
 
 const Drawer = createDrawerNavigator();
 
@@ -85,6 +86,15 @@ const AppDrawer = () => {
       <Drawer.Screen
         name="Environment"
         component={Dummy}
+        options={{
+          drawerIcon: ({color}) => (
+            <Icon source="code-tags" color={color} size={28} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Database"
+        component={Database}
         options={{
           drawerIcon: ({color}) => (
             <Icon source="code-tags" color={color} size={28} />

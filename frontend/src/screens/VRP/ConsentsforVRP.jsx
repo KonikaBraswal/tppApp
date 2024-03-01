@@ -1,30 +1,42 @@
 //todo
 // add search logic based on vrpid
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
+  Card,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   TouchableHighlight,
+  FlatList,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import ApiFactory from '../../../ApiFactory/ApiFactory';
+
+import { useNavigation } from '@react-navigation/native';
 import {
   Searchbar,
   Icon,
   Button,
 } from 'react-native-paper';
-import { Surface,Stack } from '@react-native-material/core';
+import VRPConsent from '../VRP/VRPConsent';
+import { Surface, Stack } from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
 import readNatwestBalance from '../../assets/data/balances.json';
 import readBarclaysAccount from '../../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../../assets/data/barclaysBalances.json';
 import readdata from '../../assets/data/VRP.json';
+import { fetchAllDataforScope } from '../../../Database/Database';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 //reading data from json file for now
-const ConsentsforVRP= () => {
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const Drawer = createDrawerNavigator();
+
+const ConsentsforVRP = () => {
+  // const formData = route.params?.formData;
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -49,112 +61,105 @@ const ConsentsforVRP= () => {
       return null;
     }
   };
-  const handleSubmit = () => {
-    const creditorName = readdata.Data.Instruction.CreditorAccount.Name;
-    const creditorIdentification = readdata.Data.Instruction.CreditorAccount.Identification;
-    const sortcode='123456';
-    const referencenumber=readdata.Data.Initiation.RemittanceInformation.Reference;
-    navigation.navigate('GrantedForm', {
-      creditorName,
-      creditorIdentification,
-     sortcode,
-     referencenumber
-    });
-    // navigation.navigate('GrantedForm');
+  const scope = 'payments';
+  const [consentData, setConsentData] = useState([]);
 
+  useEffect(() => {
+    // Call fetchAllDataforScope when the component mounts
+    fetchAllDataforScope(scope)
+      .then(data => {
+        if (data !== null) {
+          setConsentData(data);
+          console.log("details-->",data[1]);
+        } else {
+          console.log(`No entry found for scope ${scope}.`);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching Consent data:', error);
+      });
+  }, [scope]);
+  const mode = 'sandbox';
+
+  const handleSubmit = async () => {
+    // const creditorName = readdata.Data.Instruction.CreditorAccount.Name;
+    // const creditorIdentification = readdata.Data.Instruction.CreditorAccount.Identification;
+    // const sortcode = '123456';
+    // const referencenumber = readdata.Data.Initiation.RemittanceInformation.Reference;
+    // navigation.navigate('GrantedForm', {
+    //   creditorName,
+    //   creditorIdentification,
+    //   sortcode,
+    //   referencenumber
+    // });
+    // navigation.navigate('GrantedForm');
+    if (mode == 'sandbox') {
+    try{
+      console.log("refreshing...",consentData[1].refreshtoken);
+      const response=await sandboxApiClient.refreshToken(consentData[1]);
+      console.log("response",response);
+
+    }catch(error){
+      console.log("error in fetching refresh",error);
+    }}
   };
+
+
   return (
     <ScrollView>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
-      <View
-        style={{
-          backgroundColor: '#5a287d',
-          padding: 10,
-        }}>
-        <Searchbar
-          placeholder="Search account by ID"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          icon={() => <Icon source="magnify" color="black" size={20} />}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}>
+        <View
           style={{
-            borderRadius: 5,
-            backgroundColor: '#f4ebfe',
-          }}
-        />
-      </View>
-      <View style={styles.container}>
-        <View style={styles.mainContent}>
-          <View style={styles.rowContainer}>
-            <View style={styles.searchBarContainer}></View>
-          </View>
-          <Stack fill center spacing={4}>
-          <View style={{ flex: 1, width: '100%' }}>
-  <TouchableHighlight>
-    <View style={{ width: '100%', height: '100%' }}>
-      <Surface elevation={2} category="medium">
-        <Text>{readdata.Data.Instruction.CreditorAccount.Name}</Text>
-        <Text>{readdata.Data.Instruction.CreditorAccount.Identification}</Text>
-        <Text>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
-        <View style={{alignItems:'center'}}>
-        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green'}} 
-        onPress={handleSubmit}>
-       Pay Now
-      </Button>
-      </View>
-      </Surface>
-    </View>
-  </TouchableHighlight>
-</View>
-<View style={{ flex: 1, width: '100%' }}>
-  <TouchableHighlight>
-    <View style={{ width: '100%', height: '100%' }}>
-      <Surface elevation={2} category="medium">
-        <Text>{readdata.Data.Instruction.CreditorAccount.Name}</Text>
-        <Text>{readdata.Data.Instruction.CreditorAccount.Identification}</Text>
-        <Text>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
-        <View style={{alignItems:'center'}}>
-        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green'}}>
-       Pay Now
-      </Button>
-      </View>
-      </Surface>
-    </View>
-  </TouchableHighlight>
-</View>
-<View style={{ flex: 1, width: '100%' }}>
-  <TouchableHighlight>
-    <View style={{ width: '100%', height: '100%'}}>
-      <Surface elevation={2} category="medium">
-        <Text>{readdata.Data.Instruction.CreditorAccount.Name}</Text>
-        <Text>{readdata.Data.Instruction.CreditorAccount.Identification}</Text>
-        <Text>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
-        <View style={{alignItems:'center'}}>
-        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green'}}>
-       Pay Now
-      </Button>
-      </View>
-      </Surface>
-    </View>
-  </TouchableHighlight>
-</View>
-  </Stack>
+            backgroundColor: '#5a287d',
+            padding: 10,
+          }}>
+
         </View>
-        <Button  mode="contained" style={{width:'50%',backgroundColor:'#5a287d',margin:15,height:50}} 
-        labelStyle={{color:'white',fontSize:18,flex:1,alignItems:'center' }} onPress={()=>{navigation.navigate('CreditorDetails')}}>
-       Start a new VRP
-      </Button>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Select Your Bank');
-          }}
-          style={styles.footer}
-          activeOpacity={1}>
-          <Text style={styles.footerText}>Add New Bank Account</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+        <View style={styles.container}>
+          <View style={styles.mainContent}>
+            <View style={styles.rowContainer}>
+              <View style={styles.searchBarContainer}></View>
+            </View>
+            <ScrollView>
+              {consentData.map((item)=>(
+                <View key={item.id} style={styles.item}>
+                <Text>{item.consentid}</Text>
+              </View>
+              ))}
+            {/* {consentData.map((item, index) => (
+              <Card key={index} style={styles.card}>
+                <Card.Content>
+                  <View style={styles.cardHeader}></View>
+                <Text>Consent ID: {item.consentid}</Text>
+          <Text>Consent Payload: {item.consentpayload}</Text>
+          <Text>Refresh Token: {item.refreshtoken}</Text>
+              </Card.Content>
+              </Card>
+              ))} */}
+              <View style={{ alignItems: 'center' }}>
+                <Button mode="contained"  style={{ width: '50%', backgroundColor: '#c8e1cc' }} labelStyle={{ color: 'green' }} onPress={handleSubmit}>
+                  Pay Now
+                </Button>
+              </View>
+              </ScrollView>
+          </View>
+          <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
+            labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('Review Creditor') }}>
+            Start a new VRP
+          </Button>
+          
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Select Your Bank');
+            }}
+            style={styles.footer}
+            activeOpacity={1}>
+            <Text style={styles.footerText}>Add New Bank Account</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     width: 373,
   },
-  searchBarContainer: {margin: 2},
+  searchBarContainer: { margin: 2 },
   scrollContainer: {
     flex: 1,
     padding: 2,
@@ -223,6 +228,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  cardContainer: {
+    marginBottom: 16,
   },
 });
 
