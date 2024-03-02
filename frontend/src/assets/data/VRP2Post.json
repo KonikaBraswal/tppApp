@@ -1,0 +1,47 @@
+{
+    "Data": {
+        "ConsentId": "VRP-00d0d1c7-2290-42fd-b498-145cd451afd5",
+        "CreationDateTime": "2024-02-29T15:23:22.521Z",
+        "Status": "AwaitingAuthorisation",
+        "StatusUpdateDateTime": "2024-02-29T15:23:22.525Z",
+        "ControlParameters": {
+            "ValidFromDateTime": "2021-08-01T23:06:53.599Z",
+            "ValidToDateTime": "2024-08-01T23:06:53.599Z",
+            "MaximumIndividualAmount": {
+                "Amount": "200.00",
+                "Currency": "GBP"
+            },
+            "PeriodicLimits": [
+                {
+                    "PeriodType": "Week",
+                    "PeriodAlignment": "Calendar",
+                    "Amount": "300.00",
+                    "Currency": "GBP"
+                }
+            ],
+            "VRPType": [
+                "UK.OBIE.VRPType.Other"
+            ],
+            "PSUAuthenticationMethods": [
+                "UK.OBIE.SCANotRequired"
+            ]
+        },
+        "Initiation": {
+            "CreditorAccount": {
+                "SchemeName": "SortCodeAccountNumber",
+                "Identification": "50499910000998",
+                "Name": "ACME DIY",
+                "SecondaryIdentification": "secondary-identif"
+            },
+            "RemittanceInformation": {
+                "Unstructured": "Tools",
+                "Reference": "Tools"
+            }
+        }
+    },
+    "Risk": {},
+    "Links": {
+        "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrp-consents/VRP-00d0d1c7-2290-42fd-b498-145cd451afd5"
+    },
+    "Meta": {}
+}
