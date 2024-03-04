@@ -40,6 +40,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
     const fetchData = async () => {
       try {
         const refresh_token = await fetchRefreshedToken(1001);
+        //  console.log(refresh_token);
         const access_token = await sandboxApiClient.refreshToken(refresh_token);
 
         const databaseResponse = await RetrieveData();

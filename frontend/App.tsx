@@ -38,13 +38,14 @@ import ViewAllAccounts from './src/screens/ViewAllAccounts';
 import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 import ViewBarclaysAccounts from './src/screens/ViewBarclaysAccounts';
-import SuccessfullTransaction from './src/screens/SuccessfullTransaction';
+import SuccessfulTransaction from './src/screens/SuccessfulTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 import PaymentConsent from './src/screens/PaymentConsent';
 import MakeTransfer from './src/screens/MakeTransfer';
 import {initDatabase} from './database/Database';
 import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
 import ViewDetailsWithRefreshToken from './src/screens/ViewDetailsWithRefreshToken';
+import PaymentConsentScreen from './src/screens/PaymentConsentScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -116,7 +117,7 @@ function App(): React.JSX.Element {
               />
               <Stack.Screen
                 name="Transaction Successful"
-                component={SuccessfullTransaction}
+                component={SuccessfulTransaction}
               />
               <Stack.Screen
                 name="Added Accounts"
@@ -127,6 +128,7 @@ function App(): React.JSX.Element {
                 component={PaymentConsent}
               />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
+              <Stack.Screen name="PISP" component={PaymentConsentScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

@@ -10,6 +10,17 @@ const ViewAll = () => {
   const filterDataByScope = data => {
     return data.filter(obj => obj.scope === 'accounts');
   };
+  function findAccountRefreshToken(array, accountId) {
+    return array
+
+      .filter(obj =>
+        obj.account_customer_consented.split(',').includes(accountId),
+      )
+
+      .sort(
+        (a, b) => new Date(a.CreationDateTime) - new Date(b.CreationDateTime),
+      );
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {

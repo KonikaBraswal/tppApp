@@ -111,7 +111,7 @@ class SanboxApiClient {
       const scope = response.data.scope;
 
       const details1 = {
-        userId: 1001,
+        userId: 1002,
         scope: scope,
       };
 
@@ -154,7 +154,7 @@ class SanboxApiClient {
               InstructionIdentification: 'instr-identification',
               EndToEndIdentification: 'e2e-identification',
               InstructedAmount: {
-                Amount: '5.00',
+                Amount: '1.00',
                 Currency: 'GBP',
               },
               DebtorAccount: null,
@@ -208,7 +208,7 @@ class SanboxApiClient {
 
       const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
 
-      await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
+      await updateDetails(updatedDetails1, 1002, columnsToUpdate1);
       //store
       console.log('successss**');
       console.log(response.data);
@@ -271,7 +271,7 @@ class SanboxApiClient {
 
       const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
 
-      await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
+      // await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
 
       //store
 
@@ -340,7 +340,7 @@ class SanboxApiClient {
             InstructionIdentification: 'instr-identification',
             EndToEndIdentification: 'e2e-identification',
             InstructedAmount: {
-              Amount: '5.00',
+              Amount: '1.00',
               Currency: 'GBP',
             },
             CreditorAccount: {

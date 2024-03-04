@@ -33,7 +33,13 @@ const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
-const PaymentConsent = () => {
+const PaymentConsent = ({route}) => {
+  const FirstName = route.params.FirstName;
+  const LastName = route.params.LastName;
+  const SortCode = route.params.SortCode;
+  const AccountNumber = route.params.AccountNumber;
+  const Reference = route.params.Reference;
+  const Amount = route.params.Amount;
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -167,7 +173,8 @@ const PaymentConsent = () => {
   const handleSubmit = async permission => {
     try {
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
-      navigation.navigate('Transaction Successful');
+
+      navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to retrieve access token.');
