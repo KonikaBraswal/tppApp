@@ -8,11 +8,9 @@ const SuccessfulTransaction = ({route}) => {
   const status = route.params.status;
   console.log(status);
   const handlePress = () => {
-    if (status === 'AcceptedSettlementCompleted')
-      navigation.navigate('View Details', {
-        AccountId: '48901b2d-f748-40a9-b8e4-5a206590b6a5',
-      });
-    else {
+    if (status === 'AcceptedSettlementCompleted') {
+      navigation.navigate('Added Bank Accounts');
+    } else {
       navigation.navigate('Transfer Money');
     }
   };
