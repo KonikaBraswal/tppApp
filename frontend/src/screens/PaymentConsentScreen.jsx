@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {
   Title,
@@ -13,8 +14,14 @@ import {
   Dialog,
   Portal,
   TextInput,
+  Divider,
+  Checkbox,
 } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
 
 const mode = 'sandbox';
@@ -24,15 +31,12 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const PaymentConsentScreen = ({route}) => {
   const navigation = useNavigation();
-  const [isPayeeInfoOpen, setIsPayeeInfoOpen] = useState(false);
-  const [isPayerInfoOpen, setIsPayerInfoOpen] = useState(false);
-  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [checked, setChecked] = React.useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
+
   const showInputDialog = () => setInputDialogVisible(true);
-  const hideInputDialog = () => {
-    setInputDialogVisible(false);
-  };
+  const hideInputDialog = () => setInputDialogVisible(false);
 
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
@@ -72,14 +76,14 @@ const PaymentConsentScreen = ({route}) => {
   const AccountNumber = route.params.AccountNumber;
   const Reference = route.params.Reference;
   const Amount = route.params.Amount;
-  const toggleSection = section => {
-    if (section === 'payee') {
-      setIsPayeeInfoOpen(!isPayeeInfoOpen);
-    } else if (section === 'payer') {
-      setIsPayerInfoOpen(!isPayerInfoOpen);
-    } else if (section === 'terms') {
-      setIsTermsOpen(!isTermsOpen);
-    }
+
+  const showAlert = () => {
+    Alert.alert(
+      'Unchecked Submission',
+      'Please check the box before proceeding',
+      [{text: 'OK'}],
+      {cancelable: false},
+    );
   };
   const formatDate = date => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -88,6 +92,7 @@ const PaymentConsentScreen = ({route}) => {
 
     return `${day} - ${month} - ${year}`;
   };
+
   const currentDate = new Date();
   const formattedDate = formatDate(currentDate);
 
@@ -104,7 +109,7 @@ const PaymentConsentScreen = ({route}) => {
 
         <View style={styles.highlightedSection}>
           <View style={styles.highlightedRow}>
-            <Icon source="credit-card" color="#5a287d" size={25} />
+            <Icon source="credit-card" color="#5a287d" size={hp('3%')} />
             <Title style={styles.highlightedTitle}>Payment</Title>
           </View>
 
@@ -121,15 +126,12 @@ const PaymentConsentScreen = ({route}) => {
             <Text style={styles.rightContent}>{formattedDate}</Text>
           </View>
         </View>
-        <View
-          style={{
-            marginTop: 15,
-            justifyContent: 'center',
-          }}>
+
+        <View style={{marginTop: hp('1%')}}>
           <View style={styles.tile}>
             <Text style={styles.tileTitle}>Payee Information</Text>
 
-            <View style={{flexDirection: 'column', marginTop: 2}}>
+            <View style={{flexDirection: 'column', marginTop: hp('0.5%')}}>
               <View style={styles.row}>
                 <Text style={styles.leftContent}>Name</Text>
                 <Text style={styles.rightContent}>
@@ -145,67 +147,34 @@ const PaymentConsentScreen = ({route}) => {
                 <Text style={styles.rightContent}>{AccountNumber}</Text>
               </View>
             </View>
+
+            <Divider style={styles.divider} />
           </View>
-          {/* <TouchableOpacity
-            style={styles.tile}
-            onPress={() => toggleSection('payee')}>
-            <Text style={styles.tileTitle}>Payee Info</Text>
-            {isPayeeInfoOpen && (
-              <View style={{flexDirection: 'column', marginTop: 2}}>
-                <View style={styles.row}>
-                  <Text style={styles.leftContent}>Name</Text>
-                  <Text style={styles.rightContent}>
-                    {FirstName} {LastName}
-                  </Text>
-                </View>
-                <View style={styles.row}>
-                  <Text style={styles.leftContent}>Sort Code</Text>
-                  <Text style={styles.rightContent}>Right Content</Text>
-                </View>
-                <View style={styles.row}>
-                  <Text style={styles.leftContent}>Account Number</Text>
-                  <Text style={styles.rightContent}>{AccountNumber}</Text>
-                </View>
-              </View>
-            )}
-          </TouchableOpacity> */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: wp('4%'),
+              paddingVertical: hp('1.5%'),
+            }}>
+            <Checkbox
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setChecked(!checked);
+              }}
+            />
 
-          {/* <TouchableOpacity
-            style={styles.tile}
-            onPress={() => toggleSection('payer')}>
-            <Text style={styles.tileTitle}>Payer Info</Text>
-            {isPayerInfoOpen && (
-              <View style={{flexDirection: 'column', marginTop: 2}}>
-                <View style={styles.row}>
-                  <Text style={styles.leftContent}>Sort Code</Text>
-                  <Text style={styles.rightContent}>Right Content</Text>
-                </View>
-                <View style={styles.row}>
-                  <Text style={styles.leftContent}>Account Number</Text>
-                  <Text style={styles.rightContent}>Right Content</Text>
-                </View>
-              </View>
-            )}
-          </TouchableOpacity> */}
-
-          {/* <TouchableOpacity
-            style={styles.tile}
-            onPress={() => toggleSection('terms')}>
-            <Text style={styles.tileTitle}>Terms</Text>
-            {isTermsOpen && (
-              <View style={styles.tileContent}>
-                <Text style={styles.tileContentText}>
-                  Details about the terms...
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity> */}
+            <Text style={{fontSize: hp('2%')}}>
+              By checking the box labeled "I confirm that the details displayed
+              are valid"
+            </Text>
+          </View>
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          We will securely transfer to your ASPSP to authenticate amd make the
+          We will securely transfer to your ASPSP to authenticate and make the
           payment
         </Text>
         <View style={styles.buttonContainer}>
@@ -215,7 +184,7 @@ const PaymentConsentScreen = ({route}) => {
               navigation.goBack();
             }}
             style={{...styles.button, backgroundColor: 'white'}}
-            labelStyle={{fontWeight: 'bold', fontSize: 16}}>
+            labelStyle={{fontWeight: 'bold', fontSize: hp('2.2%')}}>
             Back
           </Button>
           <Button
@@ -224,9 +193,17 @@ const PaymentConsentScreen = ({route}) => {
               ...styles.button,
               backgroundColor: '#5a287d',
             }}
-            labelStyle={{fontWeight: 'bold', fontSize: 16, color: 'white'}}
+            labelStyle={{
+              fontWeight: 'bold',
+              fontSize: hp('1.8%'),
+              color: 'white',
+            }}
             onPress={() => {
-              handleConfirmButtonClick();
+              if (checked) {
+                handleConfirmButtonClick();
+              } else {
+                showAlert();
+              }
             }}>
             I Allow
           </Button>
@@ -263,31 +240,31 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: 100,
+    paddingBottom: hp('10%'),
   },
   header: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: hp('1%'),
   },
   title: {
-    fontSize: 23,
+    fontSize: hp('3.2%'),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 10,
+    marginVertical: hp('1%'),
     color: 'black',
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: hp('2.2%'),
     textAlign: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: hp('1.5%'),
     fontWeight: '500',
   },
   highlightedSection: {
     backgroundColor: 'rgba(220, 190, 190, 0.6)',
-    paddingVertical: 10,
+    paddingVertical: hp('2%'),
     borderRadius: 5,
-    marginTop: 5,
-    paddingHorizontal: 20,
+    marginTop: hp('1.5%'),
+    paddingHorizontal: wp('5%'),
   },
   highlightedRow: {
     flexDirection: 'row',
@@ -295,62 +272,51 @@ const styles = StyleSheet.create({
   },
   highlightedTitle: {
     fontWeight: 'bold',
-    fontSize: 21,
+    fontSize: hp('2.7%'),
     color: '#5a287d',
-    marginHorizontal: 6,
+    marginHorizontal: wp('1.2%'),
   },
-  highlightedText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginVertical: 5,
-  },
+
   tile: {
-    margin: 10,
-    padding: 10,
-    borderColor: 'black',
-    borderBottomWidth: 2,
+    paddingHorizontal: wp('5%'),
+    paddingVertical: hp('1%'),
   },
   tileTitle: {
-    fontSize: 18,
+    fontSize: hp('2.7%'),
     fontWeight: 'bold',
     color: '#5a287d',
-  },
-  tileContent: {
-    marginTop: 5,
-    padding: 5,
-  },
-  tileContentText: {
-    fontSize: 16,
-    marginVertical: 5,
-    fontWeight: 'bold',
-    color: 'black',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-    marginVertical: 15,
-    padding: 5,
+    marginVertical: hp('2%'),
+    padding: wp('1%'),
   },
   leftContent: {
     position: 'absolute',
     left: 0,
-    fontSize: 16,
-    marginVertical: 3,
+    fontSize: hp('2.2%'),
+    marginVertical: hp('0.5%'),
     fontWeight: 'bold',
     color: 'black',
   },
   rightContent: {
     position: 'absolute',
     right: 0,
-    fontSize: 16,
-    marginVertical: 5,
+    fontSize: hp('2.2%'),
+    marginVertical: hp('1%'),
     fontWeight: 'bold',
     color: 'black',
   },
+  divider: {
+    borderBottomWidth: 2,
+    borderBottomColor: 'grey',
+    marginTop: hp('1.2%'),
+  },
   footer: {
-    backgroundColor: 'rgba(220, 190, 190, 0.6)',
-    padding: 20,
+    backgroundColor: 'rgba(220, 190, 190, 1)',
+    padding: wp('4%'),
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -358,19 +324,19 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: hp('1.5%'),
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: hp('2.2%'),
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 10,
+    marginTop: hp('1%'),
   },
   button: {
     borderRadius: 0,
-    paddingVertical: 2,
-    paddingHorizontal: 20,
+    paddingVertical: hp('0.4%'),
+    paddingHorizontal: wp('3.8%'),
     borderWidth: 1,
     borderColor: 'black',
   },
