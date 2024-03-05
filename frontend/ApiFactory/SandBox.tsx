@@ -143,7 +143,7 @@ class SandBox {
         }
     }
 
-    async exchangeAccessToken(authTokenUrl: string): Promise<string> {
+    async exchangeAccessToken(authTokenUrl: string,formData:any): Promise<string> {
         try {
             const start = authTokenUrl.indexOf('=') + 1;
             const end = authTokenUrl.indexOf('&');
@@ -185,14 +185,14 @@ class SandBox {
 
             await updateDetailsForVrp(updatedDetails2, this.consentId, columnsToUpdate2);
             refreshTokenExists = true;
-            return this.vrpPayments(response.data.access_token,this.consentId);
+            return this.vrpPayments(response.data.access_token,this.consentId,formData);
 
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
         }
     }
 
-    async refreshToken(refreshToken: string): Promise<any> {//here also pass consent id to pass it other calls
+    async refreshToken(refreshToken: string,grantedformData:any): Promise<any> {//here also pass consent id to pass it other calls
         try {
           const body: Record<string, string> = {
             client_id: this.clientId,
@@ -226,14 +226,14 @@ class SandBox {
           await updateDetailsForVrp(updatedDetails3,refreshToken.consentid , columnsToUpdate3);
           
           //return this.fetchAccounts(responseRefresh.data.access_token);
-          return this.vrpPayments(responseRefresh.data.access_token,refreshToken.consentid);
+          return this.vrpPayments(responseRefresh.data.access_token,refreshToken.consentid,grantedformData);
 
         } catch (error) {
           throw new Error(`Failed to fetch data: ${error}`);
         }
       }
 
-    async vrpPayments(apiAccessToken: string,consentid:string): Promise<any> {
+    async vrpPayments(apiAccessToken: string,consentid:string,formData:any): Promise<any> {
         try {
             const id = uuid.v4();
             const headers = {
@@ -250,30 +250,30 @@ class SandBox {
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": "nishi",
+                            "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {
                             "Unstructured": "Tools",
-                            "Reference": "Tools"
+                            "Reference": formData.reference
                         }
                     },
                     "Instruction": {
                         "InstructionIdentification": "instr-identification",
                         "EndToEndIdentification": "e2e-identification",
                         "InstructedAmount": {
-                            "Amount": 20.00,
+                            "Amount": formData.amount,
                             "Currency": "GBP"
-                        },
+                        }, 
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
                             "Identification": "50499910000998",
-                            "Name": "nishi",
+                            "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
                         "RemittanceInformation": {
                             "Unstructured": "Tools",
-                            "Reference": "Tools"
+                            "Reference": formData.reference
                         }
                     }
                 },

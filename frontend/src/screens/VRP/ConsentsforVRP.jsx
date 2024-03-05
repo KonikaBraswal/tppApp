@@ -63,6 +63,11 @@ const ConsentsforVRP = () => {
   };
   const scope = 'payments';
   const [consentData, setConsentData] = useState([]);
+  const grantedFormdata={
+    firstName:'minal',
+    reference:'Tools',
+    amount:45
+  }
 
   useEffect(() => {
     // Call fetchAllDataforScope when the component mounts
@@ -81,23 +86,28 @@ const ConsentsforVRP = () => {
   }, [scope]);
   const mode = 'sandbox';
 
-  const handleSubmit = async () => {
-    // const creditorName = readdata.Data.Instruction.CreditorAccount.Name;
-    // const creditorIdentification = readdata.Data.Instruction.CreditorAccount.Identification;
-    // const sortcode = '123456';
-    // const referencenumber = readdata.Data.Initiation.RemittanceInformation.Reference;
-    // navigation.navigate('GrantedForm', {
-    //   creditorName,
-    //   creditorIdentification,
-    //   sortcode,
-    //   referencenumber
-    // });
-    // navigation.navigate('GrantedForm');
+  const handleSubmit = async (index) => {
     if (mode == 'sandbox') {
     try{
-      console.log("refreshing...",consentData[1].refreshtoken);
-      const response=await sandboxApiClient.refreshToken(consentData[1]);
-      console.log("response",response);
+      console.log('clicked on card'+`${index}`);
+      console.log("refreshing...",consentData[index].refreshtoken);
+      console.log("Passing data:"+consentData[index])
+      console.log('ID:'+consentData[index].consentid);
+      const read=consentData[index].consentpayload;
+      console.log("This is the type:"+typeof(read));
+      const jsonObject = JSON.parse(read);
+       const name = jsonObject.Initiation.CreditorAccount.Name;
+      console.log('payload details'+read)
+      navigation.navigate('GrantedForm',{
+        creditorName:jsonObject.Initiation.CreditorAccount.Name, 
+        creditorIdentification:jsonObject.Initiation.CreditorAccount.Identification, 
+        sortcode:'12-05-03', 
+        referencenumber:jsonObject.Initiation.RemittanceInformation.Reference,
+        selectconsentData:consentData[index]
+      })
+      // const response=await sandboxApiClient.refreshToken(consentData[index],grantedFormdata);//pass index based on the card clicked
+      // console.log("response",response);
+      
 
     }catch(error){
       console.log("error in fetching refresh",error);
@@ -123,30 +133,21 @@ const ConsentsforVRP = () => {
               <View style={styles.searchBarContainer}></View>
             </View>
             <ScrollView>
-              {consentData.map((item)=>(
+              {consentData.map((item,index)=>(
+
                 <View key={item.id} style={styles.item}>
                 <Text>{item.consentid}</Text>
-              </View>
-              ))}
-            {/* {consentData.map((item, index) => (
-              <Card key={index} style={styles.card}>
-                <Card.Content>
-                  <View style={styles.cardHeader}></View>
-                <Text>Consent ID: {item.consentid}</Text>
-          <Text>Consent Payload: {item.consentpayload}</Text>
-          <Text>Refresh Token: {item.refreshtoken}</Text>
-              </Card.Content>
-              </Card>
-              ))} */}
-              <View style={{ alignItems: 'center' }}>
-                <Button mode="contained"  style={{ width: '50%', backgroundColor: '#c8e1cc' }} labelStyle={{ color: 'green' }} onPress={handleSubmit}>
+                <Text>{JSON.parse(item.consentpayload).Initiation.CreditorAccount.Name}</Text>
+                <Button mode="contained"  style={{ width: '50%', backgroundColor: '#c8e1cc' }} labelStyle={{ color: 'green' }} onPress={()=>handleSubmit(index)}>
                   Pay Now
                 </Button>
               </View>
+              ))}
+              
               </ScrollView>
           </View>
           <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
-            labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('Review Creditor') }}>
+            labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
             Start a new VRP
           </Button>
           

@@ -17,10 +17,10 @@ const [loading, setLoading] = useState(true);
       </View>
     );
   }
-  const formattedAmount = new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-  }).format(parseFloat(Data.Data.Instruction.InstructedAmount.Amount));
+  // const formattedAmount = new Intl.NumberFormat('en-GB', {
+  //   style: 'currency',
+  //   currency: 'GBP',
+  // }).format(parseFloat(Data.Data.Instruction.InstructedAmount.Amount));
 
   return (
     <Stack fill center spacing={4} style={{backgroundColor:'white'}}>
@@ -40,7 +40,7 @@ const [loading, setLoading] = useState(true);
           }}
         >
           <Text style={{ marginLeft: 6, color: 'white', fontSize: 30}}>
-            {formattedAmount}
+            {Data.amount}
           </Text>
         
         </LinearGradient>
@@ -66,10 +66,10 @@ const [loading, setLoading] = useState(true);
     </Text>
   </View>
   <Text style={{ flex: 2, marginLeft: 6, marginRight: -4, color: 'white', fontSize: 15 }}>
-    {Data.Data.Initiation.CreditorAccount.Name}
+    {Data.firstName}
   </Text>
 </View>
-<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
+{/* <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
   <View style={{ flex: 1 }}>
     <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
       Consent ID
@@ -78,7 +78,7 @@ const [loading, setLoading] = useState(true);
   <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
     {Data.Data.ConsentId}
   </Text>
-</View>
+</View> */}
 <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
   <View style={{ flex: 1 }}>
     <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
@@ -86,7 +86,7 @@ const [loading, setLoading] = useState(true);
     </Text>
   </View>
   <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
-    {Data.Data.Status}
+    {/* {Data.Data.Status} */}
   </Text>
 </View>
 

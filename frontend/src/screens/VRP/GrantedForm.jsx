@@ -2,6 +2,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react'; 
 import { TextInput } from '@react-native-material/core';
+import ApiFactory from '../../../ApiFactory/ApiFactory';
 import {
   View,
   Text,
@@ -9,11 +10,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
+
 
 const GrantedForm = ({ route }) => {
-  const { creditorName, creditorIdentification, sortcode, referencenumber } = route.params;
+  const {
+    creditorName,
+    creditorIdentification,
+    sortcode,
+    referencenumber,
+    selectconsentData,
+  } = route.params;
   const [edit, setEdit] = useState(true);
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [sortCode, setSortCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');
@@ -22,28 +32,34 @@ const GrantedForm = ({ route }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    setFullName(creditorName);
+    setFirstName(creditorName);
     setSortCode(sortcode);
     setAccountNumber(creditorIdentification);
     setReference(referencenumber);
+    console.log("passed data"+selectconsentData);
     if (creditorName && creditorIdentification && sortcode && referencenumber) {
       setEdit(false);
     }
   }, [creditorName, creditorIdentification, sortcode, referencenumber]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     const formData = {
-      fullName,
+      firstName,
       sortCode,
       accountNumber,
       reference,
       amount,
     };
-
+    try{  const response=await sandboxApiClient.refreshToken(selectconsentData,formData);
+      console.log("response",response)}
+      catch(error){
+        console.log("error in fetching refresh",error);
+      }
     console.log('Form submitted:', formData);
 
-    navigation.navigate('Review Creditor', { formData });
+    navigation.navigate('VRP Details', { data:formData });
   };
+  
 
   return (
 
@@ -60,7 +76,7 @@ const GrantedForm = ({ route }) => {
               label="Full Name"
               style={{ margin: 1}}
              
-              value={creditorName}
+              value={firstName}
               editable={edit}
             />
           </View>

@@ -1,4 +1,4 @@
-// src/PaymentForm.js
+
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import { TextInput } from '@react-native-material/core';
