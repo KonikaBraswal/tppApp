@@ -43,6 +43,7 @@ const AccountListWithRefreshToken = () => {
         // data.map(obj => console.log(obj.account_customer_consented));
         // data.map(obj => console.log(obj.scope));
         const filteredData = filterDataByScope(data);
+        console.log(filteredData, '------------------');
         setRetrievedData(filteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -104,20 +105,60 @@ const AccountListWithRefreshToken = () => {
                       <View style={styles.textContainer}>
                         <Paragraph>{account.AccountId}</Paragraph>
                         <Paragraph>{account.Account[0].Name}</Paragraph>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <IconButton
+                            icon="wallet"
+                            size={25}
+                            iconColor="#482164"
+                            style={{marginLeft: -wp('2%')}}
+                            onPress={() =>
+                              navigation.navigate('Transfer Money', {
+                                DebtorAccount: {
+                                  SchemeName: account.Account[0].SchemeName,
+                                  Identification:
+                                    account.Account[0].Identification,
+                                  Name: account.Account[0].Name,
+                                },
+                              })
+                            }
+                          />
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              color: '#5a287d',
+                              marginLeft: -wp('2%'),
+                            }}
+                            onPress={() =>
+                              navigation.navigate('Transfer Money', {
+                                DebtorAccount: {
+                                  SchemeName: account.Account[0].SchemeName,
+                                  Identification:
+                                    account.Account[0].Identification,
+                                  Name: account.Account[0].Name,
+                                },
+                              })
+                            }>
+                            Transfer Money
+                          </Text>
+                          <Card.Actions>
+                            <IconButton
+                              icon="chevron-right"
+                              size={22}
+                              onPress={() => {
+                                navigation.navigate('View Added Bank Details', {
+                                  AccountId: account.AccountId,
+                                });
+                              }}
+                              style={styles.iconButton}
+                            />
+                          </Card.Actions>
+                        </View>
                       </View>
-                      <Card.Actions>
-                        <IconButton
-                          icon="chevron-right"
-                          size={22}
-                          color="#5a287d"
-                          onPress={() => {
-                            navigation.navigate('View Added Bank Details', {
-                              AccountId: account.AccountId,
-                            });
-                          }}
-                          style={styles.iconButton}
-                        />
-                      </Card.Actions>
                     </View>
                   </Card.Content>
                 </Card>
@@ -203,8 +244,10 @@ const styles = StyleSheet.create({
     marginTop: -wp('1%'),
   },
   iconButton: {
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
+    marginRight: -wp('38%'),
+    // marginLeft: wp('2%'),
+    position: 'absolute',
+    right: 0,
   },
   footer: {
     backgroundColor: '#5a287d',

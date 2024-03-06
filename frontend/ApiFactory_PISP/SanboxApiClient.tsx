@@ -67,6 +67,7 @@ class SanboxApiClient {
   private permissions: string[] = [];
   private apiAccess: string = '';
   private callScope: string = '';
+  private DebtorAccount: any;
   constructor(
     baseUrl: string,
     clientId: string,
@@ -79,9 +80,13 @@ class SanboxApiClient {
     this.commonHeaders = commonHeaderss;
   }
 
-  async retrieveAccessToken(callScope: string): Promise<string> {
+  async retrieveAccessToken(
+    callScope: string,
+    DebtorAccount: any,
+  ): Promise<string> {
     let body: Record<string, string> = {};
     let header: Record<string, string> = {};
+    this.DebtorAccount = DebtorAccount;
     if (callScope == 'payments') {
       this.callScope = callScope;
       console.log('Payments Call');
@@ -157,7 +162,7 @@ class SanboxApiClient {
                 Amount: '1.00',
                 Currency: 'GBP',
               },
-              DebtorAccount: null,
+              DebtorAccount: this.DebtorAccount,
               CreditorAccount: {
                 SchemeName: 'IBAN',
                 Identification: 'BE56456394728288',
@@ -343,6 +348,7 @@ class SanboxApiClient {
               Amount: '1.00',
               Currency: 'GBP',
             },
+            DebtorAccount: this.DebtorAccount,
             CreditorAccount: {
               SchemeName: 'IBAN',
               Identification: 'BE56456394728288',

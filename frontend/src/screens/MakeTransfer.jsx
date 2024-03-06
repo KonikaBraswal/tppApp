@@ -11,7 +11,8 @@ import {
   ScrollView,
 } from 'react-native';
 
-const MakeTransfer = () => {
+const MakeTransfer = ({route}) => {
+  const DebtorAccount = route.params.DebtorAccount;
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState('ACME');
   const [lastName, setLastName] = useState('DIY');
@@ -37,6 +38,7 @@ const MakeTransfer = () => {
       AccountNumber: accountNumber,
       Reference: reference,
       Amount: amount,
+      DebtorAccount: DebtorAccount,
     });
   };
 

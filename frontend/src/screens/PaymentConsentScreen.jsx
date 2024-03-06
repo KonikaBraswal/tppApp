@@ -38,11 +38,20 @@ const PaymentConsentScreen = ({route}) => {
   const showInputDialog = () => setInputDialogVisible(true);
   const hideInputDialog = () => setInputDialogVisible(false);
 
+  const FirstName = route.params.FirstName;
+  const LastName = route.params.LastName;
+  const SortCode = route.params.SortCode;
+  const AccountNumber = route.params.AccountNumber;
+  const Reference = route.params.Reference;
+  const Amount = route.params.Amount;
+  const DebtorAccount = route.params.DebtorAccount;
+
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
       try {
         const consentData = await sandboxApiClient.retrieveAccessToken(
           'payments',
+          DebtorAccount,
         );
         console.log('Consent id:', consentData);
         if (way == 'web') {
@@ -69,13 +78,6 @@ const PaymentConsentScreen = ({route}) => {
     }
     hideInputDialog();
   };
-
-  const FirstName = route.params.FirstName;
-  const LastName = route.params.LastName;
-  const SortCode = route.params.SortCode;
-  const AccountNumber = route.params.AccountNumber;
-  const Reference = route.params.Reference;
-  const Amount = route.params.Amount;
 
   const showAlert = () => {
     Alert.alert(
