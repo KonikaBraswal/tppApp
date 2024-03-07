@@ -137,8 +137,8 @@ const ConsentsforVRP = () => {
             <ScrollView>
 
               {consentData.map((item, index) => (
-                <Surface style={{ backgroundColor: '#c8e1cc', height: 180, width: '100%', alignItems: 'center', justifyContent: 'center', margin: 5 }} elevation={2} category="medium">
-                  <View style={{ alignItems: 'left', justifyContent: 'left' }} key={item.id}>
+                <Surface   key={item.id} style={{ backgroundColor: '#c8e1cc', height: 180, width: '100%', alignItems: 'center', justifyContent: 'center', margin: 5 }} elevation={2} category="medium">
+                  <View style={{ alignItems: 'left', justifyContent: 'left' }}>
                     <Text style={{ fontSize: 12 }}>To</Text>
                     <Text style={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>{JSON.parse(item.consentpayload).Initiation.CreditorAccount.Name}</Text>
                     <Text style={styles.text}>Max amount per Period:{JSON.parse(item.consentpayload).ControlParameters.PeriodicLimits[0].Amount}</Text>
