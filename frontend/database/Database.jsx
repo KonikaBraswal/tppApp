@@ -223,7 +223,94 @@ export const RetrieveData = () => {
     });
   });
 };
+export const updateDetailsForVrp = (details,consentid,  columnsToUpdate) => {
+  console.log('Updating details for consentid:', consentid);
+  console.log('Details to update:', details);
 
+  // Ensure there are columns to update
+  if (!columnsToUpdate || columnsToUpdate.length === 0) {
+    console.error('No columns specified for update.');
+    return Promise.reject('No columns specified for update.');
+  }
+
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      // Construct SET clause dynamically based on columnsToUpdate
+      const setClause = columnsToUpdate
+        .map(column => `${column} = ?`)
+        .join(', ');
+
+      // Add last_updated_date and last_updated_time to SET clause
+      const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
+
+      // Construct SQL query
+      const query = `UPDATE userconsent_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
+
+      // Construct parameters array
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const parameters = [
+        ...columnsToUpdate.map(column => details[column].toString()),
+        //...columnsToUpdate.map(column => details[column]),----------Sunil
+        currentDate,
+        currentTime,
+        consentid,
+      ];
+
+      tx.executeSql(
+        query,
+        parameters,
+        (_, results) => {
+          console.log('Details updated successfully', results);
+          resolve(results);
+        },
+        (_, error) => {
+          console.error('Error updating details: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
+
+export const fetchAllDataforScope = scope => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM userconsent_sandbox WHERE scope = ?;',
+        [scope],
+        (_, results) => {
+          console.log('Query results:', results.rows); // Log the results for debugging
+          const rows = results.rows;
+          const data = [];
+          if (rows.length > 0) {
+            for(let i = 0; i < rows.length; i++){
+              const row = rows.item(i);
+              data.push({
+                consentid: row.consentid,
+                consentpayload:row.consentpayload,
+                refreshtoken:row.refreshedtoken
+              });
+
+            }
+            if(data.length>0)
+              resolve(data);
+          } else {
+            // If no entry is found, clear the globalConsentId
+            // globalConsentId = null;
+            console.log('No entry found for this scope:', scope); // Log for debugging
+            resolve(null);
+          }
+        },
+        (_, error) => {
+          //-----------------------------------------
+          console.error('Error fetching consent Id: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
 export const displayResults = () => {
   RetrieveData()
     .then(data => {

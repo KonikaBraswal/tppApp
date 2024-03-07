@@ -31,7 +31,8 @@ import SelectBank from './src/components/SelectBank';
 import AccountListScreen from './src/screens/AccountListScreen';
 import TransactionList from './src/components/TransactionList';
 import Landing from './src/screens/Landing';
-
+import VRPConsent from './src/screens/VRP/VRPConsent';
+import VRPDetails from './src/screens/VRP/VRPDetails';
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 import ViewAllAccounts from './src/screens/ViewAllAccounts';
@@ -46,6 +47,9 @@ import {initDatabase} from './database/Database';
 import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
 import ViewDetailsWithRefreshToken from './src/screens/ViewDetailsWithRefreshToken';
 import PaymentConsentScreen from './src/screens/PaymentConsentScreen';
+import ConsentsforVRP from './src/screens/VRP/ConsentsforVRP';
+import CreditorDetailsforVRP from './src/screens/VRP/CreditorDetailsforVRP';
+import GrantedForm from './src/screens/VRP/GrantedForm';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -129,6 +133,11 @@ function App(): React.JSX.Element {
               />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />
+              <Stack.Screen name="ConsentsforVRP" component={ConsentsforVRP} />
+              <Stack.Screen name="CreditorDetails" component={CreditorDetailsforVRP} />
+              <Stack.Screen name="GrantedForm" component={GrantedForm} />
+              <Stack.Screen name="Review Creditor" component={VRPConsent} />
+              <Stack.Screen name="VRP Details" component={VRPDetails} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
