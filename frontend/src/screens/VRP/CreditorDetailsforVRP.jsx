@@ -24,21 +24,20 @@ const CreditorDetailsforVRP = () => {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
+
     const calculateExpiryDate = () => {
-      const currentDate = new Date();
-      const expiryDate = new Date(currentDate);
-      expiryDate.setFullYear(expiryDate.getFullYear() + 2);
-  
-      const formattedDay = ("0" + expiryDate.getDate()).slice(-2); 
-      const formattedMonth = ("0" + (expiryDate.getMonth() + 1)).slice(-2); 
-      const formattedYear = expiryDate.getFullYear();
-  
-      const formattedExpiryDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
+      const currentDate = new Date();  
+      const expiryDate = new Date(currentDate); 
+      expiryDate.setFullYear(expiryDate.getFullYear() + 2); 
+      const formattedExpiryDate = expiryDate.toISOString();
       setExpiryDate(formattedExpiryDate);
     };
   
     calculateExpiryDate();
+  
   }, []);
+  
+  
 
   useEffect(() => {
     // Check if all required fields are filled

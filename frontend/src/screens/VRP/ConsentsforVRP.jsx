@@ -5,6 +5,7 @@ import {
   View,
   Text,
   ScrollView,
+  Image, 
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -16,6 +17,8 @@ import {
   Searchbar,
   Icon,
   Button,
+  Card,
+  IconButton,
 } from 'react-native-paper';
 import { Surface,Stack } from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
@@ -64,7 +67,6 @@ const ConsentsforVRP= () => {
 
   };
   return (
-    <ScrollView>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
@@ -89,7 +91,72 @@ const ConsentsforVRP= () => {
           <View style={styles.rowContainer}>
             <View style={styles.searchBarContainer}></View>
           </View>
-          <Stack fill center spacing={4}>
+
+
+
+
+
+          <ScrollView>
+
+          <Card style={styles.card}>
+          <View>
+          <Text style={styles.name}>{readdata.Data.Initiation.CreditorAccount.Name}</Text>
+          <Text style={styles.info}>{readdata.Data.Initiation.CreditorAccount.Identification}</Text>     
+          <Text style={styles.info}>{readdata.Data.Initiation.RemittanceInformation.Reference}</Text>   
+        <Text style={styles.info}>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
+        {/* <Image source={require('../../assets/images/natwest2.png')} style={styles.iconNatwest} />       */}
+        <View style={{alignItems:'center'}}>
+        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green', fontWeight: 'bold'}} 
+        onPress={handleSubmit}>
+       Pay Now
+      </Button>
+      </View>
+      </View>
+          </Card>
+
+
+          <Card style={styles.card}>
+          <Text style={styles.name}>{readdata.Data.Initiation.CreditorAccount.Name}</Text>
+          <Text style={styles.info}>{readdata.Data.Initiation.CreditorAccount.Identification}</Text>     
+          <Text style={styles.info}>{readdata.Data.Initiation.RemittanceInformation.Reference}</Text>   
+        <Text style={styles.info}>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
+        <View style={{alignItems:'center'}}>
+        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green', fontWeight: 'bold'}} 
+        onPress={handleSubmit}>
+       Pay Now
+      </Button>
+      </View>
+          </Card>
+
+
+          <Card style={styles.card}>
+          <Text style={styles.name}>{readdata.Data.Initiation.CreditorAccount.Name}</Text>
+          <Text style={styles.info}>{readdata.Data.Initiation.CreditorAccount.Identification}</Text>     
+          <Text style={styles.info}>{readdata.Data.Initiation.RemittanceInformation.Reference}</Text>   
+        <Text style={styles.info}>{readdata.Data.Instruction.InstructedAmount.Amount + " " + readdata.Data.Instruction.InstructedAmount.Currency + " "}</Text>
+        <View style={{alignItems:'center'}}>
+        <Button  mode="contained" style={{width:'50%',backgroundColor:'#c8e1cc'}} labelStyle={{color:'green', fontWeight: 'bold'}} 
+        onPress={handleSubmit}>
+       Pay Now
+      </Button>
+      </View>
+          </Card>
+
+          <Button  mode="contained" style={{width:'70%',backgroundColor:'#5a287d',margin:15,height:50, marginLeft:55}} 
+        labelStyle={{color:'white',fontSize:18,flex:1,alignItems:'center' }} onPress={()=>{navigation.navigate('CreditorDetails')}}>
+       Start a new VRP
+      </Button> 
+
+
+
+        
+
+
+
+
+
+
+          {/* <Stack fill center spacing={4}>
           <View style={{ flex: 1, width: '100%' }}>
   <TouchableHighlight>
     <View style={{ width: '100%', height: '100%' }}>
@@ -144,7 +211,16 @@ const ConsentsforVRP= () => {
         <Button  mode="contained" style={{width:'50%',backgroundColor:'#5a287d',margin:15,height:50}} 
         labelStyle={{color:'white',fontSize:18,flex:1,alignItems:'center' }} onPress={()=>{navigation.navigate('CreditorDetails')}}>
        Start a new VRP
-      </Button>
+      </Button> */}
+
+
+
+
+
+
+
+      </ScrollView>
+      </View>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Select Your Bank');
@@ -155,7 +231,6 @@ const ConsentsforVRP= () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -190,6 +265,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#c8e1cc',
   },
+  name: {
+    fontSize: 20,
+    marginLeft: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  info: {
+    fontSize: 15,
+    marginLeft: 20,
+  },
   surface: {
     width: 60,
     height: 60,
@@ -197,11 +284,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 10,
   },
-  iconNatwest: {
-    width: 55,
-    height: 55,
-    resizeMode: 'contain',
-  },
+  // iconNatwest: {
+  //   width: '25%',
+  //   height: '25%', 
+  //   resizeMode: 'center',
+  //   alignContent: 'c'
+    
+  // },
   iconBarclays: {
     width: 60,
     height: 60,
@@ -223,6 +312,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  iconButton: {
+    marginRight: 4.5,
+    marginLeft: 2,
   },
 });
 
