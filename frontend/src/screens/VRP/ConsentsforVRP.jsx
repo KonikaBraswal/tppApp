@@ -69,25 +69,9 @@ const ConsentsforVRP = () => {
     amount:45
   }
   const isFocused = useIsFocused();
-  // useEffect(() => {
-  //   // Call fetchAllDataforScope when the component mounts
-  //   fetchAllDataforScope(scope)
-  //     .then(data => {
-  //       if (data !== null) {
-  //         setConsentData(data);
-  //         console.log("details-->",data[1]);
-  //         setForceRender(prev => !prev);
-  //       } else {
-  //         console.log(`No entry found for scope ${scope}.`);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching Consent data:', error);
-  //     });
-  // }, [scope,forceRender]);
+
   useEffect(() => {
     if (isFocused) {
-      // Call fetchAllDataforScope when the component is focused (remounted)
       fetchAllDataforScope(scope)
         .then(data => {
           if (data !== null) {
@@ -134,7 +118,7 @@ const ConsentsforVRP = () => {
 
 
   return (
-    <ScrollView>
+    <><ScrollView>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}>
@@ -151,35 +135,40 @@ const ConsentsforVRP = () => {
               <View style={styles.searchBarContainer}></View>
             </View>
             <ScrollView>
-              {consentData.map((item,index)=>(
 
-                <View key={item.id} style={styles.item}>
-                <Text>{item.consentid}</Text>
-                <Text>{JSON.parse(item.consentpayload).Initiation.CreditorAccount.Name}</Text>
-                <Button mode="contained"  style={{ width: '50%', backgroundColor: '#c8e1cc' }} labelStyle={{ color: 'green' }} onPress={()=>handleSubmit(index)}>
-                  Pay Now
-                </Button>
-              </View>
+              {consentData.map((item, index) => (
+                <Surface style={{ backgroundColor: '#c8e1cc', height: 180, width: '100%', alignItems: 'center', justifyContent: 'center', margin: 5 }} elevation={2} category="medium">
+                  <View style={{ alignItems: 'left', justifyContent: 'left' }} key={item.id}>
+                    <Text style={{ fontSize: 12 }}>To</Text>
+                    <Text style={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>{JSON.parse(item.consentpayload).Initiation.CreditorAccount.Name}</Text>
+                    <Text style={styles.text}>Max amount per Period:{JSON.parse(item.consentpayload).ControlParameters.PeriodicLimits[0].Amount}</Text>
+                    <Text style={styles.text}>Max amount per Payment:{JSON.parse(item.consentpayload).ControlParameters.MaximumIndividualAmount.Amount}</Text>
+
+                    <Text style={styles.text}>Occurs every {JSON.parse(item.consentpayload).ControlParameters.PeriodicLimits[0].PeriodType}</Text>
+                    {/* <Text>{item.consentid}</Text> */}
+                  </View>
+                  <Button mode="contained" style={{ width: '30%', backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', margin: 5 }} labelStyle={{ color: 'green' }} onPress={() => handleSubmit(index)}>
+                    Pay Now
+                  </Button>
+
+                </Surface>
               ))}
-              
-              </ScrollView>
+
+            </ScrollView>
           </View>
-          <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
-            labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
-            Start a new VRP
-          </Button>
-          
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Select Your Bank');
-            }}
-            style={styles.footer}
-            activeOpacity={1}>
-            <Text style={styles.footerText}>Add New Bank Account</Text>
-          </TouchableOpacity>
+          {/* <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
+      labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
+      Start a new VRP
+    </Button> */}
         </View>
       </KeyboardAvoidingView>
-    </ScrollView>
+    </ScrollView><TouchableOpacity
+      onPress={() => { navigation.navigate('CreditorDetails'); } }
+      style={styles.footer}
+      activeOpacity={1}>
+        <Text style={styles.footerText}>Start a new VRP</Text>
+      </TouchableOpacity></>
+         
   );
 };
 const styles = StyleSheet.create({
@@ -251,6 +240,10 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginBottom: 16,
   },
+  text:{
+    color:'black',
+    fontSize:16
+  }
 });
 
 export default ConsentsforVRP;

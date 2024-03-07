@@ -4,11 +4,13 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Surface,Stack } from '@react-native-material/core';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button,Icon,ActivityIndicator } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 
 const VRPDetails = ({ route }) => {
 //   const { Data } = route.params || {};
 const [loading, setLoading] = useState(true);
+const navigation=useNavigation();
   const Data= route.params?.data;
   if (!Data) {
     return (
@@ -17,11 +19,6 @@ const [loading, setLoading] = useState(true);
       </View>
     );
   }
-  // const formattedAmount = new Intl.NumberFormat('en-GB', {
-  //   style: 'currency',
-  //   currency: 'GBP',
-  // }).format(parseFloat(Data.Data.Instruction.InstructedAmount.Amount));
-
   return (
     <Stack fill center spacing={4} style={{backgroundColor:'white'}}>
     <Surface  category="medium" style={{ width: '95%', height: '75%' }}>
@@ -40,7 +37,7 @@ const [loading, setLoading] = useState(true);
           }}
         >
           <Text style={{ marginLeft: 6, color: 'white', fontSize: 30}}>
-            {Data.amount}
+            £{Data.amount}
           </Text>
         
         </LinearGradient>
@@ -50,7 +47,6 @@ const [loading, setLoading] = useState(true);
         category="medium"
         style={{ width: '100%', height: '50%'}}
       >
-        {/* Use LinearGradient for a fluid color effect */}
         <LinearGradient
           colors={['#5a287d', '#9d6dbb']} // Add more colors as needed
           style={{
@@ -69,24 +65,35 @@ const [loading, setLoading] = useState(true);
     {Data.firstName}
   </Text>
 </View>
-{/* <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
-  <View style={{ flex: 1 }}>
-    <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
-      Consent ID
-    </Text>
-  </View>
-  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
-    {Data.Data.ConsentId}
-  </Text>
-</View> */}
 <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
   <View style={{ flex: 1 }}>
     <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
-      Payment Status
+      ID
     </Text>
   </View>
   <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
-    {/* {Data.Data.Status} */}
+   {Data.accountNumber}
+  </Text>
+</View>
+<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
+  <View style={{ flex: 1 }}>
+    <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
+      Sort Code
+    </Text>
+  </View>
+  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
+    {Data.sortCode}
+  </Text>
+</View>
+
+<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
+  <View style={{ flex: 1 }}>
+    <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
+      Reference
+    </Text>
+  </View>
+  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
+    {Data.reference}
   </Text>
 </View>
 
@@ -112,8 +119,9 @@ const [loading, setLoading] = useState(true);
       </Surface>
       
       </Surface>
-      <Button  mode="contained"  labelStyle={{ color: 'green',fontSize:18 }} style={{backgroundColor:'#c8e1cc',margin:30,color:'green'}} >
-       View Transactions
+      <Button  mode="contained"  labelStyle={{ color: 'green',fontSize:18 }} style={{backgroundColor:'#c8e1cc',margin:30,color:'green'}} 
+      onPress={()=>{navigation.navigate('ConsentsforVRP')}}>
+       Go back to Consents
       </Button>
     </Surface>
   </Stack>
