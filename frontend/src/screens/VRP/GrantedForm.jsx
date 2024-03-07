@@ -62,7 +62,6 @@ const GrantedForm = ({ route }) => {
   
 
   return (
-
     <View style={styles.container}>
       <ScrollView>
         <View style={{alignItems:'center'}}>

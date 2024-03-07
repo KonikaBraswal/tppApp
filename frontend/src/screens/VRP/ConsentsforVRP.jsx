@@ -14,7 +14,7 @@ import {
   FlatList,
 } from 'react-native';
 import ApiFactory from '../../../ApiFactory/ApiFactory';
-
+import { useIsFocused } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import {
   Searchbar,
@@ -68,22 +68,40 @@ const ConsentsforVRP = () => {
     reference:'Tools',
     amount:45
   }
-
+  const isFocused = useIsFocused();
+  // useEffect(() => {
+  //   // Call fetchAllDataforScope when the component mounts
+  //   fetchAllDataforScope(scope)
+  //     .then(data => {
+  //       if (data !== null) {
+  //         setConsentData(data);
+  //         console.log("details-->",data[1]);
+  //         setForceRender(prev => !prev);
+  //       } else {
+  //         console.log(`No entry found for scope ${scope}.`);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching Consent data:', error);
+  //     });
+  // }, [scope,forceRender]);
   useEffect(() => {
-    // Call fetchAllDataforScope when the component mounts
-    fetchAllDataforScope(scope)
-      .then(data => {
-        if (data !== null) {
-          setConsentData(data);
-          console.log("details-->",data[1]);
-        } else {
-          console.log(`No entry found for scope ${scope}.`);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching Consent data:', error);
-      });
-  }, [scope]);
+    if (isFocused) {
+      // Call fetchAllDataforScope when the component is focused (remounted)
+      fetchAllDataforScope(scope)
+        .then(data => {
+          if (data !== null) {
+            setConsentData(data);
+            console.log("details-->", data[1]);
+          } else {
+            console.log(`No entry found for scope ${scope}.`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching Consent data:', error);
+        });
+    }
+  }, [isFocused, scope]);
   const mode = 'sandbox';
 
   const handleSubmit = async (index) => {

@@ -131,19 +131,19 @@ class SandBox {
         return consentUrlWithVariables;
     }
 
-    async userConsentProgammatically(consentId: string): Promise<string> {
-        try {
-            console.log('ConsentID:', consentId);
-            const accountResponse: AxiosResponse<any> = await axios.get(
-                `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
-            );
-            return this.exchangeAccessToken(accountResponse.data.redirectUri);
-        } catch (error) {
-            throw new Error(`Failed to fetch data for accounts: ${error}`);
-        }
-    }
+    // async userConsentProgammatically(consentId: string,formData:any): Promise<string> {
+    //     try {
+    //         console.log('ConsentID:', consentId);
+    //         const accountResponse: AxiosResponse<any> = await axios.get(
+    //             `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
+    //         );
+    //         return this.exchangeAccessToken(accountResponse.data.redirectUri,formData);
+    //     } catch (error) {
+    //         throw new Error(`Failed to fetch data for accounts: ${error}`);
+    //     }
+    // }
 
-    async exchangeAccessToken(authTokenUrl: string,formData:any): Promise<string> {
+    async exchangeAccessToken(authTokenUrl: string,formData:any) {
         try {
             const start = authTokenUrl.indexOf('=') + 1;
             const end = authTokenUrl.indexOf('&');
@@ -185,7 +185,7 @@ class SandBox {
 
             await updateDetailsForVrp(updatedDetails2, this.consentId, columnsToUpdate2);
             refreshTokenExists = true;
-            return this.vrpPayments(response.data.access_token,this.consentId,formData);
+            //return this.vrpPayments(response.data.access_token,this.consentId,formData);
 
         } catch (error) {
             throw new Error(`Failed to fetch data: ${error}`);
@@ -262,7 +262,7 @@ class SandBox {
                         "InstructionIdentification": "instr-identification",
                         "EndToEndIdentification": "e2e-identification",
                         "InstructedAmount": {
-                            "Amount": formData.amount,
+                            "Amount": "7.00",//must be called with pay now button
                             "Currency": "GBP"
                         }, 
                         "CreditorAccount": {
@@ -282,6 +282,7 @@ class SandBox {
             };
 
             console.log("body",body);
+            console.log(formData);
             const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
                 `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`, body,
                 {
