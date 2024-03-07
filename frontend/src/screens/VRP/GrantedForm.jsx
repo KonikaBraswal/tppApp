@@ -1,7 +1,6 @@
-
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react'; 
-import { TextInput } from '@react-native-material/core';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {TextInput} from '@react-native-material/core';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
 import {
   View,
@@ -9,12 +8,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
-
-const GrantedForm = ({ route }) => {
+const GrantedForm = ({route}) => {
   const {
     creditorName,
     creditorIdentification,
@@ -28,6 +27,7 @@ const GrantedForm = ({ route }) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');
   const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const navigation = useNavigation();
 
@@ -36,13 +36,13 @@ const GrantedForm = ({ route }) => {
     setSortCode(sortcode);
     setAccountNumber(creditorIdentification);
     setReference(referencenumber);
-    console.log("passed data"+selectconsentData);
+    console.log('passed data' + selectconsentData);
     if (creditorName && creditorIdentification && sortcode && referencenumber) {
       setEdit(false);
     }
   }, [creditorName, creditorIdentification, sortcode, referencenumber]);
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     const formData = {
       firstName,
       sortCode,
@@ -50,100 +50,57 @@ const GrantedForm = ({ route }) => {
       reference,
       amount,
     };
-    try{  const response=await sandboxApiClient.refreshToken(selectconsentData,formData);
-      console.log("response",response)}
-      catch(error){
-        console.log("error in fetching refresh",error);
-      }
+    try {
+      const response = await sandboxApiClient.refreshToken(
+        selectconsentData,
+        formData,
+      );
+      console.log('response', response);
+    } catch (error) {
+      console.log('error in fetching refresh', error);
+    }
     console.log('Form submitted:', formData);
 
-    navigation.navigate('VRP Details', { data:formData });
+    navigation.navigate('VRP Details', {data: formData});
   };
-  
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={{alignItems:'center'}}>
-          <Text style={{fontSize:20}}>Please enter the amount</Text>
-          </View>
-        <View style={{ padding: 20 }}>
-        <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Full Name</Text>
-            <TextInput
-              variant="outlined"
-              label="Full Name"
-              style={{ margin: 1}}
-             
-              value={firstName}
-              editable={edit}
-            />
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Account Number</Text>
-            <TextInput
-              variant="outlined"
-              label="Bank Account Number"
-              style={{ margin: 1}}
-             
-              value={accountNumber}
-              editable={edit}
-            />
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Sort Code</Text>
-            <TextInput
-              variant="outlined"
-              label="Enter the sort code"
-              style={{ margin: 1 }}
-             
-              value={sortCode}
-              editable={edit}
-            />
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Reference</Text>
-            <TextInput
-              variant="outlined"
-              label="Reference"
-              style={{ margin: 1 }}
-             
-              value={reference}
-              editable={edit}
-            />
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Amount</Text>
-            <TextInput
-              variant="outlined"
-              label="Amount"
-              editable={true}
-              style={{ margin: 1}}
-              onChangeText={setAmount}
-              value={amount}
-              
-            />
-          </View>
+    <>
+      <View style={styles.container}>
+        <Text style={{color: 'black', fontSize: 20}}>Paying {firstName}</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={{fontSize: 50}}>£</Text>
+          <TextInput
+            style={{
+              height: 50, // Adjusted height
+              width: '80%',
+              borderColor: 'gray',
+              fontSize: 32, // Adjusted font size
+              padding: 10,
+              color: 'black',
+            }}
+            placeholder="Enter amount"
+            keyboardType="default"
+            value={amount.toString()}
+            onChangeText={setAmount}
+          />
         </View>
-      </ScrollView>
+      </View>
       <TouchableOpacity
         onPress={handleSubmit}
         style={styles.footer}
         activeOpacity={1}>
         <Text style={styles.footerText}>Proceed To Pay</Text>
       </TouchableOpacity>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sectionContainer: {
     marginBottom: 20,
@@ -167,6 +124,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  input: {
+    height: 200,
+    width: '80%', // Adjust the width as needed
+    borderColor: 'gray',
+    fontSize: 78,
+    padding: 10,
   },
 });
 
