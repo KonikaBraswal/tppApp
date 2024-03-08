@@ -12,6 +12,7 @@ import {
   Platform,
   TouchableHighlight,
   FlatList,
+  Image,
 } from 'react-native';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
 import {useIsFocused} from '@react-navigation/native';
@@ -140,19 +141,34 @@ const ConsentsforVRP = () => {
                       backgroundColor: '#c8e1cc',
                       height: 180,
                       width: '100%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      padding: wp('5%'),
+                      // alignItems: 'center',
+                      // justifyContent: 'center',
                       margin: 5,
                     }}
                     elevation={2}
                     category="medium">
-                    <View style={{alignItems: 'left', justifyContent: 'left'}}>
-                      <Text style={{fontSize: 12}}>To</Text>
+                    <View
+                      style={{
+                        alignItems: 'left',
+                        justifyContent: 'left',
+                      }}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{fontSize: 20}}>To</Text>
+
+                        <Image
+                          source={require('../../assets/images/natwest2.png')}
+                          style={styles.iconNatwest}
+                        />
+                      </View>
+
                       <Text
                         style={{
                           fontSize: 15,
                           color: 'black',
                           fontWeight: 'bold',
+                          marginTop: hp('0.5%'),
                         }}>
                         {
                           JSON.parse(item.consentpayload).Initiation
@@ -177,7 +193,7 @@ const ConsentsforVRP = () => {
                         </Text>
                       ) : (
                         <Text style={styles.text}>
-                          Max amount per Period:300
+                          Max amount per Period: 300
                         </Text>
                       )}
 
@@ -199,7 +215,7 @@ const ConsentsforVRP = () => {
                         </Text>
                       ) : (
                         <Text style={styles.text}>
-                          Max amount per Payment:200
+                          Max amount per Payment: 200
                         </Text>
                       )}
 
@@ -219,7 +235,7 @@ const ConsentsforVRP = () => {
                         backgroundColor: 'white',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        margin: 5,
+                        marginVertical: hp('2%'),
                       }}
                       labelStyle={{color: 'green'}}
                       onPress={() => handleSubmit(index)}>
@@ -287,9 +303,12 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   iconNatwest: {
-    width: 55,
-    height: 55,
+    width: wp('14.5%'),
+    height: wp('14.5%'),
     resizeMode: 'contain',
+    position: 'absolute',
+    right: 0,
+    top: 2,
   },
   iconBarclays: {
     width: 60,

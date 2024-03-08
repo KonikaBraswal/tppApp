@@ -152,6 +152,14 @@ const PaymentConsentScreen = ({route}) => {
 
             <Divider style={styles.divider} />
           </View>
+          <Text
+            style={{
+              ...styles.tileTitle,
+              marginLeft: wp('5%'),
+              marginTop: wp('2%'),
+            }}>
+            Terms
+          </Text>
           <View
             style={{
               flexDirection: 'row',
@@ -252,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: hp('3.2%'),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: hp('1%'),
+    marginVertical: hp('1.5%'),
     color: 'black',
   },
   subtitle: {
@@ -265,7 +273,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(220, 190, 190, 0.6)',
     paddingVertical: hp('2%'),
     borderRadius: 5,
-    marginTop: hp('1.5%'),
+    marginTop: hp('2%'),
     paddingHorizontal: wp('5%'),
   },
   highlightedRow: {
@@ -281,7 +289,7 @@ const styles = StyleSheet.create({
 
   tile: {
     paddingHorizontal: wp('5%'),
-    paddingVertical: hp('1%'),
+    paddingVertical: hp('1.5%'),
   },
   tileTitle: {
     fontSize: hp('2.7%'),
@@ -318,7 +326,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     backgroundColor: 'rgba(220, 190, 190, 1)',
-    padding: wp('4%'),
+    padding: wp('5%'),
     position: 'absolute',
     bottom: 0,
     left: 0,

@@ -244,10 +244,7 @@ const styles = StyleSheet.create({
     marginTop: -wp('1%'),
   },
   iconButton: {
-    marginRight: -wp('38%'),
-    // marginLeft: wp('2%'),
-    position: 'absolute',
-    right: 0,
+    marginRight: -wp('50%'),
   },
   footer: {
     backgroundColor: '#5a287d',
