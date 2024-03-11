@@ -143,7 +143,6 @@ const ConsentsforVRP = () => {
                     <Text style={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>{JSON.parse(item.consentpayload).Initiation.CreditorAccount.Name}</Text>
                     <Text style={styles.text}>Max amount per Period:{JSON.parse(item.consentpayload).ControlParameters.PeriodicLimits[0].Amount}</Text>
                     <Text style={styles.text}>Max amount per Payment:{JSON.parse(item.consentpayload).ControlParameters.MaximumIndividualAmount.Amount}</Text>
-
                     <Text style={styles.text}>Occurs every {JSON.parse(item.consentpayload).ControlParameters.PeriodicLimits[0].PeriodType}</Text>
                     {/* <Text>{item.consentid}</Text> */}
                   </View>
@@ -156,10 +155,6 @@ const ConsentsforVRP = () => {
 
             </ScrollView>
           </View>
-          {/* <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
-      labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
-      Start a new VRP
-    </Button> */}
         </View>
       </KeyboardAvoidingView>
     </ScrollView><TouchableOpacity

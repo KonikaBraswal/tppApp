@@ -22,24 +22,37 @@ const CreditorDetailsforVRP = () => {
   const [perPeriod, setPerPeriod] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString());
 
+  // useEffect(() => {
+  //   const calculateExpiryDate = () => {
+  //     const currentDate = new Date();
+  //     const expiryDate = new Date(currentDate);
+  //     expiryDate.setFullYear(expiryDate.getFullYear() + 2);
+  
+  //     const formattedDay = ("0" + expiryDate.getDate()).slice(-2); 
+  //     const formattedMonth = ("0" + (expiryDate.getMonth() + 1)).slice(-2); 
+  //     const formattedYear = expiryDate.getFullYear();
+  
+  //     const formattedExpiryDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
+  //     setExpiryDate(formattedExpiryDate);
+  //   };
+  
+  //   calculateExpiryDate();
+  // }, []);
   useEffect(() => {
+
     const calculateExpiryDate = () => {
-      const currentDate = new Date();
-      const expiryDate = new Date(currentDate);
-      expiryDate.setFullYear(expiryDate.getFullYear() + 2);
-  
-      const formattedDay = ("0" + expiryDate.getDate()).slice(-2); 
-      const formattedMonth = ("0" + (expiryDate.getMonth() + 1)).slice(-2); 
-      const formattedYear = expiryDate.getFullYear();
-  
-      const formattedExpiryDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
+      const currentDate = new Date();  
+      const expiryDate = new Date(currentDate); 
+      expiryDate.setFullYear(expiryDate.getFullYear() + 2); 
+      const formattedExpiryDate = expiryDate.toISOString();
       setExpiryDate(formattedExpiryDate);
     };
   
     calculateExpiryDate();
+  
   }, []);
-
   useEffect(() => {
     // Check if all required fields are filled
     const isValid = !!firstName && !!sortCode && !!accountNumber && !!reference && !!period && !!perPayment && !!perPeriod && !!expiryDate;
@@ -136,8 +149,9 @@ const CreditorDetailsforVRP = () => {
         <TextInput
           variant="outlined"
           label="Expiry Date"
+          keyboardType="default"
           style={styles.input}
-          value={expiryDate}
+          value={expiryDate.toString()}
           editable={false}
         />
       </View>

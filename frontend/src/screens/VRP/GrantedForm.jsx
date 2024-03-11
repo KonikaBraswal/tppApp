@@ -82,8 +82,8 @@ const GrantedForm = ({ route }) => {
             color: 'black',
           }}
           placeholder="Enter amount"
-          keyboardType="string"
-          value={amount}
+          keyboardType="default"
+          value={amount.toString()}
           onChangeText={setAmount}
         />
       </View>

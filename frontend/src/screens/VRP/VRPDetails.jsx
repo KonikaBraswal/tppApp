@@ -96,6 +96,17 @@ const navigation=useNavigation();
     {Data.reference}
   </Text>
 </View>
+<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
+  <View style={{ flex: 1 }}>
+    <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
+      Reference
+    </Text>
+  </View>
+  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
+    {Data.reference}
+  </Text>
+</View>
+
 
         </LinearGradient>
         <Surface

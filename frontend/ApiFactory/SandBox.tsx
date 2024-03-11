@@ -192,7 +192,7 @@ class SandBox {
         }
     }
 
-    async refreshToken(refreshToken: string,grantedformData:any): Promise<any> {//here also pass consent id to pass it other calls
+    async refreshToken(refreshToken: any,grantedformData:any): Promise<any> {//here also pass consent id to pass it other calls
         try {
           const body: Record<string, string> = {
             client_id: this.clientId,
@@ -249,7 +249,8 @@ class SandBox {
                     "Initiation": {
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
-                            "Identification": "50499910000998",
+                            // "Identification": "50499910000998",
+                            "Identification": formData.accountNumber,
                             "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
@@ -267,7 +268,8 @@ class SandBox {
                         }, 
                         "CreditorAccount": {
                             "SchemeName": "SortCodeAccountNumber",
-                            "Identification": "50499910000998",
+                            // "Identification": "50499910000998",
+                            "Identification": formData.accountNumber,
                             "Name": formData.firstName,
                             "SecondaryIdentification": "secondary-identif"
                         },
