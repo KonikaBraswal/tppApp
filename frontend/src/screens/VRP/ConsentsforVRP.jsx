@@ -221,7 +221,8 @@ const ConsentsforVRP = () => {
 
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.PeriodicLimits[0]?.PeriodType ? (
-                        <Text style={styles.text}>Occurs every </Text>
+                        <Text style={styles.text}>Occurs every {JSON.parse(item.consentpayload)?.ControlParameters
+                          ?.PeriodicLimits[0]?.PeriodType}</Text>
                       ) : (
                         <Text style={styles.text}> Occurs every Month</Text>
                       )}
@@ -235,7 +236,7 @@ const ConsentsforVRP = () => {
                         backgroundColor: 'white',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginVertical: hp('2%'),
+                        marginBottom: hp('2%'),
                       }}
                       labelStyle={{color: 'green'}}
                       onPress={() => handleSubmit(index)}>
