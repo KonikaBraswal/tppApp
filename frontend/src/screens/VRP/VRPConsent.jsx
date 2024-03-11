@@ -586,8 +586,8 @@ const VRPConsent = ({route}) => {
             "PSUAuthenticationMethods": [
                 "UK.OBIE.SCANotRequired"
             ],
-            "ValidFromDateTime": "2021-08-01T23:06:53.599Z",//new Date().toLocaleString()
-            "ValidToDateTime": "2024-08-01T23:06:53.599Z",
+            "ValidFromDateTime": formData.currentDate,//new Date().toLocaleString()
+            "ValidToDateTime": formData.expiryDate,
             "MaximumIndividualAmount": {
                 "Amount": formData.perPayment,//200
                 "Currency": "GBP"
@@ -604,7 +604,7 @@ const VRPConsent = ({route}) => {
         "Initiation": {
             "CreditorAccount": {
                 "SchemeName": "SortCodeAccountNumber",
-                "Identification": "50499910000998",
+                "Identification": formData.accountNumber,
                 "Name":formData.firstName,
                 "SecondaryIdentification": "secondary-identif"
             },

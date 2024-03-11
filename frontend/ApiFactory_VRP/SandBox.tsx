@@ -268,7 +268,7 @@ class SandBox {
           Initiation: {
             CreditorAccount: {
               SchemeName: 'SortCodeAccountNumber',
-              Identification: '50499910000998',
+              Identification: formData.accountNumber,
               Name: formData.firstName,
               SecondaryIdentification: 'secondary-identif',
             },
@@ -287,7 +287,7 @@ class SandBox {
             },
             CreditorAccount: {
               SchemeName: 'SortCodeAccountNumber',
-              Identification: '50499910000998',
+              Identification: formData.accountNumber,
               Name: formData.firstName,
               SecondaryIdentification: 'secondary-identif',
             },

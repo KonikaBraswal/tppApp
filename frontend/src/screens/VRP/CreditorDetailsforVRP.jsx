@@ -21,6 +21,20 @@ const CreditorDetailsforVRP = () => {
   const [perPeriod, setPerPeriod] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString());
+  const [accountNumberError, setAccountNumberError] = useState('');
+
+  const validateAccountNumber = (text) => {
+    const cleanedText = text.replace(/\D/g, ''); // Remove non-digit characters
+    const truncatedText = cleanedText.slice(0, 14); // Limit to 14 digits
+
+    if (cleanedText.length <= 14) {
+      setAccountNumber(truncatedText);
+      setAccountNumberError('');
+    } else {
+      setAccountNumberError('Account Number must be exactly 14 digits');
+    }
+  };
 
   useEffect(() => {
     const calculateExpiryDate = () => {
@@ -32,12 +46,26 @@ const CreditorDetailsforVRP = () => {
       const formattedMonth = ('0' + (expiryDate.getMonth() + 1)).slice(-2);
       const formattedYear = expiryDate.getFullYear();
 
-      const formattedExpiryDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
+      const formattedExpiryDate = `${formattedYear}-${formattedMonth}-${formattedDay}`;
       setExpiryDate(formattedExpiryDate);
     };
 
     calculateExpiryDate();
   }, []);
+  
+  // useEffect(() => {
+
+  //   const calculateExpiryDate = () => {
+  //     const currentDate = new Date();  
+  //     const expiryDate = new Date(currentDate); 
+  //     expiryDate.setFullYear(expiryDate.getFullYear() + 2); 
+  //     const formattedExpiryDate = expiryDate.toISOString();
+  //     setExpiryDate(formattedExpiryDate);
+  //   };
+  
+  //   calculateExpiryDate();
+  
+  // }, []);
 
   useEffect(() => {
     // Check if all required fields are filled
@@ -92,13 +120,34 @@ const CreditorDetailsforVRP = () => {
           onChangeText={setFirstName}
         />
 
-        <TextInput
+<TextInput
+        variant="outlined"
+        label="Account Number"
+        style={{ borderBottomWidth: 2, borderBottomColor: '#ccc', marginBottom: 10, paddingVertical: 12, paddingHorizontal: 16, fontSize: 16 }}
+        onChangeText={validateAccountNumber}
+        value={accountNumber}
+        onBlur={() => {
+          if (accountNumber.length !== 14) {
+            setAccountNumberError('Account Number must be exactly 14 digits');
+          } else {
+            setAccountNumberError('');
+          }
+        }}
+      />
+
+      {accountNumberError ? (
+        <Text style={{ color: 'red' }}>{accountNumberError}</Text>
+      ) : null}
+
+      {/* Other form fields */}
+
+        {/* <TextInput
           variant="outlined"
           label="Account Number"
           style={styles.input}
           onChangeText={setAccountNumber}
           value={accountNumber}
-        />
+        /> */}
 
         <TextInput
           variant="outlined"
@@ -152,8 +201,10 @@ const CreditorDetailsforVRP = () => {
           variant="outlined"
           label="Expiry Date"
           style={styles.input}
-          value={expiryDate}
-          editable={false}
+          value={expiryDate.toString()}
+          keyboardType='default'
+          // editable={false}
+          onChangeText={setExpiryDate}
         />
       </View>
 
