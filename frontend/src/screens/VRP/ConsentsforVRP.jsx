@@ -250,7 +250,7 @@ const ConsentsforVRP = () => {
                       onPress={() => handleSubmit(index)}>
                       Pay Now
                     </Button>
-                    <Button
+{/*                     <Button
                       mode="contained"
                       style={{
                         width: '30%',
@@ -262,7 +262,7 @@ const ConsentsforVRP = () => {
                       labelStyle={{color: 'red'}}
                       onPress={() => showTransactions(index)}>
                       Transactions
-                    </Button>
+                    </Button> */}
                   </Surface>
                 ))}
               </ScrollView>
