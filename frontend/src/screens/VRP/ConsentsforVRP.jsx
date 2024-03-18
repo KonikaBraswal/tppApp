@@ -61,8 +61,10 @@ const ConsentsforVRP = () => {
       return null;
     }
   };
-  const scope = 'payments';
+  const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
+  const [TransactionData, setTransactionData] = useState([]);
+
   const grantedFormdata = {
     firstName: 'minal',
     reference: 'Tools',
@@ -71,12 +73,13 @@ const ConsentsforVRP = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+
     if (isFocused) {
       fetchAllDataforScope(scope)
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            console.log('details-->', data[1]);
+            console.log('details-->', data[0]);
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -87,7 +90,12 @@ const ConsentsforVRP = () => {
     }
   }, [isFocused, scope]);
   const mode = 'sandbox';
+  const showTransactions=async index=>{
+    navigation.navigate('VrpTransactions',{
+      consentid:consentData[index].consentid
+    });
 
+  }
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
@@ -139,7 +147,7 @@ const ConsentsforVRP = () => {
                     key={index}
                     style={{
                       backgroundColor: '#c8e1cc',
-                      height: 180,
+                      height: 230,
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
@@ -241,6 +249,19 @@ const ConsentsforVRP = () => {
                       labelStyle={{color: 'green'}}
                       onPress={() => handleSubmit(index)}>
                       Pay Now
+                    </Button>
+                    <Button
+                      mode="contained"
+                      style={{
+                        width: '30%',
+                        backgroundColor: 'white',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: hp('2%'),
+                      }}
+                      labelStyle={{color: 'red'}}
+                      onPress={() => showTransactions(index)}>
+                      Transactions
                     </Button>
                   </Surface>
                 ))}

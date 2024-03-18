@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
-import {View, Text, Button, Alert} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Button, Alert } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
-const db = SQLite.openDatabase({name: 'dbSandbox.db', location: 'default'});
+const db = SQLite.openDatabase({ name: 'dbSandbox.db', location: 'default' });
 
 export const initDatabase = () => {
   db.transaction(tx => {
@@ -29,6 +29,31 @@ export const initDatabase = () => {
       },
       error => {
         console.error('Error creating userconsent_sandbox table: ', error);
+      },
+    );
+  });
+};
+export const initDatabaseTransaction = () => {
+  db.transaction(tx => {
+    tx.executeSql(
+      `CREATE TABLE IF NOT EXISTS vrpTransactions_sandbox (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT,
+        scope TEXT,
+        bankname TEXT,
+        consentid TEXT,
+        vrpid TEXT,
+        vrppayload TEXT,
+        status TEXT,
+        date TEXT,
+        time TEXT
+      );`,
+      [],
+      (tx, results) => {
+        console.log('vrpTransactions_sandbox table created successfully');
+      },
+      error => {
+        console.error('Error creating vrpTransactions_sandbox table: ', error);
       },
     );
   });
@@ -75,6 +100,43 @@ export const addDetails = details => {
       },
       (_, error) => {
         console.error('Error adding details: ', error);
+      },
+    );
+  });
+};
+export const addTransactions = details => {
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString();
+
+  db.transaction(tx => {
+    tx.executeSql(
+      `INSERT INTO vrpTransactions_sandbox (
+        userId,
+        scope,
+        bankname,
+        consentid,
+        vrpid,
+        vrppayload,
+        status,
+        date,
+        time
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        details.userId,
+        details.scope,
+        details.bankname,
+        details.consentid,
+        details.vrpid,
+        details.vrppayload,
+        details.status,
+        currentDate,
+        currentTime,
+      ],
+      (_, results) => {
+        console.log('Transactions added successfully', results);
+      },
+      (_, error) => {
+        console.error('Error adding transactions: ', error);
       },
     );
   });
@@ -243,9 +305,9 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
 
       // Add last_updated_date and last_updated_time to SET clause
       const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
-
+        
+        const query = `UPDATE userconsent_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
       // Construct SQL query
-      const query = `UPDATE userconsent_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
 
       // Construct parameters array
       const currentDate = new Date().toLocaleDateString();
@@ -274,6 +336,92 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
   });
 };
 
+export const updateTransactionsForVrp = (details, consentid, columnsToUpdate) => {
+  console.log('Updating details for consentid:', consentid);
+  console.log('Details to update:', details);
+
+  // Ensure there are columns to update
+  if (!columnsToUpdate || columnsToUpdate.length === 0) {
+    console.error('No columns specified for update.');
+    return Promise.reject('No columns specified for update.');
+  }
+
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      // Construct SET clause dynamically based on columnsToUpdate
+      const setClause = columnsToUpdate
+        .map(column => `${column} = ?`)
+        .join(', ');
+
+      // Add last_updated_date and last_updated_time to SET clause
+      const updatedSetClause = `${setClause}, date = ?, time = ?`;
+        
+        const query = `UPDATE vrpTransactions_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
+      // Construct SQL query
+
+      // Construct parameters array
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const parameters = [
+        ...columnsToUpdate.map(column => details[column].toString()),
+        //...columnsToUpdate.map(column => details[column]),----------Sunil
+        currentDate,
+        currentTime,
+        consentid,
+      ];
+
+      tx.executeSql(
+        query,
+        parameters,
+        (_, results) => {
+          console.log('Transactions updated successfully', results);
+          resolve(results);
+        },
+        (_, error) => {
+          console.error('Error updating Transactions: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
+
+
+export const fetchTransactionsForUserConsent = consentid => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM vrpTransactions_sandbox WHERE consentid = ?;',
+        [consentid],
+        (_, results) => {
+          console.log('Query results:', results.rows); // Log the results for debugging
+          const rows = results.rows;
+          const data = [];
+          if (rows.length > 0) {
+            for (let i = 0; i < rows.length; i++) {
+              const row = rows.item(i);
+                data.push(row);
+                console.log("transactions-->",row);
+              
+            }
+            if (data.length > 0) resolve(data);
+          } else {
+            // If no entry is found, clear the globalConsentId
+            // globalConsentId = null;
+            console.log('No entry found for this consentid:', consentid); // Log for debugging
+            resolve(null);
+          }
+        },
+        (_, error) => {
+          //-----------------------------------------
+          console.error('Error fetching consent Id: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
+
 export const fetchAllDataforScope = scope => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
@@ -287,11 +435,13 @@ export const fetchAllDataforScope = scope => {
           if (rows.length > 0) {
             for (let i = 0; i < rows.length; i++) {
               const row = rows.item(i);
-              data.push({
-                consentid: row.consentid,
-                consentpayload: row.consentpayload,
-                refreshtoken: row.refreshedtoken,
-              });
+              if (row.status == 'Authorised') {
+                data.push({
+                  consentid: row.consentid,
+                  consentpayload: row.consentpayload,
+                  refreshtoken: row.refreshedtoken,
+                });
+              }
             }
             if (data.length > 0) resolve(data);
           } else {
@@ -353,7 +503,7 @@ const deleteDatabase = () => {
     () => {
       console.log('Database closed successfully');
       SQLite.deleteDatabase(
-        {name: 'dbSandbox.db', location: 'default'},
+        { name: 'dbSandbox.db', location: 'default' },
         () => {
           console.log('Database deleted successfully');
         },

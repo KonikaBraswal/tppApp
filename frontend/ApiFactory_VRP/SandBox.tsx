@@ -1,9 +1,9 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
-import {Linking, Alert} from 'react-native';
+import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
-import {addDetails, updateDetailsForVrp} from '../database/Database';
+import { addDetails, addTransactions, updateDetailsForVrp, updateTransactionsForVrp } from '../database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -56,7 +56,7 @@ class SandBox {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaders;
   }
-
+  isupdateTransaction=false;
   async retrieveAccessToken(params: AccessTokenRequestParams): Promise<string> {
     this.permissions = params.accessTokenParams.body;
     try {
@@ -116,11 +116,17 @@ class SandBox {
         consentid: this.consentId,
         status: Status,
         consentpayload: JSON.stringify(Payload),
-        scope: 'payments',
+        scope: 'vrp',
+      };
+      const details2 = {
+        bankname: 'Natwest',
+        consentid: this.consentId,
+        status: Status,
+        scope: 'vrp',
       };
       console.log('details', details1);
       addDetails(details1);
-
+      addTransactions(details2);
       console.log('response of consent', this.consentId);
       return response.data.Data?.ConsentId || '';
     } catch (error) {
@@ -186,14 +192,14 @@ class SandBox {
       };
 
       const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-
       await updateDetailsForVrp(
         updatedDetails2,
         this.consentId,
         columnsToUpdate2,
+        
       );
       refreshTokenExists = true;
-      //return this.vrpPayments(response.data.access_token,this.consentId,formData);
+      // return this.vrpPayments(response.data.access_token,this.consentId,formData);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -230,11 +236,11 @@ class SandBox {
       };
 
       const columnsToUpdate3 = ['refreshedtoken'];
-
       await updateDetailsForVrp(
         updatedDetails3,
         refreshToken.consentid,
         columnsToUpdate3,
+        
       );
 
       //return this.fetchAccounts(responseRefresh.data.access_token);
@@ -281,8 +287,8 @@ class SandBox {
             InstructionIdentification: 'instr-identification',
             EndToEndIdentification: 'e2e-identification',
             InstructedAmount: {
-              // Amount: '7.00', //must be called with pay now button
-              Amount: formData.amount,
+              Amount: '7.00', //must be called with pay now button
+              // Amount: formData.amount,
               Currency: 'GBP',
             },
             CreditorAccount: {
@@ -330,31 +336,28 @@ class SandBox {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
+      const payload=allVrpPaymentsResponse.data.Data;
+      const updatedDetails3 = {
+        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
+        vrppayload: JSON.stringify(payload),
+        status: allVrpPaymentsResponse.data.Data.Status
+      };
+
+      const columnsToUpdate3 = ['vrpid', 'vrppayload', 'status'];
+      await updateTransactionsForVrp(
+        updatedDetails3,
+        allVrpPaymentsResponse.data.Data.ConsentId,
+        columnsToUpdate3,
+        
+
+      );
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
     }
   }
 
-  async allCalls(endPoint: string): Promise<any> {
-    try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${this.apiAccess}`,
-      };
 
-      const accountResponse: AxiosResponse<any> = await axios.get(
-        `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
-        {
-          headers: headers,
-        },
-      );
-
-      return accountResponse.data.Data;
-    } catch (error) {
-      throw new Error(`Failed to fetch data for accounts: ${error}`);
-    }
-  }
 }
 
 export default SandBox;

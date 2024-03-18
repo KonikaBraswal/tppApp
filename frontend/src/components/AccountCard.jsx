@@ -92,11 +92,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: wp('4%'),
+    paddingVertical: wp('4%'),
+    paddingHorizontal: wp('5%'),
     borderRadius: wp('2%'),
     elevation: 6,
     backgroundColor: '#c8e1cc',
-    width: wp('94%'),
+    width: wp('96%'),
   },
   text: {
     fontSize: hp('2.5%'),
@@ -109,9 +110,9 @@ const styles = StyleSheet.create({
     marginVertical: hp('0.75%'),
   },
   iconContainer: {
-    marginLeft: wp('3%'),
-    marginRight: wp('2%'),
-    marginTop: hp('1%'),
+    marginLeft: -wp('9%'),
+    // marginRight: wp('2%'),
+    marginTop: hp('2%'),
   },
   iconNatwest: {
     width: wp('16%'),

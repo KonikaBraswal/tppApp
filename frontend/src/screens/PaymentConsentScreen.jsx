@@ -209,11 +209,9 @@ const PaymentConsentScreen = ({route}) => {
               color: 'white',
             }}
             onPress={() => {
-              if (checked) {
-                handleConfirmButtonClick();
-              } else {
-                showAlert();
-              }
+              handleConfirmButtonClick();
+              //  showAlert();
+              
             }}>
             I Allow
           </Button>

@@ -42,7 +42,7 @@ import SuccessfulTransaction from './src/screens/SuccessfulTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 
 import MakeTransfer from './src/screens/MakeTransfer';
-import {initDatabase} from './database/Database';
+import {initDatabase, initDatabaseTransaction} from './database/Database';
 import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
 import ViewDetailsWithRefreshToken from './src/screens/ViewDetailsWithRefreshToken';
 import PaymentConsentScreen from './src/screens/PaymentConsentScreen';
@@ -51,6 +51,7 @@ import CreditorDetailsforVRP from './src/screens/VRP/CreditorDetailsforVRP';
 import GrantedForm from './src/screens/VRP/GrantedForm';
 import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
+import VrpTransactions from './src/screens/VRP/VrpTransactions';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -58,6 +59,7 @@ const Tab = createMaterialBottomTabNavigator();
 function App(): React.JSX.Element {
   useEffect(() => {
     initDatabase();
+    initDatabaseTransaction();
   }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -137,6 +139,7 @@ function App(): React.JSX.Element {
                 component={CreditorDetailsforVRP}
               />
               <Stack.Screen name="GrantedForm" component={GrantedForm} />
+              <Stack.Screen name="VrpTransactions" component={VrpTransactions} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
             </Stack.Navigator>
