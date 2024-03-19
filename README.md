@@ -21,10 +21,10 @@ To generate a private signing key for your Android app on Windows, follow these 
 1. Place `my-upload-key.keystore` under the `android/app` directory in your project folder.
 2. Edit `android/gradle.properties` and add the following (replace **\*** with correct passwords):
 
-MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
-MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
-MYAPP_UPLOAD_STORE_PASSWORD=**\***
-MYAPP_UPLOAD_KEY_PASSWORD=**\***
+   MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+   MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+   MYAPP_UPLOAD_STORE_PASSWORD=**\***
+   MYAPP_UPLOAD_KEY_PASSWORD=**\***
 
 ## Adding Signing Config to Gradle
 
@@ -55,4 +55,4 @@ android {
 
 ## Building Release
 
-1. Run ./gradlew clean and ./gradlew assembleRelease to build your app.
+1. Run `./gradlew clean` and then `./gradlew assembleRelease` to build your app.
