@@ -3,7 +3,7 @@ import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
-import { addDetails, addTransactions, updateDetailsForVrp, updateTransactionsForVrp } from '../database/Database';
+import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -118,15 +118,9 @@ class SandBox {
         consentpayload: JSON.stringify(Payload),
         scope: 'vrp',
       };
-      const details2 = {
-        bankname: 'Natwest',
-        consentid: this.consentId,
-        status: Status,
-        scope: 'vrp',
-      };
+      
       console.log('details', details1);
       addDetails(details1);
-      addTransactions(details2);
       console.log('response of consent', this.consentId);
       return response.data.Data?.ConsentId || '';
     } catch (error) {
@@ -338,19 +332,18 @@ class SandBox {
       );
       const payload=allVrpPaymentsResponse.data.Data;
       const updatedDetails3 = {
+        
+      };
+      const details = {
+        bankname: 'Natwest',
+        consentid: allVrpPaymentsResponse.data.Data.ConsentId,
+        scope: 'vrp_transactions',
         vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status
       };
 
-      const columnsToUpdate3 = ['vrpid', 'vrppayload', 'status'];
-      await updateTransactionsForVrp(
-        updatedDetails3,
-        allVrpPaymentsResponse.data.Data.ConsentId,
-        columnsToUpdate3,
-        
-
-      );
+      addTransactions(details);
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);

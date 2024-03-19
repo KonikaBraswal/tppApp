@@ -79,7 +79,7 @@ const ConsentsforVRP = () => {
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            console.log('details-->', data[0]);
+            console.log('details-->', data);
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -92,7 +92,8 @@ const ConsentsforVRP = () => {
   const mode = 'sandbox';
   const showTransactions=async index=>{
     navigation.navigate('VrpTransactions',{
-      consentid:consentData[index].consentid
+      consentid:consentData[index].consentid,
+      consentpayload:consentData[index].consentpayload
     });
 
   }
@@ -151,7 +152,8 @@ const ConsentsforVRP = () => {
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
-                      // justifyContent: 'center',
+                      justifyContent: 'center',
+                      
                       margin: 5,
                     }}
                     elevation={2}
@@ -170,7 +172,17 @@ const ConsentsforVRP = () => {
                           style={styles.iconNatwest}
                         />
                       </View>
-
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          color: 'black',
+                          fontWeight: 'bold',
+                          marginTop: hp('0.5%'),
+                        }}>
+                        ConsentId:{
+                          JSON.parse(item.consentpayload).ConsentId
+                        }
+                      </Text>
                       <Text
                         style={{
                           fontSize: 15,
@@ -183,13 +195,6 @@ const ConsentsforVRP = () => {
                             .CreditorAccount.Name
                         }
                       </Text>
-                      {/* <Text style={styles.text}>
-                        Max amount per Period:
-                        {
-                          JSON.parse(item.consentpayload)?.ControlParameters
-                            ?.PeriodicLimits[0]?.Amount
-                        }
-                      </Text> */}
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.PeriodicLimits[0]?.Amount ? (
                         <Text style={styles.text}>
@@ -205,13 +210,6 @@ const ConsentsforVRP = () => {
                         </Text>
                       )}
 
-                      {/* <Text style={styles.text}>
-                        Max amount per Payment:
-                        {
-                          JSON.parse(item.consentpayload)?.ControlParameters
-                            ?.MaximumIndividualAmount.Amount
-                        }
-                      </Text> */}
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.MaximumIndividualAmount.Amount ? (
                         <Text style={styles.text}>
@@ -235,12 +233,13 @@ const ConsentsforVRP = () => {
                         <Text style={styles.text}> Occurs every Month</Text>
                       )}
 
-                      {/* <Text>{item.consentid}</Text> */}
+                      
                     </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Button
                       mode="contained"
                       style={{
-                        width: '30%',
+                        width: '45%',
                         backgroundColor: 'white',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -250,10 +249,10 @@ const ConsentsforVRP = () => {
                       onPress={() => handleSubmit(index)}>
                       Pay Now
                     </Button>
-{/*                     <Button
+                    <Button
                       mode="contained"
                       style={{
-                        width: '30%',
+                        width: '45%',
                         backgroundColor: 'white',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -262,7 +261,8 @@ const ConsentsforVRP = () => {
                       labelStyle={{color: 'red'}}
                       onPress={() => showTransactions(index)}>
                       Transactions
-                    </Button> */}
+                    </Button>
+                    </View>
                   </Surface>
                 ))}
               </ScrollView>
