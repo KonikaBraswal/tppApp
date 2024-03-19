@@ -73,7 +73,6 @@ const ConsentsforVRP = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-
     if (isFocused) {
       fetchAllDataforScope(scope)
         .then(data => {
@@ -90,12 +89,11 @@ const ConsentsforVRP = () => {
     }
   }, [isFocused, scope]);
   const mode = 'sandbox';
-  const showTransactions=async index=>{
-    navigation.navigate('VrpTransactions',{
-      consentid:consentData[index].consentid
+  const showTransactions = async index => {
+    navigation.navigate('VrpTransactions', {
+      consentid: consentData[index].consentid,
     });
-
-  }
+  };
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
@@ -229,8 +227,13 @@ const ConsentsforVRP = () => {
 
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.PeriodicLimits[0]?.PeriodType ? (
-                        <Text style={styles.text}>Occurs every {JSON.parse(item.consentpayload)?.ControlParameters
-                          ?.PeriodicLimits[0]?.PeriodType}</Text>
+                        <Text style={styles.text}>
+                          Occurs every{' '}
+                          {
+                            JSON.parse(item.consentpayload)?.ControlParameters
+                              ?.PeriodicLimits[0]?.PeriodType
+                          }
+                        </Text>
                       ) : (
                         <Text style={styles.text}> Occurs every Month</Text>
                       )}
@@ -250,7 +253,7 @@ const ConsentsforVRP = () => {
                       onPress={() => handleSubmit(index)}>
                       Pay Now
                     </Button>
-{/*                     <Button
+                    {/*                     <Button
                       mode="contained"
                       style={{
                         width: '30%',
