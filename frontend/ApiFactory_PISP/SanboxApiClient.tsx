@@ -381,6 +381,8 @@ class SanboxApiClient {
       );
       console.log(payResponse.data.Data);
       console.log('AllSet');
+      this.storeToStoreInAsyncStorage();
+      this.printStoredToStore();
       return payResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);

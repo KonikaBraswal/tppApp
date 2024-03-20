@@ -5,6 +5,7 @@ import config from '../configs_AISP/config.json';
 import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
+import {insertLog} from '../database/DatabaseLogs';
 
 interface BodyData {
   Data: {
@@ -88,6 +89,25 @@ class SanboxApiClient {
 
       addDetails(details1);
       // store
+      let responseApi = 'Fail';
+      if (response.status >= 200 && response.status < 300) {
+        responseApi = 'Success';
+      }
+      //apilogs
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const logDetails = {
+        date: currentDate,
+        time: currentTime,
+        api_name: sandboxConfig.tokenEndpoint,
+        //header,body, call name post or get,
+        scope: response.data.scope,
+        status: response.status,
+        response: JSON.stringify(response),
+      };
+      insertLog(logDetails);
+
+      //apilogs
       console.log('Access token', response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -131,6 +151,25 @@ class SanboxApiClient {
 
       await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
       //DB
+
+      //api logs
+      //apilogs
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const logDetails = {
+        date: currentDate,
+        time: currentTime,
+        api_name: sandboxConfig.tokenEndpoint,
+        //header,body, call name post or get,
+        scope: response.data.scope,
+        status: response.status,
+        response: JSON.stringify(response),
+      };
+      insertLog(logDetails);
+
+      //apilogs
+
+      //api logs
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);

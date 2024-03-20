@@ -8,7 +8,7 @@ import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 import Test from './Test';
 import Database from '../../database/Database';
-
+import ApiLogs from '../screens/ApiLogs';
 const Drawer = createDrawerNavigator();
 
 const AppDrawer = () => {
@@ -95,7 +95,7 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="API Logs"
-        component={Dummy}
+        component={ApiLogs}
         options={{
           drawerIcon: ({color}) => (
             // <MaterialCommunityIcons name="settings" color={color} size={28} />

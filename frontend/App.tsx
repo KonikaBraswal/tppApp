@@ -51,13 +51,17 @@ import CreditorDetailsforVRP from './src/screens/VRP/CreditorDetailsforVRP';
 import GrantedForm from './src/screens/VRP/GrantedForm';
 import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
-
+import { initDatabaseApi } from './database/DatabaseLogs';
+import ApiLogsList from './src/screens/ApiLogsList';
+import ApiLogDetails from './src/screens/ApiLogDetails';
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 function App(): React.JSX.Element {
   useEffect(() => {
+    initDatabaseApi();
     initDatabase();
+    
   }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -100,6 +104,8 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
+              <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
+              <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
               <Stack.Screen
                 name="Added Bank Accounts"
                 component={AccountListWithRefreshToken}
