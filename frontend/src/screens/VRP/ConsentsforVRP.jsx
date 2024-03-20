@@ -47,29 +47,10 @@ const ConsentsforVRP = () => {
   const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
   const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = mergedAccounts.filter(account =>
-    account.AccountId.includes(searchQuery),
-  );
-  const findAccountBalances = accountId => {
-    const foundBalances = mergedBalances.filter(
-      balance => balance.AccountId === accountId,
-    );
-
-    if (foundBalances.length > 0) {
-      return foundBalances;
-    } else {
-      return null;
-    }
-  };
   const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
-  const [TransactionData, setTransactionData] = useState([]);
-
-  const grantedFormdata = {
-    firstName: 'minal',
-    reference: 'Tools',
-    amount: 45,
-  };
+  
+  
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -108,18 +89,18 @@ const ConsentsforVRP = () => {
         console.log('This is the type:' + typeof read);
         const jsonObject = JSON.parse(read);
         const name = jsonObject.Initiation.CreditorAccount.Name;
+        const acc=jsonObject.Initiation.CreditorAccount.Identification.substring(0,8);
+        const sort=jsonObject.Initiation.CreditorAccount.Identification.substring(8);
         console.log('payload details' + read);
         navigation.navigate('GrantedForm', {
           creditorName: jsonObject.Initiation.CreditorAccount.Name,
-          creditorIdentification:
-            jsonObject.Initiation.CreditorAccount.Identification,
-          sortcode: '12-05-03',
+          accountnumber:acc,
+          sortcode:sort ,
           referencenumber:
             jsonObject.Initiation.RemittanceInformation.Reference,
           selectconsentData: consentData[index],
         });
-        // const response=await sandboxApiClient.refreshToken(consentData[index],grantedFormdata);//pass index based on the card clicked
-        // console.log("response",response);
+        
       } catch (error) {
         console.log('error in fetching refresh', error);
       }
@@ -148,12 +129,11 @@ const ConsentsforVRP = () => {
                     key={index}
                     style={{
                       backgroundColor: '#c8e1cc',
-                      height: 230,
+                      height: 190,
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
                       justifyContent: 'center',
-                      
                       margin: 5,
                     }}
                     elevation={2}
@@ -172,17 +152,7 @@ const ConsentsforVRP = () => {
                           style={styles.iconNatwest}
                         />
                       </View>
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          color: 'black',
-                          fontWeight: 'bold',
-                          marginTop: hp('0.5%'),
-                        }}>
-                        ConsentId:{
-                          JSON.parse(item.consentpayload).ConsentId
-                        }
-                      </Text>
+                      
                       <Text
                         style={{
                           fontSize: 15,

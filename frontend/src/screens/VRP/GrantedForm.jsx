@@ -16,7 +16,7 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const GrantedForm = ({route}) => {
   const {
     creditorName,
-    creditorIdentification,
+    accountnumber,
     sortcode,
     referencenumber,
     selectconsentData,
@@ -34,13 +34,15 @@ const GrantedForm = ({route}) => {
   useEffect(() => {
     setFirstName(creditorName);
     setSortCode(sortcode);
-    setAccountNumber(creditorIdentification);
+    setAccountNumber(accountnumber);
     setReference(referencenumber);
-    console.log('passed data' + selectconsentData);
-    if (creditorName && creditorIdentification && sortcode && referencenumber) {
+    // console.log("acc:",accountNumber);
+    // console.log("acc:",sortCode);
+    // console.log('passed data' + selectconsentData);
+    if (creditorName && accountNumber && sortcode && referencenumber) {
       setEdit(false);
     }
-  }, [creditorName, creditorIdentification, sortcode, referencenumber]);
+  }, [creditorName, accountNumber, sortcode, referencenumber]);
 
   const handleSubmit = async () => {
     const formData = {
@@ -51,17 +53,18 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
+      
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
       );
       console.log('response', response);
+      console.log('Form submitted:', formData);
+      navigation.navigate('VRP Details', {data: formData});
     } catch (error) {
       console.log('error in fetching refresh', error);
     }
-    console.log('Form submitted:', formData);
 
-    navigation.navigate('VRP Details', {data: formData});
   };
 
   return (

@@ -14,6 +14,9 @@ import {
 import {StyleSheet, View} from 'react-native';
 
 const VrpTransactionCard = ({transaction}) => {
+  // console.log("list",transaction.vrppayload);
+  const list=JSON.parse(transaction.vrppayload);
+  // console.log("string::",list.Instruction.InstructedAmount.Currency);
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -28,11 +31,11 @@ const VrpTransactionCard = ({transaction}) => {
               />
             
             <Text style={styles.indicatorText}>
-              {Debited}
+              Debited
             </Text>
           </View>
           <Text style={styles.amountText}>
-            {transaction.InstructedAmount.Currency} {transaction.InstructedAmount.Amount}
+            {list.Instruction.InstructedAmount.Currency} {list.Instruction.InstructedAmount.Amount}
           </Text>
         </View>
       </Card.Content>
@@ -41,25 +44,25 @@ const VrpTransactionCard = ({transaction}) => {
 
       <Card.Content>
         <View>
-          {/* <Text style={styles.title}>{transaction.TransactionInformation}</Text> */}
-          <Text style={styles.text}>Consent Id:{transaction.ConsentId}</Text>
+          <Text style={styles.title}>CreditorAccountNumber: {list.Initiation.CreditorAccount.Identification}</Text>
+          {/* <Text style={styles.text}>Consent Id:{transaction.ConsentId}</Text> */}
           <Text style={styles.text}>
-            Transaction ID: {transaction.DomesticVRPId}
+            Transaction ID: {transaction.vrpid}
+          </Text>
+          <Text style={styles.text}>
+          CreditorAccountName: {list.Initiation.CreditorAccount.Name}
           </Text>
           
-          <Text style={styles.text}>
-          CreditorAccountNumber: {transaction.Initiation.CreditorAccount.Identification}
-          </Text>
-          <Text style={styles.text}>
-          CreditorAccountName: {transaction.Initiation.CreditorAccount.Name}
-          </Text>
-
+          
           <View style={styles.dateTimeContainer}>
             <Text style={styles.text}>
-            CreationDateTime: {(transaction.CreationDateTime).toLocaleDateString()}
+            CreationDateTime: {new Date(list.CreationDateTime).toLocaleDateString()}
             </Text>
-            <Text style={styles.text}>
-            StatusUpdateDateTime: {(transaction.StatusUpdateDateTime).toLocaleTimeString()}
+            
+          </View>
+          <View style={styles.dateTimeContainer}>
+          <Text style={styles.text}>
+            StatusUpdateDateTime: {new Date(list.StatusUpdateDateTime).toLocaleTimeString()}
             </Text>
           </View>
         </View>
@@ -108,12 +111,13 @@ const styles = StyleSheet.create({
     margin: wp('0.8%'),
   },
   title: {
-    fontSize: wp('4.4%'),
+    fontSize: wp('3.8%'),
     fontWeight: 'bold',
     marginVertical: hp('1%'),
   },
   text: {
-    fontSize: wp('3.6%'),
+    fontSize: wp('3.8%'),
+    fontWeight:'normal',
     marginVertical: hp('0.5%'),
   },
   dateTimeContainer: {

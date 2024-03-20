@@ -209,7 +209,7 @@ export const RetrieveData = () => {
             for (let i = 0; i < len; i++) {
               const row = rows.item(i);
               data.push(row);
-              console.log('Row ID:', row.id, 'Row:', row);
+              // console.log('Row ID:', row.id, 'Row:', row);
             }
 
             resolve(data);
@@ -242,7 +242,7 @@ export const RetrieveDataforVrp = () => {
               const row = rows.item(i);
               if(row.consentid=='VRP-4206f31b-5d57-411b-86a3-bd86bcc42f49'){
                 data.push(row);
-                console.log('Row ID:', row.id, 'Row:', row);
+                // console.log('Row ID:', row.id, 'Row:', row);
               }
             }
 
@@ -317,7 +317,7 @@ export const fetchTransactionsForUserConsent = consentid => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        'SELECT * FROM vrpTransactions_sandbox WHERE consentid = ?;',
+        'SELECT * FROM vrpTransactions_sandbox WHERE consentid = ?ORDER BY date DESC,time DESC;',
         [consentid],
         (_, results) => {
           console.log('Query results:', results.rows); // Log the results for debugging
@@ -328,7 +328,7 @@ export const fetchTransactionsForUserConsent = consentid => {
               const row = rows.item(i);
               if(row.status=='AcceptedSettlementCompleted'){
                 data.push(row);
-                console.log("transactions-->",row);
+                // console.log("transactions-->",row);
               }
             }
             if (data.length > 0) resolve(data);

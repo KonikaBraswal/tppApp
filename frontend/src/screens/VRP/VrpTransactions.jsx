@@ -1,90 +1,108 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import {Text, ActivityIndicator} from 'react-native-paper';
-// import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {fetchTransactionsForUserConsent} from '../../../database/Database';
-import TransactionCard from '../../components/TransactionCard';
-import VrpTransactionCard from '../../components/VrpTransactionCard';
+import { Text, ActivityIndicator } from 'react-native-paper';
+import DropdownWithCheckboxes from '../../components/DropdownWithCheckboxes';
+import SortDropdown from '../../components/SortDropdown';
+import { Searchbar } from 'react-native-paper';
+import { Surface } from '@react-native-material/core';
+import VrpDebitor from '../../components/VrpDebitor';
+import { fetchTransactionsForUserConsent } from '../../../database/Database';
 import VrpTransactionList from '../../components/VrpTransactionList';
-// import LocalTransactionList from '../../components/LocalTransactionList';
-const VrpTransactions = ({route}) => {
-    const{
-        consentid,
-        consentpayload
-    }=route.params
+const VrpTransactions = ({ route }) => {
+  const {
+    consentid,
+    consentpayload
+  } = route.params
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [transactionText, setTransactionText] = useState(
-    'No Transactions Found',
-  );
+  const [transactionText, setTransactionText] = useState('');
 
   useEffect(() => {
-    console.log("consent",consentid);
+    console.log("consent", consentid);
     // Fetch transactions for the userConsentId
     fetchTransactionsForUserConsent(consentid)
       .then((result) => {
-        console.log("vrp-->",result);
+        if (result == null) {
+          setTransactionText('No Transactions Found');
+        }
+        else {
+          // console.log("vrp-->",(result));
 
-        setTransactionDetails(result);
+          setTransactionDetails(result);
+
+        }
         setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching transactions:', error);
       });
-  }, [consentid]); 
-
+  }, [consentid]);
+  // console.log("details:",transactionDetails[0].vrppayload);
   // const transactions = (transactionDetails[0].vrppayload);
-  
-//   return (
-//     <KeyboardAvoidingView
-//       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//       style={styles.container}>
-//       {loading ? (
-//         <View style={styles.loaderContainer}>
-//           <ActivityIndicator size={50} color="green" />
-//           <Text style={{fontSize: 18}}>We Are Fetching Your Data</Text>
-//         </View>
-//       ) : (
-//         <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
-//           <View style={styles.rowContainer}>
-//             <Surface elevation={6} category="medium" style={styles.surface}>
-//               <Image
-//                 source={require('../../assets/images/natwest.png')}
-//                 style={styles.icon}
-//               />
-//             </Surface>
-//             <DropdownWithCheckboxes />
-//           </View>
-//           {transactionDetails && (
-//             <VrpDebitor
-//               account={transactions}
-              
-//             />
-//           )}
-//           <View style={styles.transactionsContainer}>
-//             <View style={styles.transactionsHeader}>
-//               <Text style={styles.transactionsHeaderText}>Transactions</Text>
-//               <SortDropdown />
-//             </View>
-//             <Searchbar
-//               placeholder="Search Transaction"
-//               onChangeText={setSearchQuery}
-//               value={searchQuery}
-//               style={styles.searchbar}
-//             />
-//             {transactionDetails ? (
-//               <VrpTransactionList transactionDetails={transactionDetails} />
-//             ) : (
-//               <Text style={styles.statusText}>
-//                 Need Permissions To Show Transactions
-//               </Text>
-//             )}
-//           </View>
-//         </ScrollView>
-//       )}
-//     </KeyboardAvoidingView>
-//   );
+  var transactions;
+  console.log("det", transactionDetails);
+  transactionDetails?.map(element => {
+    transactions = JSON.parse(element.vrppayload);
+  });
+  console.log("details::", transactions);
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size={50} color="green" />
+          <Text style={{ fontSize: 18 }}>We Are Fetching Your Data</Text>
+        </View>
+      ) : (
+        <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
+          <View style={styles.rowContainer}>
+            <Surface elevation={6} category="medium" style={styles.surface}>
+              <Image
+                source={require('../../assets/images/natwest.png')}
+                style={styles.icon}
+              />
+            </Surface>
+            <DropdownWithCheckboxes />
+          </View>
+          {transactionDetails ? (
+            <>
+            <VrpDebitor
+              account={transactions}
+            />
+            <View style={styles.transactionsContainer}>
+            <View style={styles.transactionsHeader}>
+              <Text style={styles.transactionsHeaderText}>Transactions</Text>
+              <SortDropdown />
+            </View>
+            <Searchbar
+              placeholder="Search Transaction"
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+              style={styles.searchbar}
+            />
+            {transactionDetails ? (
+              <VrpTransactionList transactionDetails={transactionDetails} />
+            ) : (
+              <Text style={styles.statusText}>
+                {transactionText}
+              </Text>
+            )}
+          </View>
+          </>
+          ) : (
+            <Text style={styles.statusText}>
+              {transactionText}
+            </Text>
+          )}
+          
+        </ScrollView>
+      )}
+    </KeyboardAvoidingView>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -155,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: hp('2%'),
     fontWeight: 'bold',
-    color: 'green',
+    color: 'red',
   },
 });
 export default VrpTransactions;

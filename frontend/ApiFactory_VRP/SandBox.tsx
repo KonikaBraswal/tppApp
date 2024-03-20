@@ -260,7 +260,8 @@ class SandBox {
         Authorization: `Bearer ${apiAccessToken}`,
         'x-idempotency-key': `${id}`,
       };
-
+      const Identification=formData.accountNumber+formData.sortCode;
+      console.log("identification-->",Identification);
       const body = {
         Data: {
           ConsentId: `${consentid}`,
@@ -268,7 +269,7 @@ class SandBox {
           Initiation: {
             CreditorAccount: {
               SchemeName: 'SortCodeAccountNumber',
-              Identification: formData.accountNumber,
+              Identification: Identification,
               Name: formData.firstName,
               SecondaryIdentification: 'secondary-identif',
             },
@@ -281,13 +282,13 @@ class SandBox {
             InstructionIdentification: 'instr-identification',
             EndToEndIdentification: 'e2e-identification',
             InstructedAmount: {
-              Amount: '7.00', //must be called with pay now button
-              // Amount: formData.amount,
+              // Amount: '7.00', //must be called with pay now button
+              Amount: formData.amount,
               Currency: 'GBP',
             },
             CreditorAccount: {
               SchemeName: 'SortCodeAccountNumber',
-              Identification: formData.accountNumber,
+              Identification: Identification,
               Name: formData.firstName,
               SecondaryIdentification: 'secondary-identif',
             },
