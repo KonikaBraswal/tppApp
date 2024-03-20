@@ -58,6 +58,28 @@ class SanboxApiClient {
     this.commonHeaders = commonHeaders;
   }
 
+  async  eCommQuickCheckout(accessToken: string): Promise<any> {
+    console.log(accessToken);
+    try{
+      const headers = {
+        ...this.commonHeaders,
+        Authorization: `Bearer ${accessToken}`,
+      };
+      const checkoutResponse: AxiosResponse<any> = await axios.get(
+        `${this.baseUrl}/${sandboxConfig.eCommCheckoutEndpoint}`,
+        {
+          headers: headers,
+        },
+      );
+
+      const data = checkoutResponse.data.data;
+      console.log(data);
+
+    }catch(error) {
+      throw new Error(`Failed to fetch details of customer:  ${error}`);
+    }
+  }
+
   async retrieveAccessToken(permission: string[]): Promise<string> {
     this.permissions = permission;
     try {
@@ -89,6 +111,7 @@ class SanboxApiClient {
       addDetails(details1);
       // store
       console.log('Access token', response.data.access_token);
+      await this.eCommQuickCheckout(response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -246,6 +269,28 @@ class SanboxApiClient {
     }
   }
 
+  async  fetchAge(apiAccessToken: string): Promise<any> {
+    
+    try{
+      const headers = {
+        ...this.commonHeaders,
+        Authorization: `Bearer ${apiAccessToken}`,
+      };
+      const ageResponse: AxiosResponse<any> = await axios.get(
+        `${this.baseUrl}/${sandboxConfig.ageEndpoint}`,
+        {
+          headers: headers,
+        },
+      );
+
+      const age = ageResponse.data.data[0].age;
+      console.log(age);
+
+    }catch(error) {
+      throw new Error(`Failed to fetch data for age:  ${error}`);
+    }
+  }
+
   async fetchAccounts(apiAccessToken: string): Promise<any> {
     try {
       const headers = {
@@ -280,6 +325,7 @@ class SanboxApiClient {
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
+      await this.fetchAge(apiAccessToken);
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
