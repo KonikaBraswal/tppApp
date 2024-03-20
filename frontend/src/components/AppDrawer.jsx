@@ -4,6 +4,7 @@ import TransactionListScreen from './TransactionList';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';
+import NatwestMart from './NatwestMart';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 import Test from './Test';
@@ -45,6 +46,15 @@ const AppDrawer = () => {
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bank-plus" color={color} size={28} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Natwest Mart"
+        component={ NatwestMart}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="cart" color={color} size={28} />
           ),
         }}
       />

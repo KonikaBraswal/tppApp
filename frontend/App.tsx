@@ -53,6 +53,11 @@ import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
 
+import { CartProvider } from './src/components/CartContext';
+import ProductsScreen from './src/components/ProductsScreen';
+import CartScreen from './src/components/CartScreen';
+import NatwestMart from './src/components/NatwestMart';
+
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
@@ -78,6 +83,7 @@ function App(): React.JSX.Element {
             backgroundColor={backgroundStyle.backgroundColor}
           />
           <NavigationContainer>
+            <CartProvider>
             <Stack.Navigator
               screenOptions={{
                 headerStyle: {
@@ -142,7 +148,14 @@ function App(): React.JSX.Element {
               <Stack.Screen name="VrpTransactions" component={VrpTransactions} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
+
+
+              <Stack.Screen name="Natwest Mart" component={NatwestMart} />
+              <Stack.Screen name="Product" component={ProductsScreen} />
+              <Stack.Screen name="Cart" component={CartScreen} />
+
             </Stack.Navigator>
+            </CartProvider>
           </NavigationContainer>
         </SafeAreaView>
       </SafeAreaProvider>
