@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
+import NatwestMart from '../assets/images/NatwestMart.png';
 
 const CartContext = createContext();
 
@@ -7,7 +8,17 @@ export const useCart = () => {
 };
 
 const initialState = {
-  cartItems: [],
+  cartItems: [
+    {id: 1, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 2, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 3, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 4, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 5, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 6, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 7, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 8, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+    {id: 9, title:"Nike Sneakers", path: NatwestMart, description:"Vision Alta Men’s Shoes Size (All Colours)", price: 55.25, rating: 4.5, likes: 56890},
+  ],
 };
 
 const cartReducer = (state, action) => {
