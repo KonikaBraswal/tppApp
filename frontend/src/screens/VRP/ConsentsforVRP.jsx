@@ -233,7 +233,7 @@ const ConsentsforVRP = () => {
                           alignItems: 'center',
                           marginBottom: hp('2%'),
                         }}
-                        labelStyle={{color: 'red'}}
+                        labelStyle={{color: 'green'}}
                         onPress={() => showTransactions(index)}>
                         Transactions
                       </Button>
