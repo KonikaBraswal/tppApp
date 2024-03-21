@@ -2,16 +2,19 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs_PISP/config.json';
 import sandboxConfig from '../configs_PISP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
-import {addDetails} from '../database/Database';
-import {updateDetails} from '../database/Database';
 //import { v4 as uuidv4 } from 'uuid';
 import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface BodyData {
   Data: {
     Permissions: string[];
   };
   Risk: {}; // Adjust this if Risk has a specific structure
 }
+let toStore = {
+  consentId: '',
+  userId: '12345',
+};
 var refreshTokenExists = false;
 interface ResponseData {
   scope: any;
@@ -111,17 +114,6 @@ class SanboxApiClient {
           params: body,
         },
       );
-      //store
-      //storing scope in database
-      const scope = response.data.scope;
-
-      const details1 = {
-        userId: 1002,
-        scope: scope,
-      };
-
-      addDetails(details1);
-      // store
       console.log('Access token', response.data);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
@@ -198,25 +190,11 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
-      //store
-      var Status = response.data.Data?.Status;
-      var Payload = response.data.Data;
-      var ConsentId = response.data.Data?.ConsentId || '';
-
-      const updatedDetails1 = {
-        bankname: 'Natwest',
-        consentid: ConsentId,
-        status: Status,
-        consentpayload: JSON.stringify(Payload),
-      };
-
-      const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
-
-      await updateDetails(updatedDetails1, 1002, columnsToUpdate1);
-      //store
       console.log('successss**');
       console.log(response.data);
+      const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
+      toStore.consentId = consentId; // Storing consent ID in toStore object
+
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -403,9 +381,55 @@ class SanboxApiClient {
       );
       console.log(payResponse.data.Data);
       console.log('AllSet');
+      this.storeToStoreInAsyncStorage();
+      this.printStoredToStore();
       return payResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
+    }
+  }
+
+  //make function here to store toStore variable in async storage
+
+  async storeToStoreInAsyncStorage() {
+    try {
+      // Convert the toStore object to a JSON string
+      const toStoreJSON = JSON.stringify(toStore);
+      
+      // Store the JSON string in AsyncStorage under a specific key
+      await AsyncStorage.setItem('toStoreKey', toStoreJSON);
+      
+      console.log('toStore has been stored in AsyncStorage.');
+    } catch (error) {
+      console.error('Failed to store toStore in AsyncStorage:', error);
+    }
+  }
+
+  //call to store
+  //await this.storeToStoreInAsyncStorage();
+
+
+
+  //call to print
+  //await this.printStoredToStore(); calling the function
+
+
+  async printStoredToStore() {
+    try {
+      // Retrieve the stored JSON string from AsyncStorage
+      const storedToStoreJSON = await AsyncStorage.getItem('toStoreKey');
+
+      if (storedToStoreJSON) {
+        // Parse the JSON string back to an object
+        const storedToStore = JSON.parse(storedToStoreJSON);
+
+        // Print the stored toStore object
+        console.log('Stored toStore:', storedToStore);
+      } else {
+        console.log('No toStore object found in AsyncStorage.');
+      }
+    } catch (error) {
+      console.error('Failed to retrieve stored toStore from AsyncStorage:', error);
     }
   }
 }
