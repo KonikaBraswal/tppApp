@@ -192,67 +192,8 @@ export const updateDetails = (details, userId, columnsToUpdate) => {
   });
 };
 
-// export const updateDetails = (details, userId) => {
-//   console.log('Updating details for userId:', userId);
-//   db.transaction((tx) => {
-//     tx.executeSql(
-//       `UPDATE userconsent_sandbox
-//        SET
-//         refreshedtoken = ?,
-//         consentexpiry = ?,
-//         paymentid = ?,
-//         consentpayload = ?,
-//         status = ?,
-//         account_customer_consented = ?,
-//         account_details = ?
-//        WHERE userId = ?;`,
-//       [
-//         details.refreshedtoken,
-//         details.consentexpiry,
-//         details.paymentid,
-//         details.consentpayload,
-//         details.status,
-//         details.account_customer_consented,
-//         details.account_details,
-//         userId,
-//       ],
-//       (_, results) => {
-//         console.log('Details updated successfully', results);
-//       },
-//       (_, error) => {
-//         console.error('Error updating details: ', error);
-//       }
-//     );
-//   });
-// };
-
-// const displayResults = () => {
-//   db.transaction(tx => {
-//     tx.executeSql(
-//       'SELECT * FROM userconsent_sandbox;',
-//       [],
-//       (tx, results) => {
-//         const rows = results.rows;
-//         const len = rows.length;
-//         const data = [];
-
-//         if (len > 0) {
-//           for (let i = 0; i < len; i++) {
-//             const row = rows.item(i);
-//             data.push(rows.item(i));
-//             console.log('Row ID:', row.id, 'Row:', row);
-//           }
-//         } else {
-//           console.log('No entries found in the database.');
-//         }
-//       },
-//       (_, error) => {
-//         console.error('Error querying database: ', error);
-//       },
-//     );
-//   });
-// };
-
+// userconsent_sandbox
+// vrpTransactions_sandbox
 export const RetrieveData = () => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
@@ -268,7 +209,41 @@ export const RetrieveData = () => {
             for (let i = 0; i < len; i++) {
               const row = rows.item(i);
               data.push(row);
-              console.log('Row ID:', row.id, 'Row:', row);
+              // console.log('Row ID:', row.id, 'Row:', row);
+            }
+
+            resolve(data);
+          } else {
+            console.log('No entries found in the database.');
+            resolve([]);
+          }
+        },
+        (_, error) => {
+          console.error('Error querying database: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
+export const RetrieveDataforVrp = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM vrpTransactions_sandbox;',
+        [],
+        (tx, results) => {
+          const rows = results.rows;
+          const len = rows.length;
+          const data = [];
+
+          if (len > 0) {
+            for (let i = 0; i < len; i++) {
+              const row = rows.item(i);
+              if(row.consentid=='VRP-4206f31b-5d57-411b-86a3-bd86bcc42f49'){
+                data.push(row);
+                // console.log('Row ID:', row.id, 'Row:', row);
+              }
             }
 
             resolve(data);
@@ -336,62 +311,13 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
   });
 };
 
-export const updateTransactionsForVrp = (details, consentid, columnsToUpdate) => {
-  console.log('Updating details for consentid:', consentid);
-  console.log('Details to update:', details);
-
-  // Ensure there are columns to update
-  if (!columnsToUpdate || columnsToUpdate.length === 0) {
-    console.error('No columns specified for update.');
-    return Promise.reject('No columns specified for update.');
-  }
-
-  return new Promise((resolve, reject) => {
-    db.transaction(tx => {
-      // Construct SET clause dynamically based on columnsToUpdate
-      const setClause = columnsToUpdate
-        .map(column => `${column} = ?`)
-        .join(', ');
-
-      // Add last_updated_date and last_updated_time to SET clause
-      const updatedSetClause = `${setClause}, date = ?, time = ?`;
-        
-        const query = `UPDATE vrpTransactions_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
-      // Construct SQL query
-
-      // Construct parameters array
-      const currentDate = new Date().toLocaleDateString();
-      const currentTime = new Date().toLocaleTimeString();
-      const parameters = [
-        ...columnsToUpdate.map(column => details[column].toString()),
-        //...columnsToUpdate.map(column => details[column]),----------Sunil
-        currentDate,
-        currentTime,
-        consentid,
-      ];
-
-      tx.executeSql(
-        query,
-        parameters,
-        (_, results) => {
-          console.log('Transactions updated successfully', results);
-          resolve(results);
-        },
-        (_, error) => {
-          console.error('Error updating Transactions: ', error);
-          reject(error);
-        },
-      );
-    });
-  });
-};
 
 
 export const fetchTransactionsForUserConsent = consentid => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        'SELECT * FROM vrpTransactions_sandbox WHERE consentid = ?;',
+        'SELECT * FROM vrpTransactions_sandbox WHERE consentid = ?ORDER BY date DESC,time DESC;',
         [consentid],
         (_, results) => {
           console.log('Query results:', results.rows); // Log the results for debugging
@@ -400,9 +326,10 @@ export const fetchTransactionsForUserConsent = consentid => {
           if (rows.length > 0) {
             for (let i = 0; i < rows.length; i++) {
               const row = rows.item(i);
+              if(row.status=='AcceptedSettlementCompleted'){
                 data.push(row);
-                console.log("transactions-->",row);
-              
+                // console.log("transactions-->",row);
+              }
             }
             if (data.length > 0) resolve(data);
           } else {
@@ -518,23 +445,6 @@ const deleteDatabase = () => {
   );
 };
 
-// const addDummyEntry = () => {
-//   const dummyDetails = {
-//     userId: 'dummyUser123',
-//     scope: 'dummyScope',
-//     bankname: 'Dummy Bank',
-//     refreshedtoken: 'dummyRefreshedToken',
-//     consentid: 'dummyConsentId',
-//     consentexpiry: 'dummyExpiryDate',
-//     paymentid: 'dummyPaymentId',
-//     consentpayload: 'dummyPayload',
-//     status: 'dummyStatus',
-//     account_customer_consented: 'dummyConsentedAccount',
-//     account_details: 'dummyAccountDetails',
-//   };
-
-//   addDetails(dummyDetails);
-// };
 
 export var globalRefreshedToken;
 
@@ -601,7 +511,7 @@ const Database = () => {
     <View>
       <Text>SQLite Database</Text>
       {/* <Button title="Add Dummy Entry" onPress={addDummyEntry} /> */}
-      <Button title="Display Results" onPress={displayResults} />
+      <Button title="Display Results" onPress={RetrieveDataforVrp} />
       <Button title="Delete All Entries" onPress={deleteAllEntries} />
 
       <Button title="Delete Database" onPress={deleteDatabase} />

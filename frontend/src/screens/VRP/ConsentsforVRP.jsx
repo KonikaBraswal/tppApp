@@ -47,29 +47,9 @@ const ConsentsforVRP = () => {
   const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
   const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = mergedAccounts.filter(account =>
-    account.AccountId.includes(searchQuery),
-  );
-  const findAccountBalances = accountId => {
-    const foundBalances = mergedBalances.filter(
-      balance => balance.AccountId === accountId,
-    );
-
-    if (foundBalances.length > 0) {
-      return foundBalances;
-    } else {
-      return null;
-    }
-  };
   const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
-  const [TransactionData, setTransactionData] = useState([]);
 
-  const grantedFormdata = {
-    firstName: 'minal',
-    reference: 'Tools',
-    amount: 45,
-  };
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -78,7 +58,7 @@ const ConsentsforVRP = () => {
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            console.log('details-->', data[0]);
+            console.log('details-->', data);
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -92,6 +72,7 @@ const ConsentsforVRP = () => {
   const showTransactions = async index => {
     navigation.navigate('VrpTransactions', {
       consentid: consentData[index].consentid,
+      consentpayload: consentData[index].consentpayload,
     });
   };
   const handleSubmit = async index => {
@@ -105,18 +86,19 @@ const ConsentsforVRP = () => {
         console.log('This is the type:' + typeof read);
         const jsonObject = JSON.parse(read);
         const name = jsonObject.Initiation.CreditorAccount.Name;
+        const acc =
+          jsonObject.Initiation.CreditorAccount.Identification.substring(0, 8);
+        const sort =
+          jsonObject.Initiation.CreditorAccount.Identification.substring(8);
         console.log('payload details' + read);
         navigation.navigate('GrantedForm', {
           creditorName: jsonObject.Initiation.CreditorAccount.Name,
-          creditorIdentification:
-            jsonObject.Initiation.CreditorAccount.Identification,
-          sortcode: '12-05-03',
+          accountnumber: acc,
+          sortcode: sort,
           referencenumber:
             jsonObject.Initiation.RemittanceInformation.Reference,
           selectconsentData: consentData[index],
         });
-        // const response=await sandboxApiClient.refreshToken(consentData[index],grantedFormdata);//pass index based on the card clicked
-        // console.log("response",response);
       } catch (error) {
         console.log('error in fetching refresh', error);
       }
@@ -145,11 +127,11 @@ const ConsentsforVRP = () => {
                     key={index}
                     style={{
                       backgroundColor: '#c8e1cc',
-                      height: 230,
+                      height: 190,
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
-                      // justifyContent: 'center',
+                      justifyContent: 'center',
                       margin: 5,
                     }}
                     elevation={2}
@@ -181,13 +163,6 @@ const ConsentsforVRP = () => {
                             .CreditorAccount.Name
                         }
                       </Text>
-                      {/* <Text style={styles.text}>
-                        Max amount per Period:
-                        {
-                          JSON.parse(item.consentpayload)?.ControlParameters
-                            ?.PeriodicLimits[0]?.Amount
-                        }
-                      </Text> */}
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.PeriodicLimits[0]?.Amount ? (
                         <Text style={styles.text}>
@@ -203,13 +178,6 @@ const ConsentsforVRP = () => {
                         </Text>
                       )}
 
-                      {/* <Text style={styles.text}>
-                        Max amount per Payment:
-                        {
-                          JSON.parse(item.consentpayload)?.ControlParameters
-                            ?.MaximumIndividualAmount.Amount
-                        }
-                      </Text> */}
                       {JSON.parse(item.consentpayload)?.ControlParameters
                         ?.MaximumIndividualAmount.Amount ? (
                         <Text style={styles.text}>
@@ -237,35 +205,39 @@ const ConsentsforVRP = () => {
                       ) : (
                         <Text style={styles.text}> Occurs every Month</Text>
                       )}
-
-                      {/* <Text>{item.consentid}</Text> */}
                     </View>
-                    <Button
-                      mode="contained"
+                    <View
                       style={{
-                        width: '30%',
-                        backgroundColor: 'white',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: hp('2%'),
-                      }}
-                      labelStyle={{color: 'green'}}
-                      onPress={() => handleSubmit(index)}>
-                      Pay Now
-                    </Button>
-                    {/*                     <Button
-                      mode="contained"
-                      style={{
-                        width: '30%',
-                        backgroundColor: 'white',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: hp('2%'),
-                      }}
-                      labelStyle={{color: 'red'}}
-                      onPress={() => showTransactions(index)}>
-                      Transactions
-                    </Button> */}
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Button
+                        mode="contained"
+                        style={{
+                          width: '45%',
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('2%'),
+                        }}
+                        labelStyle={{color: 'green'}}
+                        onPress={() => handleSubmit(index)}>
+                        Pay Now
+                      </Button>
+                      <Button
+                        mode="contained"
+                        style={{
+                          width: '45%',
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('2%'),
+                        }}
+                        labelStyle={{color: 'red'}}
+                        onPress={() => showTransactions(index)}>
+                        Transactions
+                      </Button>
+                    </View>
                   </Surface>
                 ))}
               </ScrollView>

@@ -40,8 +40,6 @@ const AccountListWithRefreshToken = () => {
     const fetchData = async () => {
       try {
         const data = await RetrieveData();
-        // data.map(obj => console.log(obj.account_customer_consented));
-        // data.map(obj => console.log(obj.scope));
         const filteredData = filterDataByScope(data);
         console.log(filteredData, '------------------');
         setRetrievedData(filteredData);
@@ -62,8 +60,6 @@ const AccountListWithRefreshToken = () => {
           backgroundColor: '#5a287d',
           padding: 10,
         }}>
-        {/* //changed searchBar */}
-
         <Searchbar
           placeholder="Search account by ID"
           onChangeText={setSearchQuery}
