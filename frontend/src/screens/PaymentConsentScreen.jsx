@@ -103,8 +103,8 @@ const PaymentConsentScreen = ({route}) => {
 
   const showAlert = () => {
     Alert.alert(
-      'Agree To Terms And Conditions',
-      'Please check all the boxes before proceeding',
+      'Agree To all the Terms And Conditions',
+      'Please check all the boxes before proceeding for payment',
       [{text: 'OK'}],
       {cancelable: false},
     );
