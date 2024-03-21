@@ -101,6 +101,7 @@ class SanboxApiClient {
         time: currentTime,
         api_name: sandboxConfig.tokenEndpoint,
         //header,body, call name post or get,
+        //table name sanbox_nwb
         scope: response.data.scope,
         status: response.status,
         response: JSON.stringify(response),
