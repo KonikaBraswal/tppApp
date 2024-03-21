@@ -194,7 +194,7 @@ const PaymentConsentScreen = ({route}) => {
                 <Divider />
                 <CustomListItem
                   title="Sort Code"
-                  value={DebtorAccount.SchemeName}
+                  value={DebtorAccount.SchemeName.split('Account')[0]}
                 />
                 <Divider />
                 <CustomListItem
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: hp('20%'),
+    paddingBottom: hp('21%'),
   },
   header: {
     alignItems: 'center',
