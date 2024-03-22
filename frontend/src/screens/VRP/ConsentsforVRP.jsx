@@ -1,6 +1,7 @@
 //todo
 // add search logic based on vrpid
 import React, {useEffect, useState} from 'react';
+// import IconButton from 'react-native-vector-icons/FontAwesome'; 
 import {
   View,
   Text,
@@ -17,7 +18,7 @@ import {
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
 import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
-import {Searchbar, Icon, Button} from 'react-native-paper';
+import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
 import VRPConsent from '../VRP/VRPConsent';
 import {Surface, Stack} from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
@@ -75,6 +76,11 @@ const ConsentsforVRP = () => {
       consentpayload: consentData[index].consentpayload,
     });
   };
+  const showInfo=async index=>{
+    navigation.navigate('Consent Info',{
+      consentpayload:consentData[index].consentpayload
+    });
+  }
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
@@ -85,7 +91,6 @@ const ConsentsforVRP = () => {
         const read = consentData[index].consentpayload;
         console.log('This is the type:' + typeof read);
         const jsonObject = JSON.parse(read);
-        const name = jsonObject.Initiation.CreditorAccount.Name;
         const acc =
           jsonObject.Initiation.CreditorAccount.Identification.substring(0, 8);
         const sort =
@@ -214,38 +219,51 @@ const ConsentsforVRP = () => {
                       <Button
                         mode="contained"
                         style={{
-                          width: '45%',
+                          width: '33%',
                           backgroundColor: 'white',
                           justifyContent: 'center',
                           alignItems: 'center',
                           marginBottom: hp('2%'),
                         }}
-                        labelStyle={{color: 'green'}}
+                        labelStyle={{color: 'black'}}
                         onPress={() => handleSubmit(index)}>
                         Pay Now
                       </Button>
                       <Button
                         mode="contained"
                         style={{
-                          width: '45%',
+                          width: '33%',
                           backgroundColor: 'white',
                           justifyContent: 'center',
                           alignItems: 'center',
                           marginBottom: hp('2%'),
                         }}
-                        labelStyle={{color: 'green'}}
+                        labelStyle={{color: 'black'}}
                         onPress={() => showTransactions(index)}>
                         Transactions
                       </Button>
+                      <IconButton
+                        mode="contained"
+                        icon="information-outline"
+                        style={{
+                          width: '15%',
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('2%'),
+                          marginRight:-wp('2%'),
+                          
+                        }}
+                        labelStyle={{color: 'black'}}
+                        onPress={() => showInfo(index)}>
+                        Info
+                      </IconButton>
                     </View>
                   </Surface>
                 ))}
               </ScrollView>
             </View>
-            {/* <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
-      labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
-      Start a new VRP
-    </Button> */}
+            
           </View>
         </KeyboardAvoidingView>
       </ScrollView>

@@ -52,6 +52,7 @@ import GrantedForm from './src/screens/VRP/GrantedForm';
 import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
+import ConsentInfo from './src/screens/VRP/ConsentInfo';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -142,6 +143,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="VrpTransactions" component={VrpTransactions} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
+              <Stack.Screen name="Consent Info" component={ConsentInfo} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
