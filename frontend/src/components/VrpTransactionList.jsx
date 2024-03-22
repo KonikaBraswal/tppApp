@@ -6,7 +6,7 @@ import VrpTransactionCard from './VrpTransactionCard';
 
 const VrpTransactionList = props => {
   const transactions = props.transactionDetails;
-  console.log("vrptransactionlist->",transactions);
+  // console.log("vrptransactionlist->",transactions);
   return (
     <View style={styles.container}>
       {transactions ? (

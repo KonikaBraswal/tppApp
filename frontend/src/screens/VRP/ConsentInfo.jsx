@@ -39,11 +39,11 @@ const ConsentInfo = ({ route }) => {
     // console.log("pay", payload.Initiation.RemittanceInformation);
     // console.log("consent", payload.ControlParameters.PeriodicLimits[0]);
     var transactions;
-  console.log("det", transactionDetails);
+//   console.log("det", transactionDetails);
   transactionDetails?.map(element => {
     transactions = JSON.parse(element.vrppayload);
   });
-  console.log("details::", transactions);
+//   console.log("details::", transactions);
   
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -53,9 +53,7 @@ const ConsentInfo = ({ route }) => {
                     Permissions given to setup a Variable Recurring Payment (VRP),to make
                     transfers between your accounts, within the payment rules below:
                 </Text>
-                <Text style={[styles.textStyle, { fontWeight: 'bold' }]}>
-                    ConsentId:{payload.ConsentId}
-                </Text>
+                
                 <View style={{ backgroundColor: '#D6CFC7', width: '100%', flex: 1 }}>
                     <Surface
                         elevation={0}

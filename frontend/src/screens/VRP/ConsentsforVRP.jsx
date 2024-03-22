@@ -73,37 +73,44 @@ const ConsentsforVRP = () => {
   }, [isFocused, scope]);
   const mode = 'sandbox';
   const [transactionDetails, setTransactionDetails] = useState(null);
-  
+  var tra;
   const handleConsent=async (index,destination)=>{
     const id=consentData[index].consentid;
     console.log("id",index);
-    fetchTransactionsForUserConsent(id)
-      .then((result) => {
-          // console.log("vrp-->",(result));
-          setTransactionDetails(result);
-      })
-      .catch((error) => {
-        console.error('Error fetching transactions:', error);
-      });
-  
-    switch(destination){
+    try {
+      const result = await fetchTransactionsForUserConsent(id);
+      // console.log("vrp-->", (result));
+      tra=result;
+      setTransactionDetails(result);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+    console.log("tra",transactionDetails);
+    console.log("trac",tra);
+    switch (destination) {
       case 'VrpTransactions':
         navigation.navigate('Vrp Transactions', {
-          transactiondetails:transactionDetails
-        }); 
+          transactiondetails: tra
+        });
         break;
-        case 'ConsentInfo':
-          navigation.navigate('Consent Info',{
-            consentpayload:consentData[index].consentpayload,
-            transactionDetails:transactionDetails
-          });
-          break;
-          default:
-        
+      case 'ConsentInfo':
+        navigation.navigate('Consent Info', {
+          consentpayload: consentData[index].consentpayload,
+          transactionDetails: transactionDetails
+        });
+        break;
+      default:
         console.error(`Invalid destination: ${destination}`);
         break;
     }
   }
+  // var transactions;
+  // // console.log("det", transactionDetails);
+  // transactionDetails?.map(element => {
+  //   transactions = JSON.parse(element.vrppayload);
+  // });
+  // console.log("details::", transactions);
+  
   const showTransactions = async index => {
     navigation.navigate('VrpTransactions', {
       consentid: consentData[index].consentid,
@@ -166,7 +173,7 @@ const ConsentsforVRP = () => {
                     key={index}
                     style={{
                       backgroundColor: '#c8e1cc',
-                      height: 190,
+                      height: 150,
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
@@ -182,8 +189,7 @@ const ConsentsforVRP = () => {
                       }}>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: 20}}>To</Text>
-
+                        
                         <Image
                           source={require('../../assets/images/natwest2.png')}
                           style={styles.iconNatwest}
@@ -195,60 +201,33 @@ const ConsentsforVRP = () => {
                           fontSize: 15,
                           color: 'black',
                           fontWeight: 'bold',
-                          marginTop: hp('0.5%'),
+                          marginTop: hp('2.5%'),
                         }}>
                         {
                           JSON.parse(item.consentpayload).Initiation
                             .CreditorAccount.Name
                         }
                       </Text>
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.PeriodicLimits[0]?.Amount ? (
-                        <Text style={styles.text}>
-                          Max amount per Period:
-                          {
-                            JSON.parse(item.consentpayload).ControlParameters
-                              .PeriodicLimits[0].Amount
-                          }
-                        </Text>
-                      ) : (
-                        <Text style={styles.text}>
-                          Max amount per Period: 300
-                        </Text>
-                      )}
-
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.MaximumIndividualAmount.Amount ? (
-                        <Text style={styles.text}>
-                          Max amount per Payment:
-                          {
-                            JSON.parse(item.consentpayload).ControlParameters
-                              .MaximumIndividualAmount.Amount
-                          }
-                        </Text>
-                      ) : (
-                        <Text style={styles.text}>
-                          Max amount per Payment: 200
-                        </Text>
-                      )}
-
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.PeriodicLimits[0]?.PeriodType ? (
-                        <Text style={styles.text}>
-                          Occurs every{' '}
-                          {
-                            JSON.parse(item.consentpayload)?.ControlParameters
-                              ?.PeriodicLimits[0]?.PeriodType
-                          }
-                        </Text>
-                      ) : (
-                        <Text style={styles.text}> Occurs every Month</Text>
-                      )}
+                      
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          color: 'black',
+                          fontWeight: 'bold',
+                          marginTop: hp('2.5%'),
+                        }}>
+                        Account Number:{
+                          JSON.parse(item.consentpayload).Initiation
+                          .CreditorAccount.Identification
+                        }
+                      </Text>
                     </View>
                     <View
                       style={{
+                        marginTop:'5%',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
+                        // marginBottom:hp('2%')
                       }}>
                       <Button
                         mode="contained"

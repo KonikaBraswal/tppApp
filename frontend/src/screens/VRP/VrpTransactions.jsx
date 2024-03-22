@@ -9,6 +9,7 @@ import { Surface } from '@react-native-material/core';
 import VrpDebitor from '../../components/VrpDebitor';
 import { fetchTransactionsForUserConsent } from '../../../database/Database';
 import VrpTransactionList from '../../components/VrpTransactionList';
+var transactions;
 const VrpTransactions = ({ route }) => {
   const {
     transactiondetails
@@ -19,7 +20,6 @@ const VrpTransactions = ({ route }) => {
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactionText, setTransactionText] = useState('');
-
   useEffect(()=>{
     if(transactiondetails==null){
       setTransactionText('No Transaction found');
@@ -27,18 +27,16 @@ const VrpTransactions = ({ route }) => {
     else{
       console.log("tr",transactiondetails);
       setTransactionDetails(transactiondetails);
+      transactiondetails?.map(element => {
+        transactions = JSON.parse(element.vrppayload);
+      });
       setLoading(false);
     }
-
-  },[transactionDetails]);
-  // console.log("details:",transactionDetails[0].vrppayload);
-  // const transactions = (transactionDetails[0].vrppayload);
-  var transactions;
-  console.log("det", transactionDetails);
-  transactionDetails?.map(element => {
-    transactions = JSON.parse(element.vrppayload);
-  });
+    
+  },[transactiondetails]);
   console.log("details::", transactions);
+  
+  
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -59,7 +57,7 @@ const VrpTransactions = ({ route }) => {
             </Surface>
             <DropdownWithCheckboxes />
           </View>
-          {transactionDetails ? (
+          {transactiondetails ? (
             <>
             <VrpDebitor
               account={transactions}
@@ -75,8 +73,8 @@ const VrpTransactions = ({ route }) => {
               value={searchQuery}
               style={styles.searchbar}
             />
-            {transactionDetails ? (
-              <VrpTransactionList transactionDetails={transactionDetails} />
+            {transactiondetails ? (
+              <VrpTransactionList transactionDetails={transactiondetails} />
             ) : (
               <Text style={styles.statusText}>
                 {transactionText}
