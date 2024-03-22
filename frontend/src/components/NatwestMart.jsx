@@ -12,7 +12,7 @@ import Ecommerce_home_page_image from '../assets/images/NatwestMart.png';
 export const NatwestMart = () => {
   const navigation = useNavigation();
   const goToNextScreen = () => {
-    navigation.navigate('Product');
+    navigation.navigate('Products');
   };
   return (
     <>

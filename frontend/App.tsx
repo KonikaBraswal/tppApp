@@ -57,6 +57,7 @@ import { CartProvider } from './src/components/CartContext';
 import ProductsScreen from './src/components/ProductsScreen';
 import CartScreen from './src/components/CartScreen';
 import NatwestMart from './src/components/NatwestMart';
+import ProductCarousel from './src/components/ProductCarousel';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -151,7 +152,8 @@ function App(): React.JSX.Element {
 
 
               <Stack.Screen name="Natwest Mart" component={NatwestMart} />
-              <Stack.Screen name="Product" component={ProductsScreen} />
+              <Stack.Screen name="Products" component={ProductsScreen} />
+              <Stack.Screen name="Product" component={ProductCarousel} />
               <Stack.Screen name="Cart" component={CartScreen} />
 
             </Stack.Navigator>

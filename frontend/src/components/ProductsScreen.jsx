@@ -58,6 +58,7 @@ const ProductsScreen = () => {
   //   </View>
   //   ))
     <View>
+      {/* <ProductCarousel /> */}
       <ProductCarousel cartItems={cartItems} />
     </View>
   );
