@@ -140,7 +140,7 @@ function App(): React.JSX.Element {
                 component={CreditorDetailsforVRP}
               />
               <Stack.Screen name="GrantedForm" component={GrantedForm} />
-              <Stack.Screen name="VrpTransactions" component={VrpTransactions} />
+              <Stack.Screen name="Vrp Transactions" component={VrpTransactions} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />

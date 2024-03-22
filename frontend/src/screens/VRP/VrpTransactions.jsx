@@ -11,35 +11,26 @@ import { fetchTransactionsForUserConsent } from '../../../database/Database';
 import VrpTransactionList from '../../components/VrpTransactionList';
 const VrpTransactions = ({ route }) => {
   const {
-    consentid,
-    consentpayload
+    transactiondetails
   } = route.params
+  
   const [searchQuery, setSearchQuery] = useState('');
 
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactionText, setTransactionText] = useState('');
 
-  useEffect(() => {
-    console.log("consent", consentid);
-    // Fetch transactions for the userConsentId
-    fetchTransactionsForUserConsent(consentid)
-      .then((result) => {
-        if (result == null) {
-          setTransactionText('No Transactions Found');
-        }
-        else {
-          // console.log("vrp-->",(result));
+  useEffect(()=>{
+    if(transactiondetails==null){
+      setTransactionText('No Transaction found');
+    }
+    else{
+      console.log("tr",transactiondetails);
+      setTransactionDetails(transactiondetails);
+      setLoading(false);
+    }
 
-          setTransactionDetails(result);
-
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching transactions:', error);
-      });
-  }, [consentid]);
+  },[transactionDetails]);
   // console.log("details:",transactionDetails[0].vrppayload);
   // const transactions = (transactionDetails[0].vrppayload);
   var transactions;

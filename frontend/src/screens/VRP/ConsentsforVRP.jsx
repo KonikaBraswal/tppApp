@@ -31,6 +31,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import ConsentInfo from './ConsentInfo';
+import {fetchTransactionsForUserConsent} from '../../../database/Database';
 //reading data from json file for now
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -70,6 +72,38 @@ const ConsentsforVRP = () => {
     }
   }, [isFocused, scope]);
   const mode = 'sandbox';
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  
+  const handleConsent=async (index,destination)=>{
+    const id=consentData[index].consentid;
+    console.log("id",index);
+    fetchTransactionsForUserConsent(id)
+      .then((result) => {
+          // console.log("vrp-->",(result));
+          setTransactionDetails(result);
+      })
+      .catch((error) => {
+        console.error('Error fetching transactions:', error);
+      });
+  
+    switch(destination){
+      case 'VrpTransactions':
+        navigation.navigate('Vrp Transactions', {
+          transactiondetails:transactionDetails
+        }); 
+        break;
+        case 'ConsentInfo':
+          navigation.navigate('Consent Info',{
+            consentpayload:consentData[index].consentpayload,
+            transactionDetails:transactionDetails
+          });
+          break;
+          default:
+        
+        console.error(`Invalid destination: ${destination}`);
+        break;
+    }
+  }
   const showTransactions = async index => {
     navigation.navigate('VrpTransactions', {
       consentid: consentData[index].consentid,
@@ -77,7 +111,7 @@ const ConsentsforVRP = () => {
     });
   };
   const showInfo=async index=>{
-    navigation.navigate('Consent Info',{
+    navigation.navigate('ConsentInfo',{
       consentpayload:consentData[index].consentpayload
     });
   }
@@ -239,7 +273,8 @@ const ConsentsforVRP = () => {
                           marginBottom: hp('2%'),
                         }}
                         labelStyle={{color: 'black'}}
-                        onPress={() => showTransactions(index)}>
+                        // title={`Go to ${VrpTransactions}`}
+                        onPress={() => handleConsent(index,'VrpTransactions')}>
                         Transact
                       </Button>
                       <IconButton
@@ -252,7 +287,8 @@ const ConsentsforVRP = () => {
                           marginRight:-wp('6%'),
                         }}
                         labelStyle={{color: 'black'}}
-                        onPress={() => showInfo(index)}>
+                        // title={`Go to ${ConsentInfo}`}
+                        onPress={() => handleConsent(index,'ConsentInfo')}>
                         Info
                       </IconButton>
                     </View>
