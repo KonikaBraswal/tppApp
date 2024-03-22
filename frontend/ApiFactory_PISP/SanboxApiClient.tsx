@@ -2,19 +2,29 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs_PISP/config.json';
 import sandboxConfig from '../configs_PISP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
-//import { v4 as uuidv4 } from 'uuid';
 import uuid from 'react-native-uuid';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
+const databaseFactory = new DatabaseFactory();
+const androidClient = databaseFactory.createDatabaseClient('android','pisp');
+
 interface BodyData {
   Data: {
     Permissions: string[];
   };
   Risk: {}; // Adjust this if Risk has a specific structure
 }
-let toStore = {
+let pispToStore = {
   consentId: '',
-  userId: '12345',
+  scope: '',
+  payload: '',
+  refreshtoken: '',
+  paymentId: '',
+  response: '',
+  userId: '999999999',
 };
+let pispToUpdate={
+  userId:"7777777",
+}
 var refreshTokenExists = false;
 interface ResponseData {
   scope: any;
@@ -59,9 +69,6 @@ interface PaymentBodyData {
   };
   Risk: PaymentRisk;
 }
-
-// const userIdToUpdate = 1001;
-
 class SanboxApiClient {
   private baseUrl: string;
   private clientId: string;
@@ -115,6 +122,8 @@ class SanboxApiClient {
         },
       );
       console.log('Access token', response.data);
+      pispToStore.scope = response.data.scope;
+      
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -193,7 +202,8 @@ class SanboxApiClient {
       console.log('successss**');
       console.log(response.data);
       const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
-      toStore.consentId = consentId; // Storing consent ID in toStore object
+      pispToStore.consentId = consentId; // Storing consent ID in toStore object
+      pispToStore.payload = JSON.stringify(body);
 
       return response.data.Data?.ConsentId || '';
     } catch (error) {
@@ -241,33 +251,11 @@ class SanboxApiClient {
           params: body,
         },
       );
-      //store
-      const RefreshToken = response.data.refresh_token;
-      const consentExpiresIn = response.data.expires_in;
-      const Scope = response.data.scope;
-
-      const updatedDetails2 = {
-        refreshedtoken: RefreshToken,
-        status: 'Authorised',
-        consentexpiry: consentExpiresIn,
-      };
-
-      const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-
-      // await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
-
-      //store
-
-      //setting flag after storing refresh token in db
-      refreshTokenExists = true;
       console.log('Api access token', response.data.access_token);
+      pispToStore.refreshtoken = response.data.refresh_token;
       return this.domesticPayments(response.data.access_token);
-      // console.log('Api refresh token', response.data.refresh_token);
-      // if (this.callScope == 'payments') {
-      //   return this.domesticPayments(response.data.access_token);
-      // }
-      // return this.fetchAccounts(response.data.access_token);
-      return this.refreshToken(response.data.refresh_token);
+
+      //return this.refreshToken(response.data.refresh_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -346,13 +334,11 @@ class SanboxApiClient {
 
       const paymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticPaymentsEndpoint}`,
-        requestBody, // Remove the object wrapper from requestBody
+        requestBody,
         {
           headers: headers,
         },
       );
-
-      // Additional processing...
       console.log('success');
       console.log(paymentResponse.data);
       return this.getPaymentSatus(
@@ -381,55 +367,18 @@ class SanboxApiClient {
       );
       console.log(payResponse.data.Data);
       console.log('AllSet');
-      this.storeToStoreInAsyncStorage();
-      this.printStoredToStore();
+      pispToStore.response = JSON.stringify(payResponse);
+      pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
+      console.log(pispToStore);
+      //stroing all data in db
+      await androidClient.initDatabaseAndroidPisp();
+      await androidClient.insertDataPisp(pispToStore);
+      await androidClient.displayData();
+      //await androidClient.updateDataByConsentIdPisp("ee7a9088-42a8-462b-b7da-f7548c77529e",pispToUpdate);
+      //await androidClient.
       return payResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
-    }
-  }
-
-  //make function here to store toStore variable in async storage
-
-  async storeToStoreInAsyncStorage() {
-    try {
-      // Convert the toStore object to a JSON string
-      const toStoreJSON = JSON.stringify(toStore);
-      
-      // Store the JSON string in AsyncStorage under a specific key
-      await AsyncStorage.setItem('toStoreKey', toStoreJSON);
-      
-      console.log('toStore has been stored in AsyncStorage.');
-    } catch (error) {
-      console.error('Failed to store toStore in AsyncStorage:', error);
-    }
-  }
-
-  //call to store
-  //await this.storeToStoreInAsyncStorage();
-
-
-
-  //call to print
-  //await this.printStoredToStore(); calling the function
-
-
-  async printStoredToStore() {
-    try {
-      // Retrieve the stored JSON string from AsyncStorage
-      const storedToStoreJSON = await AsyncStorage.getItem('toStoreKey');
-
-      if (storedToStoreJSON) {
-        // Parse the JSON string back to an object
-        const storedToStore = JSON.parse(storedToStoreJSON);
-
-        // Print the stored toStore object
-        console.log('Stored toStore:', storedToStore);
-      } else {
-        console.log('No toStore object found in AsyncStorage.');
-      }
-    } catch (error) {
-      console.error('Failed to retrieve stored toStore from AsyncStorage:', error);
     }
   }
 }

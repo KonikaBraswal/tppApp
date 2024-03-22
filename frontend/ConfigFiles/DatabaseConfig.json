@@ -1,5 +1,6 @@
 {
-    "companyName":"NWG",
+    "companyName":"nwg",
     "apiClient":"sandbox",
-    "platform":"android"
+    "platform":"android",
+    "scope":"psip"
 }
