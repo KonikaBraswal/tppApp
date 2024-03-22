@@ -32,23 +32,8 @@ const screenWidth = Dimensions.get('window').width;
 const ConsentInfo = ({ route }) => {
     const consentpayload = route.params?.consentpayload;
     const payload = JSON.parse(consentpayload);
-    console.log("pay", payload.Initiation.RemittanceInformation);
-    console.log("consent", payload.ControlParameters.PeriodicLimits[0]);
-    const navigation = useNavigation();
-    const [loading, setLoading] = useState(false);
-    const [allPayments, setAllPayments] = useState('');
-    const [error, setError] = useState(null);
-    const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
-    const showErrorDialog = () => setErrorDialogVisible(true);
-    const hideErrorDialog = () => setErrorDialogVisible(false);
-    const [isInputDialogVisible, setInputDialogVisible] = useState(false);
-    const showInputDialog = () => setInputDialogVisible(true);
-    const hideInputDialog = () => setInputDialogVisible(false);
-
-    const [inputValue, setInputValue] = useState('');
-
-
-
+    // console.log("pay", payload.Initiation.RemittanceInformation);
+    // console.log("consent", payload.ControlParameters.PeriodicLimits[0]);
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>

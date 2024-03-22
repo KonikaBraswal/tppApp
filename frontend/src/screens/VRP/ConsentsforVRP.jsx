@@ -227,7 +227,7 @@ const ConsentsforVRP = () => {
                         }}
                         labelStyle={{color: 'black'}}
                         onPress={() => handleSubmit(index)}>
-                        Pay Now
+                        Pay
                       </Button>
                       <Button
                         mode="contained"
@@ -240,19 +240,16 @@ const ConsentsforVRP = () => {
                         }}
                         labelStyle={{color: 'black'}}
                         onPress={() => showTransactions(index)}>
-                        Transactions
+                        Transact
                       </Button>
                       <IconButton
-                        mode="contained"
-                        icon="information-outline"
+                        icon="information"
                         style={{
-                          width: '15%',
-                          backgroundColor: 'white',
+                          width: '20%',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          marginBottom: hp('2%'),
-                          marginRight:-wp('2%'),
-                          
+                          marginBottom:hp('1%'),
+                          marginRight:-wp('6%'),
                         }}
                         labelStyle={{color: 'black'}}
                         onPress={() => showInfo(index)}>
