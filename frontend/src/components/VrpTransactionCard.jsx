@@ -35,7 +35,7 @@ const VrpTransactionCard = ({transaction}) => {
             </Text>
           </View>
           <Text style={styles.amountText}>
-            {list.Instruction.InstructedAmount.Currency} {list.Instruction.InstructedAmount.Amount}
+          £{list.Instruction.InstructedAmount.Amount}
           </Text>
         </View>
       </Card.Content>
@@ -45,7 +45,6 @@ const VrpTransactionCard = ({transaction}) => {
       <Card.Content>
         <View>
           <Text style={styles.title}>CreditorAccountNumber: {list.Initiation.CreditorAccount.Identification}</Text>
-          {/* <Text style={styles.text}>Consent Id:{transaction.ConsentId}</Text> */}
           <Text style={styles.text}>
             Transaction ID: {transaction.vrpid}
           </Text>
