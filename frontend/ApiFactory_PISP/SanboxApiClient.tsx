@@ -373,6 +373,7 @@ class SanboxApiClient {
       //stroing all data in db
       await androidClient.initDatabaseAndroidPisp();
       await androidClient.insertDataPisp(pispToStore);
+      console.log("Storing this to the table");
       await androidClient.displayData();
       //await androidClient.updateDataByConsentIdPisp("ee7a9088-42a8-462b-b7da-f7548c77529e",pispToUpdate);
       //await androidClient.

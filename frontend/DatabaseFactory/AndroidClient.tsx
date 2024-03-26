@@ -35,7 +35,7 @@ class AndroidClient {
           );`,
           [],
           (_, result) => {
-            console.log(`Table ${tableName} created successfully.`);
+            console.log(`PISP Table ${tableName} created successfully.`);
             resolve();
           },
           (_, error) => {
@@ -130,23 +130,22 @@ class AndroidClient {
 // Method to initialize the SQLite database for Android AISP
 async initDatabaseAndroidAisp(): Promise<void> {
   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
+ 
   await new Promise<void>((resolve, reject) => {
     this.androidDb.transaction(tx => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS ${tableName} (
-          consentId TEXT,
+          userId TEXT,
           scope TEXT,
-          payload TEXT,
-          refreshtoken TEXT,
-          status TEXT,
           bankName TEXT,
-          accountList TEXT,
-          userId TEXT
+          consentId TEXT,
+          consentPayload TEXT,
+          refreshToken TEXT,
+          accountsList TEXT
         );`,
         [],
         (_, result) => {
-          console.log(`Table ${tableName} created successfully.`);
+          console.log(`AISP Table ${tableName} created successfully.`);
           resolve();
         },
         (_, error) => {
@@ -157,6 +156,56 @@ async initDatabaseAndroidAisp(): Promise<void> {
     });
   });
 }
+
+  // Method to insert data into the SQLite database AISP
+  async insertDataAisp(aispToStore: {
+    userId: any,
+    scope: string,
+    bankName: string,
+    consentId: string,
+    consentPayload: string,
+    refreshToken: string,
+    accountsList: string
+  }): Promise<void> {
+    const {
+      userId,
+      scope,
+      bankName,
+      consentId,
+      consentPayload,
+      refreshToken,
+      accountsList
+    } = aispToStore;
+  
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    console.log("%%%%%%%%%%%%",tableName);
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, refreshToken, accountsList) 
+          VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          [userId, scope, bankName, consentId, consentPayload, refreshToken, accountsList],
+          (_, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Data inserted successfully');
+              resolve();
+            } else {
+              console.error('No rows affected during insertion');
+              reject(new Error('No rows affected'));
+            }
+          },
+          (_, error) => {
+            console.error('Error inserting data: ', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+  
+  
+
+
 
 
 //VRP
