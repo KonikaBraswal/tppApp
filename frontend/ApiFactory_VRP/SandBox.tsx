@@ -4,6 +4,9 @@ import sandboxConfig from '../configs_VRP/Sandbox.json';
 import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
 import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
+import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
+const databaseFactoryVrp = new DatabaseFactory();
+const androidClientVrp = databaseFactoryVrp.createDatabaseClient('android','vrp');
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -21,6 +24,20 @@ interface ResponseData {
     Status?: any;
   };
 }
+let vrpToStore = {
+  userId: '999934356',
+  scope: '',
+  bankName: 'NatWest',
+  consentId: '',
+  consentPayload: '',
+  vrpId: '', // Add vrpId field
+  paymentId: '', // Add paymentId field
+  vrpPayload: '', // Add vrpPayload field
+  refreshToken: '',
+  responseVrp: '',
+  status:'' // Add responseVrp field
+};
+
 interface ApiHeaders {
   Authorization: string;
   'Content-Type': string;
@@ -111,6 +128,7 @@ class SandBox {
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
       this.consentId = response.data.Data?.ConsentId || '';
+      const consentIdVrp = response.data.Data?.ConsentId || '';
       const details1 = {
         bankname: 'Natwest',
         consentid: this.consentId,
@@ -118,6 +136,10 @@ class SandBox {
         consentpayload: JSON.stringify(Payload),
         scope: 'vrp',
       };
+      vrpToStore.scope="vrp";
+      vrpToStore.consentId=consentIdVrp;
+      vrpToStore.consentPayload=JSON.stringify(Payload);
+      vrpToStore.status=Status;
       
       console.log('details', details1);
       addDetails(details1);
@@ -193,6 +215,7 @@ class SandBox {
         
       );
       refreshTokenExists = true;
+      vrpToStore.refreshToken=response.data.refresh_token;
       // return this.vrpPayments(response.data.access_token,this.consentId,formData);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -343,7 +366,13 @@ class SandBox {
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status
       };
-
+      vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
+      vrpToStore.vrpPayload=JSON.stringify(payload);
+      vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
+      vrpToStore.responseVrp=JSON.stringify(allVrpPaymentsResponse.data.Data);
+      console.log("^^^^^^^");
+      console.log(vrpToStore);
+      console.log("$$$$$$$$$$");
       addTransactions(details);
       return allVrpPaymentsResponse.data;
     } catch (error) {

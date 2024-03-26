@@ -178,8 +178,7 @@ async initDatabaseAndroidAisp(): Promise<void> {
     } = aispToStore;
   
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-    console.log("%%%%%%%%%%%%",tableName);
-    await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
           `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, refreshToken, accountsList) 
@@ -203,12 +202,88 @@ async initDatabaseAndroidAisp(): Promise<void> {
     });
   }
   
-  
-
-
-
-
 //VRP
+async initDatabaseAndroidVrp(): Promise<void> {
+  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+  await new Promise<void>((resolve, reject) => {
+    this.androidDb.transaction(tx => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ${tableName} (
+          userId TEXT,
+          scope TEXT,
+          bankName TEXT,
+          consentId TEXT,
+          consentPayload TEXT,
+          vrpId TEXT,
+          vrpPayload TEXT,
+          refreshToken TEXT,
+          responseVrp TEXT,
+          status TEXT
+        );`,
+        [],
+        (_, result) => {
+          console.log(`AISP Table ${tableName} created successfully.`);
+          resolve();
+        },
+        (_, error) => {
+          console.error(`Error creating table ${tableName}:`, error);
+          reject(error);
+        }
+      );
+    });
+  });
+}
+
+async insertDataVrp(vrpToStore: {
+  userId: any,
+  scope: string,
+  bankName: string,
+  consentId: string,
+  consentPayload: string,
+  vrpId: string,
+  paymentId: string,
+  vrpPayload: string,
+  refreshToken: string,
+  responseVrp: string
+}): Promise<void> {
+  const {
+    userId,
+    scope,
+    bankName,
+    consentId,
+    consentPayload,
+    vrpId,
+    paymentId,
+    vrpPayload,
+    refreshToken,
+    responseVrp
+  } = vrpToStore;
+
+  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  await new Promise<void>((resolve, reject) => {
+    this.androidDb.transaction(tx => {
+      tx.executeSql(
+        `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, vrpId, paymentId, vrpPayload, refreshToken, responseVrp) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        [userId, scope, bankName, consentId, consentPayload, vrpId, paymentId, vrpPayload, refreshToken, responseVrp],
+        (_, results) => {
+          if (results.rowsAffected > 0) {
+            console.log('Data inserted successfully');
+            resolve();
+          } else {
+            console.error('No rows affected during insertion');
+            reject(new Error('No rows affected'));
+          }
+        },
+        (_, error) => {
+          console.error('Error inserting data: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+}
 
 
 //COMMON

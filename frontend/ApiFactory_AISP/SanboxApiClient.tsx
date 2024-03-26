@@ -7,8 +7,8 @@ import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import {insertLog} from '../database/DatabaseLogs';
 import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
-const databaseFactoryaAisp = new DatabaseFactory();
-const androidClientAisp = databaseFactoryaAisp.createDatabaseClient('android','aisp');
+const databaseFactoryAisp = new DatabaseFactory();
+const androidClientAisp = databaseFactoryAisp.createDatabaseClient('android','aisp');
 interface BodyData {
   Data: {
     Permissions: string[];
