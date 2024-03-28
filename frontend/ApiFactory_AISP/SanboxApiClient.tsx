@@ -8,7 +8,10 @@ import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import {insertLog} from '../database/DatabaseLogs';
 import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
 const databaseFactoryAisp = new DatabaseFactory();
-const androidClientAisp = databaseFactoryAisp.createDatabaseClient('android','aisp');
+const androidClientAisp = databaseFactoryAisp.createDatabaseClient(
+  'android',
+  'aisp',
+);
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -49,9 +52,8 @@ let aispToStore = {
   consentId: '',
   consentPayload: '',
   refreshToken: '',
-  accountsList: ''
+  accountsList: '',
 };
-
 
 class SanboxApiClient {
   private baseUrl: string;
@@ -123,7 +125,7 @@ class SanboxApiClient {
 
       //apilogs
       console.log('Access token', response.data.access_token);
-      aispToStore.scope=response.data.scope;
+      aispToStore.scope = response.data.scope;
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -185,8 +187,8 @@ class SanboxApiClient {
       //apilogs
 
       //api logs
-      aispToStore.consentId=ConsentId;
-      aispToStore.consentPayload=JSON.stringify(body);
+      aispToStore.consentId = ConsentId;
+      aispToStore.consentPayload = JSON.stringify(body);
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -294,7 +296,7 @@ class SanboxApiClient {
       const columnsToUpdate3 = ['refreshedtoken'];
 
       await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
-      aispToStore.refreshToken=responseRefresh.data.refresh_token;
+      aispToStore.refreshToken = responseRefresh.data.refresh_token;
       //return this.fetchAccounts(responseRefresh.data.access_token);
       return responseRefresh.data.access_token;
     } catch (error) {
@@ -336,15 +338,15 @@ class SanboxApiClient {
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
-      aispToStore.accountsList=JSON.stringify(accountResponse.data.Data);
+      aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
       //print aispToSTore
-      console.log("***************");
+      console.log('***************');
       console.log(aispToStore);
       await androidClientAisp.initDatabaseAndroidAisp();
       await androidClientAisp.insertDataAisp(aispToStore);
-      console.log("^^^^^^^^^^^^");
+      console.log('^^^^^^^^^^^^');
       await androidClientAisp.displayData();
-      console.log("###########");
+      console.log('###########');
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);

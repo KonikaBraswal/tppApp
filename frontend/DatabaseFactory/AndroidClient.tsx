@@ -6,7 +6,7 @@ class AndroidClient {
   private scope: string;
   private androidDb: SQLiteDatabase;
 
-  constructor(companyName: string, apiClient: string,scope:string) {
+  constructor(companyName: string, apiClient: string, scope: string) {
     this.companyName = companyName;
     this.apiClient = apiClient;
     this.scope = scope;
@@ -16,7 +16,7 @@ class AndroidClient {
     }) as unknown as SQLiteDatabase;
   }
 
- //PISP
+  //PISP
   // Method to initialize the SQLite database for Android PISP
   async initDatabaseAndroidPisp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
@@ -126,15 +126,15 @@ class AndroidClient {
     });
   }
 
-//AISP
-// Method to initialize the SQLite database for Android AISP
-async initDatabaseAndroidAisp(): Promise<void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
- 
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${tableName} (
+  //AISP
+  // Method to initialize the SQLite database for Android AISP
+  async initDatabaseAndroidAisp(): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS ${tableName} (
           userId TEXT,
           scope TEXT,
           bankName TEXT,
@@ -143,29 +143,29 @@ async initDatabaseAndroidAisp(): Promise<void> {
           refreshToken TEXT,
           accountsList TEXT
         );`,
-        [],
-        (_, result) => {
-          console.log(`AISP Table ${tableName} created successfully.`);
-          resolve();
-        },
-        (_, error) => {
-          console.error(`Error creating table ${tableName}:`, error);
-          reject(error);
-        },
-      );
+          [],
+          (_, result) => {
+            console.log(`AISP Table ${tableName} created successfully.`);
+            resolve();
+          },
+          (_, error) => {
+            console.error(`Error creating table ${tableName}:`, error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
   // Method to insert data into the SQLite database AISP
   async insertDataAisp(aispToStore: {
-    userId: any,
-    scope: string,
-    bankName: string,
-    consentId: string,
-    consentPayload: string,
-    refreshToken: string,
-    accountsList: string
+    userId: any;
+    scope: string;
+    bankName: string;
+    consentId: string;
+    consentPayload: string;
+    refreshToken: string;
+    accountsList: string;
   }): Promise<void> {
     const {
       userId,
@@ -174,16 +174,24 @@ async initDatabaseAndroidAisp(): Promise<void> {
       consentId,
       consentPayload,
       refreshToken,
-      accountsList
+      accountsList,
     } = aispToStore;
-  
+
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-      await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
           `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, refreshToken, accountsList) 
           VALUES (?, ?, ?, ?, ?, ?, ?);`,
-          [userId, scope, bankName, consentId, consentPayload, refreshToken, accountsList],
+          [
+            userId,
+            scope,
+            bankName,
+            consentId,
+            consentPayload,
+            refreshToken,
+            accountsList,
+          ],
           (_, results) => {
             if (results.rowsAffected > 0) {
               console.log('Data inserted successfully');
@@ -201,15 +209,15 @@ async initDatabaseAndroidAisp(): Promise<void> {
       });
     });
   }
-  
-//VRP
-async initDatabaseAndroidVrp(): Promise<void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${tableName} (
+  //VRP
+  async initDatabaseAndroidVrp(): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS ${tableName} (
           userId TEXT,
           scope TEXT,
           bankName TEXT,
@@ -221,72 +229,82 @@ async initDatabaseAndroidVrp(): Promise<void> {
           responseVrp TEXT,
           status TEXT
         );`,
-        [],
-        (_, result) => {
-          console.log(`AISP Table ${tableName} created successfully.`);
-          resolve();
-        },
-        (_, error) => {
-          console.error(`Error creating table ${tableName}:`, error);
-          reject(error);
-        }
-      );
-    });
-  });
-}
-
-async insertDataVrp(vrpToStore: {
-  userId: any,
-  scope: string,
-  bankName: string,
-  consentId: string,
-  consentPayload: string,
-  vrpId: string,
-  paymentId: string,
-  vrpPayload: string,
-  refreshToken: string,
-  responseVrp: string
-}): Promise<void> {
-  const {
-    userId,
-    scope,
-    bankName,
-    consentId,
-    consentPayload,
-    vrpId,
-    paymentId,
-    vrpPayload,
-    refreshToken,
-    responseVrp
-  } = vrpToStore;
-
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, vrpId, paymentId, vrpPayload, refreshToken, responseVrp) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-        [userId, scope, bankName, consentId, consentPayload, vrpId, paymentId, vrpPayload, refreshToken, responseVrp],
-        (_, results) => {
-          if (results.rowsAffected > 0) {
-            console.log('Data inserted successfully');
+          [],
+          (_, result) => {
+            console.log(`AISP Table ${tableName} created successfully.`);
             resolve();
-          } else {
-            console.error('No rows affected during insertion');
-            reject(new Error('No rows affected'));
-          }
-        },
-        (_, error) => {
-          console.error('Error inserting data: ', error);
-          reject(error);
-        },
-      );
+          },
+          (_, error) => {
+            console.error(`Error creating table ${tableName}:`, error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
+  async insertDataVrp(vrpToStore: {
+    userId: any;
+    scope: string;
+    bankName: string;
+    consentId: string;
+    consentPayload: string;
+    vrpId: string;
+    paymentId: string;
+    vrpPayload: string;
+    refreshToken: string;
+    responseVrp: string;
+  }): Promise<void> {
+    const {
+      userId,
+      scope,
+      bankName,
+      consentId,
+      consentPayload,
+      vrpId,
+      paymentId,
+      vrpPayload,
+      refreshToken,
+      responseVrp,
+    } = vrpToStore;
 
-//COMMON
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO ${tableName} (userId, scope, bankName, consentId, consentPayload, vrpId, paymentId, vrpPayload, refreshToken, responseVrp) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          [
+            userId,
+            scope,
+            bankName,
+            consentId,
+            consentPayload,
+            vrpId,
+            paymentId,
+            vrpPayload,
+            refreshToken,
+            responseVrp,
+          ],
+          (_, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Data inserted successfully');
+              resolve();
+            } else {
+              console.error('No rows affected during insertion');
+              reject(new Error('No rows affected'));
+            }
+          },
+          (_, error) => {
+            console.error('Error inserting data: ', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+
+  //COMMON
   // Method to delete all data entries from the database
   async deleteAllData(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
