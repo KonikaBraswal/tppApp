@@ -1,57 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface AispData {
-  name: string;
-  data: any[];
-}
-interface PispData {
-  name: string;
-  data: any[];
-}
-interface VrpData {
-  name: string;
-  data: any[];
-}
 class WebClient {
   private companyName: string;
   private apiClient: string;
   private scope: string;
-  private aispData: AispData;
-  private pispData: PispData;
-  private vrpData: VrpData;
 
   constructor(companyName: string, apiClient: string, scope: string) {
     this.companyName = companyName;
     this.apiClient = apiClient;
     this.scope = scope;
-    this.aispData = {name: '', data: []};
-    this.pispData = {name: '', data: []};
-    this.vrpData = {name: '', data: []};
   }
 
   //PISP
   // Method to initialize the data storage for Web PISP
-  async initDatabaseWebPisp() {
+  async initDatabaseWebPisp(): Promise<void> {
     const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-    this.pispData.name = dataName;
-    AsyncStorage.getItem(dataName)
-      .then(existingValue => {
-        if (existingValue === null) {
-          AsyncStorage.setItem(
-            this.pispData.name,
-            JSON.stringify(this.pispData.data),
-          )
-            .then(() => {
-              console.log('pispData object created successfully');
-            })
-            .catch(error => {
-              console.log('Error creating pispData object:');
-            });
-        }
-      })
-      .catch(error => {
-        console.log('pispData already exists');
-      });
+    const data: any[] = [];
+    await new Promise<void>((resolve, reject) => {
+      AsyncStorage.getItem(dataName)
+        .then(existingValue => {
+          if (existingValue === null) {
+            AsyncStorage.setItem(dataName, JSON.stringify(data))
+              .then(() => {
+                console.log('pispData object created successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.log('Error creating pispData object');
+                reject(error);
+              });
+          } else {
+            console.log('pispData already exists');
+            resolve();
+          }
+        })
+        .catch(error => {
+          console.log('Error retrieving existing pispdata:', error);
+          reject(error);
+        });
+    });
   }
 
   // Method to insert data into the web PISP
@@ -139,6 +126,213 @@ class WebClient {
           console.error('Error checking key:', error);
           reject(error);
         });
+    });
+  }
+
+  //AISP
+  // Method to initialize the  data storage for Web AISP
+  async initDatabaseWebAisp() {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    const data: any[] = [];
+    await new Promise<void>((resolve, reject) => {
+      AsyncStorage.getItem(dataName)
+        .then(existingValue => {
+          if (existingValue === null) {
+            AsyncStorage.setItem(dataName, JSON.stringify(data))
+              .then(() => {
+                console.log('aispData object created successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.log('Error creating aispData object');
+                reject(error);
+              });
+          } else {
+            console.log('aispData already exists');
+            resolve();
+          }
+        })
+        .catch(error => {
+          console.log('Error retrieving existing aispdata:', error);
+          reject(error);
+        });
+    });
+  }
+
+  // Method to insert data into the web AISP
+  async insertDataAisp(aispToStore: {
+    userId: any;
+    scope: string;
+    bankName: string;
+    consentId: string;
+    consentPayload: string;
+    refreshToken: string;
+    accountsList: string;
+  }): Promise<void> {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      let retrievedData: any[] = [];
+      AsyncStorage.getItem(dataName)
+        .then(existingValue => {
+          if (existingValue !== null) {
+            console.log('aispData exists, updating value...');
+            retrievedData = JSON.parse(existingValue);
+            retrievedData.push(aispToStore);
+            AsyncStorage.setItem(dataName, JSON.stringify(retrievedData))
+              .then(() => {
+                console.log('aispData updated successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.error('Error updating aispData value:', error);
+                reject(error);
+              });
+          } else {
+            retrievedData.push(aispToStore);
+            AsyncStorage.setItem(dataName, JSON.stringify(retrievedData))
+              .then(() => {
+                console.log('aispData added successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.error('Error adding aispData value:', error);
+                reject(error);
+              });
+          }
+        })
+        .catch(error => {
+          console.error('Error checking key:', error);
+          reject(error);
+        });
+    });
+  }
+
+  //VRP
+  async initDatabaseWebVrp() {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    const data: any[] = [];
+    await new Promise<void>((resolve, reject) => {
+      AsyncStorage.getItem(dataName)
+        .then(existingValue => {
+          if (existingValue === null) {
+            AsyncStorage.setItem(dataName, JSON.stringify(data))
+              .then(() => {
+                console.log('vrpData object created successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.log('Error creating vrpData object');
+                reject(error);
+              });
+          } else {
+            console.log('vrpData already exists');
+            resolve();
+          }
+        })
+        .catch(error => {
+          console.log('Error retrieving existing vrpData:', error);
+          reject(error);
+        });
+    });
+  }
+
+  async insertDataVrp(vrpToStore: {
+    userId: any;
+    scope: string;
+    bankName: string;
+    consentId: string;
+    consentPayload: string;
+    vrpId: string;
+    paymentId: string;
+    vrpPayload: string;
+    refreshToken: string;
+    responseVrp: string;
+  }): Promise<void> {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      let retrievedData: any[] = [];
+      AsyncStorage.getItem(dataName)
+        .then(existingValue => {
+          if (existingValue !== null) {
+            console.log('vrpData exists, updating value...');
+            retrievedData = JSON.parse(existingValue);
+            retrievedData.push(vrpToStore);
+            AsyncStorage.setItem(dataName, JSON.stringify(retrievedData))
+              .then(() => {
+                console.log('vrpData updated successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.error('Error updating vrpData value:', error);
+                reject(error);
+              });
+          } else {
+            retrievedData.push(vrpToStore);
+            AsyncStorage.setItem(dataName, JSON.stringify(retrievedData))
+              .then(() => {
+                console.log('vrpData added successfully');
+                resolve();
+              })
+              .catch(error => {
+                console.error('Error adding vrpData value:', error);
+                reject(error);
+              });
+          }
+        })
+        .catch(error => {
+          console.error('Error checking key:', error);
+          reject(error);
+        });
+    });
+  }
+
+  //COMMON
+  // Method to delete all data entries from the data storage
+  async deleteAllData(): Promise<void> {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      try {
+        AsyncStorage.removeItem(dataName)
+          .then(() => {
+            console.log(`Data with key ${dataName} deleted successfully`);
+            resolve();
+          })
+          .catch(error => {
+            console.error(`Error deleting data with key ${dataName}:`, error);
+            reject(error);
+          });
+      } catch (error) {
+        console.error(`Error deleting data with key ${dataName}:`, error);
+        reject(error);
+      }
+    });
+  }
+
+  // Method to display data from the data storage
+  async displayData(): Promise<void> {
+    const dataName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    await new Promise<void>((resolve, reject) => {
+      try {
+        AsyncStorage.getItem(dataName)
+          .then(data => {
+            if (data !== null) {
+              const parsedData = JSON.parse(data);
+              parsedData.map((item: any) => console.log(item));
+              resolve();
+            } else {
+              console.log('No data available');
+              resolve();
+            }
+          })
+          .catch(error => {
+            console.error('Error displaying data:', error);
+            reject(error);
+          });
+      } catch (error) {
+        console.error('Error displaying data:', error);
+        reject(error);
+      }
     });
   }
 }
