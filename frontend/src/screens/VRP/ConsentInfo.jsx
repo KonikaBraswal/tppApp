@@ -120,7 +120,7 @@ const ConsentInfo = ({ route }) => {
                         elevation={2}
                         category="medium"
                         style={{ width: '100%', height: 200 }}>
-
+                            {transactions&&
                         <DataTable>
 
                             <DataTable.Header>
@@ -141,7 +141,7 @@ const ConsentInfo = ({ route }) => {
                                 <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{transactions.DebtorAccount.Identification.substring(8)}</DataTable.Title>
                             </DataTable.Header>
                         </DataTable>
-
+                    }
 
                     </Surface>
                 </View>

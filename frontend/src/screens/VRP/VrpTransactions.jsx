@@ -30,8 +30,9 @@ const VrpTransactions = ({ route }) => {
       transactiondetails?.map(element => {
         transactions = JSON.parse(element.vrppayload);
       });
-      setLoading(false);
+      
     }
+    setLoading(false);
     
   },[transactiondetails]);
   console.log("details::", transactions);

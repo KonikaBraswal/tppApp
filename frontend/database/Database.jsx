@@ -289,7 +289,6 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
       const currentTime = new Date().toLocaleTimeString();
       const parameters = [
         ...columnsToUpdate.map(column => details[column].toString()),
-        //...columnsToUpdate.map(column => details[column]),----------Sunil
         currentDate,
         currentTime,
         consentid,
@@ -303,7 +302,7 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
           resolve(results);
         },
         (_, error) => {
-          console.error('Error updating details: ', error);
+          console.error('Error updating details---: ', error);
           reject(error);
         },
       );
@@ -367,6 +366,7 @@ export const fetchAllDataforScope = scope => {
                   consentid: row.consentid,
                   consentpayload: row.consentpayload,
                   refreshtoken: row.refreshedtoken,
+                  vrppayload:row.account_details,
                 });
               }
             }
@@ -511,7 +511,7 @@ const Database = () => {
     <View>
       <Text>SQLite Database</Text>
       {/* <Button title="Add Dummy Entry" onPress={addDummyEntry} /> */}
-      <Button title="Display Results" onPress={RetrieveDataforVrp} />
+      <Button title="Display Results" onPress={displayResults} />
       <Button title="Delete All Entries" onPress={deleteAllEntries} />
 
       <Button title="Delete Database" onPress={deleteDatabase} />

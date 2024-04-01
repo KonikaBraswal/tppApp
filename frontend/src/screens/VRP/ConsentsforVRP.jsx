@@ -1,6 +1,6 @@
 //todo
 // add search logic based on vrpid
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 // import IconButton from 'react-native-vector-icons/FontAwesome'; 
 import {
   View,
@@ -16,23 +16,23 @@ import {
   Image,
 } from 'react-native';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import {useIsFocused} from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
-import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { Searchbar, Icon, Button, IconButton } from 'react-native-paper';
 import VRPConsent from '../VRP/VRPConsent';
-import {Surface, Stack} from '@react-native-material/core';
+import { Surface, Stack } from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
 import readNatwestBalance from '../../assets/data/balances.json';
 import readBarclaysAccount from '../../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../../assets/data/barclaysBalances.json';
-import {fetchAllDataforScope} from '../../../database/Database';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { fetchAllDataforScope } from '../../../database/Database';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ConsentInfo from './ConsentInfo';
-import {fetchTransactionsForUserConsent} from '../../../database/Database';
+import { fetchTransactionsForUserConsent } from '../../../database/Database';
 //reading data from json file for now
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -71,22 +71,26 @@ const ConsentsforVRP = () => {
         });
     }
   }, [isFocused, scope]);
+  // const [debitorDetails, setDebitorDetails] = useState(null);
+  // if(consentData.vrppayload){
+  //   setDebitorDetails(JSON.parse(consentData.vrppayload));
+  // }
   const mode = 'sandbox';
   const [transactionDetails, setTransactionDetails] = useState(null);
   var tra;
-  const handleConsent=async (index,destination)=>{
-    const id=consentData[index].consentid;
-    console.log("id",index);
+  const handleConsent = async (index, destination) => {
+    const id = consentData[index].consentid;
+    console.log("id", index);
     try {
       const result = await fetchTransactionsForUserConsent(id);
       // console.log("vrp-->", (result));
-      tra=result;
+      tra = result;
       setTransactionDetails(result);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
-    console.log("tra",transactionDetails);
-    console.log("trac",tra);
+    // console.log("tra",transactionDetails);
+    // console.log("trac",tra);
     switch (destination) {
       case 'VrpTransactions':
         navigation.navigate('Vrp Transactions', {
@@ -104,22 +108,16 @@ const ConsentsforVRP = () => {
         break;
     }
   }
-  // var transactions;
-  // // console.log("det", transactionDetails);
-  // transactionDetails?.map(element => {
-  //   transactions = JSON.parse(element.vrppayload);
-  // });
-  // console.log("details::", transactions);
-  
+
   const showTransactions = async index => {
     navigation.navigate('VrpTransactions', {
       consentid: consentData[index].consentid,
       consentpayload: consentData[index].consentpayload,
     });
   };
-  const showInfo=async index=>{
-    navigation.navigate('ConsentInfo',{
-      consentpayload:consentData[index].consentpayload
+  const showInfo = async index => {
+    navigation.navigate('ConsentInfo', {
+      consentpayload: consentData[index].consentpayload
     });
   }
   const handleSubmit = async index => {
@@ -156,7 +154,7 @@ const ConsentsforVRP = () => {
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
           <View
             style={{
               backgroundColor: '#5a287d',
@@ -188,8 +186,8 @@ const ConsentsforVRP = () => {
                         justifyContent: 'left',
                       }}>
                       <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+
                         <Image
                           source={require('../../assets/images/natwest2.png')}
                           style={styles.iconNatwest}
@@ -208,23 +206,23 @@ const ConsentsforVRP = () => {
                             .CreditorAccount.Name
                         }
                       </Text>
-                      
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          color: 'black',
-                          fontWeight: 'bold',
-                          marginTop: hp('2.5%'),
-                        }}>
-                        Account Number:{
-                          JSON.parse(item.consentpayload).Initiation
-                          .CreditorAccount.Identification
-                        }
-                      </Text>
+                      {item.vrppayload && JSON.parse(item.vrppayload).DebtorAccount && (
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            color: 'black',
+                            fontWeight: 'bold',
+                            marginTop: hp('2.5%'),
+                          }}>
+                          Account Number: {
+                            JSON.parse(item.vrppayload).DebtorAccount.Identification
+                          }
+                        </Text>
+                      )}
                     </View>
                     <View
                       style={{
-                        marginTop:'5%',
+                        marginTop: '5%',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         // marginBottom:hp('2%')
@@ -238,7 +236,7 @@ const ConsentsforVRP = () => {
                           alignItems: 'center',
                           marginBottom: hp('2%'),
                         }}
-                        labelStyle={{color: 'black'}}
+                        labelStyle={{ color: 'black' }}
                         onPress={() => handleSubmit(index)}>
                         Pay
                       </Button>
@@ -251,9 +249,9 @@ const ConsentsforVRP = () => {
                           alignItems: 'center',
                           marginBottom: hp('2%'),
                         }}
-                        labelStyle={{color: 'black'}}
+                        labelStyle={{ color: 'black' }}
                         // title={`Go to ${VrpTransactions}`}
-                        onPress={() => handleConsent(index,'VrpTransactions')}>
+                        onPress={() => handleConsent(index, 'VrpTransactions')}>
                         Transact
                       </Button>
                       <IconButton
@@ -262,12 +260,12 @@ const ConsentsforVRP = () => {
                           width: '20%',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          marginBottom:hp('1%'),
-                          marginRight:-wp('6%'),
+                          marginBottom: hp('1%'),
+                          marginRight: -wp('6%'),
                         }}
-                        labelStyle={{color: 'black'}}
+                        labelStyle={{ color: 'black' }}
                         // title={`Go to ${ConsentInfo}`}
-                        onPress={() => handleConsent(index,'ConsentInfo')}>
+                        onPress={() => handleConsent(index, 'ConsentInfo')}>
                         Info
                       </IconButton>
                     </View>
@@ -275,7 +273,7 @@ const ConsentsforVRP = () => {
                 ))}
               </ScrollView>
             </View>
-            
+
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -313,7 +311,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     width: 373,
   },
-  searchBarContainer: {margin: 2},
+  searchBarContainer: { margin: 2 },
   scrollContainer: {
     flex: 1,
     padding: 2,

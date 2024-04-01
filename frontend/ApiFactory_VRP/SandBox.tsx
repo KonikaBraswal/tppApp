@@ -3,7 +3,7 @@ import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
-import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
+import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -56,7 +56,7 @@ class SandBox {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaders;
   }
-  isupdateTransaction=false;
+  isupdateTransaction = false;
   async retrieveAccessToken(params: AccessTokenRequestParams): Promise<string> {
     this.permissions = params.accessTokenParams.body;
     try {
@@ -74,14 +74,6 @@ class SandBox {
           headers: params.accessTokenParams.headers,
         },
       );
-      // const scope = response.data.scope;
-
-      // const details1 = {
-      //     userId: 1005,
-      //     scope: params.accessTokenParams.scope,
-      // };
-      // console.log("details",details1);
-      // addDetails(details1);
 
       console.log('Access token', response.data.access_token);
       this.accessToken = response.data.access_token;
@@ -117,8 +109,9 @@ class SandBox {
         status: Status,
         consentpayload: JSON.stringify(Payload),
         scope: 'vrp',
+        account_details: JSON.stringify(Payload),
       };
-      
+
       console.log('details', details1);
       addDetails(details1);
       console.log('response of consent', this.consentId);
@@ -190,7 +183,7 @@ class SandBox {
         updatedDetails2,
         this.consentId,
         columnsToUpdate2,
-        
+
       );
       refreshTokenExists = true;
       // return this.vrpPayments(response.data.access_token,this.consentId,formData);
@@ -234,7 +227,6 @@ class SandBox {
         updatedDetails3,
         refreshToken.consentid,
         columnsToUpdate3,
-        
       );
 
       //return this.fetchAccounts(responseRefresh.data.access_token);
@@ -260,8 +252,8 @@ class SandBox {
         Authorization: `Bearer ${apiAccessToken}`,
         'x-idempotency-key': `${id}`,
       };
-      const Identification=formData.accountNumber+formData.sortCode;
-      console.log("identification-->",Identification);
+      const Identification = formData.accountNumber + formData.sortCode;
+      console.log("identification-->", Identification);
       const body = {
         Data: {
           ConsentId: `${consentid}`,
@@ -331,20 +323,25 @@ class SandBox {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload=allVrpPaymentsResponse.data.Data;
-      const updatedDetails3 = {
-        
-      };
+      const payload = allVrpPaymentsResponse.data.Data;
+      const id = allVrpPaymentsResponse.data.Data.ConsentId;
       const details = {
         bankname: 'Natwest',
-        consentid: allVrpPaymentsResponse.data.Data.ConsentId,
+        consentid: id,
         scope: 'vrp_transactions',
         vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status
       };
 
+      const updateDetails4 = {
+        account_details: JSON.stringify(payload),
+        status: 'Authorised',
+      };
+      const columnsToUpdate5 = ['account_details', 'status'];
+      console.log("payload", updateDetails4);
       addTransactions(details);
+      await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
