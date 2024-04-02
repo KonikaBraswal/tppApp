@@ -16,27 +16,49 @@ import {
   TextInput,
   Divider,
   Checkbox,
+  List,
 } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const CustomListItem = ({title, value}) => (
+  <View
+    style={{
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: hp('2.5%'),
+    }}>
+    <Text style={styles.leftContent}>{title}</Text>
+    <Text style={styles.rightContent}>{value}</Text>
+  </View>
+);
 
 const PaymentConsentScreen = ({route}) => {
   const navigation = useNavigation();
-  const [checked, setChecked] = React.useState(false);
+  const [checked1, setChecked1] = useState(false);
+  const [checked2, setChecked2] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
 
   const showInputDialog = () => setInputDialogVisible(true);
   const hideInputDialog = () => setInputDialogVisible(false);
+  const [expanded1, setExpanded1] = useState(true);
+  const [expanded2, setExpanded2] = useState(false);
+  const [expanded3, setExpanded3] = useState(false);
+
+  const handlePress1 = () => setExpanded1(!expanded1);
+  const handlePress2 = () => setExpanded2(!expanded2);
+  const handlePress3 = () => setExpanded3(!expanded3);
 
   const FirstName = route.params.FirstName;
   const LastName = route.params.LastName;
@@ -81,8 +103,8 @@ const PaymentConsentScreen = ({route}) => {
 
   const showAlert = () => {
     Alert.alert(
-      'Unchecked Submission',
-      'Please check the box before proceeding',
+      'Agree To all the Terms And Conditions',
+      'Please check all the boxes before proceeding for payment',
       [{text: 'OK'}],
       {cancelable: false},
     );
@@ -108,7 +130,6 @@ const PaymentConsentScreen = ({route}) => {
             bank account
           </Text>
         </View>
-
         <View style={styles.highlightedSection}>
           <View style={styles.highlightedRow}>
             <Icon source="credit-card" color="#5a287d" size={hp('3%')} />
@@ -129,59 +150,101 @@ const PaymentConsentScreen = ({route}) => {
           </View>
         </View>
 
-        <View style={{marginTop: hp('1%')}}>
-          <View style={styles.tile}>
-            <Text style={styles.tileTitle}>Payee Information</Text>
-
-            <View style={{flexDirection: 'column', marginTop: hp('0.5%')}}>
-              <View style={styles.row}>
-                <Text style={styles.leftContent}>Name</Text>
-                <Text style={styles.rightContent}>
-                  {FirstName} {LastName}
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.leftContent}>Sort Code</Text>
-                <Text style={styles.rightContent}>{SortCode}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.leftContent}>Account Number</Text>
-                <Text style={styles.rightContent}>{AccountNumber}</Text>
-              </View>
-            </View>
-
-            <Divider style={styles.divider} />
+        <View
+          style={{
+            marginHorizontal: wp('3%'),
+            flexDirection: 'column',
+            marginTop: hp('2%'),
+          }}>
+          <View style={{borderBottomWidth: hp('0.2%'), elevation: 2}}>
+            <List.Accordion
+              title="Payee Information"
+              titleStyle={{
+                fontSize: RFValue(18),
+                fontWeight: 'bold',
+                color: '#5a287d',
+              }}
+              expanded={expanded1}
+              style={{borderRadius: 10}}
+              onPress={handlePress1}>
+              <CustomListItem title="Name" value={FirstName + ' ' + LastName} />
+              <Divider />
+              <CustomListItem title="Sort Code" value={SortCode} />
+              <Divider />
+              <CustomListItem title="Account Number" value={AccountNumber} />
+            </List.Accordion>
           </View>
-          <Text
-            style={{
-              ...styles.tileTitle,
-              marginLeft: wp('5%'),
-              marginTop: wp('2%'),
-            }}>
-            Terms
-          </Text>
+          {DebtorAccount && (
+            <View
+              style={{
+                marginVertical: hp('1%'),
+                borderBottomWidth: hp('0.2%'),
+                elevation: 2,
+              }}>
+              <List.Accordion
+                title="Payer Information"
+                titleStyle={{
+                  fontSize: RFValue(18),
+                  fontWeight: 'bold',
+                  color: '#5a287d',
+                }}
+                expanded={expanded2}
+                onPress={handlePress2}>
+                <CustomListItem title="Name" value={DebtorAccount.Name} />
+                <Divider />
+                <CustomListItem
+                  title="Sort Code"
+                  value={DebtorAccount.SchemeName.split('Account')[0]}
+                />
+                <Divider />
+                <CustomListItem
+                  title="Account Number"
+                  value={DebtorAccount.Identification}
+                />
+              </List.Accordion>
+            </View>
+          )}
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: wp('4%'),
-              paddingVertical: hp('1.5%'),
+              marginVertical: hp('1%'),
+              borderBottomWidth: hp('0.2%'),
+              elevation: 2,
             }}>
-            <Checkbox
-              status={checked ? 'checked' : 'unchecked'}
-              onPress={() => {
-                setChecked(!checked);
+            <List.Accordion
+              title="Terms"
+              titleStyle={{
+                fontSize: RFValue(18),
+                fontWeight: 'bold',
+                color: '#5a287d',
               }}
-            />
-
-            <Text style={{fontSize: hp('2%')}}>
-              By checking the box labeled "I confirm that the details displayed
-              are valid"
-            </Text>
+              expanded={expanded3}
+              onPress={handlePress3}>
+              <View style={{marginTop: hp('1.5%')}}>
+                <View style={styles.checkboxContainer}>
+                  <Checkbox.Android
+                    status={checked2 ? 'checked' : 'unchecked'}
+                    onPress={() => setChecked2(!checked2)}
+                  />
+                  <Text style={styles.checkboxText}>
+                    I confirm that I have reviewed and verified the payment
+                    details before proceeding with the transaction
+                  </Text>
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <Checkbox.Android
+                    status={checked1 ? 'checked' : 'unchecked'}
+                    onPress={() => setChecked1(!checked1)}
+                  />
+                  <Text style={styles.checkboxText}>
+                    I authorize the platform to process the payment using the
+                    provided payment method for the specified transaction amount
+                  </Text>
+                </View>
+              </View>
+            </List.Accordion>
           </View>
         </View>
       </ScrollView>
-
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           We will securely transfer to your ASPSP to authenticate and make the
@@ -194,7 +257,7 @@ const PaymentConsentScreen = ({route}) => {
               navigation.goBack();
             }}
             style={{...styles.button, backgroundColor: 'white'}}
-            labelStyle={{fontWeight: 'bold', fontSize: hp('2.2%')}}>
+            labelStyle={{fontWeight: 'bold', fontSize: RFValue(14)}}>
             Back
           </Button>
           <Button
@@ -205,13 +268,15 @@ const PaymentConsentScreen = ({route}) => {
             }}
             labelStyle={{
               fontWeight: 'bold',
-              fontSize: hp('1.8%'),
+              fontSize: RFValue(14),
               color: 'white',
             }}
             onPress={() => {
-              handleConfirmButtonClick();
-              //  showAlert();
-              
+              if (checked1 && checked2) {
+                handleConfirmButtonClick();
+              } else {
+                showAlert();
+              }
             }}>
             I Allow
           </Button>
@@ -248,21 +313,21 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: hp('10%'),
+    paddingBottom: hp('21%'),
   },
   header: {
     alignItems: 'center',
     marginVertical: hp('1%'),
   },
   title: {
-    fontSize: hp('3.2%'),
+    fontSize: RFValue(20),
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: hp('1.5%'),
     color: 'black',
   },
   subtitle: {
-    fontSize: hp('2.2%'),
+    fontSize: RFValue(16),
     textAlign: 'center',
     marginHorizontal: hp('1.5%'),
     fontWeight: '500',
@@ -280,20 +345,11 @@ const styles = StyleSheet.create({
   },
   highlightedTitle: {
     fontWeight: 'bold',
-    fontSize: hp('2.7%'),
+    fontSize: RFValue(19),
     color: '#5a287d',
     marginHorizontal: wp('1.2%'),
   },
 
-  tile: {
-    paddingHorizontal: wp('5%'),
-    paddingVertical: hp('1.5%'),
-  },
-  tileTitle: {
-    fontSize: hp('2.7%'),
-    fontWeight: 'bold',
-    color: '#5a287d',
-  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -304,16 +360,16 @@ const styles = StyleSheet.create({
   leftContent: {
     position: 'absolute',
     left: 0,
-    fontSize: hp('2.2%'),
-    marginVertical: hp('0.5%'),
+    fontSize: RFValue(14),
+    marginHorizontal: wp('2%'),
     fontWeight: 'bold',
     color: 'black',
   },
   rightContent: {
     position: 'absolute',
     right: 0,
-    fontSize: hp('2.2%'),
-    marginVertical: hp('1%'),
+    fontSize: RFValue(14),
+    marginHorizontal: wp('2%'),
     fontWeight: 'bold',
     color: 'black',
   },
@@ -321,6 +377,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'grey',
     marginTop: hp('1.2%'),
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkboxText: {
+    flex: 1,
+    marginHorizontal: wp('2%'),
+    flexWrap: 'wrap',
+    fontSize: 16,
   },
   footer: {
     backgroundColor: 'rgba(220, 190, 190, 1)',
@@ -332,9 +399,9 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
-    marginBottom: hp('1.5%'),
+    marginBottom: hp('1%'),
     fontWeight: 'bold',
-    fontSize: hp('2.2%'),
+    fontSize: RFValue(15),
   },
   buttonContainer: {
     flexDirection: 'row',

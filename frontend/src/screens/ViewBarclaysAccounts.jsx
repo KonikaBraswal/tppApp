@@ -58,7 +58,6 @@ const ViewBarclaysAccounts = () => {
           backgroundColor: '#5a287d',
           padding: 10,
         }}>
-        {/* //changed searchBar */}
         <Searchbar
           placeholder="Search account by ID"
           onChangeText={setSearchQuery}
@@ -88,6 +87,7 @@ const ViewBarclaysAccounts = () => {
                       style={styles.icon}
                     />
                   </View>
+
                   <View style={styles.cardContent}>
                     <View style={styles.textContainer}>
                       <Paragraph>{account.AccountId}</Paragraph>
@@ -158,11 +158,14 @@ const styles = StyleSheet.create({
     width: cardWidth,
   },
   icon: {
-    width: wp('15%'),
-    height: wp('15%'),
+    width: wp('14.5%'),
+    height: wp('14.5%'),
     resizeMode: 'contain',
-    marginRight: -wp('3%'),
-    marginLeft: wp('2%'),
+    justifyContent: 'flex-end',
+  },
+  iconButton: {
+    marginRight: -wp('1%'),
+    marginLeft: wp('1%'),
   },
   cardHeader: {
     flexDirection: 'row',
@@ -176,15 +179,13 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: wp('1%'),
   },
   textContainer: {
     flex: 1,
     marginTop: -hp('1%'),
-  },
-  iconButton: {
-    marginLeft: wp('2%'),
-    marginRight: -wp('3%'),
   },
   footer: {
     backgroundColor: '#5a287d',

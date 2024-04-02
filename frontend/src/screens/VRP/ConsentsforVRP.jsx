@@ -1,6 +1,7 @@
 //todo
 // add search logic based on vrpid
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+// import IconButton from 'react-native-vector-icons/FontAwesome'; 
 import {
   View,
   Text,
@@ -15,21 +16,23 @@ import {
   Image,
 } from 'react-native';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import {useIsFocused} from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
-import {Searchbar, Icon, Button} from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { Searchbar, Icon, Button, IconButton } from 'react-native-paper';
 import VRPConsent from '../VRP/VRPConsent';
-import {Surface, Stack} from '@react-native-material/core';
+import { Surface, Stack } from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
 import readNatwestBalance from '../../assets/data/balances.json';
 import readBarclaysAccount from '../../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../../assets/data/barclaysBalances.json';
-import {fetchAllDataforScope} from '../../../database/Database';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { fetchAllDataforScope } from '../../../database/Database';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import ConsentInfo from './ConsentInfo';
+import { fetchTransactionsForUserConsent } from '../../../database/Database';
 //reading data from json file for now
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -47,33 +50,12 @@ const ConsentsforVRP = () => {
   const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
   const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = mergedAccounts.filter(account =>
-    account.AccountId.includes(searchQuery),
-  );
-  const findAccountBalances = accountId => {
-    const foundBalances = mergedBalances.filter(
-      balance => balance.AccountId === accountId,
-    );
-
-    if (foundBalances.length > 0) {
-      return foundBalances;
-    } else {
-      return null;
-    }
-  };
   const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
-  const [TransactionData, setTransactionData] = useState([]);
 
-  const grantedFormdata = {
-    firstName: 'minal',
-    reference: 'Tools',
-    amount: 45,
-  };
   const isFocused = useIsFocused();
 
   useEffect(() => {
-
     if (isFocused) {
       fetchAllDataforScope(scope)
         .then(data => {
@@ -89,13 +71,54 @@ const ConsentsforVRP = () => {
         });
     }
   }, [isFocused, scope]);
+  // const [debitorDetails, setDebitorDetails] = useState(null);
+  // if(consentData.vrppayload){
+  //   setDebitorDetails(JSON.parse(consentData.vrppayload));
+  // }
   const mode = 'sandbox';
-  const showTransactions=async index=>{
-    navigation.navigate('VrpTransactions',{
-      consentid:consentData[index].consentid,
-      consentpayload:consentData[index].consentpayload
-    });
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  var tra;
+  const handleConsent = async (index, destination) => {
+    const id = consentData[index].consentid;
+    console.log("id", index);
+    try {
+      const result = await fetchTransactionsForUserConsent(id);
+      // console.log("vrp-->", (result));
+      tra = result;
+      setTransactionDetails(result);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+    // console.log("tra",transactionDetails);
+    // console.log("trac",tra);
+    switch (destination) {
+      case 'VrpTransactions':
+        navigation.navigate('Vrp Transactions', {
+          transactiondetails: tra
+        });
+        break;
+      case 'ConsentInfo':
+        navigation.navigate('Consent Info', {
+          consentpayload: consentData[index].consentpayload,
+          transactionDetails: transactionDetails
+        });
+        break;
+      default:
+        console.error(`Invalid destination: ${destination}`);
+        break;
+    }
+  }
 
+  const showTransactions = async index => {
+    navigation.navigate('VrpTransactions', {
+      consentid: consentData[index].consentid,
+      consentpayload: consentData[index].consentpayload,
+    });
+  };
+  const showInfo = async index => {
+    navigation.navigate('ConsentInfo', {
+      consentpayload: consentData[index].consentpayload
+    });
   }
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
@@ -107,19 +130,19 @@ const ConsentsforVRP = () => {
         const read = consentData[index].consentpayload;
         console.log('This is the type:' + typeof read);
         const jsonObject = JSON.parse(read);
-        const name = jsonObject.Initiation.CreditorAccount.Name;
+        const acc =
+          jsonObject.Initiation.CreditorAccount.Identification.substring(0, 8);
+        const sort =
+          jsonObject.Initiation.CreditorAccount.Identification.substring(8);
         console.log('payload details' + read);
         navigation.navigate('GrantedForm', {
           creditorName: jsonObject.Initiation.CreditorAccount.Name,
-          creditorIdentification:
-            jsonObject.Initiation.CreditorAccount.Identification,
-          sortcode: '12-05-03',
+          accountnumber: acc,
+          sortcode: sort,
           referencenumber:
             jsonObject.Initiation.RemittanceInformation.Reference,
           selectconsentData: consentData[index],
         });
-        // const response=await sandboxApiClient.refreshToken(consentData[index],grantedFormdata);//pass index based on the card clicked
-        // console.log("response",response);
       } catch (error) {
         console.log('error in fetching refresh', error);
       }
@@ -131,7 +154,7 @@ const ConsentsforVRP = () => {
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
           <View
             style={{
               backgroundColor: '#5a287d',
@@ -148,12 +171,11 @@ const ConsentsforVRP = () => {
                     key={index}
                     style={{
                       backgroundColor: '#c8e1cc',
-                      height: 230,
+                      height: 150,
                       width: '100%',
                       padding: wp('5%'),
                       // alignItems: 'center',
                       justifyContent: 'center',
-                      
                       margin: 5,
                     }}
                     elevation={2}
@@ -164,113 +186,94 @@ const ConsentsforVRP = () => {
                         justifyContent: 'left',
                       }}>
                       <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: 20}}>To</Text>
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                         <Image
                           source={require('../../assets/images/natwest2.png')}
                           style={styles.iconNatwest}
                         />
                       </View>
+
                       <Text
                         style={{
                           fontSize: 15,
                           color: 'black',
                           fontWeight: 'bold',
-                          marginTop: hp('0.5%'),
-                        }}>
-                        ConsentId:{
-                          JSON.parse(item.consentpayload).ConsentId
-                        }
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          color: 'black',
-                          fontWeight: 'bold',
-                          marginTop: hp('0.5%'),
+                          marginTop: hp('2.5%'),
                         }}>
                         {
                           JSON.parse(item.consentpayload).Initiation
                             .CreditorAccount.Name
                         }
                       </Text>
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.PeriodicLimits[0]?.Amount ? (
-                        <Text style={styles.text}>
-                          Max amount per Period:
-                          {
-                            JSON.parse(item.consentpayload).ControlParameters
-                              .PeriodicLimits[0].Amount
+                      {item.vrppayload && JSON.parse(item.vrppayload).DebtorAccount && (
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            color: 'black',
+                            fontWeight: 'bold',
+                            marginTop: hp('2.5%'),
+                          }}>
+                          Account Number: {
+                            JSON.parse(item.vrppayload).DebtorAccount.Identification
                           }
                         </Text>
-                      ) : (
-                        <Text style={styles.text}>
-                          Max amount per Period: 300
-                        </Text>
                       )}
-
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.MaximumIndividualAmount.Amount ? (
-                        <Text style={styles.text}>
-                          Max amount per Payment:
-                          {
-                            JSON.parse(item.consentpayload).ControlParameters
-                              .MaximumIndividualAmount.Amount
-                          }
-                        </Text>
-                      ) : (
-                        <Text style={styles.text}>
-                          Max amount per Payment: 200
-                        </Text>
-                      )}
-
-                      {JSON.parse(item.consentpayload)?.ControlParameters
-                        ?.PeriodicLimits[0]?.PeriodType ? (
-                        <Text style={styles.text}>Occurs every {JSON.parse(item.consentpayload)?.ControlParameters
-                          ?.PeriodicLimits[0]?.PeriodType}</Text>
-                      ) : (
-                        <Text style={styles.text}> Occurs every Month</Text>
-                      )}
-
-                      
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Button
-                      mode="contained"
+                    <View
                       style={{
-                        width: '45%',
-                        backgroundColor: 'white',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: hp('2%'),
-                      }}
-                      labelStyle={{color: 'green'}}
-                      onPress={() => handleSubmit(index)}>
-                      Pay Now
-                    </Button>
-                    <Button
-                      mode="contained"
-                      style={{
-                        width: '45%',
-                        backgroundColor: 'white',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: hp('2%'),
-                      }}
-                      labelStyle={{color: 'red'}}
-                      onPress={() => showTransactions(index)}>
-                      Transactions
-                    </Button>
+                        marginTop: '5%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        // marginBottom:hp('2%')
+                      }}>
+                      <Button
+                        mode="contained"
+                        style={{
+                          width: '33%',
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('2%'),
+                        }}
+                        labelStyle={{ color: 'black' }}
+                        onPress={() => handleSubmit(index)}>
+                        Pay
+                      </Button>
+                      <Button
+                        mode="contained"
+                        style={{
+                          width: '33%',
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('2%'),
+                        }}
+                        labelStyle={{ color: 'black' }}
+                        // title={`Go to ${VrpTransactions}`}
+                        onPress={() => handleConsent(index, 'VrpTransactions')}>
+                        Transact
+                      </Button>
+                      <IconButton
+                        icon="information"
+                        style={{
+                          width: '20%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginBottom: hp('1%'),
+                          marginRight: -wp('6%'),
+                        }}
+                        labelStyle={{ color: 'black' }}
+                        // title={`Go to ${ConsentInfo}`}
+                        onPress={() => handleConsent(index, 'ConsentInfo')}>
+                        Info
+                      </IconButton>
                     </View>
                   </Surface>
                 ))}
               </ScrollView>
             </View>
-            {/* <Button mode="contained" style={{ width: '50%', backgroundColor: '#5a287d', margin: 15, height: 50 }}
-      labelStyle={{ color: 'white', fontSize: 18, flex: 1, alignItems: 'center' }} onPress={() => { navigation.navigate('CreditorDetails') }}>
-      Start a new VRP
-    </Button> */}
+
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -308,7 +311,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     width: 373,
   },
-  searchBarContainer: {margin: 2},
+  searchBarContainer: { margin: 2 },
   scrollContainer: {
     flex: 1,
     padding: 2,

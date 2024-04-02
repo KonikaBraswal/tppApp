@@ -53,20 +53,7 @@ const CreditorDetailsforVRP = () => {
     calculateExpiryDate();
   }, []);
   
-  // useEffect(() => {
-
-  //   const calculateExpiryDate = () => {
-  //     const currentDate = new Date();  
-  //     const expiryDate = new Date(currentDate); 
-  //     expiryDate.setFullYear(expiryDate.getFullYear() + 2); 
-  //     const formattedExpiryDate = expiryDate.toISOString();
-  //     setExpiryDate(formattedExpiryDate);
-  //   };
   
-  //   calculateExpiryDate();
-  
-  // }, []);
-
   useEffect(() => {
     // Check if all required fields are filled
     const isValid =
@@ -127,8 +114,8 @@ const CreditorDetailsforVRP = () => {
         onChangeText={validateAccountNumber}
         value={accountNumber}
         onBlur={() => {
-          if (accountNumber.length !== 14) {
-            setAccountNumberError('Account Number must be exactly 14 digits');
+          if (accountNumber.length !== 8) {
+            setAccountNumberError('Account Number must be exactly 8 digits');
           } else {
             setAccountNumberError('');
           }
@@ -139,16 +126,7 @@ const CreditorDetailsforVRP = () => {
         <Text style={{ color: 'red' }}>{accountNumberError}</Text>
       ) : null}
 
-      {/* Other form fields */}
-
-        {/* <TextInput
-          variant="outlined"
-          label="Account Number"
-          style={styles.input}
-          onChangeText={setAccountNumber}
-          value={accountNumber}
-        /> */}
-
+      
         <TextInput
           variant="outlined"
           label="Sort Code"

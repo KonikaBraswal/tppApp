@@ -7,14 +7,13 @@ import {
 import {StyleSheet} from 'react-native';
 
 const VrpDebitor = props => {
-  const debitordetails=props.transactions;
-
+  const debitordetails=props.account;
+  console.log("det",debitordetails);
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Text style={styles.accountType}>Consent Id:{debitordetails.ConsentId} </Text>
         <Text style={styles.title}>Debitor Account Number:{debitordetails.DebtorAccount.Identification} </Text>
-        <Text style={styles.title}>Debitor Account Name:{debitordetails.DebtorAccount.Name} </Text>
+        <Text style={styles.balanceText}>Debitor Account Name:{debitordetails.DebtorAccount.Name} </Text>
        
       </Card.Content>
     </Card>

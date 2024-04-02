@@ -40,8 +40,6 @@ const AccountListWithRefreshToken = () => {
     const fetchData = async () => {
       try {
         const data = await RetrieveData();
-        // data.map(obj => console.log(obj.account_customer_consented));
-        // data.map(obj => console.log(obj.scope));
         const filteredData = filterDataByScope(data);
         console.log(filteredData, '------------------');
         setRetrievedData(filteredData);
@@ -62,8 +60,6 @@ const AccountListWithRefreshToken = () => {
           backgroundColor: '#5a287d',
           padding: 10,
         }}>
-        {/* //changed searchBar */}
-
         <Searchbar
           placeholder="Search account by ID"
           onChangeText={setSearchQuery}
@@ -92,7 +88,7 @@ const AccountListWithRefreshToken = () => {
                 <Card key={account.AccountId} style={styles.card}>
                   <Card.Content>
                     <View style={styles.cardHeader}>
-                      <Title style={[styles.title, {marginTop: -10}]}>
+                      <Title style={[styles.title, {marginTop: -hp('1%')}]}>
                         {account.AccountSubType} Account
                       </Title>
 
@@ -108,43 +104,50 @@ const AccountListWithRefreshToken = () => {
                         <View
                           style={{
                             flexDirection: 'row',
-                            alignItems: 'center',
+                            justifyContent: 'space-between',
                           }}>
-                          <IconButton
-                            icon="wallet"
-                            size={25}
-                            iconColor="#482164"
-                            style={{marginLeft: -wp('2%')}}
-                            onPress={() =>
-                              navigation.navigate('Transfer Money', {
-                                DebtorAccount: {
-                                  SchemeName: account.Account[0].SchemeName,
-                                  Identification:
-                                    account.Account[0].Identification,
-                                  Name: account.Account[0].Name,
-                                },
-                              })
-                            }
-                          />
-                          <Text
+                          <View
                             style={{
-                              fontSize: 18,
-                              fontWeight: 'bold',
-                              color: '#5a287d',
-                              marginLeft: -wp('2%'),
-                            }}
-                            onPress={() =>
-                              navigation.navigate('Transfer Money', {
-                                DebtorAccount: {
-                                  SchemeName: account.Account[0].SchemeName,
-                                  Identification:
-                                    account.Account[0].Identification,
-                                  Name: account.Account[0].Name,
-                                },
-                              })
-                            }>
-                            Transfer Money
-                          </Text>
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                            <IconButton
+                              icon="wallet"
+                              size={25}
+                              iconColor="#482164"
+                              style={{marginLeft: -wp('2%')}}
+                              onPress={() =>
+                                navigation.navigate('Transfer Money', {
+                                  DebtorAccount: {
+                                    SchemeName: account.Account[0].SchemeName,
+                                    Identification:
+                                      account.Account[0].Identification,
+                                    Name: account.Account[0].Name,
+                                  },
+                                })
+                              }
+                            />
+                            <Text
+                              style={{
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                                color: '#5a287d',
+                                marginLeft: -wp('2%'),
+                              }}
+                              onPress={() =>
+                                navigation.navigate('Transfer Money', {
+                                  DebtorAccount: {
+                                    SchemeName: account.Account[0].SchemeName,
+                                    Identification:
+                                      account.Account[0].Identification,
+                                    Name: account.Account[0].Name,
+                                  },
+                                })
+                              }>
+                              Transfer Money
+                            </Text>
+                          </View>
                           <Card.Actions>
                             <IconButton
                               icon="chevron-right"
@@ -202,49 +205,41 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    padding: wp('1%'),
+    paddingVertical: hp('1%'),
   },
   card: {
     marginBottom: hp('2%'),
     backgroundColor: '#c8e1cc',
     borderRadius: wp('2%'),
     elevation: 3,
+    paddingTop: hp('1%'),
     width: cardWidth,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: wp('3%'),
   },
   title: {
     color: 'black',
     fontWeight: 'bold',
   },
-  iconBarclays: {
-    width: wp('14.5%'),
-    height: wp('14.5%'),
-    resizeMode: 'contain',
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
-  },
   iconNatwest: {
     width: wp('14.5%'),
     height: wp('14.5%'),
     resizeMode: 'contain',
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
+    justifyContent: 'flex-end',
+  },
+  iconButton: {
+    marginRight: -wp('0.5%'),
+    marginLeft: wp('1%'),
   },
   cardContent: {
     flexDirection: 'row',
-    paddingHorizontal: wp('3%'),
   },
   textContainer: {
     flex: 1,
     marginTop: -wp('1%'),
-  },
-  iconButton: {
-    marginRight: -wp('50%'),
   },
   footer: {
     backgroundColor: '#5a287d',
