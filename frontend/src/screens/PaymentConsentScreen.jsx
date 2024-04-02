@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     marginVertical: hp('1%'),
   },
   title: {
-    fontSize: RFValue(20),
+    fontSize: RFValue(22),
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: hp('1.5%'),

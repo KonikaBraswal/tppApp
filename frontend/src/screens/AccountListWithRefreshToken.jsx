@@ -23,6 +23,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {RetrieveData} from '../../database/Database';
 
 const {width} = Dimensions.get('window');
@@ -130,7 +131,7 @@ const AccountListWithRefreshToken = () => {
                             />
                             <Text
                               style={{
-                                fontSize: 18,
+                                fontSize: RFValue(18),
                                 fontWeight: 'bold',
                                 color: '#5a287d',
                                 marginLeft: -wp('2%'),

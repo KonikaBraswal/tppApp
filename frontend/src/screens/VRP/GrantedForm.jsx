@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
@@ -53,7 +54,6 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
-      
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
@@ -64,13 +64,14 @@ const GrantedForm = ({route}) => {
     } catch (error) {
       console.log('error in fetching refresh', error);
     }
-
   };
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={{color: 'black', fontSize: 20}}>Paying {firstName}</Text>
+        <Text style={{color: 'black', fontSize: RFValue(20)}}>
+          Paying {firstName}
+        </Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={{fontSize: 50}}>£</Text>
           <TextInput
@@ -78,7 +79,7 @@ const GrantedForm = ({route}) => {
               height: 50, // Adjusted height
               width: '80%',
               borderColor: 'gray',
-              fontSize: 32, // Adjusted font size
+              fontSize: RFValue(32), // Adjusted font size
               padding: 10,
               color: 'black',
             }}
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: RFValue(20),
   },
   input: {
     height: 200,

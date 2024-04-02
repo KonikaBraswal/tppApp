@@ -1,7 +1,7 @@
 //todo
 // add search logic based on vrpid
-import React, { useEffect, useState } from 'react';
-// import IconButton from 'react-native-vector-icons/FontAwesome'; 
+import React, {useEffect, useState} from 'react';
+// import IconButton from 'react-native-vector-icons/FontAwesome';
 import {
   View,
   Text,
@@ -14,26 +14,29 @@ import {
   TouchableHighlight,
   FlatList,
   Image,
+  Dimensions,
 } from 'react-native';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import { useIsFocused } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { Searchbar, Icon, Button, IconButton } from 'react-native-paper';
+import {useIsFocused} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
 import VRPConsent from '../VRP/VRPConsent';
-import { Surface, Stack } from '@react-native-material/core';
+import {Surface, Stack} from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
 import readNatwestBalance from '../../assets/data/balances.json';
 import readBarclaysAccount from '../../assets/data/barclaysAccounts.json';
 import readBarclaysBalance from '../../assets/data/barclaysBalances.json';
-import { fetchAllDataforScope } from '../../../database/Database';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {fetchAllDataforScope} from '../../../database/Database';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ConsentInfo from './ConsentInfo';
-import { fetchTransactionsForUserConsent } from '../../../database/Database';
-//reading data from json file for now
+import {fetchTransactionsForUserConsent} from '../../../database/Database';
+const {width} = Dimensions.get('window');
+const cardWidth = width * 0.95;
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const Drawer = createDrawerNavigator();
@@ -80,7 +83,7 @@ const ConsentsforVRP = () => {
   var tra;
   const handleConsent = async (index, destination) => {
     const id = consentData[index].consentid;
-    console.log("id", index);
+    console.log('id', index);
     try {
       const result = await fetchTransactionsForUserConsent(id);
       // console.log("vrp-->", (result));
@@ -94,20 +97,20 @@ const ConsentsforVRP = () => {
     switch (destination) {
       case 'VrpTransactions':
         navigation.navigate('Vrp Transactions', {
-          transactiondetails: tra
+          transactiondetails: tra,
         });
         break;
       case 'ConsentInfo':
         navigation.navigate('Consent Info', {
           consentpayload: consentData[index].consentpayload,
-          transactionDetails: transactionDetails
+          transactionDetails: transactionDetails,
         });
         break;
       default:
         console.error(`Invalid destination: ${destination}`);
         break;
     }
-  }
+  };
 
   const showTransactions = async index => {
     navigation.navigate('VrpTransactions', {
@@ -117,9 +120,9 @@ const ConsentsforVRP = () => {
   };
   const showInfo = async index => {
     navigation.navigate('ConsentInfo', {
-      consentpayload: consentData[index].consentpayload
+      consentpayload: consentData[index].consentpayload,
     });
-  }
+  };
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
@@ -154,12 +157,23 @@ const ConsentsforVRP = () => {
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}>
+          style={{flex: 1}}>
           <View
             style={{
               backgroundColor: '#5a287d',
               padding: 10,
-            }}></View>
+            }}>
+            <Searchbar
+              placeholder="Search account by ID"
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+              icon={() => <Icon source="magnify" color="black" size={20} />}
+              style={{
+                borderRadius: 5,
+                backgroundColor: '#f4ebfe',
+              }}
+            />
+          </View>
           <View style={styles.container}>
             <View style={styles.mainContent}>
               <View style={styles.rowContainer}>
@@ -170,100 +184,113 @@ const ConsentsforVRP = () => {
                   <Surface
                     key={index}
                     style={{
+                      marginBottom: hp('2%'),
                       backgroundColor: '#c8e1cc',
-                      height: 150,
-                      width: '100%',
-                      padding: wp('5%'),
-                      // alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: 5,
+                      borderRadius: 12,
+                      elevation: 3,
+                      paddingTop: hp('2.5%'),
+                      paddingHorizontal: hp('2%'),
+                      width: cardWidth,
                     }}
-                    elevation={2}
-                    category="medium">
+                    elevation={2}>
                     <View
                       style={{
+                        flexDirection: 'column',
                         alignItems: 'left',
                         justifyContent: 'left',
                       }}>
                       <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
-
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
                         <Image
                           source={require('../../assets/images/natwest2.png')}
                           style={styles.iconNatwest}
                         />
-                      </View>
 
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          color: 'black',
-                          fontWeight: 'bold',
-                          marginTop: hp('2.5%'),
-                        }}>
-                        {
-                          JSON.parse(item.consentpayload).Initiation
-                            .CreditorAccount.Name
-                        }
-                      </Text>
-                      {item.vrppayload && JSON.parse(item.vrppayload).DebtorAccount && (
                         <Text
                           style={{
-                            fontSize: 15,
+                            fontSize: RFValue(18),
                             color: 'black',
                             fontWeight: 'bold',
                             marginTop: hp('2.5%'),
                           }}>
-                          Account Number: {
-                            JSON.parse(item.vrppayload).DebtorAccount.Identification
+                          {
+                            JSON.parse(item.consentpayload).Initiation
+                              .CreditorAccount.Name
                           }
                         </Text>
-                      )}
+                      </View>
+                      {item.vrppayload &&
+                        JSON.parse(item.vrppayload).DebtorAccount && (
+                          <Text
+                            style={{
+                              fontSize: RFValue(15),
+                              color: 'black',
+                              fontWeight: 'bold',
+                              marginTop: hp('2.5%'),
+                            }}>
+                            Account Number:{' '}
+                            {
+                              JSON.parse(item.vrppayload).DebtorAccount
+                                .Identification
+                            }
+                          </Text>
+                        )}
                     </View>
                     <View
                       style={{
-                        marginTop: '5%',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        // marginBottom:hp('2%')
+                        marginTop: hp('3%'),
                       }}>
-                      <Button
-                        mode="contained"
+                      <View
                         style={{
-                          width: '33%',
-                          backgroundColor: 'white',
-                          justifyContent: 'center',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
                           alignItems: 'center',
-                          marginBottom: hp('2%'),
-                        }}
-                        labelStyle={{ color: 'black' }}
-                        onPress={() => handleSubmit(index)}>
-                        Pay
-                      </Button>
-                      <Button
-                        mode="contained"
-                        style={{
-                          width: '33%',
-                          backgroundColor: 'white',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          marginBottom: hp('2%'),
-                        }}
-                        labelStyle={{ color: 'black' }}
-                        // title={`Go to ${VrpTransactions}`}
-                        onPress={() => handleConsent(index, 'VrpTransactions')}>
-                        Transact
-                      </Button>
+                          marginTop: hp('1%'),
+                        }}>
+                        <Button
+                          mode="contained"
+                          style={{
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: wp('1.5%'),
+                            marginBottom: hp('2%'),
+                          }}
+                          labelStyle={{color: 'black'}}
+                          onPress={() => handleSubmit(index)}>
+                          Pay
+                        </Button>
+                        <Button
+                          mode="contained"
+                          style={{
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: hp('2%'),
+                            marginLeft: wp('1.5%'),
+                          }}
+                          labelStyle={{color: 'black'}}
+                          // title={`Go to ${VrpTransactions}`}
+                          onPress={() =>
+                            handleConsent(index, 'VrpTransactions')
+                          }>
+                          Transactions
+                        </Button>
+                      </View>
                       <IconButton
                         icon="information"
                         style={{
-                          width: '20%',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          marginBottom: hp('1%'),
-                          marginRight: -wp('6%'),
+                          marginTop: hp('1.2%'),
                         }}
-                        labelStyle={{ color: 'black' }}
+                        labelStyle={{color: 'black'}}
                         // title={`Go to ${ConsentInfo}`}
                         onPress={() => handleConsent(index, 'ConsentInfo')}>
                         Info
@@ -273,7 +300,6 @@ const ConsentsforVRP = () => {
                 ))}
               </ScrollView>
             </View>
-
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -297,35 +323,24 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     width: '100%',
-    padding: 10,
+    padding: wp('2%'),
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: wp('2%'),
   },
 
   searchBar: {
-    height: 62,
+    height: hp('8%'),
     borderRadius: 0,
-    width: 373,
+    width: wp('90%'),
   },
-  searchBarContainer: { margin: 2 },
+  searchBarContainer: {margin: wp('1%')},
   scrollContainer: {
     flex: 1,
     padding: 2,
-  },
-  card: {
-    marginBottom: 16,
-    backgroundColor: '#c8e1cc',
-  },
-  surface: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
   },
   iconNatwest: {
     width: wp('14.5%'),
@@ -335,35 +350,17 @@ const styles = StyleSheet.create({
     right: 0,
     top: 2,
   },
-  iconBarclays: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-  },
+
   footer: {
     backgroundColor: '#5a287d',
-    padding: 15,
+    padding: wp('4.2%'),
     width: '100%',
     alignItems: 'center',
   },
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  cardContainer: {
-    marginBottom: 16,
-  },
-  text: {
-    color: 'black',
-    fontSize: 16,
+    fontSize: RFValue(20),
   },
 });
-
 export default ConsentsforVRP;

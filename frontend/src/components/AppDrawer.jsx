@@ -1,6 +1,7 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import TransactionListScreen from './TransactionList';
+import {RFValue} from 'react-native-responsive-fontsize';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';
@@ -25,7 +26,7 @@ const AppDrawer = () => {
         headerTintColor: 'white',
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 22,
+          fontSize: RFValue(22),
         },
         headerTitleAlign: 'center',
       }}

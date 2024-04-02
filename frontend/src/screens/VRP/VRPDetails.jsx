@@ -4,6 +4,11 @@ import {Surface, Stack} from '@react-native-material/core';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button, Icon, ActivityIndicator} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const VRPDetails = ({route}) => {
   //   const { Data } = route.params || {};
@@ -31,7 +36,8 @@ const VRPDetails = ({route}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={{marginLeft: 6, color: 'white', fontSize: 30}}>
+            <Text
+              style={{marginLeft: 6, color: 'white', fontSize: RFValue(30)}}>
               £{Data.amount}
             </Text>
           </LinearGradient>
@@ -54,7 +60,12 @@ const VRPDetails = ({route}) => {
                 marginBottom: 10,
               }}>
               <View style={{flex: 1}}>
-                <Text style={{marginLeft: 10, color: 'white', fontSize: 15}}>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: 'white',
+                    fontSize: RFValue(15),
+                  }}>
                   Name
                 </Text>
               </View>
@@ -64,7 +75,7 @@ const VRPDetails = ({route}) => {
                   marginLeft: 6,
                   marginRight: -4,
                   color: 'white',
-                  fontSize: 15,
+                  fontSize: RFValue(15),
                 }}>
                 {Data.firstName}
               </Text>
@@ -76,7 +87,12 @@ const VRPDetails = ({route}) => {
                 marginBottom: 10,
               }}>
               <View style={{flex: 1}}>
-                <Text style={{marginLeft: 10, color: 'white', fontSize: 15}}>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: 'white',
+                    fontSize: RFValue(15),
+                  }}>
                   ID
                 </Text>
               </View>
@@ -86,7 +102,7 @@ const VRPDetails = ({route}) => {
                   marginLeft: 6,
                   marginRight: 10,
                   color: 'white',
-                  fontSize: 15,
+                  fontSize: RFValue(15),
                 }}>
                 {Data.accountNumber}
               </Text>
@@ -98,7 +114,12 @@ const VRPDetails = ({route}) => {
                 marginBottom: 10,
               }}>
               <View style={{flex: 1}}>
-                <Text style={{marginLeft: 10, color: 'white', fontSize: 15}}>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: 'white',
+                    fontSize: RFValue(15),
+                  }}>
                   Sort Code
                 </Text>
               </View>
@@ -108,7 +129,7 @@ const VRPDetails = ({route}) => {
                   marginLeft: 6,
                   marginRight: 10,
                   color: 'white',
-                  fontSize: 15,
+                  fontSize: RFValue(15),
                 }}>
                 {Data.sortCode}
               </Text>
@@ -121,7 +142,12 @@ const VRPDetails = ({route}) => {
                 marginBottom: 10,
               }}>
               <View style={{flex: 1}}>
-                <Text style={{marginLeft: 10, color: 'white', fontSize: 15}}>
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: 'white',
+                    fontSize: RFValue(15),
+                  }}>
                   Reference
                 </Text>
               </View>
@@ -131,7 +157,7 @@ const VRPDetails = ({route}) => {
                   marginLeft: 6,
                   marginRight: 10,
                   color: 'white',
-                  fontSize: 15,
+                  fontSize: RFValue(15),
                 }}>
                 {Data.reference}
               </Text>
@@ -152,7 +178,12 @@ const VRPDetails = ({route}) => {
                 icon={() => (
                   <Icon source="check-bold" color="green" size={50} />
                 )}></Button>
-              <Text style={{fontSize: 20, color: 'green', textAlign: 'center'}}>
+              <Text
+                style={{
+                  fontSize: RFValue(20),
+                  color: 'green',
+                  textAlign: 'center',
+                }}>
                 Completed
               </Text>
             </LinearGradient>
@@ -160,8 +191,16 @@ const VRPDetails = ({route}) => {
         </Surface>
         <Button
           mode="contained"
-          labelStyle={{color: 'green', fontSize: 18}}
-          style={{backgroundColor: '#c8e1cc', margin: 30, color: 'green'}}
+          labelStyle={{
+            color: 'green',
+            fontSize: RFValue(18),
+            paddingTop: wp('1%'),
+          }}
+          style={{
+            backgroundColor: '#c8e1cc',
+            margin: wp('10%'),
+            color: 'green',
+          }}
           onPress={() => {
             navigation.navigate('ConsentsforVRP');
           }}>
@@ -178,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: 'bold',
     marginBottom: 16,
   },

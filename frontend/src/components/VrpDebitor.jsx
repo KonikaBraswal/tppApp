@@ -7,14 +7,17 @@ import {
 import {StyleSheet} from 'react-native';
 
 const VrpDebitor = props => {
-  const debitordetails=props.account;
-  console.log("det",debitordetails);
+  const debitordetails = props.account;
+  console.log('det', debitordetails);
   return (
     <Card style={styles.card}>
-      <Card.Content>
-        <Text style={styles.title}>Debitor Account Number:{debitordetails.DebtorAccount.Identification} </Text>
-        <Text style={styles.balanceText}>Debitor Account Name:{debitordetails.DebtorAccount.Name} </Text>
-       
+      <Card.Content style={{flexDirection: 'column'}}>
+        <Text style={styles.title}>
+          Debitor Account Number: {debitordetails.DebtorAccount.Identification}
+        </Text>
+        <Text style={styles.balanceText}>
+          Debitor Account Name: {debitordetails.DebtorAccount.Name}
+        </Text>
       </Card.Content>
     </Card>
   );
@@ -37,7 +40,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   title: {
-    fontSize: wp('5%'),
+    fontSize: wp('4.5%'),
     fontWeight: 'bold',
     marginVertical: hp('1%'),
   },
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
     marginVertical: hp('0.5%'),
   },
   balanceText: {
-    fontSize: wp('4%'),
+    fontSize: wp('4.5%'),
     marginVertical: hp('0.5%'),
     fontWeight: 'bold',
   },

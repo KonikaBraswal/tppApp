@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {StyleSheet} from 'react-native';
 import {Dialog, Portal, Text, IconButton} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const IconDialog = ({visible, hideDialog, title, text}) => {
   return (
@@ -28,12 +29,12 @@ const IconDialog = ({visible, hideDialog, title, text}) => {
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: 'bold',
   },
   text: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: RFValue(18),
   },
   closeIcon: {
     position: 'absolute',

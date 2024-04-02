@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {Title, IconButton} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const SuccessfulTransaction = ({route}) => {
   const navigation = useNavigation();
@@ -29,7 +30,7 @@ const SuccessfulTransaction = ({route}) => {
             <Text
               style={{
                 marginTop: 10,
-                fontSize: 16,
+                fontSize: RFValue(16),
                 justifyContent: 'center',
                 alignItems: 'center',
                 textAlign: 'center',
@@ -51,7 +52,7 @@ const SuccessfulTransaction = ({route}) => {
             <Text
               style={{
                 marginTop: 10,
-                fontSize: 16,
+                fontSize: RFValue(16),
                 justifyContent: 'center',
                 alignItems: 'center',
                 textAlign: 'center',
@@ -86,7 +87,7 @@ const styles = {
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginTop: 30,
-    fontSize: 18,
+    fontSize: RFValue(18),
     borderRadius: 8,
   },
 };
