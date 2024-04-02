@@ -45,6 +45,7 @@ class SandBox {
   private apiAccess: string = '';
   private consentId: string = '';
   private accessToken: string = '';
+  private refreshtoken: string = '';
   constructor(
     baseUrl: string,
     clientId: string,
@@ -66,7 +67,6 @@ class SandBox {
         client_secret: this.clientSecret,
         scope: params.accessTokenParams.scope,
       };
-      console.log(params.accessTokenParams.scope);
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         body,
@@ -75,7 +75,6 @@ class SandBox {
         },
       );
 
-      console.log('Access token', response.data.access_token);
       this.accessToken = response.data.access_token;
       return this.accountRequest(params.accessTokenParams.consentUrl);
     } catch (error) {
@@ -83,7 +82,7 @@ class SandBox {
     }
   }
 
-  async accountRequest(url: string): Promise<string> {
+  async accountRequest(url: string): Promise<any> {
     try {
       const body = this.permissions;
       const id = uuid.v4();
@@ -92,7 +91,6 @@ class SandBox {
         Authorization: 'Bearer ' + this.accessToken,
         'x-idempotency-key': `${id}`,
       };
-      console.log(body);
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${url}`,
         body,
@@ -112,15 +110,40 @@ class SandBox {
         account_details: JSON.stringify(Payload),
       };
 
-      console.log('details', details1);
       addDetails(details1);
-      console.log('response of consent', this.consentId);
-      return response.data.Data?.ConsentId || '';
+      return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
+  async getDomesticConsent(accessToken: any, url: string) {
+    try {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'x-fapi-financial-id': '0015800000jfwxXAAQ',
+      };
+      const allVrpResponse = await axios.get(url, {
+        headers: headers,
+      });
+      console.log(
+        'allVrpResponse of  call',
+        allVrpResponse.data,
+      );
+      const payload = allVrpResponse.data.Data;
+      const id = allVrpResponse.data.Data.ConsentId;
 
+      const updateDetails4 = {
+        account_details: JSON.stringify(payload),
+
+      };
+      const columnsToUpdate5 = ['account_details'];
+
+      await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
+      return allVrpResponse.data;
+    } catch (error) {
+      console.log('error in getting in vrp calls', error);
+    }
+  }
   async manualUserConsent(scope: string): Promise<string> {
     // console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
@@ -128,25 +151,13 @@ class SandBox {
     return consentUrlWithVariables;
   }
 
-  // async userConsentProgammatically(consentId: string,formData:any): Promise<string> {
-  //     try {
-  //         console.log('ConsentID:', consentId);
-  //         const accountResponse: AxiosResponse<any> = await axios.get(
-  //             `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${sandboxConfig.vrpScope}&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
-  //         );
-  //         return this.exchangeAccessToken(accountResponse.data.redirectUri,formData);
-  //     } catch (error) {
-  //         throw new Error(`Failed to fetch data for accounts: ${error}`);
-  //     }
-  // }
 
-  async exchangeAccessToken(authTokenUrl: string, formData: any) {
+  async exchangeAccessToken(authTokenUrl: string, formData: any, consentData: any) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
       const authToken = authTokenUrl.slice(start, end);
 
-      console.log('AuthToken', authToken);
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
@@ -167,10 +178,9 @@ class SandBox {
         },
       );
 
-      console.log('Api access token', response.data.access_token);
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
-      const Scope = response.data.scope;
+
 
       const updatedDetails2 = {
         refreshedtoken: RefreshToken,
@@ -186,19 +196,20 @@ class SandBox {
 
       );
       refreshTokenExists = true;
-      // return this.vrpPayments(response.data.access_token,this.consentId,formData);
+      this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
+      return response.data;
+
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
 
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
-    //here also pass consent id to pass it other calls
     try {
+
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        //redirect_uri: sandboxConfig.redirectUri,
         grant_type: 'refresh_token',
         refresh_token: refreshToken.refreshtoken,
       };
@@ -217,7 +228,6 @@ class SandBox {
 
       console.log('Refresh call response', responseRefresh.data);
       const RefreshToken = responseRefresh.data.refresh_token;
-      //console.log(refreshToken);
       const updatedDetails3 = {
         refreshedtoken: RefreshToken,
       };
@@ -229,7 +239,6 @@ class SandBox {
         columnsToUpdate3,
       );
 
-      //return this.fetchAccounts(responseRefresh.data.access_token);
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentid,
@@ -253,7 +262,6 @@ class SandBox {
         'x-idempotency-key': `${id}`,
       };
       const Identification = formData.accountNumber + formData.sortCode;
-      console.log("identification-->", Identification);
       const body = {
         Data: {
           ConsentId: `${consentid}`,
@@ -274,7 +282,6 @@ class SandBox {
             InstructionIdentification: 'instr-identification',
             EndToEndIdentification: 'e2e-identification',
             InstructedAmount: {
-              // Amount: '7.00', //must be called with pay now button
               Amount: formData.amount,
               Currency: 'GBP',
             },
@@ -293,8 +300,6 @@ class SandBox {
         Risk: {},
       };
 
-      console.log('body', body);
-      console.log(formData);
       const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`,
         body,
@@ -303,7 +308,6 @@ class SandBox {
         },
       );
       this.apiAccess = apiAccessToken;
-      console.log('payments-->', vrpPaymentResponse.data.Links.Self);
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
     } catch (error) {
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
@@ -333,15 +337,7 @@ class SandBox {
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status
       };
-
-      const updateDetails4 = {
-        account_details: JSON.stringify(payload),
-        status: 'Authorised',
-      };
-      const columnsToUpdate5 = ['account_details', 'status'];
-      console.log("payload", updateDetails4);
       addTransactions(details);
-      await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);

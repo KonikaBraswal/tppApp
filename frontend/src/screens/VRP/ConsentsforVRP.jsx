@@ -61,7 +61,7 @@ const ConsentsforVRP = () => {
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            console.log('details-->', data);
+            
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -71,10 +71,6 @@ const ConsentsforVRP = () => {
         });
     }
   }, [isFocused, scope]);
-  // const [debitorDetails, setDebitorDetails] = useState(null);
-  // if(consentData.vrppayload){
-  //   setDebitorDetails(JSON.parse(consentData.vrppayload));
-  // }
   const mode = 'sandbox';
   const [transactionDetails, setTransactionDetails] = useState(null);
   var tra;
@@ -83,14 +79,11 @@ const ConsentsforVRP = () => {
     console.log("id", index);
     try {
       const result = await fetchTransactionsForUserConsent(id);
-      // console.log("vrp-->", (result));
       tra = result;
       setTransactionDetails(result);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
-    // console.log("tra",transactionDetails);
-    // console.log("trac",tra);
     switch (destination) {
       case 'VrpTransactions':
         navigation.navigate('Vrp Transactions', {
@@ -100,7 +93,7 @@ const ConsentsforVRP = () => {
       case 'ConsentInfo':
         navigation.navigate('Consent Info', {
           consentpayload: consentData[index].consentpayload,
-          transactionDetails: transactionDetails
+          debitorDetails: JSON.parse(consentData[index].vrppayload)
         });
         break;
       default:
@@ -109,32 +102,15 @@ const ConsentsforVRP = () => {
     }
   }
 
-  const showTransactions = async index => {
-    navigation.navigate('VrpTransactions', {
-      consentid: consentData[index].consentid,
-      consentpayload: consentData[index].consentpayload,
-    });
-  };
-  const showInfo = async index => {
-    navigation.navigate('ConsentInfo', {
-      consentpayload: consentData[index].consentpayload
-    });
-  }
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
-        console.log('clicked on card' + `${index}`);
-        console.log('refreshing...', consentData[index].refreshtoken);
-        console.log('Passing data:' + consentData[index]);
-        console.log('ID:' + consentData[index].consentid);
         const read = consentData[index].consentpayload;
-        console.log('This is the type:' + typeof read);
         const jsonObject = JSON.parse(read);
         const acc =
           jsonObject.Initiation.CreditorAccount.Identification.substring(0, 8);
         const sort =
           jsonObject.Initiation.CreditorAccount.Identification.substring(8);
-        console.log('payload details' + read);
         navigation.navigate('GrantedForm', {
           creditorName: jsonObject.Initiation.CreditorAccount.Name,
           accountnumber: acc,
@@ -215,7 +191,7 @@ const ConsentsforVRP = () => {
                             marginTop: hp('2.5%'),
                           }}>
                           Account Number: {
-                            JSON.parse(item.vrppayload).DebtorAccount.Identification
+                            JSON.parse(item.vrppayload).DebtorAccount.Identification.replace(/\d(?=\d{4})/g,'*')
                           }
                         </Text>
                       )}

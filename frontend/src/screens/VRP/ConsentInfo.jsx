@@ -31,20 +31,11 @@ import { Surface } from '@react-native-material/core';
 const screenWidth = Dimensions.get('window').width;
 const ConsentInfo = ({ route }) => {
     const {
-        transactionDetails,
+        debitorDetails,
         consentpayload
     }=route.params;
-    // const consentpayload = route.params?.consentpayload;
     const payload = JSON.parse(consentpayload);
-    // console.log("pay", payload.Initiation.RemittanceInformation);
-    // console.log("consent", payload.ControlParameters.PeriodicLimits[0]);
-    var transactions;
-//   console.log("det", transactionDetails);
-  transactionDetails?.map(element => {
-    transactions = JSON.parse(element.vrppayload);
-  });
-//   console.log("details::", transactions);
-  
+    
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.container}>
@@ -116,11 +107,12 @@ const ConsentInfo = ({ route }) => {
 
 
                     </Surface>
+                    {debitorDetails&&
                     <Surface
                         elevation={2}
                         category="medium"
                         style={{ width: '100%', height: 200 }}>
-                            {transactions&&
+                            
                         <DataTable>
 
                             <DataTable.Header>
@@ -129,21 +121,21 @@ const ConsentInfo = ({ route }) => {
 
                             <DataTable.Header>
                                 <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Debitor Name</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{transactions.DebtorAccount.Name}</DataTable.Title>
+                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Name}</DataTable.Title>
                             </DataTable.Header>
 
                             <DataTable.Header>
                                 <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Account Number</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{transactions.DebtorAccount.Identification.substring(0, 8)}</DataTable.Title>
+                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(0, 8)}</DataTable.Title>
                             </DataTable.Header>
                             <DataTable.Header>
                                 <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Sort Code</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{transactions.DebtorAccount.Identification.substring(8)}</DataTable.Title>
+                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(8)}</DataTable.Title>
                             </DataTable.Header>
                         </DataTable>
+                    </Surface>
                     }
 
-                    </Surface>
                 </View>
                 {/* <View style={{
                     position: 'relative', bottom: 0, width: '100%', backgroundColor: '#D6CFC7',
