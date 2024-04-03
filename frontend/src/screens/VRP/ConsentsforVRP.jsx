@@ -105,17 +105,6 @@ const ConsentsforVRP = () => {
     }
   };
 
-  const showTransactions = async index => {
-    navigation.navigate('VrpTransactions', {
-      consentid: consentData[index].consentid,
-      consentpayload: consentData[index].consentpayload,
-    });
-  };
-  const showInfo = async index => {
-    navigation.navigate('ConsentInfo', {
-      consentpayload: consentData[index].consentpayload
-    });
-  }
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {

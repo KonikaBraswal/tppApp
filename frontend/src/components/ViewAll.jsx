@@ -36,23 +36,7 @@ const ViewAll = () => {
     fetchData();
   }, []);
 
-  // const cards = [
-  //   {
-  //     AccountId: '48901b2d-f748-40a9-b8e4-5a206590b6a5',
-  //     subType: 'Savings',
-  //     accountNumber: '456XXXXXXXX909',
-  //     balance: '19606.40 GBP',
-  //     imageUrl: require('../assets/images/card2.png'),
-  //   },
-  //   {
-  //     AccountId: 'ffa1dee0-2fbf-4362-abf6-37dbfeee2de20',
-  //     subType: 'Current',
-  //     accountNumber: '507XXXXXXXXX602',
-  //     balance: '15060.90 GBP',
-  //     imageUrl: require('../assets/images/card1.jpg'),
-  //   },
-  // ];
-
+  
   return (
     <View style={{flex: 1, marginTop: 5}}>
       <ScrollView
