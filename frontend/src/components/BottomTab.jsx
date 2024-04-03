@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {RFValue} from 'react-native-responsive-fontsize';
 import HomeScreen from '../screens/HomeScreen';
 import Dummy from '../screens/Dummy';
 import Landing from '../screens/Landing';
@@ -11,7 +12,7 @@ const BottomTab = () => {
     <Tab.Navigator
       initialRouteName="Home"
       activeColor="#36013f"
-      labelStyle={{fontSize: 12}}
+      labelStyle={{fontSize: RFValue(12)}}
       style={{backgroundColor: 'tomato'}}>
       <Tab.Screen
         name="Home"

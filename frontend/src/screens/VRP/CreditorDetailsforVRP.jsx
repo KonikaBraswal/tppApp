@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+import {RFValue} from 'react-native-responsive-fontsize';
 const CreditorDetailsforVRP = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState('');
@@ -24,7 +24,7 @@ const CreditorDetailsforVRP = () => {
   const [currentDate, setCurrentDate] = useState(new Date().toISOString());
   const [accountNumberError, setAccountNumberError] = useState('');
 
-  const validateAccountNumber = (text) => {
+  const validateAccountNumber = text => {
     const cleanedText = text.replace(/\D/g, ''); // Remove non-digit characters
     const truncatedText = cleanedText.slice(0, 14); // Limit to 14 digits
 
@@ -52,8 +52,7 @@ const CreditorDetailsforVRP = () => {
 
     calculateExpiryDate();
   }, []);
-  
-  
+
   useEffect(() => {
     // Check if all required fields are filled
     const isValid =
@@ -107,26 +106,32 @@ const CreditorDetailsforVRP = () => {
           onChangeText={setFirstName}
         />
 
-<TextInput
-        variant="outlined"
-        label="Account Number"
-        style={{ borderBottomWidth: 2, borderBottomColor: '#ccc', marginBottom: 10, paddingVertical: 12, paddingHorizontal: 16, fontSize: 16 }}
-        onChangeText={validateAccountNumber}
-        value={accountNumber}
-        onBlur={() => {
-          if (accountNumber.length !== 8) {
-            setAccountNumberError('Account Number must be exactly 8 digits');
-          } else {
-            setAccountNumberError('');
-          }
-        }}
-      />
+        <TextInput
+          variant="outlined"
+          label="Account Number"
+          style={{
+            borderBottomWidth: 2,
+            borderBottomColor: '#ccc',
+            marginBottom: 10,
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            fontSize: RFValue(16),
+          }}
+          onChangeText={validateAccountNumber}
+          value={accountNumber}
+          onBlur={() => {
+            if (accountNumber.length !== 8) {
+              setAccountNumberError('Account Number must be exactly 8 digits');
+            } else {
+              setAccountNumberError('');
+            }
+          }}
+        />
 
-      {accountNumberError ? (
-        <Text style={{ color: 'red' }}>{accountNumberError}</Text>
-      ) : null}
+        {accountNumberError ? (
+          <Text style={{color: 'red'}}>{accountNumberError}</Text>
+        ) : null}
 
-      
         <TextInput
           variant="outlined"
           label="Sort Code"
@@ -180,7 +185,7 @@ const CreditorDetailsforVRP = () => {
           label="Expiry Date"
           style={styles.input}
           value={expiryDate.toString()}
-          keyboardType='default'
+          keyboardType="default"
           // editable={false}
           onChangeText={setExpiryDate}
         />
@@ -219,7 +224,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: RFValue(20),
     fontWeight: 'bold',
     textAlign: 'center',
     color: 'black',
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: RFValue(16),
   },
   button: {
     backgroundColor: '#5a287d',
@@ -247,7 +252,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: RFValue(18),
   },
 });
 

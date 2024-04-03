@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+import {RFValue} from 'react-native-responsive-fontsize';
 const MakeTransfer = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
   const navigation = useNavigation();
@@ -130,13 +130,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: RFValue(18),
   },
 });
 

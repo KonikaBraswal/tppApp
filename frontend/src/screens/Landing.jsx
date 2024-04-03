@@ -15,6 +15,7 @@ import {
 import {Surface, FAB} from '@react-native-material/core';
 import {Icon, Searchbar, Card, Title} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from '../components/ViewAll';
 
@@ -84,7 +85,7 @@ const Landing = () => {
             marginLeft: 10,
             fontWeight: 'bold',
             color: '#5a287d',
-            fontSize: 17,
+            fontSize: RFValue(17),
           }}>
           Added Banks
         </Text>
@@ -162,7 +163,7 @@ const Landing = () => {
                   style={styles.cardsurface}>
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: RFValue(16),
                       color: 'black',
                       fontWeight: 'bold',
                       marginTop: 10,
@@ -182,7 +183,7 @@ const Landing = () => {
                   style={styles.cardsurface}>
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: RFValue(16),
                       color: 'black',
                       fontWeight: 'bold',
                       marginTop: 10,

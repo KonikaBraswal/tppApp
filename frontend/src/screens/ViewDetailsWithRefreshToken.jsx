@@ -12,6 +12,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {Searchbar} from 'react-native-paper';
 import {Surface} from '@react-native-material/core';
 import LocalAccountDetails from '../components/LocalAccountDetails';
@@ -98,7 +99,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
       {loading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size={50} color="green" />
-          <Text style={{fontSize: 18}}>We Are Fetching Your Data</Text>
+          <Text style={{fontSize: RFValue(18)}}>We Are Fetching Your Data</Text>
         </View>
       ) : (
         <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: RFValue(18),
     marginTop: hp('2%'),
     fontWeight: 'bold',
     color: 'green',

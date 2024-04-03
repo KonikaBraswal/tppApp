@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {Surface} from '@react-native-material/core';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const BarclaysAccounts = () => {
   return (
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    fontSize: 14,
+    fontSize: RFValue(14),
     fontWeight: 'bold',
     color: 'black',
     paddingLeft: 150,

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Modal, Portal, Checkbox, Button} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const SortDropdown = () => {
   const [visible, setVisible] = useState(false);
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: RFValue(15),
     fontWeight: 'bold',
   },
 });

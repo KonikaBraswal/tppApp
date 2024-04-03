@@ -1,43 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Text, ActivityIndicator } from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  Image,
+} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {Text, ActivityIndicator} from 'react-native-paper';
 import DropdownWithCheckboxes from '../../components/DropdownWithCheckboxes';
 import SortDropdown from '../../components/SortDropdown';
-import { Searchbar } from 'react-native-paper';
-import { Surface } from '@react-native-material/core';
+import {Searchbar} from 'react-native-paper';
+import {Surface} from '@react-native-material/core';
 import VrpDebitor from '../../components/VrpDebitor';
-import { fetchTransactionsForUserConsent } from '../../../database/Database';
+import {fetchTransactionsForUserConsent} from '../../../database/Database';
 import VrpTransactionList from '../../components/VrpTransactionList';
 var transactions;
-const VrpTransactions = ({ route }) => {
-  const {
-    transactiondetails
-  } = route.params
-  
+const VrpTransactions = ({route}) => {
+  const {transactiondetails} = route.params;
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactionText, setTransactionText] = useState('');
-  useEffect(()=>{
-    if(transactiondetails==null){
+  useEffect(() => {
+    if (transactiondetails == null) {
       setTransactionText('No Transaction found');
-    }
-    else{
-      console.log("tr",transactiondetails);
+    } else {
+      console.log('tr', transactiondetails);
       setTransactionDetails(transactiondetails);
       transactiondetails?.map(element => {
         transactions = JSON.parse(element.vrppayload);
       });
-      
     }
     setLoading(false);
-    
-  },[transactiondetails]);
-  console.log("details::", transactions);
-  
-  
+  }, [transactiondetails]);
+  console.log('details::', transactions);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -45,7 +49,7 @@ const VrpTransactions = ({ route }) => {
       {loading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size={50} color="green" />
-          <Text style={{ fontSize: 18 }}>We Are Fetching Your Data</Text>
+          <Text style={{fontSize: RFValue(18)}}>We Are Fetching Your Data</Text>
         </View>
       ) : (
         <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
@@ -60,35 +64,30 @@ const VrpTransactions = ({ route }) => {
           </View>
           {transactiondetails ? (
             <>
-            <VrpDebitor
-              account={transactions}
-            />
-            <View style={styles.transactionsContainer}>
-            <View style={styles.transactionsHeader}>
-              <Text style={styles.transactionsHeaderText}>Transactions</Text>
-              <SortDropdown />
-            </View>
-            <Searchbar
-              placeholder="Search Transaction"
-              onChangeText={setSearchQuery}
-              value={searchQuery}
-              style={styles.searchbar}
-            />
-            {transactiondetails ? (
-              <VrpTransactionList transactionDetails={transactiondetails} />
-            ) : (
-              <Text style={styles.statusText}>
-                {transactionText}
-              </Text>
-            )}
-          </View>
-          </>
+              <VrpDebitor account={transactions} />
+              <View style={styles.transactionsContainer}>
+                <View style={styles.transactionsHeader}>
+                  <Text style={styles.transactionsHeaderText}>
+                    Transactions
+                  </Text>
+                  <SortDropdown />
+                </View>
+                <Searchbar
+                  placeholder="Search Transaction"
+                  onChangeText={setSearchQuery}
+                  value={searchQuery}
+                  style={styles.searchbar}
+                />
+                {transactiondetails ? (
+                  <VrpTransactionList transactionDetails={transactiondetails} />
+                ) : (
+                  <Text style={styles.statusText}>{transactionText}</Text>
+                )}
+              </View>
+            </>
           ) : (
-            <Text style={styles.statusText}>
-              {transactionText}
-            </Text>
+            <Text style={styles.statusText}>{transactionText}</Text>
           )}
-          
         </ScrollView>
       )}
     </KeyboardAvoidingView>

@@ -1,18 +1,29 @@
 // Footer.js
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Icon } from 'react-native-paper';
+import {View, StyleSheet, Text} from 'react-native';
+import {Icon} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 const Footer = () => {
   return (
     <View style={styles.footer}>
       <View style={styles.iconContainer}>
         <View style={styles.iconWrapper}>
-          <Icon style={styles.icon}  source="home-outline" color={'#551a8b'} size={40} />
+          <Icon
+            style={styles.icon}
+            source="home-outline"
+            color={'#551a8b'}
+            size={40}
+          />
           <Text style={styles.iconText}>Home</Text>
         </View>
         <View style={styles.iconWrapper}>
-          <Icon style={styles.icon} source="account-outline" color={'#551a8b'} size={40} />
+          <Icon
+            style={styles.icon}
+            source="account-outline"
+            color={'#551a8b'}
+            size={40}
+          />
           <Text style={styles.iconText}>Profile</Text>
         </View>
       </View>
@@ -26,9 +37,9 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
   },
-  icon:{
-   height:10,
-   width:10,
+  icon: {
+    height: 10,
+    width: 10,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -41,7 +52,7 @@ const styles = StyleSheet.create({
   iconText: {
     marginTop: 5,
     color: '#551a8b',
-    fontSize: 15,
+    fontSize: RFValue(15),
   },
 });
 

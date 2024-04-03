@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, View, StyleSheet} from 'react-native';
 import {Card, Title, Paragraph, Text, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {RetrieveData} from '../../database/Database';
 
 const ViewAll = () => {
@@ -100,7 +101,7 @@ const ViewAll = () => {
                 textAlign: 'center',
                 marginTop: 40,
                 fontWeight: 'bold',
-                fontSize: 18,
+                fontSize: RFValue(18),
                 color: '#5a287d',
               }}>
               View All
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 16,
+    fontSize: RFValue(15),
     marginBottom: -6,
   },
   additionalInfo: {

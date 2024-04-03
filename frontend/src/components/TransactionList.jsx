@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import TransactionCard from './TransactionCard';
 import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
@@ -80,7 +81,7 @@ styles = StyleSheet.create({
   },
   statusText: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: RFValue(18),
     marginTop: hp('2%'),
     fontWeight: 'bold',
     color: 'green',
