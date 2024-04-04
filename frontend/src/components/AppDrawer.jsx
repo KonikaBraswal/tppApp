@@ -5,6 +5,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
 import SelectBank from './SelectBank';
+import LocalAccountList from '../screens/LocalEnvironment/LocalAccountList';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 import Test from './Test';
@@ -77,8 +78,8 @@ const AppDrawer = () => {
         }}
       />
       <Drawer.Screen
-        name="Updates"
-        component={Dummy}
+        name="Local"
+        component={LocalAccountList}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="update" color={color} size={28} />
