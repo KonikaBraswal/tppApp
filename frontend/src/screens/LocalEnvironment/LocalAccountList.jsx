@@ -31,7 +31,6 @@ const cardWidth = width * 0.95;
 const LocalAccountList = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [accountsData, setAccountsData] = useState(null);
 
   return (
     <KeyboardAvoidingView
