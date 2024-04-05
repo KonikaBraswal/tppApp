@@ -1,6 +1,8 @@
 import AndroidClient from "./AndroidClientDb";
 import WebClient from "./WebClient";
 import ApiLogsDb from "./ApiLogsDb";
+import AndroidClient from './AndroidClient';
+import WebClient from './WebClient';
 import DatabaseConfig from '../ConfigFiles/DatabaseConfig.json';
 
 class DatabaseFactory {
