@@ -7,8 +7,15 @@ import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import {insertLog} from '../database/DatabaseLogs';
 import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
-const databaseFactoryAisp = new DatabaseFactory();
-const androidClientAisp = databaseFactoryAisp.createDatabaseClient('android','aisp');
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
+const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
+const scope = "Aisp"; // Replace "YourScope" with the actual scope
+
+const androidClientAisp = new AndroidClient(companyName, apiClient, scope);
+
+//const databaseFactoryAisp = new DatabaseFactory();
+//const androidClientAisp = databaseFactoryAisp.createDatabaseClient('android','aisp');
 interface BodyData {
   Data: {
     Permissions: string[];

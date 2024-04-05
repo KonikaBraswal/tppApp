@@ -5,7 +5,13 @@ import {Linking, Alert} from 'react-native';
 import uuid from 'react-native-uuid';
 import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
 const databaseFactory = new DatabaseFactory();
-const androidClient = databaseFactory.createDatabaseClient('android','pisp');
+//const androidClient = databaseFactory.createDatabaseClient('android','pisp');
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+const companyName = "YourCompanyName"; // Replace "YourCompanyName" with the actual company name
+const apiClient = "YourApiClient"; // Replace "YourApiClient" with the actual API client
+const scope = "YourScope"; // Replace "YourScope" with the actual scope
+
+const androidClient = new AndroidClient(companyName, apiClient, scope);
 
 interface BodyData {
   Data: {
@@ -97,7 +103,6 @@ class SanboxApiClient {
     let body: Record<string, string> = {};
     let header: Record<string, string> = {};
     this.DebtorAccount = DebtorAccount;
-    if (callScope == 'payments') {
       this.callScope = callScope;
       console.log('Payments Call');
 
@@ -110,7 +115,6 @@ class SanboxApiClient {
       header = {
         'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
       };
-    }
 
     try {
       const response: AxiosResponse<ResponseData> = await axios.post(

@@ -25,11 +25,12 @@ import {
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
-
+import SanboxApiFactory from '../../ApiFactory/SandboxApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiFactoryPisp= new SanboxApiFactory();
 const CustomListItem = ({title, value}) => (
   <View
     style={{
@@ -71,13 +72,13 @@ const PaymentConsentScreen = ({route}) => {
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
       try {
-        const consentData = await sandboxApiClient.retrieveAccessToken(
-          'payments',
+        const consentData = await sandboxApiFactoryPisp.callSandboxApiFactory(
+          "payments",null,
           DebtorAccount,
         );
         console.log('Consent id:', consentData);
         if (way == 'web') {
-          const consentUrl = await sandboxApiClient.manualUserConsent(
+          const consentUrl = await sandboxApiFactoryPisp.manualUserConsent(
             consentData,
           );
           console.log(consentUrl);
@@ -93,7 +94,7 @@ const PaymentConsentScreen = ({route}) => {
 
   const handleSubmit = async () => {
     try {
-      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      const data = await sandboxApiFactoryPisp.exchangeAccessToken(inputValue,null);
       navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);

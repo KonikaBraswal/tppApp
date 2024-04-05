@@ -1,6 +1,6 @@
 import SQLite, {SQLiteDatabase} from 'react-native-sqlite-storage';
 
-class AndroidClient {
+class AndroidClientDb {
   private companyName: string;
   private apiClient: string;
   private scope: string;
@@ -20,7 +20,6 @@ class AndroidClient {
   // Method to initialize the SQLite database for Android PISP
   async initDatabaseAndroidPisp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
     await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
@@ -335,4 +334,4 @@ async insertDataVrp(vrpToStore: {
   }
 }
 
-export default AndroidClient;
+export default AndroidClientDb;

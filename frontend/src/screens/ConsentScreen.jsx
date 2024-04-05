@@ -26,13 +26,13 @@ import {
 } from 'react-native-responsive-screen';
 import IconDialog from '../components/IconDialog';
 import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
-
+import SanboxApiFactory from '../../ApiFactory/SandboxApiFactory';
 const screenWidth = wp('100%');
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
+const sandboxApiFactory= new SanboxApiFactory();
 const ConsentScreen = () => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -149,24 +149,22 @@ const ConsentScreen = () => {
 
         setLoading(true);
         setError(null);
-
-        const consentData = await sandboxApiClient.retrieveAccessToken(
-          permissions,
-        ); //here is data
+        const consentData=await sandboxApiFactory.callSandboxApiFactory("accounts",permissions,null);
         console.log('Consent id:', consentData);
         if (way == 'web') {
-          const consentUrl = await sandboxApiClient.manualUserConsent(
+          const consentUrl = await sandboxApiFactory.manualUserConsent(
             consentData,
           );
           console.log(consentUrl);
           showInputDialog(permissions);
         } else {
-          const data2 = await sandboxApiClient.userConsentProgammatically();
-          const transactionData = await sandboxApiClient.allCalls(
+          //const data2 = await sandboxApiClient.userConsentProgammatically();
+          const data2 = await sandboxApiFactory.userConsentProgammatically();
+          const transactionData = await sandboxApiFactory.allCalls(
             '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
           );
           console.log(transactionData);
-          const balanceData = await sandboxApiClient.allCalls(
+          const balanceData = await sandboxApiFactory.allCalls(
             '124b77ad-a58a-4d0c-9cf4-354f56eaec01/balances',
           );
           navigation.navigate('Your Accounts', {
@@ -192,7 +190,7 @@ const ConsentScreen = () => {
     try {
       // console.log(inputValue);
       // console.log(permission);
-      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      const data = await sandboxApiFactory.exchangeAccessToken(inputValue,null);
       navigation.navigate('Your Accounts', {
         selectedBank: 'Natwest',
         selectedIcon: "'../assets/icons/natwest.png'",

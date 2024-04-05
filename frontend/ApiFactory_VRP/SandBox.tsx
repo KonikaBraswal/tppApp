@@ -102,7 +102,7 @@ class SandBox {
 
       console.log('Access token', response.data.access_token);
       this.accessToken = response.data.access_token;
-      return this.accountRequest(params.accessTokenParams.consentUrl);
+      return this.accountRequest(params.accessTokenParams.cossentUrl);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
