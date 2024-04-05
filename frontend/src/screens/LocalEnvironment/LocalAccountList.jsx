@@ -132,7 +132,7 @@ const LocalAccountList = () => {
                               icon="chevron-right"
                               size={22}
                               onPress={() => {
-                                navigation.navigate('View Added Bank Details', {
+                                navigation.navigate('Local Details', {
                                   AccountId: account.AccountId,
                                 });
                               }}
