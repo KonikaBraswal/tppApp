@@ -21,35 +21,34 @@ import readNatwestBalance from '../../assets/data/balances.json';
 import readNatwestTransaction from '../../assets/data/transactions.json';
 import LocalTransactionList from './LocalTransactionList';
 
-const NatwestAccountData = readNatwestAccount?.Data?.Account;
-const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
-const NatwestTransactionData = readNatwestTransaction?.Data?.Transaction;
-
-const findAccountBalances = accountId => {
-  const foundBalances = NatwestBalanceData.filter(
-    balance => balance.AccountId === accountId,
-  );
-
-  if (foundBalances.length > 0) {
-    return foundBalances;
-  } else {
-    return null;
-  }
-};
-findAccountTransactions = accountId => {
-  const foundTransactions = NatwestTransactionData.filter(
-    transaction => transaction.AccountId === accountId,
-  );
-  if (foundTransactions.length > 0) {
-    return foundTransactions;
-  } else {
-    return null;
-  }
-};
-
 const LocalDetails = ({route}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const accountId = route.params.AccountId;
+  const NatwestAccountData = readNatwestAccount?.Data?.Account;
+  const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
+  const NatwestTransactionData = readNatwestTransaction?.Data?.Transaction;
+
+  const findAccountBalances = accountId => {
+    const foundBalances = NatwestBalanceData.filter(
+      balance => balance.AccountId === accountId,
+    );
+
+    if (foundBalances.length > 0) {
+      return foundBalances;
+    } else {
+      return null;
+    }
+  };
+  const findAccountTransactions = accountId => {
+    const foundTransactions = NatwestTransactionData.filter(
+      transaction => transaction.AccountId === accountId,
+    );
+    if (foundTransactions.length > 0) {
+      return foundTransactions;
+    } else {
+      return null;
+    }
+  };
   const accountDetails = NatwestAccountData.find(
     account => account.AccountId == accountId,
   );

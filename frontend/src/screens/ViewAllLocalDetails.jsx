@@ -25,44 +25,44 @@ import readBarclaysTransaction from '../assets/data/barclaysTransactions.json';
 import LocalTransactionList from '../components/LocalTransactionList';
 import BarclaysLocalTransactionList from '../components/BarclaysLocalTransactionList';
 
-const NatwestAccountData = readNatwestAccount?.Data?.Account;
-const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
-const NatwestTransactionData = readNatwestTransaction?.Data?.Transaction;
-const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
-const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
-const BarclaysTransactionData = readBarclaysTransaction?.Data?.Transaction;
-const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
-const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
-const mergedTransactions = [
-  ...NatwestTransactionData,
-  ...BarclaysTransactionData,
-];
-
-const findAccountBalances = accountId => {
-  const foundBalances = mergedBalances.filter(
-    balance => balance.AccountId === accountId,
-  );
-
-  if (foundBalances.length > 0) {
-    return foundBalances;
-  } else {
-    return null;
-  }
-};
-findAccountTransactions = accountId => {
-  const foundTransactions = mergedTransactions.filter(
-    transaction => transaction.AccountId === accountId,
-  );
-  if (foundTransactions.length > 0) {
-    return foundTransactions;
-  } else {
-    return null;
-  }
-};
-
 const ViewAllLocalDetails = ({route}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const accountId = route.params.AccountId;
+  const NatwestAccountData = readNatwestAccount?.Data?.Account;
+  const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
+  const NatwestTransactionData = readNatwestTransaction?.Data?.Transaction;
+  const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
+  const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
+  const BarclaysTransactionData = readBarclaysTransaction?.Data?.Transaction;
+  const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
+  const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
+  const mergedTransactions = [
+    ...NatwestTransactionData,
+    ...BarclaysTransactionData,
+  ];
+
+  const findAccountBalances = accountId => {
+    const foundBalances = mergedBalances.filter(
+      balance => balance.AccountId === accountId,
+    );
+
+    if (foundBalances.length > 0) {
+      return foundBalances;
+    } else {
+      return null;
+    }
+  };
+  const findAccountTransactions = accountId => {
+    const foundTransactions = mergedTransactions.filter(
+      transaction => transaction.AccountId === accountId,
+    );
+    if (foundTransactions.length > 0) {
+      return foundTransactions;
+    } else {
+      return null;
+    }
+  };
+
   const accountDetails = mergedAccounts.find(
     account => account.AccountId == accountId,
   );

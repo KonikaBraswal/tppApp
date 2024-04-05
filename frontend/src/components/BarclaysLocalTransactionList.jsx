@@ -6,6 +6,7 @@ import TransactionCard from './TransactionCard';
 
 const BarclaysLocalTransactionList = props => {
   const transactions = props.transactionDetails;
+
   return (
     <View style={styles.container}>
       {transactions ? (
