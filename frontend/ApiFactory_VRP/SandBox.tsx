@@ -1,9 +1,13 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
-import { Linking, Alert } from 'react-native';
+import {Linking, Alert} from 'react-native';
 import uuid from 'react-native-uuid';
-import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
+import {
+  addDetails,
+  addTransactions,
+  updateDetailsForVrp,
+} from '../database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -125,16 +129,12 @@ class SandBox {
       const allVrpResponse = await axios.get(url, {
         headers: headers,
       });
-      console.log(
-        'allVrpResponse of  call',
-        allVrpResponse.data,
-      );
+      console.log('allVrpResponse of  call', allVrpResponse.data);
       const payload = allVrpResponse.data.Data;
       const id = allVrpResponse.data.Data.ConsentId;
 
       const updateDetails4 = {
         account_details: JSON.stringify(payload),
-
       };
       const columnsToUpdate5 = ['account_details'];
 
@@ -151,8 +151,11 @@ class SandBox {
     return consentUrlWithVariables;
   }
 
-
-  async exchangeAccessToken(authTokenUrl: string, formData: any, consentData: any) {
+  async exchangeAccessToken(
+    authTokenUrl: string,
+    formData: any,
+    consentData: any,
+  ) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
@@ -181,7 +184,6 @@ class SandBox {
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
 
-
       const updatedDetails2 = {
         refreshedtoken: RefreshToken,
         status: 'Authorised',
@@ -193,12 +195,13 @@ class SandBox {
         updatedDetails2,
         this.consentId,
         columnsToUpdate2,
-
       );
       refreshTokenExists = true;
-      this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
+      this.getDomesticConsent(
+        response.data.access_token,
+        consentData.Links.Self,
+      );
       return response.data;
-
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -206,7 +209,6 @@ class SandBox {
 
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
     try {
-
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
@@ -335,7 +337,7 @@ class SandBox {
         scope: 'vrp_transactions',
         vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
         vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status
+        status: allVrpPaymentsResponse.data.Data.Status,
       };
       addTransactions(details);
       return allVrpPaymentsResponse.data;
@@ -343,8 +345,6 @@ class SandBox {
       console.log('error in getting in vrp payments', error);
     }
   }
-
-
 }
 
 export default SandBox;
