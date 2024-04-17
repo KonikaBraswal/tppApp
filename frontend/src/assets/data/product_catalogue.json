@@ -9,8 +9,6 @@
       "subcategory": "Laptops",
       "price": 999.99,
       "currency": "USD",
-      "image1": "../ecomm-images/appleLaptop1.jpg",
-      "image2": "../ecomm-images/appleLaptop2.jpg",
       "specifications": {
         "processor": "Apple M1 chip",
         "memory": "8GB or 16GB",
@@ -41,8 +39,7 @@
         {
           "id": "4",
           "name": "Samsung Galaxy S21 Ultra",
-          "price": 1199.99,
-          "image": "../ecomm-images/SamsungM311.jpg"
+          "price": 1199.99
         }
       ]
     },
@@ -55,8 +52,7 @@
       "subcategory": "Shoes",
       "price": 129.99,
       "currency": "USD",
-      "image1": "../ecomm-images/shoe1.jpeg",
-      "image2": "../ecomm-images/shoe2.jpeg",
+
       "specifications": {
         "material": "Textile and synthetic upper",
         "sole": "Rubber outsole",
@@ -77,8 +73,7 @@
         {
           "id": "3",
           "name": "Adidas Originals Trefoil T-Shirt",
-          "price": 24.99,
-          "image": "../ecomm-images/tshirt1.jpg"
+          "price": 24.99
         }
       ]
     },
@@ -91,8 +86,7 @@
       "subcategory": "T-Shirts",
       "price": 24.99,
       "currency": "USD",
-      "image1": "../ecomm-images/tshirt1.jpg",
-      "image2": "../ecomm-images/tshirt2.jpg",
+
       "specifications": {
         "material": "100% cotton",
         "color": "Black",
@@ -118,8 +112,7 @@
         {
           "id": "2",
           "name": "Nike Air Max 270",
-          "price": 129.99,
-          "image": "../ecomm-images/shoe1.jpeg"
+          "price": 129.99
         }
       ]
     },
@@ -132,8 +125,7 @@
       "subcategory": "Smartphones",
       "price": 1199.99,
       "currency": "USD",
-      "image1": "../ecomm-images/SamsungM311.jpg",
-      "image2": "../ecomm-images/SamsungM312.jpg",
+
       "specifications": {
         "display": "6.8-inch Dynamic AMOLED 2X",
         "processor": "Exynos 2100 or Snapdragon 888",
@@ -163,8 +155,7 @@
         {
           "id": "1",
           "name": "Apple MacBook Air",
-          "price": 999.99,
-          "image": "https://example.com/samsung-galaxy-watch4-image.png"
+          "price": 999.99
         }
       ]
     }
