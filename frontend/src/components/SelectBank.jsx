@@ -38,6 +38,7 @@ const SelectBank = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const [filteredBanks, setFilteredBanks] = useState(commonbanks);
+  
   const onChangeSearch = query => {
     setSearchQuery(query);
     const filtered = commonbanks.filter(bank =>

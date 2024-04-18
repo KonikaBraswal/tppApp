@@ -43,6 +43,8 @@ import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import ProductDetails from './src/screens/EcommScreens/ProductDetails';
+import ProductListing from './src/screens/EcommScreens/ProductListing';
+import Landing from './src/screens/Landing';
 
 
 function App(): React.JSX.Element {
@@ -84,6 +86,15 @@ function App(): React.JSX.Element {
                 name="Home"
                 component={AppDrawer}
                 options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Natwest Cart"
+                component={ProductListing}
+              />
+              
+              <Stack.Screen
+                name="Landing"
+                component={Landing}
               />
               
               <Stack.Screen name="Consent" component={ConsentScreen} />
@@ -138,6 +149,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
+             
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
