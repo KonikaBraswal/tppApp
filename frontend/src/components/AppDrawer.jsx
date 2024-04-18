@@ -9,6 +9,7 @@ import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
 import Test from './Test';
 import Database from '../../database/Database';
+import ProductDetails from '../screens/EcommScreens/ProductDetails';
 
 const Drawer = createDrawerNavigator();
 
@@ -59,8 +60,8 @@ const AppDrawer = () => {
         }}
       />
       <Drawer.Screen
-        name="Messages"
-        component={Dummy}
+        name="Ecommerce"
+        component={ProductDetails}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="message" color={color} size={28} />

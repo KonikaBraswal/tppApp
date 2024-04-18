@@ -42,6 +42,7 @@ import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
+import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 
 
 function App(): React.JSX.Element {
@@ -136,6 +137,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
+              <Stack.Screen name="Product Details" component={ProductDetails} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
