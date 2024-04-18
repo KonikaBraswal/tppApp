@@ -10,6 +10,7 @@ import Dummy from '../screens/Dummy';
 import Test from './Test';
 import Database from '../../database/Database';
 import ProductDetails from '../screens/EcommScreens/ProductDetails';
+import ProductListing from '../screens/EcommScreens/ProductListing';
 
 const Drawer = createDrawerNavigator();
 
@@ -50,6 +51,7 @@ const AppDrawer = () => {
           ),
         }}
       />
+      
       <Drawer.Screen
         name="Notifications"
         component={Dummy}
