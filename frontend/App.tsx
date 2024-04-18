@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
@@ -20,16 +14,12 @@ import {
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {PaperProvider} from 'react-native-paper';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import AppDrawer from './src/components/AppDrawer';
-import BottomTab from './src/components/BottomTab';
 import ConsentScreen from './src/screens/ConsentScreen';
 import SelectBank from './src/components/SelectBank';
 import TransactionList from './src/components/TransactionList';
-import Landing from './src/screens/Landing';
 
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
@@ -53,8 +43,6 @@ import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 
-const Stack = createNativeStackNavigator();
-const Tab = createMaterialBottomTabNavigator();
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -77,6 +65,7 @@ function App(): React.JSX.Element {
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
+          
           <NavigationContainer>
             <Stack.Navigator
               screenOptions={{
@@ -95,6 +84,7 @@ function App(): React.JSX.Element {
                 component={AppDrawer}
                 options={{headerShown: false}}
               />
+              
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
               {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}

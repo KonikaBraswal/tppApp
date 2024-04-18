@@ -5,6 +5,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import HomeScreen from '../screens/HomeScreen';
 import Dummy from '../screens/Dummy';
 import Landing from '../screens/Landing';
+import ProductListing from './EcommComponents/ProductListing';
 
 const Tab = createMaterialBottomTabNavigator();
 const BottomTab = () => {
@@ -26,7 +27,7 @@ const BottomTab = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Dummy}
+        component={ProductListing}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (
