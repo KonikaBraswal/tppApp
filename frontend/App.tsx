@@ -44,7 +44,8 @@ import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 import ProductListing from './src/screens/EcommScreens/ProductListing';
-import Landing from './src/screens/Landing';
+import Landing from './src/components/Landing';
+
 
 
 function App(): React.JSX.Element {
@@ -68,8 +69,10 @@ function App(): React.JSX.Element {
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
-          
+          <View>
+          </View>
           <NavigationContainer>
+            {/* <Landing/> */}
             <Stack.Navigator
               screenOptions={{
                 headerStyle: {
@@ -92,10 +95,10 @@ function App(): React.JSX.Element {
                 component={ProductListing}
               />
               
-              <Stack.Screen
-                name="Landing"
+               <Stack.Screen
+                name="ONEBank"
                 component={Landing}
-              />
+              /> 
               
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />

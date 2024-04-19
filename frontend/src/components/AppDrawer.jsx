@@ -11,6 +11,7 @@ import Test from './Test';
 import Database from '../../database/Database';
 import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
+import Landing from '../components/Landing';
 
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +36,7 @@ const AppDrawer = () => {
       headerMode="screen">
       <Drawer.Screen
         name="ONEBank"
-        component={BottomTab}
+        component={Landing}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="home" color={color} size={28} />

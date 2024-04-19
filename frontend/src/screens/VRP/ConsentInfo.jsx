@@ -137,16 +137,7 @@ const ConsentInfo = ({ route }) => {
                     }
 
                 </View>
-                {/* <View style={{
-                    position: 'relative', bottom: 0, width: '100%', backgroundColor: '#D6CFC7',
-                    padding: 5, alignItems: 'center', justifyContent: 'center'
-                }}>
-                    <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                        //deny and allow
-                        
-                    </View>
-                    
-                </View> */}
+                
             </View>
         </ScrollView>
     );
