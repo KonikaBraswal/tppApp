@@ -1,111 +1,229 @@
-// ProductDetails.js
-
 import React from 'react';
-import {View, Text, Image, ScrollView, StyleSheet} from 'react-native';
-import {Card} from 'react-native-paper';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {Card, IconButton} from 'react-native-paper';
+import {Rating} from 'react-native-ratings';
+import ImageCarousel from '../../components/EcommComponents/ImageCarousel';
 import imagesArray from '../../assets/data/ecomm-images';
+import ReviewList from '../../components/EcommComponents/ReviewList';
 
 const ProductDetails = () => {
+  const handleButton1Press = () => {
+    console.log('Added To Cart');
+  };
+
+  const handleButton2Press = () => {
+    console.log('Buy Now');
+  };
+
   // const product=props.product;
   const product = {
-    id: '3',
-    name: 'Adidas Originals Trefoil T-Shirt',
-    description: 'A classic Adidas t-shirt with the iconic Trefoil logo.',
-    brand: 'Adidas',
-    category: 'Clothings',
-    subcategory: 'T-Shirts',
-    price: 24.99,
-    currency: 'USD',
-    specifications: {
-      material: '100% cotton',
-      color: 'Black',
-      sizes: 'XS-XL',
-    },
+    Brand: 'Samsung',
+    RAM: '6 GB',
+    title: 'Samsung Galaxy M31 (Ocean Blue, 6GB RAM, 128GB Storage)',
+    category: 'Mobiles',
+    price: 14999,
+    specs: [
+      'Quad Camera Setup - 64MP (F1.8) Main Camera +8MP (F2.2) Ultra Wide Camera +5MP(F2.2) Depth Camera +5MP(F2.4) Macro Camera and 32MP (F2.0) front facing Camera',
+      '6.4-inch(16.21 centimeters) Super Amoled - Infinity U Cut Display , FHD+ Resolution (2340 x 1080) , 404 ppi pixel density and 16M color support',
+      'Android v10.0 operating system with 2.3GHz + 1.7GHz Exynos 9611 Octa core processor , 6GB RAM, 128GB internal memory expandable up to 512GB and dual SIM',
+      '6000 mAh Battery',
+    ],
+    inStock: 50,
+    eta: 20,
+    id: 'm2',
+    rating: 4,
     reviews: [
       {
-        id: '7',
-        author: 'Sophia Martinez',
+        name: 'Rohit',
+        title: 'Best mobile in buget',
+        content: 'I higely recoomend this mobile',
         rating: 5,
-        text: 'Great quality t-shirt, very comfortable and fits perfectly.',
-        timestamp: '2023-04-18T11:30:00Z',
       },
       {
-        id: '9',
-        author: 'Michael Johnson',
+        name: 'Doraemon',
+        title: 'Value for money',
+        content:
+          "Really a good budget phone with big battery. Camera performance also awesome, but in pro mode there no control for shutter speed and while changing the iso i don't feel any differences. I need more update on camera modes. Phone performance and charging speed is good. Except camera modes i love this phone.",
         rating: 4,
-        text: 'Nice design and good fit, but the fabric could be a bit softer.',
-        timestamp: '2023-04-20T09:00:00Z',
       },
-    ],
-    related_products: [
       {
-        id: '2',
-        name: 'Nike Air Max 270',
-        price: 129.99,
+        name: 'Nobita',
+        title: 'Best in the market with this price range',
+        content:
+          'A Descent phone Definitely not for pro pubg player but can work fine Super amoled gives it best performance Descent camera Improved Selfie camera compared to M30 Long battery life Nice Security No ads unlike MI Works smoothly',
+        rating: 5,
       },
     ],
   };
   const productImages = imagesArray.find(object => object.id === product.id);
   return (
-    <ScrollView>
-      <View style={{padding: 20}}>
-        <Card>
-          <Card.Cover source={productImages.images[0]} />
-        </Card>
+    <View>
+      <ScrollView style={{backgroundColor: '#9c27b0'}}>
+        <View style={{padding: 10, marginTop: 15}}>
+          <ImageCarousel data={productImages} />
 
-        <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>
-          {product.name}
-        </Text>
-        <Text style={{fontSize: 16, marginBottom: 10}}>
-          Brand: {product.brand}
-        </Text>
-        <Text style={{fontSize: 16, marginBottom: 10}}>
-          Category: {product.category}
-        </Text>
-        <Text style={{fontSize: 16, marginBottom: 10}}>
-          Price: ${product.price.toFixed(2)}
-        </Text>
-        <Text style={{fontSize: 16, marginBottom: 10}}>
-          Description: {product.description}
-        </Text>
-        <Text style={{fontSize: 16, marginBottom: 10}}>Specifications:</Text>
-        <View>
-          {Object.entries(product.specifications).map(([key, value]) => (
-            <Text key={key} style={{marginLeft: 10}}>
-              {key}: {value}
+          <View style={{padding: 6, marginTop: 10}}>
+            <Text
+              style={{
+                fontSize: 18,
+                marginBottom: 5,
+                color: 'white',
+                fontWeight: 'bold',
+              }}>
+              {product.title}
             </Text>
-          ))}
-        </View>
-        {product.reviews.length > 0 && (
-          <View>
-            <Text style={{fontSize: 16, marginTop: 20, marginBottom: 10}}>
-              Reviews:
+            <View style={{alignItems: 'flex-start', marginVertical: 5}}>
+              <Rating
+                type="custom"
+                ratingCount={5}
+                startingValue={product.rating}
+                imageSize={25}
+                tintColor="#9c27b0"
+                readonly
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignContent: 'center',
+                justifyContent: 'space-between',
+                marginVertical: 5,
+              }}>
+              <Text
+                style={{
+                  fontSize: 19,
+                  color: 'white',
+                  fontWeight: 'bold',
+                }}>
+                Price: $ {product.price.toFixed(2)}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  padding: 5,
+                  color: '#000',
+                  fontWeight: 'bold',
+                  backgroundColor: '#FFF',
+                  borderRadius: 5,
+                }}>
+                In Stock: ${product.inStock}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                marginBottom: 5,
+                color: 'white',
+                fontWeight: 'bold',
+              }}>
+              Specifications:
             </Text>
-            {product.reviews.map(review => (
-              <View key={review.id} style={{marginBottom: 10}}>
-                <Text>
-                  {review.author} - {review.rating} stars
+            <View>
+              <Text
+                style={{
+                  color: 'white',
+                  flexWrap: 'wrap',
+                  marginBottom: 5,
+                  fontSize: 15,
+                  fontWeight: '400',
+                }}>
+                {product.specs}
+              </Text>
+            </View>
+            {product.reviews.length > 0 && (
+              <View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    marginBottom: 10,
+                    marginTop: 5,
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  Reviews:
                 </Text>
-                <Text>{review.text}</Text>
+                <View style={{marginBottom: 55}}>
+                  {product.reviews.map((review, id) => (
+                    <ReviewList
+                      key={id}
+                      title={review.title}
+                      content={review.content}
+                      name={review.name}
+                      rating={review.rating}
+                    />
+                  ))}
+                </View>
               </View>
-            ))}
+            )}
           </View>
-        )}
+        </View>
+      </ScrollView>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleButton1Press}
+          activeOpacity={1}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <IconButton icon="cart" iconColor="#fff" size={24} />
+            <Text style={styles.buttonText}>Add To Cart</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleButton2Press}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <IconButton
+              icon="chevron-right-circle-outline"
+              iconColor="#fff"
+              size={24}
+            />
+            <Text style={styles.buttonText}>Buy Now</Text>
+          </View>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
-  imageContainer: {
-    width: 300,
-    height: 200,
-    justifyContent: 'center',
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(192, 192, 192, 0.9)',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+  button: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    backgroundColor: 'green',
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 export default ProductDetails;

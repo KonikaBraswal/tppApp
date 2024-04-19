@@ -16,7 +16,7 @@ const imagesArray = [
     'related-images': [require('../ecomm-images/tshirt1.jpg')],
   },
   {
-    id: '3',
+    id: 'c1',
     images: [
       require('../ecomm-images/tshirt1.jpg'),
       require('../ecomm-images/tshirt2.jpg'),
@@ -24,7 +24,7 @@ const imagesArray = [
     'related-images': [require('../ecomm-images/shoe1.jpeg')],
   },
   {
-    id: '4',
+    id: 'm2',
     images: [
       require('../ecomm-images/SamsungM311.jpg'),
       require('../ecomm-images/SamsungM312.jpg'),
