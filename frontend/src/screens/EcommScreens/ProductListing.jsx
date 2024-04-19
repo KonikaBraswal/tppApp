@@ -21,7 +21,6 @@ const ProductListing = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchcategory, setSearchCategory] = useState('');
     const [searchedProducts, setSearchedProducts] = useState(category);
-    const [filteredProducts, setFilteredProducts] = useState(products.products);
     const showMenu = () => setVisible(true);
     const hideMenu = () => setVisible(false);
 
@@ -32,28 +31,21 @@ const ProductListing = () => {
             setSelectedItems([...selectedItems, itemValue]);
         }
     };
-    useEffect(() => {
-        // Update filtered products whenever selectedItems or searchcategory changes
-        const updatedProducts = products.products.filter(product => {
-            const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
-            const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
-            return categoryMatch || searchMatch;
-        });
-        setFilteredProducts(updatedProducts);
-    }, [selectedItems, searchcategory]);
-    // const filteredProducts = products.products.filter((product) => {
-    //     const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
-    //     const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
-    //     // console.log("pr",searchMatch);
-    //     // console.log("tr",categoryMatch);
-    //     return categoryMatch || searchMatch;
+    
+    const filteredProducts = products.products.filter((product) => {
+        const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
+        const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
+        // console.log("pr",searchMatch);
+        // console.log("tr",categoryMatch);
+        return   searchMatch||categoryMatch;
 
-    // });
+    });
 
     
 
     const onChangeSearch = query => {
         setSearchQuery(query);
+        setSearchCategory('');
         const filtered = category.filter(item =>
             item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
         );
@@ -62,7 +54,7 @@ const ProductListing = () => {
     const searchCategory = (category) => {
         console.log("p", category);
         setSearchCategory(category);
-
+        setSearchQuery('');
     };
     const rows = [];
 
@@ -114,8 +106,8 @@ const ProductListing = () => {
                 enableOnAndroid
                 enableAutomaticScroll
                 extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}> */}
-            <SafeAreaView style={{ flex: 1 }} >
-            <View style={{ flex: 1 }}>
+            <SafeAreaView  >
+            <View >
                 <View
                     style={{
                         backgroundColor: '#5a287d',
@@ -180,9 +172,9 @@ const ProductListing = () => {
 
                 </View>
 
-                {/* </KeyboardAwareScrollView> */}
                 </View>
             </SafeAreaView>
+                {/* </KeyboardAwareScrollView> */}
         </>
     );
 };
@@ -193,7 +185,7 @@ const styles = StyleSheet.create({
         borderRadius: 8, // Border radius to make it rounded
         borderWidth: 1, // Border width
         borderColor: '#ccc',
-        flexGrow: 1,
+        flexGrow:1
     },
     item: {
         flex: 1,
