@@ -27,7 +27,7 @@ const CartScreen = () => {
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const loadedCart = await loadCartFromStorage();
+        const loadedCart = await loadCartFromStore();
         setCart(loadedCart);
       } catch (error) {
         console.error(error.message);
@@ -37,7 +37,7 @@ const CartScreen = () => {
     loadCart();
   }, [cart]);
 
-  const loadCartFromStorage = async () => {
+  const loadCartFromStore = async () => {
     try {
       const cartData = await AsyncStorage.getItem(CART_STORAGE_KEY);
       if (cartData !== null) {
