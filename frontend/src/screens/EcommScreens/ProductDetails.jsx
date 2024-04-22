@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {IconButton} from 'react-native-paper';
+import {IconButton, Button, Modal, Portal} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
 import ImageCarousel from '../../components/EcommComponents/ImageCarousel';
 import imagesArray from '../../assets/data/ecomm-images';
@@ -19,7 +19,10 @@ const CART_STORAGE_KEY = '@OneBank:cart';
 
 const ProductDetails = () => {
   const navigation = useNavigation();
+  const [visible, setVisible] = useState(false);
 
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
   const addItemToCart = async productToAdd => {
     try {
       const existingCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
@@ -38,6 +41,7 @@ const ProductDetails = () => {
   };
 
   const handleButton1Press = product => {
+    showModal();
     addItemToCart(product);
     console.log(product, 'Added To Cart');
   };
@@ -220,6 +224,29 @@ const ProductDetails = () => {
             <Text style={styles.buttonText}>Go To Bag</Text>
           </View>
         </TouchableOpacity>
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <IconButton
+                icon="check-circle"
+                size={50}
+                iconColor="green"
+                style={styles.icon}
+              />
+              <Text style={styles.modalText}>{product.title}</Text>
+              <Text style={styles.modalText}> Added to Cart!</Text>
+              <IconButton
+                icon="close"
+                iconColor="purple"
+                onPress={hideModal}
+                style={styles.closeButton}
+              />
+            </View>
+          </Modal>
+        </Portal>
       </View>
     </View>
   );
@@ -249,6 +276,30 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  icon: {
+    marginBottom: 20,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
 });
 export default ProductDetails;
