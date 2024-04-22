@@ -30,7 +30,7 @@ import ConsentScreen from './src/screens/ConsentScreen';
 import SelectBank from './src/components/SelectBank';
 import TransactionList from './src/components/TransactionList';
 import Landing from './src/screens/Landing';
-
+import {Icon} from 'react-native-paper';
 import AllAccounts from './src/components/AllAccounts';
 import MainScreen from './src/screens/MainScreen';
 import ViewAllAccounts from './src/screens/ViewAllAccounts';
@@ -88,14 +88,19 @@ function App(): React.JSX.Element {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 21,
+                  
                 },
                 headerTitleAlign: 'center',
+                
               }}>
-              <Stack.Screen
-                name="Home"
-                component={AppDrawer}
-                options={{headerShown: false}}
-              />
+                  <Stack.Screen
+          name="Home"
+          component={AppDrawer}
+          options={{
+            headerShown: false, // Ensure the header is shown
+           
+          }}
+        />
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
               {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
