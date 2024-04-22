@@ -1,12 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as products from '../../assets/data/product_catalogue.json';
 import { Button, Searchbar, Icon } from 'react-native-paper';
-import { Modal, Portal, Checkbox } from 'react-native-paper';
+import { Modal, Portal, Checkbox, Switch } from 'react-native-paper';
 import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, VirtualizedList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
-import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -20,28 +19,42 @@ const ProductListing = () => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchcategory, setSearchCategory] = useState('');
+    const [switchOn, setSwitchOn] = useState(false);
     const [searchedProducts, setSearchedProducts] = useState(category);
+    const [filteredProducts, setFilteredProducts] = useState(products.products);
     const showMenu = () => setVisible(true);
     const hideMenu = () => setVisible(false);
+
+
 
     const handleCheckboxToggle = itemValue => {
         if (selectedItems.includes(itemValue)) {
             setSelectedItems(selectedItems.filter(item => item !== itemValue));
+
         } else {
             setSelectedItems([...selectedItems, itemValue]);
         }
+        setSwitchOn(false);
     };
-    
-    const filteredProducts = products.products.filter((product) => {
-        const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
-        const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
-        // console.log("pr",searchMatch);
-        // console.log("tr",categoryMatch);
-        return   searchMatch||categoryMatch;
 
-    });
+    useEffect(() => {
+        const filtered = products.products.filter(product => {
+            return selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
+        });
+        setFilteredProducts(filtered);
+    }, [selectedItems]);
 
-    
+    // const filteredProducts = products.products.filter((product) => {
+    //     // const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
+    //     const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
+    //     // console.log("pr",searchMatch);
+    //     // console.log("tr",categoryMatch);
+    //     return   searchMatch;
+    //     // return   searchMatch||categoryMatch;
+
+    // });
+
+
 
     const onChangeSearch = query => {
         setSearchQuery(query);
@@ -50,11 +63,23 @@ const ProductListing = () => {
             item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
         );
         setSearchedProducts(filtered);
+        setSelectedItems([]);
+        setSwitchOn(false);
     };
+    const showProducts = () => {
+        setSwitchOn(!switchOn);
+        setFilteredProducts(products.products);
+        setSelectedItems([]);
+    }
     const searchCategory = (category) => {
-        console.log("p", category);
         setSearchCategory(category);
         setSearchQuery('');
+        // console.log("p", category);
+        setSwitchOn(false);
+        const p = products.products.filter((product) => {
+            return category === '' || product.category.toLowerCase().includes(category.toLowerCase());
+        })
+        setFilteredProducts(p);
     };
     const rows = [];
 
@@ -78,36 +103,50 @@ const ProductListing = () => {
         );
         rows.push(row);
     }
+    const getItemlayout = (data, index) => {
+        const height = 150;
+        const vert = 100;
+        return {
+            length: height + vert,
+            offset: (height + vert) * index,
+            index
+        }
+    }
+    function gettwoitems(data, index) {
+        let items = [];
+        for (let i = 0; i < 2; i++) {
+            const item = data[index * 2 + i];
+            item && items.push(item);
+        }
+        return items;
+    }
 
-    // const dataProvider = new DataProvider((r1, r2) => r1 !== r2).cloneWithRows(filteredProducts);
+    function renderitem({ item, index }) {
+        // console.log(item);
+        const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
+        return (
+            < View  style = { [styles.item,{marginBottom}] } >
+            {/* // <View key={index} style={styles.itemContainer} > */}
+            {/* {item.map((elem, i) => ( */ }
+                        <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' />
+                        <Text style={styles.name}>{item.title}</Text>
+        {/* <Text style={styles.description}>{item.specs}</Text> */ }
 
-    // const layoutProvider = new LayoutProvider(
-    //   index => 0, // Only one view type in this example
-    //   (type, dim) => {
-    //     dim.width = Dimensions.get('window').width / 2; // Width for 2 columns
-    //     dim.height = 100; // Adjust height as needed
-    //   }
-    // );
-
-
-
-    const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Image source={{ uri: item.imgs[0] }} style={styles.image} />
-            <Text style={styles.name}>{item.title}</Text>
-            {/* <Text style={styles.description}>{item.specs}</Text> */}
-            <Text style={styles.price}>${item.price}</Text>
-        </View>
-    );
-    return (
-        <>
-            {/* <KeyboardAwareScrollView
+        <Text style={styles.price}>${item.price}</Text>
+                    {/* </View > */}
+    {/* ))} */ }
+            </View>
+        )
+    }
+return (
+    <>
+        {/* <KeyboardAwareScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 enableOnAndroid
                 enableAutomaticScroll
                 extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}> */}
-            <SafeAreaView  >
-            <View >
+        <SafeAreaView style={{ flex: 1 }} >
+            <View style={{ flex: 1 }}>
                 <View
                     style={{
                         backgroundColor: '#5a287d',
@@ -124,7 +163,15 @@ const ProductListing = () => {
                         }}
                     />
                 </View>
+
+
                 <View style={styles.rowContainer}>
+                    <View style={styles.toggle}>
+                        <Text style={{ fontSize: 15 }}>All</Text>
+                        <Switch value={switchOn} onValueChange={() => {
+                            showProducts()
+                        }} />
+                    </View>
                     <Button icon="chevron-down" mode="contained" onPress={showMenu}>
                         Filter
                     </Button>
@@ -149,51 +196,74 @@ const ProductListing = () => {
 
                 {searchQuery !== '' && (
                     <View style={styles.container}>
-                    <ScrollView>
-                    <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
-                        <Surface elevation={10} category="medium">
-                            {rows.map((row, index) => (
-                                <View key={`row_${index}`}  >{row}</View>
-                            ))}
-                        </Surface>
-                    </Stack>
-                    </ScrollView>
+                        <ScrollView>
+                            <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+                                <Surface elevation={10} category="medium">
+                                    {rows.map((row, index) => (
+                                        <View key={`row_${index}`}  >{row}</View>
+                                    ))}
+                                </Surface>
+                            </Stack>
+                        </ScrollView>
                     </View>
                 )}
 
                 <View style={styles.container}>
                     <FlatList
                         data={filteredProducts}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
+                        renderItem={renderitem}
+                        keyExtractor={(item) => item.id}
+                        // inverted={true}
                         numColumns={2}
                         contentContainerStyle={styles.container}
+                    // getItemCount={(data) => data.length}
+                    // getItem={gettwoitems}
+                    // getItemLayout={getItemlayout}
+                    // updateCellsBatchingPeriod={100}
+                    // initialNumToRender={10}
+                    // maxToRenderPerBatch={15}
+                    // windowSize={21}
+
                     />
 
                 </View>
 
-                </View>
-            </SafeAreaView>
-                {/* </KeyboardAwareScrollView> */}
-        </>
-    );
+            </View>
+        </SafeAreaView>
+        {/* </KeyboardAwareScrollView> */}
+    </>
+);
 };
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 16,
-        paddingTop: 16,
+        paddingHorizontal: 10,
+        paddingTop: 10,
         borderRadius: 8, // Border radius to make it rounded
         borderWidth: 1, // Border width
         borderColor: '#ccc',
-        flexGrow:1
+        flexGrow: 1,
+        marginBottom:10
+    },
+    itemContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 60,
+        overflow: 'hidden',
+        // height:200
     },
     item: {
+        // flexDirection: 'row',
+        // justifyContent: 'space-around',
+        // width: '48%',
         flex: 1,
-        margin: 8,
+        // alignItems: 'center',
+        // marginBottom: wp('10%'),
+        margin:8,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        padding: 12,
+        padding: 8,
         backgroundColor: '#fff',
     },
     modalContainer: {
@@ -208,27 +278,47 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: 200,
-        marginBottom: 8,
+        // aspectRatio:1,
+        // marginTop: -hp('60%'),
         resizeMode: 'cover',
         borderRadius: 8,
+        marginBottom:8,
+        // marginLeft: hp('7%'),
+        // marginRight: -hp('6%')
     },
     name: {
+        // alignItems: 'center',
+        // width: '100%',
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 4,
+        // marginBottom: -wp('60%'),
+        marginBottom: wp('5%'),
+        // padding: 8,
+        // marginTop: -wp('20%'),
+        // marginLeft: hp('1%'),
+        // marginRight: wp('5%'),
+        // overflow: 'hidden',
     },
     description: {
         fontSize: 14,
         marginBottom: 4,
     },
     price: {
+        // overflow: 'hidden',
+        // alignItems: 'center',
+        // padding: hp('3%'),
         fontSize: 16,
         fontWeight: 'bold',
+        // width: '100%',
         color: 'green',
+        // marginTop: hp('55%'),
+        // marginBottom: -wp('50%'),
+        // marginRight: wp('10%')
     },
     rowContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 10,
     },
     searchbar: {
@@ -244,6 +334,12 @@ const styles = StyleSheet.create({
         height: 40, // Set the height of the search bar
         fontSize: 16, // Font size of the text input
         paddingHorizontal: 8
+    },
+    toggle: {
+        padding: 1,
+        flexDirection: 'row',
+        alignItems: 'center'
+        // justifyContent: 'space-around'
     }
 });
 const SelectBankStyle = StyleSheet.create({
