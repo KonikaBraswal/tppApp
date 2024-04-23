@@ -3,7 +3,7 @@ import * as products from '../../assets/data/product_catalogue.json';
 import { Button, Searchbar, Icon } from 'react-native-paper';
 import { Modal, Portal, Checkbox, Switch } from 'react-native-paper';
 import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
-import { TouchableOpacity, VirtualizedList } from 'react-native';
+import { Keyboard, Pressable, TouchableOpacity, VirtualizedList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -19,7 +19,7 @@ const ProductListing = () => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchcategory, setSearchCategory] = useState('');
-    const [switchOn, setSwitchOn] = useState(false);
+    const [switchOn, setSwitchOn] = useState(true);
     const [searchedProducts, setSearchedProducts] = useState(category);
     const [filteredProducts, setFilteredProducts] = useState(products.products);
     const showMenu = () => setVisible(true);
@@ -73,13 +73,14 @@ const ProductListing = () => {
     }
     const searchCategory = (category) => {
         setSearchCategory(category);
+        Keyboard.dismiss();
         setSearchQuery('');
-        // console.log("p", category);
-        setSwitchOn(false);
+        console.log("p", category);
         const p = products.products.filter((product) => {
             return category === '' || product.category.toLowerCase().includes(category.toLowerCase());
         })
         setFilteredProducts(p);
+        setSwitchOn(false);
     };
     const rows = [];
 
@@ -93,7 +94,7 @@ const ProductListing = () => {
                 //spacing={10}
                 style={SelectBankStyle.row}>
                 {rowProducts.map((item, index) => (
-                    <TouchableOpacity key={index} onPress={() => searchCategory(item)}>
+                    <TouchableOpacity key={index} onPress={() => {searchCategory(item)}}>
                         <Surface category="medium" style={SelectBankStyle.surface}>
                             <Text>{item}</Text>
                         </Surface>
@@ -196,7 +197,11 @@ return (
 
                 {searchQuery !== '' && (
                     <View style={styles.container}>
-                        <ScrollView>
+                        <ScrollView
+                        keyboardShouldPersistTaps='always'
+                        automaticallyAdjustContentInsets={false} 
+                        keyboardDismissMode='on-drag'
+                        >
                             <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
                                 <Surface elevation={10} category="medium">
                                     {rows.map((row, index) => (
