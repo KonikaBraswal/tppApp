@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,48 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Card, IconButton} from 'react-native-paper';
+import {IconButton, Button, Modal, Portal} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
 import ImageCarousel from '../../components/EcommComponents/ImageCarousel';
 import imagesArray from '../../assets/data/ecomm-images';
 import ReviewList from '../../components/EcommComponents/ReviewList';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CART_STORAGE_KEY = '@OneBank:cart';
 
 const ProductDetails = () => {
-  const handleButton1Press = () => {
-    console.log('Added To Cart');
+  const navigation = useNavigation();
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const addItemToCart = async productToAdd => {
+    try {
+      const existingCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
+      let updatedCart = [];
+
+      if (existingCart !== null) {
+        updatedCart = JSON.parse(existingCart);
+      }
+
+      updatedCart.push(productToAdd);
+
+      await AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  };
+
+  const handleButton1Press = product => {
+    showModal();
+    addItemToCart(product);
+    console.log(product, 'Added To Cart');
   };
 
   const handleButton2Press = () => {
-    console.log('Buy Now');
+    console.log('Cart Screen');
+    navigation.navigate('Cart');
   };
 
   // const product=props.product;
@@ -168,7 +197,7 @@ const ProductDetails = () => {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={handleButton1Press}
+          onPress={() => handleButton1Press(product)}
           activeOpacity={1}>
           <View
             style={{
@@ -192,9 +221,32 @@ const ProductDetails = () => {
               iconColor="#fff"
               size={24}
             />
-            <Text style={styles.buttonText}>Buy Now</Text>
+            <Text style={styles.buttonText}>Go To Bag</Text>
           </View>
         </TouchableOpacity>
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <IconButton
+                icon="check-circle"
+                size={50}
+                iconColor="green"
+                style={styles.icon}
+              />
+              <Text style={styles.modalText}>{product.title}</Text>
+              <Text style={styles.modalText}> Added to Cart!</Text>
+              <IconButton
+                icon="close"
+                iconColor="purple"
+                onPress={hideModal}
+                style={styles.closeButton}
+              />
+            </View>
+          </Modal>
+        </Portal>
       </View>
     </View>
   );
@@ -224,6 +276,30 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  icon: {
+    marginBottom: 20,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
 });
 export default ProductDetails;

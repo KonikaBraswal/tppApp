@@ -1,4 +1,3 @@
-
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -45,8 +44,7 @@ import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
-
-
+import CartScreen from './src/screens/EcommScreens/CartScreen';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -69,8 +67,7 @@ function App(): React.JSX.Element {
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
-          <View>
-          </View>
+          <View></View>
           <NavigationContainer>
             {/* <Landing/> */}
             <Stack.Navigator
@@ -90,16 +87,10 @@ function App(): React.JSX.Element {
                 component={AppDrawer}
                 options={{headerShown: false}}
               />
-              <Stack.Screen
-                name="Natwest Cart"
-                component={ProductListing}
-              />
-              
-               <Stack.Screen
-                name="ONEBank"
-                component={Landing}
-              /> 
-              
+              <Stack.Screen name="Natwest Cart" component={ProductListing} />
+
+              <Stack.Screen name="ONEBank" component={Landing} />
+
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
               {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
@@ -152,7 +143,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
-             
+              <Stack.Screen name="Cart" component={CartScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
