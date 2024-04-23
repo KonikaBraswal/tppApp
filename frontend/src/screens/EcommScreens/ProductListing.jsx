@@ -1,379 +1,411 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import * as products from '../../assets/data/product_catalogue.json';
-import { Button, Searchbar, Icon } from 'react-native-paper';
-import { Modal, Portal, Checkbox, Switch } from 'react-native-paper';
-import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
-import { TouchableOpacity, VirtualizedList } from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
+import {Button, Searchbar, Icon} from 'react-native-paper';
+import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
+import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';
+import {TouchableOpacity, VirtualizedList} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
+  KeyboardAwareScrollView,
+  KeyboardAwareFlatList,
+} from 'react-native-keyboard-aware-scroll-view';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import { ScrollView, Text, Image, View, StyleSheet, TextInput, FlatList } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import {
+  ScrollView,
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  TextInput,
+  FlatList,
+} from 'react-native';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 const ProductListing = () => {
-    const category = ['Mobiles', 'Books', 'Clothings', 'Beauty', 'Furniture', 'Laptops'];
-    const [visible, setVisible] = useState(false);
-    const [selectedItems, setSelectedItems] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchcategory, setSearchCategory] = useState('');
-    const [switchOn, setSwitchOn] = useState(false);
-    const [searchedProducts, setSearchedProducts] = useState(category);
-    const [filteredProducts, setFilteredProducts] = useState(products.products);
-    const showMenu = () => setVisible(true);
-    const hideMenu = () => setVisible(false);
+  const category = [
+    'Mobiles',
+    'Books',
+    'Clothings',
+    'Beauty',
+    'Furniture',
+    'Laptops',
+  ];
+  const [visible, setVisible] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchcategory, setSearchCategory] = useState('');
+  const [switchOn, setSwitchOn] = useState(false);
+  const [searchedProducts, setSearchedProducts] = useState(category);
+  const [filteredProducts, setFilteredProducts] = useState(products.products);
+  const showMenu = () => setVisible(true);
+  const hideMenu = () => setVisible(false);
 
+  const handleCheckboxToggle = itemValue => {
+    if (selectedItems.includes(itemValue)) {
+      setSelectedItems(selectedItems.filter(item => item !== itemValue));
+    } else {
+      setSelectedItems([...selectedItems, itemValue]);
+    }
+    setSwitchOn(false);
+  };
 
+  useEffect(() => {
+    const filtered = products.products.filter(product => {
+      return (
+        selectedItems.length === 0 ||
+        selectedItems.some(item => product.category.includes(item))
+      );
+    });
+    setFilteredProducts(filtered);
+  }, [selectedItems]);
 
-    const handleCheckboxToggle = itemValue => {
-        if (selectedItems.includes(itemValue)) {
-            setSelectedItems(selectedItems.filter(item => item !== itemValue));
+  // const filteredProducts = products.products.filter((product) => {
+  //     // const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
+  //     const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
+  //     // console.log("pr",searchMatch);
+  //     // console.log("tr",categoryMatch);
+  //     return   searchMatch;
+  //     // return   searchMatch||categoryMatch;
 
-        } else {
-            setSelectedItems([...selectedItems, itemValue]);
-        }
-        setSwitchOn(false);
+  // });
+
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    setSearchCategory('');
+    const filtered = category.filter(item =>
+      item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+    );
+    setSearchedProducts(filtered);
+    setSelectedItems([]);
+    setSwitchOn(false);
+  };
+  const showProducts = () => {
+    setSwitchOn(!switchOn);
+    setFilteredProducts(products.products);
+    setSelectedItems([]);
+  };
+  const searchCategory = category => {
+    setSearchCategory(category);
+    setSearchQuery('');
+    // console.log("p", category);
+    setSwitchOn(false);
+    const p = products.products.filter(product => {
+      return (
+        category === '' ||
+        product.category.toLowerCase().includes(category.toLowerCase())
+      );
+    });
+    setFilteredProducts(p);
+  };
+  const rows = [];
+
+  for (let i = 0; i < searchedProducts.length; i += 3) {
+    const rowProducts = searchedProducts.slice(i, i + 3);
+
+    const row = (
+      <Stack
+        key={`row_${i}`}
+        direction="row"
+        //spacing={10}
+        style={SelectBankStyle.row}>
+        {rowProducts.map((item, index) => (
+          <TouchableOpacity key={index} onPress={() => searchCategory(item)}>
+            <Surface category="medium" style={SelectBankStyle.surface}>
+              <Text>{item}</Text>
+            </Surface>
+          </TouchableOpacity>
+        ))}
+      </Stack>
+    );
+    rows.push(row);
+  }
+  const getItemlayout = (data, index) => {
+    const height = 150;
+    const vert = 100;
+    return {
+      length: height + vert,
+      offset: (height + vert) * index,
+      index,
     };
-
-    useEffect(() => {
-        const filtered = products.products.filter(product => {
-            return selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
-        });
-        setFilteredProducts(filtered);
-    }, [selectedItems]);
-
-    // const filteredProducts = products.products.filter((product) => {
-    //     // const categoryMatch = selectedItems.length === 0 || selectedItems.some(item => product.category.includes(item));
-    //     const searchMatch = searchcategory === '' || product.category.toLowerCase().includes(searchcategory.toLowerCase());
-    //     // console.log("pr",searchMatch);
-    //     // console.log("tr",categoryMatch);
-    //     return   searchMatch;
-    //     // return   searchMatch||categoryMatch;
-
-    // });
-
-
-
-    const onChangeSearch = query => {
-        setSearchQuery(query);
-        setSearchCategory('');
-        const filtered = category.filter(item =>
-            item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-        );
-        setSearchedProducts(filtered);
-        setSelectedItems([]);
-        setSwitchOn(false);
-    };
-    const showProducts = () => {
-        setSwitchOn(!switchOn);
-        setFilteredProducts(products.products);
-        setSelectedItems([]);
+  };
+  function gettwoitems(data, index) {
+    let items = [];
+    for (let i = 0; i < 2; i++) {
+      const item = data[index * 2 + i];
+      item && items.push(item);
     }
-    const searchCategory = (category) => {
-        setSearchCategory(category);
-        setSearchQuery('');
-        // console.log("p", category);
-        setSwitchOn(false);
-        const p = products.products.filter((product) => {
-            return category === '' || product.category.toLowerCase().includes(category.toLowerCase());
-        })
-        setFilteredProducts(p);
-    };
-    const rows = [];
+    return items;
+  }
 
-    for (let i = 0; i < searchedProducts.length; i += 3) {
-        const rowProducts = searchedProducts.slice(i, i + 3);
+  function renderitem({item, index}) {
+    // console.log(item);
+    const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Product Details');
+        }}>
+        <View style={[styles.item, {marginBottom}]}>
+          {/* // <View key={index} style={styles.itemContainer} > */}
+          {/* {item.map((elem, i) => ( */}
+          <Image
+            source={{uri: item.imgs[0]}}
+            style={styles.image}
+            resizeMethod="resize"
+          />
+          <Text style={styles.name}>{item.title}</Text>
+          {/* <Text style={styles.description}>{item.specs}</Text> */}
 
-        const row = (
-            <Stack
-                key={`row_${i}`}
-                direction="row"
-                //spacing={10}
-                style={SelectBankStyle.row}>
-                {rowProducts.map((item, index) => (
-                    <TouchableOpacity key={index} onPress={() => searchCategory(item)}>
-                        <Surface category="medium" style={SelectBankStyle.surface}>
-                            <Text>{item}</Text>
-                        </Surface>
-                    </TouchableOpacity>
-                ))}
-            </Stack>
-        );
-        rows.push(row);
-    }
-    const getItemlayout = (data, index) => {
-        const height = 150;
-        const vert = 100;
-        return {
-            length: height + vert,
-            offset: (height + vert) * index,
-            index
-        }
-    }
-    function gettwoitems(data, index) {
-        let items = [];
-        for (let i = 0; i < 2; i++) {
-            const item = data[index * 2 + i];
-            item && items.push(item);
-        }
-        return items;
-    }
-
-    function renderitem({ item, index }) {
-        // console.log(item);
-        const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
-        return (
-            < View  style = { [styles.item,{marginBottom}] } >
-            {/* // <View key={index} style={styles.itemContainer} > */}
-            {/* {item.map((elem, i) => ( */ }
-                        <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' />
-                        <Text style={styles.name}>{item.title}</Text>
-        {/* <Text style={styles.description}>{item.specs}</Text> */ }
-
-        <Text style={styles.price}>${item.price}</Text>
-                    {/* </View > */}
-    {/* ))} */ }
-            </View>
-        )
-    }
-return (
+          <Text style={styles.price}>${item.price}</Text>
+          {/* </View > */}
+          {/* ))} */}
+        </View>
+      </TouchableOpacity>
+    );
+  }
+  const navigation = useNavigation();
+  return (
     <>
-        {/* <KeyboardAwareScrollView
+      {/* <KeyboardAwareScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 enableOnAndroid
                 enableAutomaticScroll
                 extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}> */}
-        <SafeAreaView style={{ flex: 1 }} >
-            <View style={{ flex: 1 }}>
-                <View
-                    style={{
-                        backgroundColor: '#5a287d',
-                        padding: 10,
-                    }}>
-                    <Searchbar
-                        placeholder="Search any product"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                        icon={() => <Icon source="magnify" color="black" size={20} />}
-                        style={{
-                            borderRadius: 5,
-                            backgroundColor: '#f4ebfe',
-                        }}
-                    />
-                </View>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={{flex: 1}}>
+          <View
+            style={{
+              backgroundColor: '#5a287d',
+              padding: 10,
+            }}>
+            <Searchbar
+              placeholder="Search any product"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              icon={() => <Icon source="magnify" color="black" size={20} />}
+              style={{
+                borderRadius: 5,
+                backgroundColor: '#f4ebfe',
+              }}
+            />
+          </View>
 
-
-                <View style={styles.rowContainer}>
-                    <View style={styles.toggle}>
-                        <Text style={{ fontSize: 15 }}>All</Text>
-                        <Switch value={switchOn} onValueChange={() => {
-                            showProducts()
-                        }} />
-                    </View>
-                    <Button icon="chevron-down" mode="contained" onPress={showMenu}>
-                        Filter
-                    </Button>
-                    <Portal>
-                        <Modal
-                            visible={visible}
-                            onDismiss={hideMenu}
-                            contentContainerStyle={styles.modalContainer}>
-                            {category.map((item, index) => (
-                                <Checkbox.Item
-                                    key={index}
-                                    label={item}
-                                    status={
-                                        selectedItems.includes(item) ? 'checked' : 'unchecked'
-                                    }
-                                    onPress={() => handleCheckboxToggle(item)}
-                                />
-                            ))}
-                        </Modal>
-                    </Portal>
-                </View>
-
-                {searchQuery !== '' && (
-                    <View style={styles.container}>
-                        <ScrollView>
-                            <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
-                                <Surface elevation={10} category="medium">
-                                    {rows.map((row, index) => (
-                                        <View key={`row_${index}`}  >{row}</View>
-                                    ))}
-                                </Surface>
-                            </Stack>
-                        </ScrollView>
-                    </View>
-                )}
-
-                <View style={styles.container}>
-                    <FlatList
-                        data={filteredProducts}
-                        renderItem={renderitem}
-                        keyExtractor={(item) => item.id}
-                        // inverted={true}
-                        numColumns={2}
-                        contentContainerStyle={styles.container}
-                    // getItemCount={(data) => data.length}
-                    // getItem={gettwoitems}
-                    // getItemLayout={getItemlayout}
-                    // updateCellsBatchingPeriod={100}
-                    // initialNumToRender={10}
-                    // maxToRenderPerBatch={15}
-                    // windowSize={21}
-
-                    />
-
-                </View>
-
+          <View style={styles.rowContainer}>
+            <View style={styles.toggle}>
+              <Text style={{fontSize: 15}}>All</Text>
+              <Switch
+                value={switchOn}
+                onValueChange={() => {
+                  showProducts();
+                }}
+              />
             </View>
-        </SafeAreaView>
-        {/* </KeyboardAwareScrollView> */}
+            <Button icon="chevron-down" mode="contained" onPress={showMenu}>
+              Filter
+            </Button>
+            <Portal>
+              <Modal
+                visible={visible}
+                onDismiss={hideMenu}
+                contentContainerStyle={styles.modalContainer}>
+                {category.map((item, index) => (
+                  <Checkbox.Item
+                    key={index}
+                    label={item}
+                    status={
+                      selectedItems.includes(item) ? 'checked' : 'unchecked'
+                    }
+                    onPress={() => handleCheckboxToggle(item)}
+                  />
+                ))}
+              </Modal>
+            </Portal>
+          </View>
+
+          {searchQuery !== '' && (
+            <View style={styles.container}>
+              <ScrollView>
+                <Stack
+                  fill
+                  left
+                  style={{backgroundColor: 'white', padding: 10}}>
+                  <Surface elevation={10} category="medium">
+                    {rows.map((row, index) => (
+                      <View key={`row_${index}`}>{row}</View>
+                    ))}
+                  </Surface>
+                </Stack>
+              </ScrollView>
+            </View>
+          )}
+
+          <View style={styles.container}>
+            <FlatList
+              data={filteredProducts}
+              renderItem={renderitem}
+              keyExtractor={item => item.id}
+              // inverted={true}
+              numColumns={2}
+              contentContainerStyle={styles.container}
+              // getItemCount={(data) => data.length}
+              // getItem={gettwoitems}
+              // getItemLayout={getItemlayout}
+              // updateCellsBatchingPeriod={100}
+              // initialNumToRender={10}
+              // maxToRenderPerBatch={15}
+              // windowSize={21}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
+      {/* </KeyboardAwareScrollView> */}
     </>
-);
+  );
 };
 const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 10,
-        paddingTop: 10,
-        borderRadius: 8, // Border radius to make it rounded
-        borderWidth: 1, // Border width
-        borderColor: '#ccc',
-        flexGrow: 1,
-        marginBottom:10
-    },
-    itemContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 60,
-        overflow: 'hidden',
-        // height:200
-    },
-    item: {
-        // flexDirection: 'row',
-        // justifyContent: 'space-around',
-        // width: '48%',
-        flex: 1,
-        // alignItems: 'center',
-        // marginBottom: wp('10%'),
-        margin:8,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        padding: 8,
-        backgroundColor: '#fff',
-    },
-    modalContainer: {
-        position: 'absolute',
-        right: 20,
-        left: 20,
-        backgroundColor: 'white',
-        borderRadius: 5,
-        padding: 20,
-        elevation: 4,
-    },
-    image: {
-        width: '100%',
-        height: 200,
-        // aspectRatio:1,
-        // marginTop: -hp('60%'),
-        resizeMode: 'cover',
-        borderRadius: 8,
-        marginBottom:8,
-        // marginLeft: hp('7%'),
-        // marginRight: -hp('6%')
-    },
-    name: {
-        // alignItems: 'center',
-        // width: '100%',
-        fontSize: 16,
-        fontWeight: 'bold',
-        // marginBottom: -wp('60%'),
-        marginBottom: wp('5%'),
-        // padding: 8,
-        // marginTop: -wp('20%'),
-        // marginLeft: hp('1%'),
-        // marginRight: wp('5%'),
-        // overflow: 'hidden',
-    },
-    description: {
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    price: {
-        // overflow: 'hidden',
-        // alignItems: 'center',
-        // padding: hp('3%'),
-        fontSize: 16,
-        fontWeight: 'bold',
-        // width: '100%',
-        color: 'green',
-        // marginTop: hp('55%'),
-        // marginBottom: -wp('50%'),
-        // marginRight: wp('10%')
-    },
-    rowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-    },
-    searchbar: {
-        paddingHorizontal: wp('3%'),
-        paddingVertical: hp('0%'),
-        borderWidth: hp('1%'),
-        borderRadius: wp('5%'),
-        backgroundColor: 'white'
-    },
-    input: {
-        fontSize: wp('5%'),
-        backgroundColor: 'white',
-        height: 40, // Set the height of the search bar
-        fontSize: 16, // Font size of the text input
-        paddingHorizontal: 8
-    },
-    toggle: {
-        padding: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-        // justifyContent: 'space-around'
-    }
+  container: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    borderRadius: 8, // Border radius to make it rounded
+    borderWidth: 1, // Border width
+    borderColor: '#ccc',
+    flexGrow: 1,
+    marginBottom: 10,
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 60,
+    overflow: 'hidden',
+    // height:200
+  },
+  item: {
+    // flexDirection: 'row',
+    // justifyContent: 'space-around',
+    // width: '48%',
+    flex: 1,
+    // alignItems: 'center',
+    // marginBottom: wp('10%'),
+    margin: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 8,
+    backgroundColor: '#fff',
+  },
+  modalContainer: {
+    position: 'absolute',
+    right: 20,
+    left: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 20,
+    elevation: 4,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    // aspectRatio:1,
+    // marginTop: -hp('60%'),
+    resizeMode: 'cover',
+    borderRadius: 8,
+    marginBottom: 8,
+    // marginLeft: hp('7%'),
+    // marginRight: -hp('6%')
+  },
+  name: {
+    // alignItems: 'center',
+    // width: '100%',
+    fontSize: 16,
+    fontWeight: 'bold',
+    // marginBottom: -wp('60%'),
+    marginBottom: wp('5%'),
+    // padding: 8,
+    // marginTop: -wp('20%'),
+    // marginLeft: hp('1%'),
+    // marginRight: wp('5%'),
+    // overflow: 'hidden',
+  },
+  description: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  price: {
+    // overflow: 'hidden',
+    // alignItems: 'center',
+    // padding: hp('3%'),
+    fontSize: 16,
+    fontWeight: 'bold',
+    // width: '100%',
+    color: 'green',
+    // marginTop: hp('55%'),
+    // marginBottom: -wp('50%'),
+    // marginRight: wp('10%')
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  searchbar: {
+    paddingHorizontal: wp('3%'),
+    paddingVertical: hp('0%'),
+    borderWidth: hp('1%'),
+    borderRadius: wp('5%'),
+    backgroundColor: 'white',
+  },
+  input: {
+    fontSize: wp('5%'),
+    backgroundColor: 'white',
+    height: 40, // Set the height of the search bar
+    fontSize: 16, // Font size of the text input
+    paddingHorizontal: 8,
+  },
+  toggle: {
+    padding: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // justifyContent: 'space-around'
+  },
 });
 const SelectBankStyle = StyleSheet.create({
-    row: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        flexWrap: 'wrap',
-    },
-    text: {
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        padding: 10,
-        borderColor: '#ccc',
-        marginBottom: 10,
-    },
-    surface: {
-        backgroundColor: 'white',
-        width: 80,
-        height: 80,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: 'white',
-        margin: 10,
-    },
+  row: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+  },
+  text: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    padding: 10,
+    borderColor: '#ccc',
+    marginBottom: 10,
+  },
+  surface: {
+    backgroundColor: 'white',
+    width: 80,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: 'white',
+    margin: 10,
+  },
 
-    image: {
-        width: 80,
-        height: 80,
-        resizeMode: 'contain',
-        // flexWrap:"wrap"
-    },
+  image: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
+    // flexWrap:"wrap"
+  },
 });
 export default ProductListing;
