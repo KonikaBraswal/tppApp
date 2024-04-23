@@ -5,7 +5,6 @@ import { Modal, Portal, Checkbox, Switch } from 'react-native-paper';
 import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
 import { Keyboard, Pressable, TouchableOpacity, VirtualizedList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -75,7 +74,7 @@ const ProductListing = () => {
         setSearchCategory(category);
         Keyboard.dismiss();
         setSearchQuery('');
-        console.log("p", category);
+        // console.log("p", category);
         const p = products.products.filter((product) => {
             return category === '' || product.category.toLowerCase().includes(category.toLowerCase());
         })
