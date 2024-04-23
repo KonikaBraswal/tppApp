@@ -12,6 +12,7 @@ import {
 
 import { ScrollView, Text, Image, View, StyleSheet, TextInput, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { color } from 'react-native-elements/dist/helpers';
 const ProductListing = () => {
     const category = ['Mobiles', 'Books', 'Clothings', 'Beauty', 'Furniture', 'Laptops'];
     const [visible, setVisible] = useState(false);
@@ -61,7 +62,9 @@ const ProductListing = () => {
         const filtered = category.filter(item =>
             item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
         );
-        setSearchedProducts(filtered);
+        setSearchedProducts(filtered.length > 0 ? filtered : ['No results found']);
+        // setSelectedItems([]);
+        // setSearchedProducts(filtered);
         setSelectedItems([]);
         setSwitchOn(false);
     };
@@ -82,27 +85,42 @@ const ProductListing = () => {
         setSwitchOn(false);
     };
     const rows = [];
-
-    for (let i = 0; i < searchedProducts.length; i += 3) {
-        const rowProducts = searchedProducts.slice(i, i + 3);
-
+    if (searchedProducts.length === 1 && searchedProducts[0] === 'No results found') {
         const row = (
-            <Stack
-                key={`row_${i}`}
-                direction="row"
-                //spacing={10}
-                style={SelectBankStyle.row}>
-                {rowProducts.map((item, index) => (
-                    <TouchableOpacity key={index} onPress={() => {searchCategory(item)}}>
-                        <Surface category="medium" style={SelectBankStyle.surface}>
-                            <Text>{item}</Text>
-                        </Surface>
-                    </TouchableOpacity>
-                ))}
+            <Stack direction="row" style={SelectBankStyle.row}>
+                <Surface category="medium" style={SelectBankStyle.surface}>
+                    <Text style={{ color: 'red' }}>No results found</Text>
+                </Surface>
             </Stack>
         );
         rows.push(row);
     }
+
+    else {
+
+        for (let i = 0; i < searchedProducts.length; i += 3) {
+            const rowProducts = searchedProducts.slice(i, i + 3);
+
+            const row = (
+                <Stack
+                    key={`row_${i}`}
+                    direction="row"
+                    //spacing={10}
+                    style={SelectBankStyle.row}>
+                    {rowProducts.map((item, index) => (
+                        <TouchableOpacity key={index} onPress={() => { searchCategory(item) }}>
+                            <Surface category="medium" style={SelectBankStyle.surface}>
+                                <Text>{item}</Text>
+                            </Surface>
+                        </TouchableOpacity>
+                    ))}
+
+                </Stack>
+            );
+            rows.push(row);
+        }
+    }
+
     const getItemlayout = (data, index) => {
         const height = 150;
         const vert = 100;
@@ -125,118 +143,118 @@ const ProductListing = () => {
         // console.log(item);
         const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
         return (
-            < View  style = { [styles.item,{marginBottom}] } >
-            {/* // <View key={index} style={styles.itemContainer} > */}
-            {/* {item.map((elem, i) => ( */ }
-                        <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' />
-                        <Text style={styles.name}>{item.title}</Text>
-        {/* <Text style={styles.description}>{item.specs}</Text> */ }
+            < View style={[styles.item, { marginBottom }]} >
+                {/* // <View key={index} style={styles.itemContainer} > */}
+                {/* {item.map((elem, i) => ( */}
+                <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' />
+                <Text style={styles.name}>{item.title}</Text>
+                {/* <Text style={styles.description}>{item.specs}</Text> */}
 
-        <Text style={styles.price}>${item.price}</Text>
-                    {/* </View > */}
-    {/* ))} */ }
+                <Text style={styles.price}>${item.price}</Text>
+                {/* </View > */}
+                {/* ))} */}
             </View>
         )
     }
-return (
-    <>
-        {/* <KeyboardAwareScrollView
+    return (
+        <>
+            {/* <KeyboardAwareScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 enableOnAndroid
                 enableAutomaticScroll
                 extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}> */}
-        <SafeAreaView style={{ flex: 1 }} >
-            <View style={{ flex: 1 }}>
-                <View
-                    style={{
-                        backgroundColor: '#5a287d',
-                        padding: 10,
-                    }}>
-                    <Searchbar
-                        placeholder="Search any product"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                        icon={() => <Icon source="magnify" color="black" size={20} />}
+            <SafeAreaView style={{ flex: 1 }} >
+                <View style={{ flex: 1 }}>
+                    <View
                         style={{
-                            borderRadius: 5,
-                            backgroundColor: '#f4ebfe',
-                        }}
-                    />
-                </View>
-
-
-                <View style={styles.rowContainer}>
-                    <View style={styles.toggle}>
-                        <Text style={{ fontSize: 15 }}>All</Text>
-                        <Switch value={switchOn} onValueChange={() => {
-                            showProducts()
-                        }} />
+                            backgroundColor: '#5a287d',
+                            padding: 10,
+                        }}>
+                        <Searchbar
+                            placeholder="Search any product"
+                            onChangeText={onChangeSearch}
+                            value={searchQuery}
+                            icon={() => <Icon source="magnify" color="black" size={20} />}
+                            style={{
+                                borderRadius: 5,
+                                backgroundColor: '#f4ebfe',
+                            }}
+                        />
                     </View>
-                    <Button icon="chevron-down" mode="contained" onPress={showMenu}>
-                        Filter
-                    </Button>
-                    <Portal>
-                        <Modal
-                            visible={visible}
-                            onDismiss={hideMenu}
-                            contentContainerStyle={styles.modalContainer}>
-                            {category.map((item, index) => (
-                                <Checkbox.Item
-                                    key={index}
-                                    label={item}
-                                    status={
-                                        selectedItems.includes(item) ? 'checked' : 'unchecked'
-                                    }
-                                    onPress={() => handleCheckboxToggle(item)}
-                                />
-                            ))}
-                        </Modal>
-                    </Portal>
-                </View>
 
-                {searchQuery !== '' && (
+
+                    <View style={styles.rowContainer}>
+                        <View style={styles.toggle}>
+                            <Text style={{ fontSize: 15 }}>All</Text>
+                            <Switch value={switchOn} onValueChange={() => {
+                                showProducts()
+                            }} />
+                        </View>
+                        <Button icon="chevron-down" mode="contained" onPress={showMenu}>
+                            Filter
+                        </Button>
+                        <Portal>
+                            <Modal
+                                visible={visible}
+                                onDismiss={hideMenu}
+                                contentContainerStyle={styles.modalContainer}>
+                                {category.map((item, index) => (
+                                    <Checkbox.Item
+                                        key={index}
+                                        label={item}
+                                        status={
+                                            selectedItems.includes(item) ? 'checked' : 'unchecked'
+                                        }
+                                        onPress={() => handleCheckboxToggle(item)}
+                                    />
+                                ))}
+                            </Modal>
+                        </Portal>
+                    </View>
+
+                    {searchQuery !== '' && (
+                        <View style={styles.container}>
+                            <ScrollView
+                                keyboardShouldPersistTaps='always'
+                                automaticallyAdjustContentInsets={false}
+                                keyboardDismissMode='on-drag'
+                            >
+                                <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+                                    <Surface elevation={10} category="medium">
+                                        {rows.map((row, index) => (
+                                            <View key={`row_${index}`}  >{row}</View>
+                                        ))}
+                                    </Surface>
+                                </Stack>
+                            </ScrollView>
+                        </View>
+                    )}
+
                     <View style={styles.container}>
-                        <ScrollView
-                        keyboardShouldPersistTaps='always'
-                        automaticallyAdjustContentInsets={false} 
-                        keyboardDismissMode='on-drag'
-                        >
-                            <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
-                                <Surface elevation={10} category="medium">
-                                    {rows.map((row, index) => (
-                                        <View key={`row_${index}`}  >{row}</View>
-                                    ))}
-                                </Surface>
-                            </Stack>
-                        </ScrollView>
+                        <FlatList
+                            data={filteredProducts}
+                            renderItem={renderitem}
+                            keyExtractor={(item) => item.id}
+                            // inverted={true}
+                            numColumns={2}
+                            contentContainerStyle={styles.container}
+                        // getItemCount={(data) => data.length}
+                        // getItem={gettwoitems}
+                        // getItemLayout={getItemlayout}
+                        // updateCellsBatchingPeriod={100}
+                        // initialNumToRender={10}
+                        // maxToRenderPerBatch={15}
+                        // windowSize={21}
+
+                        />
+
                     </View>
-                )}
-
-                <View style={styles.container}>
-                    <FlatList
-                        data={filteredProducts}
-                        renderItem={renderitem}
-                        keyExtractor={(item) => item.id}
-                        // inverted={true}
-                        numColumns={2}
-                        contentContainerStyle={styles.container}
-                    // getItemCount={(data) => data.length}
-                    // getItem={gettwoitems}
-                    // getItemLayout={getItemlayout}
-                    // updateCellsBatchingPeriod={100}
-                    // initialNumToRender={10}
-                    // maxToRenderPerBatch={15}
-                    // windowSize={21}
-
-                    />
 
                 </View>
-
-            </View>
-        </SafeAreaView>
-        {/* </KeyboardAwareScrollView> */}
-    </>
-);
+            </SafeAreaView>
+            {/* </KeyboardAwareScrollView> */}
+        </>
+    );
 };
 const styles = StyleSheet.create({
     container: {
@@ -246,7 +264,7 @@ const styles = StyleSheet.create({
         borderWidth: 1, // Border width
         borderColor: '#ccc',
         flexGrow: 1,
-        marginBottom:10
+        marginBottom: 10
     },
     itemContainer: {
         flex: 1,
@@ -263,7 +281,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // alignItems: 'center',
         // marginBottom: wp('10%'),
-        margin:8,
+        margin: 8,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
@@ -286,7 +304,7 @@ const styles = StyleSheet.create({
         // marginTop: -hp('60%'),
         resizeMode: 'cover',
         borderRadius: 8,
-        marginBottom:8,
+        marginBottom: 8,
         // marginLeft: hp('7%'),
         // marginRight: -hp('6%')
     },
