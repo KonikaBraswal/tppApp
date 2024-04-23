@@ -23,6 +23,7 @@ const CART_STORAGE_KEY = '@OneBank:cart';
 const CartScreen = () => {
   const navigation = useNavigation();
   const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -37,6 +38,10 @@ const CartScreen = () => {
     loadCart();
   }, [cart]);
 
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [cart]);
+
   const loadCartFromStore = async () => {
     try {
       const cartData = await AsyncStorage.getItem(CART_STORAGE_KEY);
@@ -47,6 +52,13 @@ const CartScreen = () => {
     } catch (error) {
       throw new Error('Error loading cart:', error);
     }
+  };
+  const calculateTotalPrice = () => {
+    const total = cart.reduce((accumulator, currentItem) => {
+      const itemPrice = currentItem.price;
+      return accumulator + itemPrice;
+    }, 0);
+    setTotalPrice(total);
   };
 
   const removeAllItems = async () => {
@@ -103,7 +115,11 @@ const CartScreen = () => {
                 postcode="B34 4NO"
                 country="JEY"
               />
-              <TotalCost SubTotal="$90.00" ShippingCost="$5.00" Tax="$0.00" />
+              <TotalCost
+                SubTotal={totalPrice}
+                ShippingCost="$5.00"
+                Tax="$0.00"
+              />
             </>
           )}
         </View>
