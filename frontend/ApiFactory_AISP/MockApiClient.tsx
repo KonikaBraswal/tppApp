@@ -41,144 +41,20 @@ interface UserCredentials {
 }
 
 class MockApiClient {
-  // private baseUrl: string;
-  // private clientId: string;
-  // private clientSecret: string;
-  // private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
-  // private permissions: string[] = [];
-  // private apiAccess: string = '';
-  // constructor(
-  //   baseUrl: string,
-  //   clientId: string,
-  //   clientSecret: string,
-  //   commonHeaders: any,
-  // ) {
-  //   this.baseUrl = baseUrl;
-  //   this.clientId = clientId;
-  //   this.clientSecret = clientSecret;
-  //   this.commonHeaders = commonHeaders;
-  // }
-
-  // async  eCommQuickCheckout(accessToken: string): Promise<any> {
-  //   console.log(accessToken);
-  //   try{
-  //     const headers = {
-  //       ...this.commonHeaders,
-  //       Authorization: `Bearer ${accessToken}`,
-  //     };
-  //     const checkoutResponse: AxiosResponse<any> = await axios.get(
-  //       `${this.baseUrl}/${sandboxConfig.eCommCheckoutEndpoint}`,
-  //       {
-  //         headers: headers,
-  //       },
-  //     );
-
-  //     const data = checkoutResponse.data.data;
-  //     console.log(data);
-
-  //   }catch(error) {
-  //     throw new Error(`Failed to fetch details of customer:  ${error}`);
-  //   }
-  // }
-
+  
   async retrieveAccessToken(permission: string[]): Promise<string> {
-    // this.permissions = permission;
+    
     try {
-      // const body: Record<string, string> = {
-      //   grant_type: sandboxConfig.grant_type,
-      //   client_id: this.clientId,
-      //   client_secret: this.clientSecret,
-      //   scope: sandboxConfig.scope,
-      // };
-      // const headers = {...this.commonHeaders};
-
-      // const response: AxiosResponse<ResponseData> = await axios.post(
-      //   `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
-      //   null,
-      //   {
-      //     headers: headers,
-      //     params: body,
-      //   },
-      // );
-      //store
-      //storing scope in database
-      // const scope = response.data.scope;
-
-      // const details1 = {
-      //   userId: 1001,
-      //   scope: scope,
-      // };
-
-      // addDetails(details1);
-      // store
-      // console.log('Access token', response.data.access_token);
-      // await this.eCommQuickCheckout(response.data.access_token);
-      // return this.accountRequest(response.data.access_token);
       return "nothing";
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
 
-  // async accountRequest(accessToken: string): Promise<string> {
-  //   try {
-  //     const body: BodyData = {
-  //       Data: {
-  //         Permissions: this.permissions,
-  //       },
-  //       Risk: {},
-  //     };
-  //     const headers = {
-  //       ...this.commonHeaders,
-  //       Authorization: 'Bearer ' + accessToken,
-  //     };
-
-  //     const response: AxiosResponse<ResponseData> = await axios.post(
-  //       `${this.baseUrl}/${sandboxConfig.accountRequestEndpoint}`,
-  //       body,
-  //       {
-  //         headers: headers,
-  //       },
-  //     );
-  //     //store
-  //     const Status = response.data.Data?.Status;
-  //     const Payload = response.data.Data;
-  //     const ConsentId = response.data.Data?.ConsentId || '';
-
-  //     const updatedDetails1 = {
-  //       bankname: 'Natwest',
-  //       consentid: ConsentId,
-  //       status: Status,
-  //       consentpayload: JSON.stringify(Payload),
-  //     };
-
-  //     const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
-
-  //     await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
-  //     //DB
-  //     return response.data.Data?.ConsentId || '';
-  //   } catch (error) {
-  //     throw new Error(`Failed to fetch data: ${error}`);
-  //   }
-  // }
-
   async manualUserConsent(consentId: string): Promise<string> {
-    // console.log('manual consent');
-    // let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
-    // Linking.openURL(consentUrlWithVariables);
-    // return consentUrlWithVariables;
     return 'nothing';
   }
   async userConsentProgammatically(consentId: string): Promise<string> {
-    // try {
-    //   console.log('ConsentID:', consentId);
-    //   const accountResponse: AxiosResponse<any> = await axios.get(
-    //     `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
-    //   );
-    //   return this.exchangeAccessToken(accountResponse.data.redirectUri);
-    // } catch (error) {
-    //   throw new Error(`Failed to fetch data for accounts: ${error}`);
-    // }
     return 'nothing';
   }
 
