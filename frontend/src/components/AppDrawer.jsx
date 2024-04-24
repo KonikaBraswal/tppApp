@@ -305,9 +305,8 @@
 //   );
 // };
 // export default AppDrawer;
-import { DrawerActions } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -325,16 +324,21 @@ const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = ({ navigation }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [mode,setMode]=useState('local');
+  useEffect(() => {
+    global.env = mode;
+    console.log("Mode changed to:", global.env);
+ }, [mode]); 
+  console.log("hiiiiiiiiiiiiiiiiiiiiiii",global.env);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 
   const handleMenuItemClick = (item) => {
-    // Handle actions when a menu item is clicked
-    // For example, you can navigate to a different screen
     console.log('Clicked:', item);
-    toggleDropdown();
+    setMode(item);
+    // toggleDropdown();
   };
 
   return (
@@ -363,10 +367,10 @@ const CustomDrawerContent = ({ navigation }) => {
         {showDropdown && (
           <View style={{ backgroundColor: 'white', marginTop: 5 }}>
             <TouchableOpacity onPress={() => handleMenuItemClick('sandbox')}>
-            <Checkbox.Item label="Sandbox" status="checked" />
+            <Checkbox.Item label="Sandbox" status={mode === 'sandbox' ? 'checked' : 'unchecked'} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleMenuItemClick('local')}>
-            <Checkbox.Item label="local" status="checked" />
+            <Checkbox.Item label="Local" status={mode === 'local' ? 'checked' : 'unchecked'} />
             </TouchableOpacity>
           </View>
         )}

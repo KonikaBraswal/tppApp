@@ -31,15 +31,31 @@ const screenWidth = wp('100%');
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
+
+// const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const ConsentScreen = () => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [error, setError] = useState(null);
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -119,15 +135,9 @@ const ConsentScreen = () => {
   };
 
   const handleConfirmButtonClick = async () => {
-    if (mode == 'sandbox') {
+    console.log("calling mode",global.env)
+    // if (mode == 'sandbox') {
       try {
-        // const permissions = [
-        //   'ReadAccountsDetail',
-        //   'ReadBalances',
-        //   'ReadTransactionsCredits',
-        //   'ReadTransactionsDebits',
-        //   'ReadTransactionsDetail',
-        // ];
         const permissions = new Array();
         if (checked1) {
           permissions.push('ReadAccountsDetail');
@@ -160,32 +170,33 @@ const ConsentScreen = () => {
           );
           console.log(consentUrl);
           showInputDialog(permissions);
-        } else {
-          const data2 = await sandboxApiClient.userConsentProgammatically();
-          const transactionData = await sandboxApiClient.allCalls(
-            '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
-          );
-          console.log(transactionData);
-          const balanceData = await sandboxApiClient.allCalls(
-            '124b77ad-a58a-4d0c-9cf4-354f56eaec01/balances',
-          );
-          navigation.navigate('Your Accounts', {
-            selectedBank: 'Natwest',
-            selectedIcon: "'../assets/icons/natwest.png'",
-            accounts: data2,
-            transactions: transactionData,
-            // balance: balanceData,
-          });
         }
+        // } else {
+        //   const data2 = await sandboxApiClient.userConsentProgammatically();
+        //   const transactionData = await sandboxApiClient.allCalls(
+        //     '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
+        //   );
+        //   console.log(transactionData);
+        //   const balanceData = await sandboxApiClient.allCalls(
+        //     '124b77ad-a58a-4d0c-9cf4-354f56eaec01/balances',
+        //   );
+        //   navigation.navigate('Your Accounts', {
+        //     selectedBank: 'Natwest',
+        //     selectedIcon: "'../assets/icons/natwest.png'",
+        //     accounts: data2,
+        //     transactions: transactionData,
+        //     // balance: balanceData,
+        //   });
+        // }
       } catch (error) {
         console.error('Error:', error);
         setError('Failed to retrieve access token.');
       } finally {
         setLoading(false);
       }
-    } else {
-      navigation.navigate('Consent');
-    }
+    // } else {
+    //   navigation.navigate('Consent');
+    // }
   };
 
   const handleSubmit = async permission => {

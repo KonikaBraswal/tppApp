@@ -326,6 +326,7 @@ class SanboxApiClient {
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
       await this.fetchAge(apiAccessToken);
+      console.log("hi dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",accountResponse.data.Data);
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);

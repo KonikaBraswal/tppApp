@@ -6,11 +6,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
-
+import balanceData from '../assets/data/balances.json';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const AccountDetails = props => {
   const {
@@ -25,6 +25,11 @@ const AccountDetails = props => {
   const permissions = props.permissions;
   const [balanceDetails, setBalanceDetails] = useState(null);
   useEffect(() => {
+    if(global.env=='local')
+    {
+      setBalanceDetails(balanceData.Data);
+    }
+    else{
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         try {
@@ -39,6 +44,7 @@ const AccountDetails = props => {
     };
 
     fetchBalance();
+  }
   }, [AccountId]);
 
   return (

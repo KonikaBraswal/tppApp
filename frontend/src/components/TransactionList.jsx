@@ -4,11 +4,12 @@ import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import TransactionCard from './TransactionCard';
+import balanceData from '../assets/data/transactions.json';
 import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient(global.env);
 const TransactionList = props => {
   const permissions = props.permissions;
   const AccountId = props.accountId;
@@ -18,6 +19,11 @@ const TransactionList = props => {
     'No Transactions Found',
   );
   useEffect(() => {
+    if(global.env=='local')
+    {
+      setTransactionDetails(balanceData.Data);
+    }
+    else{
     const fetchTransaction = async () => {
       if (
         permissions.includes('ReadTransactionsDetail') &&
@@ -41,6 +47,7 @@ const TransactionList = props => {
     };
 
     fetchTransaction();
+  }
   }, [AccountId]);
   const transactions = transactionDetails;
   return (

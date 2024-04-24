@@ -22,7 +22,7 @@ import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
