@@ -2,8 +2,8 @@ const imagesArray = [
   {
     id: '1',
     images: [
-      require('../ecomm-images/appleLaptop1.jpg'),
-      require('../ecomm-images/appleLaptop2.jpg'),
+      require('../images/ecomm-images/redmi9A1.jpg'),
+      require('../images/ecomm-images/redmi9A2.jpg'),
     ],
     'related-images': [require('../ecomm-images/SamsungM311.jpg')],
   },

@@ -5,15 +5,18 @@ import { Modal, Portal, Checkbox, Switch } from 'react-native-paper';
 import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
 import { Keyboard, Pressable, TouchableOpacity, VirtualizedList } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import imgarray from '../../assets/data/images';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 
 import { ScrollView, Text, Image, View, StyleSheet, TextInput, FlatList } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { color } from 'react-native-elements/dist/helpers';
 const ProductListing = () => {
+    const navigation=useNavigation();
     const category = ['Mobiles', 'Books', 'Clothings', 'Beauty', 'Furniture', 'Laptops'];
     const [visible, setVisible] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
@@ -71,6 +74,7 @@ const ProductListing = () => {
     const showProducts = () => {
         setSwitchOn(!switchOn);
         setFilteredProducts(products.products);
+        console.log(products.products.length);//50
         setSelectedItems([]);
     }
     const searchCategory = (category) => {
@@ -97,7 +101,6 @@ const ProductListing = () => {
     }
 
     else {
-
         for (let i = 0; i < searchedProducts.length; i += 3) {
             const rowProducts = searchedProducts.slice(i, i + 3);
 
@@ -141,12 +144,15 @@ const ProductListing = () => {
 
     function renderitem({ item, index }) {
         // console.log(item);
-        const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
+        const marginBottom = index === filteredProducts.length - 1 ? wp('90%') : 10;
+        const productImages = imgarray.find(object => object.id === item.id);
         return (
+            <TouchableOpacity onPress={()=>navigation.navigate('Product Details')}>
             < View style={[styles.item, { marginBottom }]} >
                 {/* // <View key={index} style={styles.itemContainer} > */}
                 {/* {item.map((elem, i) => ( */}
-                <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' />
+                {/* <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' /> */}
+                <Image source={productImages.images[0]} style={styles.image} resizeMethod='resize' />
                 <Text style={styles.name}>{item.title}</Text>
                 {/* <Text style={styles.description}>{item.specs}</Text> */}
 
@@ -154,6 +160,7 @@ const ProductListing = () => {
                 {/* </View > */}
                 {/* ))} */}
             </View>
+            </TouchableOpacity>
         )
     }
     return (
@@ -258,13 +265,17 @@ const ProductListing = () => {
 };
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 9,
         paddingTop: 10,
+        paddingBottom:20,
         borderRadius: 8, // Border radius to make it rounded
         borderWidth: 1, // Border width
         borderColor: '#ccc',
         flexGrow: 1,
-        marginBottom: 10
+        marginBottom: 10,
+        justifyContent:'space-between',
+        // flexWrap:'wrap',
+        // width:'90%'
     },
     itemContainer: {
         flex: 1,
@@ -277,15 +288,14 @@ const styles = StyleSheet.create({
     item: {
         // flexDirection: 'row',
         // justifyContent: 'space-around',
-        // width: '48%',
+        width: '63%',
+        // margin:3,
         flex: 1,
-        // alignItems: 'center',
-        // marginBottom: wp('10%'),
-        margin: 8,
+        alignItems: 'center',
         borderRadius: 8,
-        borderWidth: 1,
+        borderWidth: 3,
         borderColor: '#ddd',
-        padding: 8,
+        padding: 12,
         backgroundColor: '#fff',
     },
     modalContainer: {
