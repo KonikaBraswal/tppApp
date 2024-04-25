@@ -9,15 +9,20 @@ import {
 } from 'react-native';
 import {IconButton, Button, Modal, Portal} from 'react-native-paper';
 import {Rating} from 'react-native-ratings';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import ImageCarousel from '../../components/EcommComponents/ImageCarousel';
-import imagesArray from '../../assets/data/ecomm-images';
+import imgArray from '../../assets/data/images';
 import ReviewList from '../../components/EcommComponents/ReviewList';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CART_STORAGE_KEY = '@OneBank:cart';
 
-const ProductDetails = () => {
+const ProductDetails = ({route}) => {
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
 
@@ -51,70 +56,32 @@ const ProductDetails = () => {
     navigation.navigate('Cart');
   };
 
-  // const product=props.product;
-  const product = {
-    Brand: 'Samsung',
-    RAM: '6 GB',
-    title: 'Samsung Galaxy M31 (Ocean Blue, 6GB RAM, 128GB Storage)',
-    category: 'Mobiles',
-    price: 14999,
-    specs: [
-      'Quad Camera Setup - 64MP (F1.8) Main Camera +8MP (F2.2) Ultra Wide Camera +5MP(F2.2) Depth Camera +5MP(F2.4) Macro Camera and 32MP (F2.0) front facing Camera',
-      '6.4-inch(16.21 centimeters) Super Amoled - Infinity U Cut Display , FHD+ Resolution (2340 x 1080) , 404 ppi pixel density and 16M color support',
-      'Android v10.0 operating system with 2.3GHz + 1.7GHz Exynos 9611 Octa core processor , 6GB RAM, 128GB internal memory expandable up to 512GB and dual SIM',
-      '6000 mAh Battery',
-    ],
-    inStock: 50,
-    eta: 20,
-    id: 'm2',
-    rating: 4,
-    reviews: [
-      {
-        name: 'Rohit',
-        title: 'Best mobile in buget',
-        content: 'I higely recoomend this mobile',
-        rating: 5,
-      },
-      {
-        name: 'Doraemon',
-        title: 'Value for money',
-        content:
-          "Really a good budget phone with big battery. Camera performance also awesome, but in pro mode there no control for shutter speed and while changing the iso i don't feel any differences. I need more update on camera modes. Phone performance and charging speed is good. Except camera modes i love this phone.",
-        rating: 4,
-      },
-      {
-        name: 'Nobita',
-        title: 'Best in the market with this price range',
-        content:
-          'A Descent phone Definitely not for pro pubg player but can work fine Super amoled gives it best performance Descent camera Improved Selfie camera compared to M30 Long battery life Nice Security No ads unlike MI Works smoothly',
-        rating: 5,
-      },
-    ],
-  };
-  const productImages = imagesArray.find(object => object.id === product.id);
+  console.log(route.params.product);
+  const product = route.params.product;
+  const productImages = imgArray.find(object => object.id === product.id);
   return (
     <View>
-      <ScrollView style={{backgroundColor: '#9c27b0'}}>
-        <View style={{padding: 10, marginTop: 15}}>
+      <ScrollView style={{backgroundColor: '#fff'}}>
+        <View style={{padding: hp('1%'), marginTop: hp('1.5%')}}>
           <ImageCarousel data={productImages} />
 
-          <View style={{padding: 6, marginTop: 10}}>
+          <View style={{padding: 6, marginVertical: hp('1.5%')}}>
             <Text
               style={{
-                fontSize: 18,
+                fontSize: RFValue(17),
                 marginBottom: 5,
-                color: 'white',
+                color: 'black',
                 fontWeight: 'bold',
               }}>
               {product.title}
             </Text>
-            <View style={{alignItems: 'flex-start', marginVertical: 5}}>
+            <View
+              style={{alignItems: 'flex-start', marginVertical: hp('1.5%')}}>
               <Rating
                 type="custom"
                 ratingCount={5}
                 startingValue={product.rating}
                 imageSize={25}
-                tintColor="#9c27b0"
                 readonly
               />
             </View>
@@ -123,33 +90,35 @@ const ProductDetails = () => {
                 flexDirection: 'row',
                 alignContent: 'center',
                 justifyContent: 'space-between',
-                marginVertical: 5,
+                marginTop: hp('1.5%'),
               }}>
               <Text
                 style={{
-                  fontSize: 19,
-                  color: 'white',
+                  fontSize: RFValue(18),
+                  color: 'black',
                   fontWeight: 'bold',
                 }}>
-                Price: $ {product.price.toFixed(2)}
+                Price: € {product.price.toFixed(2)}
               </Text>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: RFValue(15),
                   padding: 5,
                   color: '#000',
                   fontWeight: 'bold',
                   backgroundColor: '#FFF',
+                  borderColor: '#000',
+                  borderWidth: 1,
                   borderRadius: 5,
                 }}>
-                In Stock: ${product.inStock}
+                In Stock: {product.inStock}
               </Text>
             </View>
             <Text
               style={{
-                fontSize: 18,
-                marginBottom: 5,
-                color: 'white',
+                fontSize: RFValue(17),
+                marginVertical: hp('1.5%'),
+                color: 'black',
                 fontWeight: 'bold',
               }}>
               Specifications:
@@ -157,10 +126,10 @@ const ProductDetails = () => {
             <View>
               <Text
                 style={{
-                  color: 'white',
+                  color: 'black',
                   flexWrap: 'wrap',
-                  marginBottom: 5,
-                  fontSize: 15,
+                  marginBottom: hp('0.7%'),
+                  fontSize: RFValue(14),
                   fontWeight: '400',
                 }}>
                 {product.specs}
@@ -170,10 +139,9 @@ const ProductDetails = () => {
               <View>
                 <Text
                   style={{
-                    fontSize: 18,
-                    marginBottom: 10,
-                    marginTop: 5,
-                    color: 'white',
+                    fontSize: RFValue(17),
+                    marginVertical: 10,
+                    color: 'black',
                     fontWeight: 'bold',
                   }}>
                   Reviews:
@@ -216,11 +184,7 @@ const ProductDetails = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <IconButton
-              icon="chevron-right-circle-outline"
-              iconColor="#fff"
-              size={24}
-            />
+            <IconButton icon="gesture-tap" iconColor="#fff" size={24} />
             <Text style={styles.buttonText}>Go To Bag</Text>
           </View>
         </TouchableOpacity>
@@ -230,17 +194,12 @@ const ProductDetails = () => {
             onDismiss={hideModal}
             contentContainerStyle={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <IconButton
-                icon="check-circle"
-                size={50}
-                iconColor="green"
-                style={styles.icon}
-              />
+              <IconButton icon="check-circle" size={45} iconColor="green" />
               <Text style={styles.modalText}>{product.title}</Text>
-              <Text style={styles.modalText}> Added to Cart!</Text>
+              <Text style={styles.modalText}> Added to Cart !</Text>
               <IconButton
                 icon="close"
-                iconColor="purple"
+                iconColor="black"
                 onPress={hideModal}
                 style={styles.closeButton}
               />
@@ -261,20 +220,20 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: 'rgba(192, 192, 192, 0.9)',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: hp('2.2%'),
+    paddingHorizontal: wp('3%'),
   },
   button: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     borderRadius: 8,
-    backgroundColor: 'green',
-    marginHorizontal: 5,
+    backgroundColor: '#0047AB',
+    marginHorizontal: wp('1%'),
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: RFValue(15),
     fontWeight: '600',
   },
   modalContainer: {
@@ -283,19 +242,18 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
+    padding: hp('4%'),
     borderRadius: 10,
     alignItems: 'center',
   },
   modalText: {
-    fontSize: 18,
+    fontSize: RFValue(16),
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: '#0047AB',
   },
-  icon: {
-    marginBottom: 20,
-  },
+
   closeButton: {
     position: 'absolute',
     top: 0,

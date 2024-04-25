@@ -4,6 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {Rating} from 'react-native-ratings';
 import {IconButton} from 'react-native-paper';
 
@@ -14,10 +15,10 @@ const ReviewList = ({name, rating, content, title}) => {
     setExpanded(!expanded);
   };
   return (
-    <View style={{marginBottom: 15}}>
+    <View style={{marginBottom: hp('2%')}}>
       <TouchableOpacity
         onPress={toggleAccordion}
-        style={{backgroundColor: '#FFF', borderRadius: 10}}>
+        style={{backgroundColor: '#FFF', borderRadius: 10, elevation: 4}}>
         <View
           style={{
             flexDirection: 'row',
@@ -37,14 +38,19 @@ const ReviewList = ({name, rating, content, title}) => {
             <Text
               style={{
                 fontWeight: 'bold',
-                fontSize: 16,
+                fontSize: RFValue(14),
                 color: '#000',
               }}>
               {name}
             </Text>
           </View>
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: hp('0.5%'),
+            }}>
             <Rating
               type="custom"
               ratingCount={5}
@@ -62,15 +68,21 @@ const ReviewList = ({name, rating, content, title}) => {
         {expanded && (
           <View
             style={{paddingHorizontal: wp('5%'), paddingVertical: hp('2%')}}>
-            <Text style={{fontSize: 16, fontWeight: 'bold', color: '#000'}}>
+            <Text
+              style={{
+                fontSize: RFValue(15),
+                fontWeight: 'bold',
+                color: '#000',
+              }}>
               {title}
             </Text>
             <Text
               style={{
-                fontSize: 15,
+                fontSize: RFValue(13),
                 fontWeight: '400',
                 marginTop: hp('1%'),
                 color: '#000',
+                textAlign: 'justify',
               }}>
               {content}
             </Text>
@@ -87,14 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: wp('2%'),
     padding: wp('4%'),
     marginBottom: hp('2%'),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   header: {
     flexDirection: 'row',
