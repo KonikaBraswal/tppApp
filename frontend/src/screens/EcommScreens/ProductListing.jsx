@@ -173,18 +173,19 @@ const ProductListing = () => {
     const marginBottom = index === filteredProducts.length - 1 ? wp('90%') : 10;
     const productImages = imgarray.find(object => object.id === item.id);
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => navigation.navigate('Product Details', {product: item})}>
         <View style={[styles.item, {marginBottom}]}>
           {/* // <View key={index} style={styles.itemContainer} > */}
           {/* {item.map((elem, i) => ( */}
           {/* <Image source={{ uri: item.imgs[0] }} style={styles.image} resizeMethod='resize' /> */}
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => navigation.navigate('Product Details', {product: item})}>
           <Image
             source={productImages.images[0]}
             style={styles.image}
             resizeMethod="resize"
-          />
+            />
+            </TouchableOpacity>
           <Text style={styles.name}>{item.title}</Text>
           {/* <Text style={styles.description}>{item.specs}</Text> */}
 
@@ -192,7 +193,6 @@ const ProductListing = () => {
           {/* </View > */}
           {/* ))} */}
         </View>
-      </TouchableOpacity>
     );
   }
   return (
@@ -298,15 +298,15 @@ const ProductListing = () => {
 };
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 9,
+    paddingHorizontal: 10,
     paddingTop: 10,
-    paddingBottom: 20,
+    // paddingBottom: 20,
     borderRadius: 8, // Border radius to make it rounded
     borderWidth: 1, // Border width
     borderColor: '#ccc',
     flexGrow: 1,
     marginBottom: 10,
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     // flexWrap:'wrap',
     // width:'90%'
   },
@@ -321,14 +321,15 @@ const styles = StyleSheet.create({
   item: {
     // flexDirection: 'row',
     // justifyContent: 'space-around',
-    width: '63%',
+    // width: '63%',
     // margin:3,
     flex: 1,
-    alignItems: 'center',
+    margin:8,
+    // alignItems: 'center',
     borderRadius: 8,
     borderWidth: 3,
     borderColor: '#ddd',
-    padding: 12,
+    padding: 8,
     backgroundColor: '#fff',
   },
   modalContainer: {
