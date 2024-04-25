@@ -20,6 +20,7 @@ const ImageCarousel = props => {
             mode="contained-tonal"
             size={20}
             iconColor="#000"
+            containerColor="#D3D3D3"
             style={styles.chevron}
           />
         )}
@@ -51,12 +52,13 @@ const styles = StyleSheet.create({
   item: {
     width: itemWidth,
     height: 250,
-    marginHorizontal: 5,
-    padding: 5,
+    margin: hp('1.2%'),
+    padding: hp('0.2%'),
     borderRadius: 8,
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: '#fff',
+    elevation: 6,
   },
   image: {
     width: '100%',

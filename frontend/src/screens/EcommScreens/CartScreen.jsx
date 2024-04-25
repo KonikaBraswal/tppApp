@@ -13,6 +13,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 import CartItem from '../../components/EcommComponents/CartItem';
 import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
@@ -75,7 +76,7 @@ const CartScreen = () => {
 
   return (
     <>
-      <ScrollView style={{backgroundColor: '#9c27b0', flex: 1}}>
+      <ScrollView style={{backgroundColor: '#fff', flex: 1}}>
         <View style={{padding: 10}}>
           {cart.length === 0 ? (
             <Text
@@ -83,8 +84,8 @@ const CartScreen = () => {
                 textAlign: 'center',
                 justifyContent: 'center',
                 fontWeight: 'bold',
-                fontSize: 16,
-                color: '#FFF',
+                fontSize: RFValue(15),
+                color: '#0047AB',
               }}>
               Your cart is empty
             </Text>
@@ -93,11 +94,11 @@ const CartScreen = () => {
               <Text
                 style={{
                   alignSelf: 'flex-end',
-                  marginRight: 10,
-                  marginVertical: 10,
+                  marginRight: wp('3%'),
+                  marginVertical: hp('0.5%'),
                   fontWeight: 'bold',
-                  fontSize: 16,
-                  color: '#FFF',
+                  fontSize: RFValue(15),
+                  color: '#000',
                 }}
                 onPress={removeAllItems}>
                 Remove All
@@ -117,8 +118,8 @@ const CartScreen = () => {
               />
               <TotalCost
                 SubTotal={totalPrice}
-                ShippingCost="$5.00"
-                Tax="$0.00"
+                ShippingCost="€5.00"
+                Tax="€0.00"
               />
             </>
           )}
@@ -130,7 +131,7 @@ const CartScreen = () => {
         }}
         style={styles.footer}
         activeOpacity={1}>
-        <Text style={styles.footerText}>Buy Now</Text>
+        <Text style={styles.footerText}>Checkout</Text>
       </TouchableOpacity>
     </>
   );
@@ -138,7 +139,7 @@ const CartScreen = () => {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'rgba(176, 130, 255, 0.5)',
-    padding: wp('4.2%'),
+    padding: wp('4%'),
     alignItems: 'center',
     width: '100%',
   },
