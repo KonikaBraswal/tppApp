@@ -3,12 +3,13 @@ import * as products from '../../assets/data/product_catalogue.json';
 import {Button, Searchbar, Icon} from 'react-native-paper';
 import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
 import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';
-import {TouchableOpacity, VirtualizedList} from 'react-native';
-import {RFValue} from 'react-native-responsive-fontsize';
 import {
-  KeyboardAwareScrollView,
-  KeyboardAwareFlatList,
-} from 'react-native-keyboard-aware-scroll-view';
+  Keyboard,
+  Pressable,
+  TouchableOpacity,
+  VirtualizedList,
+} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,6 +25,7 @@ import {
   FlatList,
 } from 'react-native';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {color} from 'react-native-elements/dist/helpers';
 import {useNavigation} from '@react-navigation/native';
 const ProductListing = () => {
   const category = [
@@ -38,7 +40,7 @@ const ProductListing = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchcategory, setSearchCategory] = useState('');
-  const [switchOn, setSwitchOn] = useState(false);
+  const [switchOn, setSwitchOn] = useState(true);
   const [searchedProducts, setSearchedProducts] = useState(category);
   const [filteredProducts, setFilteredProducts] = useState(products.products);
   const showMenu = () => setVisible(true);
@@ -79,7 +81,9 @@ const ProductListing = () => {
     const filtered = category.filter(item =>
       item.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
     );
-    setSearchedProducts(filtered);
+    setSearchedProducts(filtered.length > 0 ? filtered : ['No results found']);
+    // setSelectedItems([]);
+    // setSearchedProducts(filtered);
     setSelectedItems([]);
     setSwitchOn(false);
   };
@@ -90,9 +94,9 @@ const ProductListing = () => {
   };
   const searchCategory = category => {
     setSearchCategory(category);
+    Keyboard.dismiss();
     setSearchQuery('');
     // console.log("p", category);
-    setSwitchOn(false);
     const p = products.products.filter(product => {
       return (
         category === '' ||
@@ -100,29 +104,48 @@ const ProductListing = () => {
       );
     });
     setFilteredProducts(p);
+    setSwitchOn(false);
   };
   const rows = [];
-
-  for (let i = 0; i < searchedProducts.length; i += 3) {
-    const rowProducts = searchedProducts.slice(i, i + 3);
-
+  if (
+    searchedProducts.length === 1 &&
+    searchedProducts[0] === 'No results found'
+  ) {
     const row = (
-      <Stack
-        key={`row_${i}`}
-        direction="row"
-        //spacing={10}
-        style={SelectBankStyle.row}>
-        {rowProducts.map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => searchCategory(item)}>
-            <Surface category="medium" style={SelectBankStyle.surface}>
-              <Text>{item}</Text>
-            </Surface>
-          </TouchableOpacity>
-        ))}
+      <Stack direction="row" style={SelectBankStyle.row}>
+        <Surface category="medium" style={SelectBankStyle.surface}>
+          <Text style={{color: 'red'}}>No results found</Text>
+        </Surface>
       </Stack>
     );
     rows.push(row);
+  } else {
+    for (let i = 0; i < searchedProducts.length; i += 3) {
+      const rowProducts = searchedProducts.slice(i, i + 3);
+
+      const row = (
+        <Stack
+          key={`row_${i}`}
+          direction="row"
+          //spacing={10}
+          style={SelectBankStyle.row}>
+          {rowProducts.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                searchCategory(item);
+              }}>
+              <Surface category="medium" style={SelectBankStyle.surface}>
+                <Text>{item}</Text>
+              </Surface>
+            </TouchableOpacity>
+          ))}
+        </Stack>
+      );
+      rows.push(row);
+    }
   }
+
   const getItemlayout = (data, index) => {
     const height = 150;
     const vert = 100;
@@ -145,26 +168,24 @@ const ProductListing = () => {
     // console.log(item);
     const marginBottom = index === filteredProducts.length - 1 ? wp('80%') : 10;
     return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('Product Details');
-        }}>
-        <View style={[styles.item, {marginBottom}]}>
-          {/* // <View key={index} style={styles.itemContainer} > */}
-          {/* {item.map((elem, i) => ( */}
-          <Image
-            source={{uri: item.imgs[0]}}
-            style={styles.image}
-            resizeMethod="resize"
-          />
-          <Text style={styles.name}>{item.title}</Text>
-          {/* <Text style={styles.description}>{item.specs}</Text> */}
+      <View style={[styles.item, {marginBottom}]}>
+        {/* // <View key={index} style={styles.itemContainer} > */}
+        {/* {item.map((elem, i) => ( */}
+        <Image
+          source={{uri: item.imgs[0]}}
+          style={styles.image}
+          resizeMethod="resize"
+          onPress={() => {
+            navigation.navigate('Product Details');
+          }}
+        />
+        <Text style={styles.name}>{item.title}</Text>
+        {/* <Text style={styles.description}>{item.specs}</Text> */}
 
-          <Text style={styles.price}>${item.price}</Text>
-          {/* </View > */}
-          {/* ))} */}
-        </View>
-      </TouchableOpacity>
+        <Text style={styles.price}>${item.price}</Text>
+        {/* </View > */}
+        {/* ))} */}
+      </View>
     );
   }
   const navigation = useNavigation();
@@ -228,7 +249,10 @@ const ProductListing = () => {
 
           {searchQuery !== '' && (
             <View style={styles.container}>
-              <ScrollView>
+              <ScrollView
+                keyboardShouldPersistTaps="always"
+                automaticallyAdjustContentInsets={false}
+                keyboardDismissMode="on-drag">
                 <Stack
                   fill
                   left
