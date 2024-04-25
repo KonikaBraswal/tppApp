@@ -8,7 +8,7 @@ import SanboxApiClient from './SanboxApiClient';
 import '../global.js';
 import MockApiClient from './MockApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
-console.log("inside api factoryuuyyyyyyyyyyyyyyy",global.env);
+// console.log("inside api factoryuuyyyyyyyyyyyyyyy",global.env);
 let permissions: string[] = [];
 // console.log(global.env);
 
@@ -25,7 +25,7 @@ class ApiFactory {
     this.clientSecret = config.clientSecret;
     this.commonHeaders = config.contentType;
   }
-  type=global.env;
+  // type=global.env;
   createApiClient(type:string) {
     console.log("typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",type);
     switch (type) {

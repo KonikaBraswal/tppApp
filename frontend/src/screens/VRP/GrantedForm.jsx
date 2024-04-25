@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const GrantedForm = ({route}) => {
   const {
@@ -54,10 +54,12 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
+      console.log("after payyyyyyyyyyyyyyyyyyyyy",global.env);
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
       );
+      console.log("hiiiiiiiiiiiiiii",response);
       console.log('response', response);
       console.log('Form submitted:', formData);
       navigation.navigate('VRP Details', {data: formData});

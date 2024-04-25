@@ -197,6 +197,7 @@ class SandBox {
       );
       refreshTokenExists = true;
       this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
+      console.log("exchangeeeeeeeeeeeeeeeeee in vrpppppppppppppppppppppppppp",response.data);
       return response.data;
 
     } catch (error) {
@@ -238,7 +239,11 @@ class SandBox {
         refreshToken.consentid,
         columnsToUpdate3,
       );
-
+      console.log("VVVVVVVVVVRRRRRRRRRRRRRRRRRRRPPPPPPPPPPPPPPPPPPPPPP",this.vrpPayments(
+        responseRefresh.data.access_token,
+        refreshToken.consentid,
+        grantedformData,
+      ));
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentid,
@@ -338,6 +343,7 @@ class SandBox {
         status: allVrpPaymentsResponse.data.Data.Status
       };
       addTransactions(details);
+      console.log('VRPPPPPPPPPPPPPPPPPPPP',allVrpPaymentsResponse.data);
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);

@@ -31,8 +31,22 @@ const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+// const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
 const VRPConsent = ({ route }) => {
+    useEffect(() => {
+        const newApiClient = switchEnvironment(global.env);
+    
+        setSandboxApiClient(newApiClient);
+        return () => {
+        };
+     }, []);
     const formData = route.params?.formData;
     const identification =  formData.accountNumber+formData.sortCode ;
     const jsondata =
@@ -82,6 +96,7 @@ const VRPConsent = ({ route }) => {
     const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
     const showErrorDialog = () => setErrorDialogVisible(true);
     const hideErrorDialog = () => setErrorDialogVisible(false);
+    const [sandboxApiClient, setSandboxApiClient] = useState(null);
     const [isInputDialogVisible, setInputDialogVisible] = useState(false);
     const showInputDialog = () => setInputDialogVisible(true);
     const hideInputDialog = () => setInputDialogVisible(false);
@@ -92,7 +107,7 @@ const VRPConsent = ({ route }) => {
 
 
     const handleConfirmButtonClick = async () => {
-        if (mode == 'sandbox') {
+        console.log("calling mode in VRP",global.env);
             try {
                 const permissions = jsondata;
 
@@ -125,12 +140,22 @@ const VRPConsent = ({ route }) => {
             } finally {
                 setLoading(false);
             }
-        } else {
-            navigation.navigate('Consent');
-        }
     };
 
     const handleSubmit = async () => {
+        if(global.env=='local'){
+         
+            navigation.navigate('GrantedForm', {
+                creditorName: formData.firstName,
+                accountnumber: formData.accountNumber,
+                sortcode: formData.sortCode,
+                referencenumber:formData.reference,
+                selectconsentData: "updatedResponse",
+              });
+              setInputValue('');
+              hideInputDialog();
+        }
+        else{
         try {
             
             const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
@@ -156,7 +181,8 @@ const VRPConsent = ({ route }) => {
         }
         setInputValue('');
         hideInputDialog();
-    };
+    }
+};
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>

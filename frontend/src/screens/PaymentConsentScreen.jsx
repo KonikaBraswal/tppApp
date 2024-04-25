@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -29,7 +29,7 @@ import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient(global.env);
 const CustomListItem = ({title, value}) => (
   <View
     style={{
@@ -42,14 +42,28 @@ const CustomListItem = ({title, value}) => (
     <Text style={styles.rightContent}>{value}</Text>
   </View>
 );
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  console.log("PISPPPPPPPPPPPPPP",global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const PaymentConsentScreen = ({route}) => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
-
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const showInputDialog = () => setInputDialogVisible(true);
   const hideInputDialog = () => setInputDialogVisible(false);
   const [expanded1, setExpanded1] = useState(true);
@@ -69,7 +83,6 @@ const PaymentConsentScreen = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
 
   const handleConfirmButtonClick = async () => {
-    if (mode == 'sandbox') {
       try {
         const consentData = await sandboxApiClient.retrieveAccessToken(
           'payments',
@@ -86,14 +99,12 @@ const PaymentConsentScreen = ({route}) => {
       } catch (error) {
         console.error('Error:', error);
       }
-    } else {
-      navigation.navigate('PISP');
-    }
   };
 
   const handleSubmit = async () => {
     try {
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      console.log("data from locallllllllllllllllllllllllllllllllllllllll",data);
       navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);

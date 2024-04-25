@@ -1,5 +1,6 @@
 // ApiFactory.ts
 import config from '../configs_PISP/config.json';
+import MockApiClient from './MockApiClient';
 import SanboxApiClient from './SanboxApiClient';
 let permissions: string[] = [];
 
@@ -31,14 +32,11 @@ class ApiFactory {
           this.baseUrl,
           this.clientId,
           this.clientSecret,
-          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
+          this.commonHeaders, 
         );
       case 'local':
-        return new SanboxApiClient(
-          this.baseUrl,
-          this.clientId,
-          this.clientSecret,
-          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
+        return new MockApiClient(
+         
         );
       default:
         throw new Error(`Invalid API client type: ${type}`);
