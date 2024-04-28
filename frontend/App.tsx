@@ -53,14 +53,19 @@ import VRPDetails from './src/screens/VRP/VRPDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import LocalDetails from './src/screens/LocalEnvironment/LocalDetails';
+import { GlobalEnvProvider } from './GlobalEnvContext';
+import './global';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 function App(): React.JSX.Element {
   useEffect(() => {
+    // const mode=global.env;
+    // console.log("in app.tsx",mode);
     initDatabase();
     initDatabaseTransaction();
+ 
   }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -71,6 +76,7 @@ function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
   useEffect(() => Appearance.setColorScheme('light'), []);
   return (
+    <GlobalEnvProvider>
     <PaperProvider>
       <SafeAreaProvider>
         <SafeAreaView style={backgroundStyle}>
@@ -158,7 +164,7 @@ function App(): React.JSX.Element {
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
-
+    </GlobalEnvProvider>
     // <MyComponent/>
   );
 }

@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef,useState,useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from '../components/ViewAll';
+import ViewAllLocal from '../components/ViewAllLocal';
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -29,7 +30,32 @@ const Landing = () => {
     {id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png')},
     {id: 6, name: 'Santander', icon: require('../assets/icons/santander.png')},
   ];
+  const [env, setEnv] = useState(global.env);
+  const render=()=>{
+    if(env==='sandbox'){
+      return <ViewAll/>
+    }
+    else{
+      return <ViewAllLocal/>;
+    }
+  }
+  useEffect(() => {
+    // Function to check for changes in global.env
+    const checkEnvChange = () => {
+      if (global.env !== env) {
+        setEnv(global.env); // Update the state to trigger re-render
+      }
+    };
 
+    // Check for changes initially
+    checkEnvChange();
+
+    // Set up an interval to periodically check for changes
+    const intervalId = setInterval(checkEnvChange, 1000); // Check every second
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+ }, [env]); 
   const renderCard = ({item}) => (
     <TouchableOpacity
       onPress={() =>
@@ -149,7 +175,7 @@ const Landing = () => {
           </ScrollView>
 
           <View style={styles.addBankContainer}>
-            <ViewAll />
+            {render()}
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>

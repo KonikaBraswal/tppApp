@@ -23,6 +23,7 @@ const ViewAll = () => {
       );
   }
   useEffect(() => {
+    console.log("hello inside VIEWALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
     const fetchData = async () => {
       try {
         const data = await RetrieveData();

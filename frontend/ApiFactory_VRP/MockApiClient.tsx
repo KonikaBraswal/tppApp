@@ -5,6 +5,7 @@ import { Linking, Alert } from 'react-native';
 import uuid from 'react-native-uuid';
 import VRPData from '../src/assets/data/vrp.json';
 import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
+import {  insertVRPData } from '../database/LocalDatabase';
 
 
 interface AccessTokenRequestParams {
@@ -39,26 +40,16 @@ class MockApiClient {
 
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
       console.log("callleddddddddddddd me",VRPData);
+      const userId=VRPData.Data.DomesticVRPId;
+      const flow="VRP";
+      const creditorname=VRPData.Data.Initiation.CreditorAccount.Name;
+      const debtoraccnum=VRPData.Data.DebtorAccount.Identification;
+      insertVRPData(userId,flow,creditorname,debtoraccnum);
       return VRPData;
     
   }
 
-  async vrpPayments(
-    consentid: string,
-    formData: any,
-  ): Promise<any> {
-    try {
-      return this.getAllVrpPayments("vrpPaymentResponse.data.Links.Self");
-    } catch (error) {
-      throw new Error(`Failed to fetch data for vrp payments: ${error}`);
-    }
-  }
-
-  async getAllVrpPayments(url: string): Promise<any> {
-  return VRPData.Data;
-  }
-
-
+ 
 }
 
 export default MockApiClient;

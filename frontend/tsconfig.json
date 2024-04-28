@@ -4,5 +4,9 @@
     "compilerOptions": {
       "jsx": "react",
       // Other compiler options...
-    }
+    },
+    "include": [
+      "src/**/*", // Adjust this pattern to include your source files and the global.d.ts file
+      "global.d.ts" // Make sure this line is present
+   ]
 }

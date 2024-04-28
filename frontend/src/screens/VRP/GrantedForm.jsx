@@ -24,6 +24,8 @@ const GrantedForm = ({route}) => {
   } = route.params;
   const [edit, setEdit] = useState(true);
   const [firstName, setFirstName] = useState('');
+  const [status, setStatus] = useState('');
+
   const [sortCode, setSortCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');
@@ -61,8 +63,9 @@ const GrantedForm = ({route}) => {
       );
       console.log("hiiiiiiiiiiiiiii",response);
       console.log('response', response);
+      console.log(response.Data.Status)
       console.log('Form submitted:', formData);
-      navigation.navigate('VRP Details', {data: formData});
+      navigation.navigate('VRP Details', {data: response.Data.Status});
     } catch (error) {
       console.log('error in fetching refresh', error);
     }

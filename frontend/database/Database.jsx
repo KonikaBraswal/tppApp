@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
+import LocalDatabase from './LocalDatabase';
 
 const db = SQLite.openDatabase({ name: 'dbSandbox.db', location: 'default' });
 
@@ -515,6 +516,8 @@ const Database = () => {
       <Button title="Delete All Entries" onPress={deleteAllEntries} />
 
       <Button title="Delete Database" onPress={deleteDatabase} />
+      <Text>Local Database</Text>
+      <LocalDatabase/>
     </View>
   );
 };

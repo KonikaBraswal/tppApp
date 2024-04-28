@@ -13,16 +13,27 @@ import Dummy from '../screens/Dummy';
 import { Checkbox } from 'react-native-paper';
 import Test from './Test';
 import Database from '../../database/Database';
-
+import { initAISPLocalDatabase, initLocalDatabase } from '../../database/LocalDatabase';
+import { envChangeEmitter } from '../../eventEmitter';
+import { useGlobalEnv } from '../../GlobalEnvContext';
+// import { useGlobalState } from './GlobalStateContext';
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = ({ navigation }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [mode,setMode]=useState('sandbox');
+  const { setEnv } = useGlobalEnv();
   useEffect(() => {
     global.env = mode;
     console.log("Mode changed to:", global.env);
+    envChangeEmitter.emit('globalEnvChanged', mode);
+    if(mode==='local')
+    {
+      initLocalDatabase();
+      initAISPLocalDatabase();
+    }
  }, [mode]); 
+
   console.log("hiiiiiiiiiiiiiiiiiiiiiii",global.env);
 
   const toggleDropdown = () => {
@@ -31,8 +42,9 @@ const CustomDrawerContent = ({ navigation }) => {
 
   const handleMenuItemClick = (item) => {
     console.log('Clicked:', item);
+    // setModeinDatabase(item);
     setMode(item);
-    // toggleDropdown();
+   
   };
 
   return (
@@ -74,6 +86,9 @@ const CustomDrawerContent = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
         <Text>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Database')}>
+        <Text style={{color:'black'}}>Database</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Local')}>
         <Text>Local</Text>

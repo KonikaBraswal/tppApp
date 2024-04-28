@@ -89,8 +89,8 @@ class ApiFactory {
         );
       // Add other cases if needed
       case 'local':
+        console.log("called localllllllllllllllllllllll")
         return new MockApiClient(
-
         );
       case 'sit':
         return new SandBox(
