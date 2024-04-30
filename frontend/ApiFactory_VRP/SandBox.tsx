@@ -85,6 +85,48 @@ class SandBox {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
+  
+  async accessTokenCA() : Promise<string>{
+    try{
+      const body={
+        grant_type: sandboxConfig.grant_type,
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+      };
+      const headers={
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+      const response: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        body,{
+          headers:headers
+        },
+      );
+      return response.data.access_token;
+    }catch (error) {
+      throw new Error(`Failed to fetch token: ${error}`);
+    }
+  }
+
+  async getDetailsCA(): Promise<any>{
+    try{
+      const accessToken=this.accessTokenCA();
+      const headers = {
+        Authorization: 'Bearer ' + accessToken,
+      };
+      const url='zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
+      const response: AxiosResponse<ResponseData> = await axios.get(
+        `${this.baseUrl}/${url}`,
+        
+        {
+          headers: headers,
+        },
+      );
+      return response;
+    }catch (error) {
+      throw new Error(`Failed to fetch token: ${error}`);
+    }
+  }
 
   async accountRequest(url: string): Promise<any> {
     try {

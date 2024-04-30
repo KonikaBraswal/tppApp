@@ -29,7 +29,7 @@ const allbanks = [
   {id: 107, name: 'Starling', icon: require('../assets/images/starling.png')},
 ];
 
-const SelectBank = () => {
+const SelectBank = (destination) => {
   const navigation = useNavigation();
   const [banklist, setbanklist] = useState([]);
   useEffect(() => {
@@ -48,7 +48,7 @@ const SelectBank = () => {
   };
 
   const handlePress = () => {
-    navigation.navigate('Consent');
+    navigation.navigate(destination);
   };
   const rows = [];
   for (let i = 0; i < filteredBanks.length; i += 3) {
