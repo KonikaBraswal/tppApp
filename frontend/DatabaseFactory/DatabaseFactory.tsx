@@ -1,8 +1,8 @@
 import AndroidClient from "./AndroidClientDb";
 import WebClient from "./WebClient";
 import ApiLogsDb from "./ApiLogsDb";
-import AndroidClient from './AndroidClient';
-import WebClient from './WebClient';
+//import AndroidClient from './AndroidClient';
+//import WebClient from './WebClient';
 import DatabaseConfig from '../ConfigFiles/DatabaseConfig.json';
 
 class DatabaseFactory {
@@ -43,7 +43,8 @@ class DatabaseFactory {
     }
 
     private createWebClient() {
-        return new WebClient();
+        //return new WebClient();
+        
     }
 
     private createLogClients(scope: string) {
