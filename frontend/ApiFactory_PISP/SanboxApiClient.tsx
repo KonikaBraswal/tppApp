@@ -2,15 +2,34 @@ import axios, {AxiosResponse} from 'axios';
 import config from '../configs_PISP/config.json';
 import sandboxConfig from '../configs_PISP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
-import {addDetails} from '../database/Database';
-import {updateDetails} from '../database/Database';
-//import { v4 as uuidv4 } from 'uuid';
 import uuid from 'react-native-uuid';
+import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
+const databaseFactory = new DatabaseFactory();
+//const androidClient = databaseFactory.createDatabaseClient('android','pisp');
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+const companyName = "YourCompanyName"; // Replace "YourCompanyName" with the actual company name
+const apiClient = "YourApiClient"; // Replace "YourApiClient" with the actual API client
+const scope = "YourScope"; // Replace "YourScope" with the actual scope
+
+const androidClient = new AndroidClient(companyName, apiClient, scope);
+
 interface BodyData {
   Data: {
     Permissions: string[];
   };
   Risk: {}; // Adjust this if Risk has a specific structure
+}
+let pispToStore = {
+  consentId: '',
+  scope: '',
+  payload: '',
+  refreshtoken: '',
+  paymentId: '',
+  response: '',
+  userId: '999999999',
+};
+let pispToUpdate={
+  userId:"7777777",
 }
 var refreshTokenExists = false;
 interface ResponseData {
@@ -56,9 +75,6 @@ interface PaymentBodyData {
   };
   Risk: PaymentRisk;
 }
-
-// const userIdToUpdate = 1001;
-
 class SanboxApiClient {
   private baseUrl: string;
   private clientId: string;
@@ -87,7 +103,6 @@ class SanboxApiClient {
     let body: Record<string, string> = {};
     let header: Record<string, string> = {};
     this.DebtorAccount = DebtorAccount;
-    if (callScope == 'payments') {
       this.callScope = callScope;
       console.log('Payments Call');
 
@@ -100,7 +115,6 @@ class SanboxApiClient {
       header = {
         'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
       };
-    }
 
     try {
       const response: AxiosResponse<ResponseData> = await axios.post(
@@ -111,18 +125,9 @@ class SanboxApiClient {
           params: body,
         },
       );
-      //store
-      //storing scope in database
-      const scope = response.data.scope;
-
-      const details1 = {
-        userId: 1002,
-        scope: scope,
-      };
-
-      addDetails(details1);
-      // store
       console.log('Access token', response.data);
+      pispToStore.scope = response.data.scope;
+      
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -198,25 +203,12 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
-      //store
-      var Status = response.data.Data?.Status;
-      var Payload = response.data.Data;
-      var ConsentId = response.data.Data?.ConsentId || '';
-
-      const updatedDetails1 = {
-        bankname: 'Natwest',
-        consentid: ConsentId,
-        status: Status,
-        consentpayload: JSON.stringify(Payload),
-      };
-
-      const columnsToUpdate1 = ['bankname', 'consentid', 'consentpayload'];
-
-      await updateDetails(updatedDetails1, 1002, columnsToUpdate1);
-      //store
       console.log('successss**');
       console.log(response.data);
+      const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
+      pispToStore.consentId = consentId; // Storing consent ID in toStore object
+      pispToStore.payload = JSON.stringify(body);
+
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -263,33 +255,11 @@ class SanboxApiClient {
           params: body,
         },
       );
-      //store
-      const RefreshToken = response.data.refresh_token;
-      const consentExpiresIn = response.data.expires_in;
-      const Scope = response.data.scope;
-
-      const updatedDetails2 = {
-        refreshedtoken: RefreshToken,
-        status: 'Authorised',
-        consentexpiry: consentExpiresIn,
-      };
-
-      const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-
-      // await updateDetails(updatedDetails2, 1001, columnsToUpdate2);
-
-      //store
-
-      //setting flag after storing refresh token in db
-      refreshTokenExists = true;
       console.log('Api access token', response.data.access_token);
+      pispToStore.refreshtoken = response.data.refresh_token;
       return this.domesticPayments(response.data.access_token);
-      // console.log('Api refresh token', response.data.refresh_token);
-      // if (this.callScope == 'payments') {
-      //   return this.domesticPayments(response.data.access_token);
-      // }
-      // return this.fetchAccounts(response.data.access_token);
-      return this.refreshToken(response.data.refresh_token);
+
+      //return this.refreshToken(response.data.refresh_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -368,13 +338,11 @@ class SanboxApiClient {
 
       const paymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticPaymentsEndpoint}`,
-        requestBody, // Remove the object wrapper from requestBody
+        requestBody,
         {
           headers: headers,
         },
       );
-
-      // Additional processing...
       console.log('success');
       console.log(paymentResponse.data);
       return this.getPaymentSatus(
@@ -403,6 +371,16 @@ class SanboxApiClient {
       );
       console.log(payResponse.data.Data);
       console.log('AllSet');
+      pispToStore.response = JSON.stringify(payResponse);
+      pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
+      console.log(pispToStore);
+      //stroing all data in db
+      await androidClient.initDatabaseAndroidPisp();
+      await androidClient.insertDataPisp(pispToStore);
+      console.log("Storing this to the table");
+      await androidClient.displayData();
+      //await androidClient.updateDataByConsentIdPisp("ee7a9088-42a8-462b-b7da-f7548c77529e",pispToUpdate);
+      //await androidClient.
       return payResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);

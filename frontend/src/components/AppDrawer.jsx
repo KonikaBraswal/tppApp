@@ -13,6 +13,7 @@ import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
 import Landing from '../components/Landing';
 
+import ApiLogs from '../screens/ApiLogs';
 const Drawer = createDrawerNavigator();
 
 const AppDrawer = () => {
@@ -100,7 +101,7 @@ const AppDrawer = () => {
       />
       <Drawer.Screen
         name="API Logs"
-        component={Dummy}
+        component={ApiLogs}
         options={{
           drawerIcon: ({color}) => (
             // <MaterialCommunityIcons name="settings" color={color} size={28} />
