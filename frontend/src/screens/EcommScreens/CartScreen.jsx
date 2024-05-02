@@ -126,8 +126,11 @@ const CartScreen = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
+        // onPress={() => {
+        //   navigation.navigate('Select Your Bank');
+        // }}
         onPress={() => {
-          navigation.navigate('Select Your Bank');
+          navigation.navigate('Order Placed');
         }}
         style={styles.footer}
         activeOpacity={1}>
