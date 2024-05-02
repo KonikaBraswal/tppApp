@@ -45,7 +45,7 @@ import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
 import CartScreen from './src/screens/EcommScreens/CartScreen';
-import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
+import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -146,6 +146,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Product Details" component={ProductDetails} />
               {/* <Stack.Screen name="Customer Details" component={CustomerDetails} /> */}
               <Stack.Screen name="Cart" component={CartScreen} />
+              <Stack.Screen name="Order Placed" component={OrderSuccessful} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
