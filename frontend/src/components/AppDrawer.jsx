@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { List } from 'react-native-paper';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import BottomTab from './BottomTab';
 import ConsentScreen from '../screens/ConsentScreen';
@@ -57,21 +58,31 @@ const CustomDrawerContent = ({ navigation }) => {
    
       {/* Drawer content */}
       <TouchableOpacity onPress={() => navigation.navigate('ONEBank')}>
-        <Text>ONEBank</Text>
+      <List.Item
+    title="ONEBank"
+    left={props => <List.Icon {...props} icon="home" />}
+  />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Add Bank')}>
-        <Text>Add Bank</Text>
+      <List.Item
+    title="Add Bank"
+    left={props => <List.Icon {...props} icon="bank-plus" />}
+  />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-        <Text>Notifications</Text>
+      <List.Item
+    title="Notifications"
+    left={props => <List.Icon {...props} icon="bell" />}
+  />
       </TouchableOpacity>
-      <View style={{ backgroundColor: '#5a287d', padding: 10 }}>
         <TouchableOpacity onPress={toggleDropdown}>
-          <Icon source="code-tags" color="white" size={25} />
-          <Text>Environment</Text>
+        <List.Item
+    title="Environment"
+    left={props => <List.Icon {...props} icon="code-tags" />}
+  />
         </TouchableOpacity>
         {showDropdown && (
-          <View style={{ backgroundColor: 'white', marginTop: 5 }}>
+          <View style={{ marginTop: 5 }}>
             <TouchableOpacity onPress={() => handleMenuItemClick('sandbox')}>
             <Checkbox.Item label="Sandbox" status={mode === 'sandbox' ? 'checked' : 'unchecked'} />
             </TouchableOpacity>
@@ -80,20 +91,37 @@ const CustomDrawerContent = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         )}
-      </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Messages')}>
-        <Text>Messages</Text>
-      </TouchableOpacity>
+ 
       <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Text>Profile</Text>
+      <List.Item
+    title="Profile"
+    left={props => <List.Icon {...props} icon="account" />}
+  />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Messages')}>
+      <List.Item
+    title="Messages"
+    left={props => <List.Icon {...props} icon="message" />}
+  />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Database')}>
-        <Text style={{color:'black'}}>Database</Text>
+      <List.Item
+    title="Database"
+    left={props => <List.Icon {...props} icon="database-cog" />}
+  />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Local')}>
-        <Text>Local</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Updates')}>
+      <List.Item
+    title="Updates"
+    left={props => <List.Icon {...props} icon="update" />}
+  />
       </TouchableOpacity>
-      {/* Add more drawer items as needed */}
+      <TouchableOpacity onPress={() => navigation.navigate('API Logs')}>
+      <List.Item
+    title="API Logs"
+    left={props => <List.Icon {...props} icon="api" />}
+  />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -202,7 +230,15 @@ const AppDrawer = () => {
           ),
         }}
       />
-
+    <Drawer.Screen
+        name="Updates"
+        component={Dummy}
+        options={{
+          drawerIcon: ({ color }) => (
+            <Icon source="database-cog" color={color} size={28} />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="Test Result"
         component={Test}
@@ -212,6 +248,7 @@ const AppDrawer = () => {
           ),
         }}
       />
+      
     </Drawer.Navigator>
   );
 };

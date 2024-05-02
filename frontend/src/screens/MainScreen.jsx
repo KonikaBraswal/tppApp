@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     marginTop: hp('1%'),
     alignSelf: 'center',
   },
+  
 });
 
 export default MainScreen;

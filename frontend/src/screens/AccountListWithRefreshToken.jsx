@@ -25,6 +25,7 @@ import {
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {RetrieveData} from '../../database/Database';
+import { fetchAISPData } from '../../database/LocalDatabase';
 
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
@@ -33,11 +34,20 @@ const AccountListWithRefreshToken = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const [retrievedData, setRetrievedData] = useState([]);
+  const [localData, setlocalData] = useState([]);
   const filterDataByScope = data => {
     return data.filter(obj => obj.scope === 'accounts');
   };
 
   useEffect(() => {
+    if(global.env==='local'){
+
+        fetchAISPData().then(results => {
+          setlocalData(results);
+        });
+      
+    }
+    else{
     const fetchData = async () => {
       try {
         const data = await RetrieveData();
@@ -50,6 +60,7 @@ const AccountListWithRefreshToken = () => {
     };
 
     fetchData();
+  }
   }, []);
 
   return (
@@ -82,7 +93,7 @@ const AccountListWithRefreshToken = () => {
           <ScrollView
             style={styles.scrollContainer}
             showsVerticalScrollIndicator={false}>
-            {retrievedData &&
+            {/* {retrievedData &&
               retrievedData[0] &&
               retrievedData[0].account_details &&
               JSON.parse(retrievedData[0].account_details).map(account => (
@@ -166,7 +177,169 @@ const AccountListWithRefreshToken = () => {
                     </View>
                   </Card.Content>
                 </Card>
-              ))}
+              ))} */}
+               {retrievedData && retrievedData[0] && retrievedData[0].account_details ? (
+        JSON.parse(retrievedData[0].account_details).map(account => (
+          <Card key={account.AccountId} style={styles.card}>
+            <Card.Content>
+              <View style={styles.cardHeader}>
+                <Title style={[styles.title, {marginTop: -hp('1%')}]}>
+                 {account.AccountSubType} Account
+                </Title>
+                <Image
+                 source={require('../assets/images/natwest2.png')}
+                 style={styles.iconNatwest}
+                />
+              </View>
+              <View style={styles.cardContent}>
+                <View style={styles.textContainer}>
+                 <Paragraph>{account.AccountId}</Paragraph>
+                 <Paragraph>{account.Account[0].Name}</Paragraph>
+                 <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <IconButton
+                        icon="wallet"
+                        size={25}
+                        iconColor="#482164"
+                        style={{marginLeft: -wp('2%')}}
+                        onPress={() =>
+                          navigation.navigate('Transfer Money', {
+                            DebtorAccount: {
+                              SchemeName: account.Account[0].SchemeName,
+                              Identification: account.Account[0].Identification,
+                              Name: account.Account[0].Name,
+                            },
+                          })
+                        }
+                      />
+                      <Text
+                        style={{
+
+                          fontSize: RFValue(18),
+                          fontWeight: 'bold',
+                          color: '#5a287d',
+                          marginLeft: -wp('2%'),
+                        }}
+                        onPress={() =>
+                          navigation.navigate('Transfer Money', {
+                            DebtorAccount: {
+                              SchemeName: account.Account[0].SchemeName,
+                              Identification: account.Account[0].Identification,
+                              Name: account.Account[0].Name,
+                            },
+                          })
+                        }>
+                        Transfer Money
+                      </Text>
+                    </View>
+                    <Card.Actions>
+                      <IconButton
+                        icon="chevron-right"
+                        size={22}
+                        onPress={() => {
+                          navigation.navigate('View Added Bank Details', {
+                            AccountId: account.AccountId,
+                          });
+                        }}
+                        style={styles.iconButton}
+                      />
+                    </Card.Actions>
+                 </View>
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+        ))
+      ) : localData && localData.length > 0 ? (
+       localData.map(account => (
+          <Card key={account.accID} style={styles.card}>
+            <Card.Content>
+              <View style={styles.cardHeader}>
+                <Title style={[styles.title, {marginTop: -hp('1%')}]}>
+                 {account.accsubType} Account
+                </Title>
+                <Image
+                 source={require('../assets/images/natwest2.png')}
+                 style={styles.iconNatwest}
+                />
+              </View>
+              <View style={styles.cardContent}>
+                <View style={styles.textContainer}>
+                 <Paragraph>{account.accID}</Paragraph>
+                 <Paragraph>{account.debtorname}</Paragraph>
+                 <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <IconButton
+                        icon="wallet"
+                        size={25}
+                        iconColor="#482164"
+                        style={{marginLeft: -wp('2%')}}
+                        onPress={() =>
+                          navigation.navigate('Transfer Money', {
+                            DebtorAccount: {
+                              SchemeName: "UK.OBIE.SortCodeAccountNumber",
+                              Identification: account.accnum,
+                              Name: account.debtorname,
+                            },
+                          })
+                        }
+                      />
+                      <Text
+                        style={{
+                          fontSize: RFValue(18),
+                          fontWeight: 'bold',
+                          color: '#5a287d',
+                          marginLeft: -wp('2%'),
+                        }}
+                        onPress={() =>
+                          navigation.navigate('Transfer Money', {
+                            DebtorAccount: {
+                              SchemeName: "UK.OBIE.SortCodeAccountNumber",
+                              Identification: account.accnum,
+                              Name: account.debtorname,
+                            },
+                          })
+                        }>
+                        Transfer Money
+                      </Text>
+                    </View>
+                    <Card.Actions>
+                      <IconButton
+                        icon="chevron-right"
+                        size={22}
+                        onPress={() => {
+                          navigation.navigate('Local Transactions');
+                        }}
+                        style={styles.iconButton}
+                      />
+                    </Card.Actions>
+                 </View>
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+        ))
+      ) : (
+        <Text>No data</Text>
+      )}
           </ScrollView>
         </View>
         <TouchableOpacity

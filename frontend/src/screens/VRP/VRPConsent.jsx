@@ -30,8 +30,6 @@ import { Surface } from '@react-native-material/core';
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-// const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const switchEnvironment = (newEnv) => {
     global.env = newEnv; // Update the global environment variable
     const apiFactory = new ApiFactory();

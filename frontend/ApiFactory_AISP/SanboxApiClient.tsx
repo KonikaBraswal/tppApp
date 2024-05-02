@@ -352,8 +352,9 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
+      console.log("helllooooooooooooooo all callssssssssssssssss",accountResponse.data.Data);
       return accountResponse.data.Data;
+
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
     }

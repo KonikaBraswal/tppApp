@@ -3,7 +3,7 @@ import {Card, Title, Text, Divider} from 'react-native-paper';
 import {StyleSheet, View, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Surface, Button} from '@react-native-material/core';
-import balanceData from '../assets/data/balances.json';
+import balanceData from '../assets/data/localbalance.json';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -45,6 +45,7 @@ const AccountCard = props => {
   }, [accountId]);
 
   const handleCardClick = async accountId => {
+    console.log("ACCOOUUNNTTTTTTTTTTTTTTTTTTT CARDDDDDDDDDDDDDD",props.item);
     navigation.navigate('Details', {
       accountDetails: props.item,
       permissions: permissions,

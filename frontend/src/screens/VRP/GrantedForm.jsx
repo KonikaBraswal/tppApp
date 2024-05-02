@@ -13,8 +13,21 @@ import {
 import {RFValue} from 'react-native-responsive-fontsize';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient(global.env);
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const GrantedForm = ({route}) => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const {
     creditorName,
     accountnumber,
@@ -25,7 +38,7 @@ const GrantedForm = ({route}) => {
   const [edit, setEdit] = useState(true);
   const [firstName, setFirstName] = useState('');
   const [status, setStatus] = useState('');
-
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const [sortCode, setSortCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');

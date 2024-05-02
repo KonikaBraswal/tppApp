@@ -64,6 +64,7 @@ const ConsentsforVRP = () => {
   useEffect(() => {
     if(global.env==='local')
     {
+
       fetchVRPData().then(results => {
         setLocalData(results);
       });
@@ -165,7 +166,7 @@ const ConsentsforVRP = () => {
               <View style={styles.rowContainer}>
                 <View style={styles.searchBarContainer}></View>
               </View>
-      {localdata.length > 0 ? (
+      {localdata && localdata.length > 0 ? (
         <ScrollView>
                       {localdata.map((item, index) => (
                         <Surface
@@ -250,7 +251,14 @@ const ConsentsforVRP = () => {
                                   marginBottom: hp('2%'),
                                 }}
                                 labelStyle={{color: 'black'}}
-                                onPress={() => handleSubmit(index)}>
+                                onPress={() => navigation.navigate('GrantedForm',{
+                                  creditorName: item.creditorname,
+                                    accountnumber: item.debtoraccnum,
+                                    sortcode: "111111",
+                                    referencenumber:
+                                      "jsonObject.Initiation.RemittanceInformation.Reference",
+                                    selectconsentData:" consentData[index]",
+                                })}>
                                 Pay
                               </Button>
                               <Button
@@ -265,7 +273,7 @@ const ConsentsforVRP = () => {
                                 labelStyle={{color: 'black'}}
                                 // title={`Go to ${VrpTransactions}`}
                                 onPress={() =>
-                                  handleConsent(index, 'VrpTransactions')
+                                 navigation.navigate('Local Transactions')
                                 }>
                                 Transactions
                               </Button>
@@ -287,7 +295,7 @@ const ConsentsforVRP = () => {
                       ))}
                     </ScrollView>
       ) : (
-        consentData.length > 0 ? (
+        consentData && consentData.length > 0 ? (
           <ScrollView>
                       {consentData.map((item, index) => (
                         <Surface
@@ -479,3 +487,4 @@ const styles = StyleSheet.create({
   },
 });
 export default ConsentsforVRP;
+

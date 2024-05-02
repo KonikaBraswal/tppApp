@@ -39,27 +39,12 @@ export const initAISPLocalDatabase = () => {
         console.log('local aisp table created successfully');
       },
       error => {
-        console.error('Error creating userconsent_sandbox table: ', error);
+        console.error('Error creating aisp table: ', error);
       },
     );
   });
 };
-// export const insertAISPData = (accID, accsubType, accnum, debtorname) => {
-//   db.transaction(tx => {
-//      tx.executeSql(
-//        `INSERT INTO localaisp (accID, accsubType, accnum, debtorname) VALUES (?, ?, ?, ?);`,
-//        [accID, accsubType, accnum, debtorname],
-//        (tx, results) => {
-//          // Log the data that was successfully inserted
-//          console.log(`Successfully inserted aisp data: accID=${accID}, accsubType=${accsubType}, accnum=${accnum}, debtorname=${debtorname}`);
-//          console.log('Local AISP Data inserted successfully');
-//        },
-//        error => {
-//          console.error('Error inserting data: ', error);
-//        },
-//      );
-//   });
-//  };
+
 export const insertAISPData = (accID, accsubType, accnum, debtorname) => {
   db.transaction(tx => {
      // First, check if the accID already exists in the localaisp table
@@ -119,22 +104,42 @@ export const insertAISPData = (accID, accsubType, accnum, debtorname) => {
      });
   });
  };
+
 export const insertVRPData = (userId, flow, creditorname, debtoraccnum) => {
   db.transaction(tx => {
+     // First, check if a record with the given userId already exists
      tx.executeSql(
-       `INSERT INTO local (userId, flow, creditorname, debtoraccnum) VALUES (?, ?, ?, ?);`,
-       [userId, flow, creditorname, debtoraccnum],
+       `SELECT * FROM local WHERE userId = ?;`,
+       [userId],
        (tx, results) => {
-         // Log the data that was successfully inserted
-         console.log(`Successfully inserted data: userId=${userId}, flow=${flow}, creditorname=${creditorname}, debtoraccnum=${debtoraccnum}`);
-         console.log('Local VRP Data inserted successfully');
+         if (results.rows.length > 0) {
+           // A record with the same userId already exists, so you can choose to do nothing or update the existing record
+           console.log('Record with the same userId already exists.');
+           // If you want to update the existing record, you can do so here
+           // For example, to update the flow, creditorname, and debtoraccnum:
+           // tx.executeSql(`UPDATE local SET flow = ?, creditorname = ?, debtoraccnum = ? WHERE userId = ?;`, [flow, creditorname, debtoraccnum, userId]);
+         } else {
+           // No record with the same userId exists, so insert the new record
+           tx.executeSql(
+             `INSERT INTO local (userId, flow, creditorname, debtoraccnum) VALUES (?, ?, ?, ?);`,
+             [userId, flow, creditorname, debtoraccnum],
+             (tx, results) => {
+               console.log(`Successfully inserted data: userId=${userId}, flow=${flow}, creditorname=${creditorname}, debtoraccnum=${debtoraccnum}`);
+               console.log('Local VRP Data inserted successfully');
+             },
+             error => {
+               console.error('Error inserting data: ', error);
+             },
+           );
+         }
        },
        error => {
-         console.error('Error inserting data: ', error);
+         console.error('Error checking for existing record: ', error);
        },
      );
   });
  };
+ 
  export const deleteAllRowsFromLocalTable = () => {
   db.transaction(tx => {
      // Delete from the 'local' table
@@ -161,6 +166,8 @@ export const insertVRPData = (userId, flow, creditorname, debtoraccnum) => {
        },
      );
   });
+  fetchAISPData();
+  fetchVRPData();
  };
  
 

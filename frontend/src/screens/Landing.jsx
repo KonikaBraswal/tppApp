@@ -14,11 +14,12 @@ import {
 } from 'react-native';
 import {Surface, FAB} from '@react-native-material/core';
 import {Icon, Searchbar, Card, Title} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from '../components/ViewAll';
 import ViewAllLocal from '../components/ViewAllLocal';
+import { fetchAISPData, fetchVRPData } from '../../database/LocalDatabase';
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -31,6 +32,7 @@ const Landing = () => {
     {id: 6, name: 'Santander', icon: require('../assets/icons/santander.png')},
   ];
   const [env, setEnv] = useState(global.env);
+  const [key, setKey] = useState(Date.now()); 
   const render=()=>{
     if(env==='sandbox'){
       return <ViewAll/>
@@ -39,30 +41,37 @@ const Landing = () => {
       return <ViewAllLocal/>;
     }
   }
-  useEffect(() => {
-    // Function to check for changes in global.env
+//   useEffect(() => {
+//     const checkEnvChange = () => {
+//       if (global.env !== env) {
+//         setEnv(global.env);
+//       }
+//     };
+//     checkEnvChange();
+
+   
+//     const intervalId = setInterval(checkEnvChange, 1000); // Check every second
+//     return () => clearInterval(intervalId);
+//  }, [env]); 
+useFocusEffect(
+  React.useCallback(() => {
+    // This function runs when the screen comes into focus
     const checkEnvChange = () => {
       if (global.env !== env) {
-        setEnv(global.env); // Update the state to trigger re-render
+        setEnv(global.env);
+        setKey(Date.now()); // Trigger remount by changing the key
       }
     };
-
-    // Check for changes initially
     checkEnvChange();
 
-    // Set up an interval to periodically check for changes
     const intervalId = setInterval(checkEnvChange, 1000); // Check every second
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [env])
+)
 
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
- }, [env]); 
   const renderCard = ({item}) => (
     <TouchableOpacity
       onPress={() =>
-        // navigation.navigate('Your Accounts', {
-        //   selectedIcon: item.icon,
-        //   selectedBank: item.name,
-        // })
         navigation.navigate('Consent')
       }>
       <Surface elevation={6} category="medium" style={styles.surface}>

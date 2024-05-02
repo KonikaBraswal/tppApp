@@ -54,6 +54,8 @@ import VrpTransactions from './src/screens/VRP/VrpTransactions';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import LocalDetails from './src/screens/LocalEnvironment/LocalDetails';
 import { GlobalEnvProvider } from './GlobalEnvContext';
+import HelloWorld from './src/screens/VRP/Hello';
+import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
 import './global';
 
 const Stack = createNativeStackNavigator();
@@ -114,6 +116,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
+              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
               <Stack.Screen
                 name="Added Bank Accounts"
                 component={AccountListWithRefreshToken}
@@ -159,6 +162,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Local Details" component={LocalDetails} />
+              <Stack.Screen name="hello" component={HelloWorld} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>

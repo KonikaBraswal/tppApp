@@ -4,7 +4,7 @@ import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import TransactionCard from './TransactionCard';
-import balanceData from '../assets/data/transactions.json';
+import transactionData from '../assets/data/transactions.json';
 import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
@@ -19,9 +19,11 @@ const TransactionList = props => {
     'No Transactions Found',
   );
   useEffect(() => {
-    if(global.env=='local')
-    {
-      setTransactionDetails(balanceData.Data);
+    if(global.env==='local'){
+      console.log("inside local transactionListtttttttttt",transactionData.Data);
+      setTransactionDetails(transactionData.Data);
+      setLoading(false);
+
     }
     else{
     const fetchTransaction = async () => {
@@ -34,6 +36,7 @@ const TransactionList = props => {
           const response = await sandboxApiClient.allCalls(
             `${AccountId}/transactions`,
           );
+          console.log("inside transactionssssssssssssssssssssssss",response);
           setTransactionDetails(response);
         } catch (error) {
           console.error('Error fetching transactions:', error);
@@ -47,6 +50,7 @@ const TransactionList = props => {
     };
 
     fetchTransaction();
+    console.log("inside transactionssssssssssssssssssssssss",transactionDetails);
   }
   }, [AccountId]);
   const transactions = transactionDetails;

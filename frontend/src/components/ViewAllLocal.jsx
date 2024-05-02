@@ -12,17 +12,6 @@ const ViewAllLocal = () => {
   const filterDataByScope = data => {
     return data.filter(obj => obj.scope === 'accounts');
   };
-  function findAccountRefreshToken(array, accountId) {
-    return array
-
-      .filter(obj =>
-        obj.account_customer_consented.split(',').includes(accountId),
-      )
-
-      .sort(
-        (a, b) => new Date(a.CreationDateTime) - new Date(b.CreationDateTime),
-      );
-  }
   useEffect(() => {
     fetchAISPData()
       .then(data => {
@@ -44,9 +33,7 @@ const ViewAllLocal = () => {
             key={card.accID}
             style={styles.card}
             onPress={() => {
-              navigation.navigate('View Added Bank Details', {
-                AccountId: card.AccountId,
-              });
+              navigation.navigate('Local Transactions');
             }}>
             {card.accsubType === 'CurrentAccount' ? (
               <Card.Cover
