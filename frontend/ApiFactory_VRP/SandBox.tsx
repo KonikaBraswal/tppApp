@@ -122,7 +122,7 @@ class SandBox {
           headers: headers,
         },
       );
-      return response;
+      return response.data;
     }catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
@@ -195,7 +195,6 @@ class SandBox {
 
   async exchangeAccessToken(
     authTokenUrl: string,
-    formData: any,
     consentData: any,
   ) {
     try {

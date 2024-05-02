@@ -133,7 +133,7 @@ const VRPConsent = ({ route }) => {
     const handleSubmit = async () => {
         try {
             
-            const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
+            const response=await sandboxApiClient.exchangeAccessToken(inputValue,consentData);
             
             const updatedResponse = {
                 ...response,
