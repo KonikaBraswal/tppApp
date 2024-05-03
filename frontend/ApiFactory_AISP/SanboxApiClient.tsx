@@ -46,6 +46,7 @@ class SanboxApiClient {
   private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
   private permissions: string[] = [];
   private apiAccess: string = '';
+  private apiAccessToken: string = '';
   constructor(
     baseUrl: string,
     clientId: string,
@@ -58,12 +59,12 @@ class SanboxApiClient {
     this.commonHeaders = commonHeaders;
   }
 
-  async  eCommQuickCheckout(accessToken: string): Promise<any> {
-    console.log(accessToken);
+  async  eCommQuickCheckout(): Promise<any> {
+    // console.log(accessToken);
     try{
       const headers = {
         ...this.commonHeaders,
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${this.apiAccessToken}`,
       };
       const checkoutResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.eCommCheckoutEndpoint}`,
@@ -111,7 +112,8 @@ class SanboxApiClient {
       addDetails(details1);
       // store
       console.log('Access token', response.data.access_token);
-      await this.eCommQuickCheckout(response.data.access_token);
+      this.apiAccessToken=response.data.access_token;
+      await this.eCommQuickCheckout();
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);

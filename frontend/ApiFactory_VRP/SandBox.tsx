@@ -49,7 +49,9 @@ class SandBox {
   private apiAccess: string = '';
   private consentId: string = '';
   private accessToken: string = '';
+  private apiAccessToken: string = '';
   private refreshtoken: string = '';
+
   constructor(
     baseUrl: string,
     clientId: string,
@@ -103,6 +105,8 @@ class SandBox {
           headers: headers,
         },
       );
+      // console.log("accesstoken",response.data.access_token);
+      this.apiAccessToken = response.data.access_token;
       return response.data.access_token;
     } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
@@ -112,19 +116,19 @@ class SandBox {
   async getDetailsCA(): Promise<any> {
     try {
       const accessToken = this.accessTokenCA();
+      console.log('accesstoken', this.apiAccessToken);
       const headers = {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: 'Bearer ' + this.apiAccessToken,
       };
       const url =
         'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
       const response: AxiosResponse<ResponseData> = await axios.get(
         `${this.baseUrl}/${url}`,
-
         {
           headers: headers,
         },
       );
-      return response;
+      return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
@@ -195,11 +199,7 @@ class SandBox {
     return consentUrlWithVariables;
   }
 
-  async exchangeAccessToken(
-    authTokenUrl: string,
-    formData: any,
-    consentData: any,
-  ) {
+  async exchangeAccessToken(authTokenUrl: string, consentData: any) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');

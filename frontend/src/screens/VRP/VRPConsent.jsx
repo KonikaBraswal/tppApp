@@ -124,7 +124,6 @@ const VRPConsent = ({route}) => {
     try {
       const response = await sandboxApiClient.exchangeAccessToken(
         inputValue,
-        formData,
         consentData,
       );
 
