@@ -44,7 +44,6 @@
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-swiper": "^1.6.0",
     "react-native-uuid": "^2.0.1",
-    "react-native-vector-icons": "^10.0.3",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

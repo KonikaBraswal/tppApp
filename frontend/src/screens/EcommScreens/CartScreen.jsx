@@ -19,6 +19,8 @@ import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
 import {useNavigation} from '@react-navigation/native';
 
+
+
 const CART_STORAGE_KEY = '@OneBank:cart';
 
 const CartScreen = () => {
@@ -127,7 +129,7 @@ const CartScreen = () => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Select Your Bank');
+          navigation.navigate('Add Your Details');
         }}
         style={styles.footer}
         activeOpacity={1}>

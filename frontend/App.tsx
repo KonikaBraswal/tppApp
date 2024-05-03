@@ -45,6 +45,8 @@ import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
 import CartScreen from './src/screens/EcommScreens/CartScreen';
+import AddressScreen from './src/screens/EcommScreens/AddressScreen';
+import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -93,6 +95,8 @@ function App(): React.JSX.Element {
 
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
+              <Stack.Screen name="Add Your Details" component={AddressScreen} />
+              <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
               {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Details" component={MainScreen} />
