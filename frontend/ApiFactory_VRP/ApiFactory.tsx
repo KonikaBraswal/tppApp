@@ -55,7 +55,7 @@
 // export default ApiFactory;
 // ApiFactory.ts
 import axios from 'axios';
-import config from '../configs_VRP/config.json';
+import config from '../configs_VRP/configvrp.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';

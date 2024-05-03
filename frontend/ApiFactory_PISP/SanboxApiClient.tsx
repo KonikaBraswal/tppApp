@@ -4,13 +4,13 @@ import sandboxConfig from '../configs_PISP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
 import {addDetails} from '../database/Database';
 import {updateDetails} from '../database/Database';
-//import { v4 as uuidv4 } from 'uuid';
 import uuid from 'react-native-uuid';
+const { generateHeaders, generateBody, generateBodyForExchange, generateAccessTokenBody,generateBodyForRefresh,generateBodyForPaymentRequest,generateHeadersForPisp,generateDomesticPaymentRequestBody,generatePaymentStatusHeaders } = require('../ConfigFiles/apiUtils.tsx');
 interface BodyData {
   Data: {
     Permissions: string[];
   };
-  Risk: {}; // Adjust this if Risk has a specific structure
+  Risk: {}; 
 }
 var refreshTokenExists = false;
 interface ResponseData {
@@ -28,9 +28,9 @@ interface InitiationData {
   EndToEndIdentification: string;
   InstructedAmount: {
     Amount: string;
-    Currency: string; // Assuming Currency is a string
+    Currency: string;
   };
-  DebtorAccount: any; // Adjust the type as needed
+  DebtorAccount: any; 
   CreditorAccount: {
     SchemeName: string;
     Identification: string;
@@ -45,9 +45,9 @@ interface InitiationData {
 var consentID = '';
 interface PaymentRisk {
   PaymentContextCode: string;
-  MerchantCategoryCode: any; // Adjust the type as needed
-  MerchantCustomerIdentification: any; // Adjust the type as needed
-  DeliveryAddress: any; // Adjust the type as needed
+  MerchantCategoryCode: any; 
+  MerchantCustomerIdentification: any; 
+  DeliveryAddress: any; 
 }
 
 interface PaymentBodyData {
@@ -58,12 +58,14 @@ interface PaymentBodyData {
 }
 
 // const userIdToUpdate = 1001;
-
+interface CommonHeaders {
+  [key: string]: string;
+}
 class SanboxApiClient {
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
-  private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
+  private commonHeaders: any; 
   private permissions: string[] = [];
   private apiAccess: string = '';
   private callScope: string = '';
@@ -79,7 +81,21 @@ class SanboxApiClient {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaderss;
   }
+  private generateHeaders(endpoint: string,accessToken: string | null = null): CommonHeaders {
+    return generateHeaders(endpoint,accessToken, this.commonHeaders);
+ }
 
+ private generateBody(endpoint: string, data: Record<string, any>): Record<string, any> {
+    return generateBody(endpoint, data, this.permissions);
+ }
+
+ private generateBodyForExchange(authToken: string): Record<string, string> {
+    return generateBodyForExchange(authToken, this.clientId, this.clientSecret);
+ }
+
+ private generateBodyForRefresh(refreshToken: string): Record<string, string> {
+    return generateBodyForRefresh(refreshToken, this.clientId, this.clientSecret);
+ }
   async retrieveAccessToken(
     callScope: string,
     DebtorAccount: any,
@@ -90,16 +106,13 @@ class SanboxApiClient {
     if (callScope == 'payments') {
       this.callScope = callScope;
       console.log('Payments Call');
-
-      body = {
-        grant_type: sandboxConfig.grant_type,
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        scope: callScope,
-      };
-      header = {
-        'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
-      };
+      body = generateAccessTokenBody(
+        sandboxConfig.grant_type,
+        this.clientId,
+        this.clientSecret,
+        callScope
+      );
+      header = generateHeaders(sandboxConfig.tokenEndpoint);
     }
 
     try {
@@ -138,58 +151,14 @@ class SanboxApiClient {
     try {
       if (this.callScope == 'accounts') {
         accountRequestEndpoint = sandboxConfig.accountRequestEndpointAisp;
-        body = {
-          Data: {
-            Permissions: this.permissions, //get permissions from db
-          },
-          Risk: {}, // get risks from db
-        };
-
-        headers = {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken,
-        };
+        body = generateBody(sandboxConfig.accountRequestEndpointAisp, {});
       }
+      headers = generateHeaders(sandboxConfig.accountsEndpoint,accessToken);
       if (this.callScope == 'payments') {
         accountRequestEndpoint = sandboxConfig.accountRequestEndpointPisp;
+        body = generateBodyForPaymentRequest(this.DebtorAccount, true, '');
+        headers = generateHeadersForPisp(accessToken, id, sandboxConfig.financialId, sandboxConfig.signatureJws);
 
-        body = {
-          Data: {
-            Initiation: {
-              InstructionIdentification: 'instr-identification',
-              EndToEndIdentification: 'e2e-identification',
-              InstructedAmount: {
-                Amount: '1.00',
-                Currency: 'GBP',
-              },
-              DebtorAccount: this.DebtorAccount,
-              CreditorAccount: {
-                SchemeName: 'IBAN',
-                Identification: 'BE56456394728288',
-                Name: 'ACME DIY',
-                SecondaryIdentification: 'secondary-identif',
-              },
-              RemittanceInformation: {
-                Unstructured: 'Tools',
-                Reference: 'Tools',
-              },
-            },
-          },
-          Risk: {
-            PaymentContextCode: 'EcommerceGoods',
-            MerchantCategoryCode: null,
-            MerchantCustomerIdentification: null,
-            DeliveryAddress: null,
-          },
-        };
-
-        headers = {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken,
-          'x-fapi-financial-id': sandboxConfig.financialId,
-          'x-jws-signature': sandboxConfig.signatureJws,
-          'x-idempotency-key': `${id}`,
-        };
       }
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${accountRequestEndpoint}`,
@@ -244,17 +213,14 @@ class SanboxApiClient {
       const end = authTokenUrl.indexOf('&');
       const authToken = authTokenUrl.slice(start, end);
       console.log('AuthToken', authToken);
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        redirect_uri: sandboxConfig.redirectUri,
-        grant_type: 'authorization_code',
-        code: authToken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-
+      const body = generateBodyForExchange(
+        this.clientId,
+        this.clientSecret, 
+        sandboxConfig.redirectUri,
+        'authorization_code',
+        authToken
+      );
+const headers = generateHeaders(sandboxConfig.tokenEndpoint);
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         null,
@@ -284,11 +250,6 @@ class SanboxApiClient {
       refreshTokenExists = true;
       console.log('Api access token', response.data.access_token);
       return this.domesticPayments(response.data.access_token);
-      // console.log('Api refresh token', response.data.refresh_token);
-      // if (this.callScope == 'payments') {
-      //   return this.domesticPayments(response.data.access_token);
-      // }
-      // return this.fetchAccounts(response.data.access_token);
       return this.refreshToken(response.data.refresh_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -297,17 +258,13 @@ class SanboxApiClient {
 
   async refreshToken(refreshToken: string): Promise<any> {
     try {
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        //redirect_uri: sandboxConfig.redirectUri,
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-
+      const body = generateBodyForRefresh(
+        this.clientId,
+        this.clientSecret,
+        'refresh_token',
+        refreshToken
+      );
+      const headers = generateHeaders(sandboxConfig.tokenEndpoint);
       const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         null,
@@ -316,10 +273,7 @@ class SanboxApiClient {
           params: body,
         },
       );
-
       console.log('Refresh call response', responseRefresh.data);
-
-      // return this.fetchAccounts(responseRefresh.data.access_token);
       return responseRefresh.data.access_token;
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -330,42 +284,18 @@ class SanboxApiClient {
     try {
       const idd = uuid.v4();
       console.log('idddd', idd);
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + apiAccess,
-        'x-fapi-financial-id': sandboxConfig.financialId,
-        'x-jws-signature': sandboxConfig.signatureJws,
-        'x-idempotency-key': `${idd}`,
-      };
-
-      const requestBody = {
-        Data: {
-          ConsentId: consentID,
-          Initiation: {
-            InstructionIdentification: 'instr-identification',
-            EndToEndIdentification: 'e2e-identification',
-            InstructedAmount: {
-              Amount: '1.00',
-              Currency: 'GBP',
-            },
-            DebtorAccount: this.DebtorAccount,
-            CreditorAccount: {
-              SchemeName: 'IBAN',
-              Identification: 'BE56456394728288',
-              Name: 'ACME DIY',
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: 'Tools',
-            },
-          },
+      const headers = generateHeadersForPisp(apiAccess, idd, sandboxConfig.financialId, sandboxConfig.signatureJws);
+      const requestBody = generateDomesticPaymentRequestBody(
+        consentID,
+        this.DebtorAccount,
+        {
+          SchemeName: 'IBAN',
+          Identification: 'BE56456394728288',
+          Name: 'ACME DIY',
+          SecondaryIdentification: 'secondary-identif',
         },
-        Risk: {
-          PaymentContextCode: 'EcommerceGoods',
-        },
-      };
-
+        'EcommerceGoods'
+      );
       const paymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticPaymentsEndpoint}`,
         requestBody, // Remove the object wrapper from requestBody
@@ -390,11 +320,7 @@ class SanboxApiClient {
     domesticPaymentsId: string,
   ): Promise<any> {
     try {
-      const headers = {
-        Authorization: 'Bearer ' + apiAccessToken,
-        'x-fapi-financial-id': sandboxConfig.financialId,
-      };
-
+      const headers = generatePaymentStatusHeaders(apiAccessToken);
       const payResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.paymentSelfLink}/${domesticPaymentsId}`,
         {

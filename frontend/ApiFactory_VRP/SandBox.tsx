@@ -1,15 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
-import config from '../configs_VRP/config.json';
+import config from '../configs_VRP/configvrp.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import { Linking, Alert } from 'react-native';
+import 'react-native-get-random-values';
 import uuid from 'react-native-uuid';
 import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
-// interface BodyData {
-//   Data: {
-//     Permissions: string;
-//   };
-//   Risk: {}; // Adjust this if Risk has a specific structure
-// }
+const {generateAccountRequestHeaders,generateVrpAccountRequestHeaders, generateVrpPaymentBody,generateDomesticConsentHeaders,generateHeaders, generateBody, generateBodyForExchange, generateBodyForRefresh,generateAccessTokenBody,generateAccessTokenHeaders } = require('../ConfigFiles/apiUtils.tsx');
+
 var refreshTokenExists = false;
 interface ResponseData {
   scope: any;
@@ -32,7 +29,7 @@ interface AccessTokenRequestParams {
   accessTokenParams: any;
   scope: string;
   headers: Record<string, string>;
-  body: string; // Adjust the type according to your actual body structure
+  body: string; 
   consentUrl: string;
 }
 
@@ -40,7 +37,7 @@ class SandBox {
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
-  private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
+  private commonHeaders: any; 
   private permissions!: string;
   private apiAccess: string = '';
   private consentId: string = '';
@@ -61,12 +58,12 @@ class SandBox {
   async retrieveAccessToken(params: AccessTokenRequestParams): Promise<string> {
     this.permissions = params.accessTokenParams.body;
     try {
-      const body: Record<string, string> = {
-        grant_type: sandboxConfig.grant_type,
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        scope: params.accessTokenParams.scope,
-      };
+      const body = generateAccessTokenBody(
+        sandboxConfig.grant_type,
+        this.clientId,
+        this.clientSecret,
+        params.accessTokenParams.scope
+      );
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         body,
@@ -91,6 +88,7 @@ class SandBox {
         Authorization: 'Bearer ' + this.accessToken,
         'x-idempotency-key': `${id}`,
       };
+      
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${url}`,
         body,
@@ -118,10 +116,8 @@ class SandBox {
   }
   async getDomesticConsent(accessToken: any, url: string) {
     try {
-      const headers = {
-        Authorization: `Bearer ${accessToken}`,
-        'x-fapi-financial-id': '0015800000jfwxXAAQ',
-      };
+      const headers = generateDomesticConsentHeaders(accessToken, '0015800000jfwxXAAQ');
+
       const allVrpResponse = await axios.get(url, {
         headers: headers,
       });
@@ -157,17 +153,14 @@ class SandBox {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
       const authToken = authTokenUrl.slice(start, end);
-
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        redirect_uri: sandboxConfig.redirectUri,
-        grant_type: 'authorization_code',
-        code: authToken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
+      const body = generateBodyForExchange(
+        this.clientId, 
+        this.clientSecret, 
+        sandboxConfig.redirectUri,
+        'authorization_code',
+        authToken
+      );
+      const headers = generateHeaders(sandboxConfig.tokenEndpoint);
 
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
@@ -207,15 +200,14 @@ class SandBox {
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
     try {
 
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken.refreshtoken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
+      const body = generateBodyForRefresh(
+        this.clientId,
+        this.clientSecret,
+        'refresh_token',
+        refreshToken.refreshtoken
+      );
+      // };
+      const headers = generateHeaders(sandboxConfig.tokenEndpoint);
 
       const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
@@ -256,49 +248,10 @@ class SandBox {
   ): Promise<any> {
     try {
       const id = uuid.v4();
-      const headers = {
-        ...config.vrpHeaders,
-        Authorization: `Bearer ${apiAccessToken}`,
-        'x-idempotency-key': `${id}`,
-      };
-      const Identification = formData.accountNumber + formData.sortCode;
-      const body = {
-        Data: {
-          ConsentId: `${consentid}`,
-          PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
-          Initiation: {
-            CreditorAccount: {
-              SchemeName: 'SortCodeAccountNumber',
-              Identification: Identification,
-              Name: formData.firstName,
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: formData.reference,
-            },
-          },
-          Instruction: {
-            InstructionIdentification: 'instr-identification',
-            EndToEndIdentification: 'e2e-identification',
-            InstructedAmount: {
-              Amount: formData.amount,
-              Currency: 'GBP',
-            },
-            CreditorAccount: {
-              SchemeName: 'SortCodeAccountNumber',
-              Identification: Identification,
-              Name: formData.firstName,
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: formData.reference,
-            },
-          },
-        },
-        Risk: {},
-      };
+   
+      const headers = generateAccountRequestHeaders(apiAccessToken);
+
+      const body = generateVrpPaymentBody(formData,consentid);
 
       const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`,
@@ -316,10 +269,8 @@ class SandBox {
 
   async getAllVrpPayments(url: string): Promise<any> {
     try {
-      const headers = {
-        Authorization: `Bearer ${this.apiAccess}`,
-        'x-fapi-financial-id': '0015800000jfwxXAAQ',
-      };
+      const headers = generateVrpAccountRequestHeaders(this.apiAccess,'0015800000jfwxXAAQ');
+
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,
       });

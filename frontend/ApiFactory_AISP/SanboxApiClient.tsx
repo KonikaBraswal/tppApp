@@ -5,23 +5,10 @@ import config from '../configs_AISP/config.json';
 import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
-
-interface BodyData {
-  Data: {
-    Permissions: string[];
-  };
-  Risk: {}; // Adjust this if Risk has a specific structure
-}
-
+const { generateHeaders, generateBody, generateBodyForExchange, generateBodyForRefresh } = require('../ConfigFiles/apiUtils.tsx');
 //DB
 var refreshTokenExists = false;
 
-// interface ResponseData {
-//   access_token: string;
-//   Data?: {
-//     ConsentId?: string;
-//   };
-// }
 interface ResponseData {
   refresh_token: string;
   access_token: string;
@@ -33,17 +20,20 @@ interface ResponseData {
   };
 }
 //DB
-
+interface CommonHeaders {
+  [key: string]: string;
+}
 interface UserCredentials {
   username: string;
   password: string;
 }
 
 class SanboxApiClient {
+  
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
-  private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
+  private commonHeaders: any; 
   private permissions: string[] = [];
   private apiAccess: string = '';
   constructor(
@@ -57,14 +47,27 @@ class SanboxApiClient {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaders;
   }
+  private generateHeaders(endpoint: string,accessToken: string | null = null): CommonHeaders {
+    return generateHeaders(endpoint,accessToken, this.commonHeaders);
+ }
+
+ private generateBody(endpoint: string, data: Record<string, any>): Record<string, any> {
+    return generateBody(endpoint, data, this.permissions);
+ }
+
+ private generateBodyForExchange(authToken: string): Record<string, string> {
+    return generateBodyForExchange(authToken, this.clientId, this.clientSecret);
+ }
+
+ private generateBodyForRefresh(refreshToken: string): Record<string, string> {
+    return generateBodyForRefresh(refreshToken, this.clientId, this.clientSecret);
+ }
 
   async  eCommQuickCheckout(accessToken: string): Promise<any> {
     console.log(accessToken);
     try{
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${accessToken}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountRequestEndpoint,accessToken);
+
       const checkoutResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.eCommCheckoutEndpoint}`,
         {
@@ -83,12 +86,8 @@ class SanboxApiClient {
   async retrieveAccessToken(permission: string[]): Promise<string> {
     this.permissions = permission;
     try {
-      const body: Record<string, string> = {
-        grant_type: sandboxConfig.grant_type,
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        scope: sandboxConfig.scope,
-      };
+      const body = this.generateBody(sandboxConfig.tokenEndpoint, {});
+
       const headers = {...this.commonHeaders};
 
       const response: AxiosResponse<ResponseData> = await axios.post(
@@ -120,16 +119,9 @@ class SanboxApiClient {
 
   async accountRequest(accessToken: string): Promise<string> {
     try {
-      const body: BodyData = {
-        Data: {
-          Permissions: this.permissions,
-        },
-        Risk: {},
-      };
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: 'Bearer ' + accessToken,
-      };
+      const body = this.generateBody(sandboxConfig.accountRequestEndpoint, {});
+
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,accessToken);
 
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.accountRequestEndpoint}`,
@@ -184,16 +176,14 @@ class SanboxApiClient {
       const end = authTokenUrl.indexOf('&');
       const authToken = authTokenUrl.slice(start, end);
       console.log('AuthToken', authToken);
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        redirect_uri: sandboxConfig.redirectUri,
-        grant_type: 'authorization_code',
-        code: authToken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
+      const body = generateBodyForExchange(
+        this.clientId, 
+        this.clientSecret,
+        sandboxConfig.redirectUri,
+        'authorization_code',
+        authToken
+      );
+      const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
 
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
@@ -231,17 +221,13 @@ class SanboxApiClient {
   }
   async refreshToken(refreshToken: string): Promise<any> {
     try {
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        //redirect_uri: sandboxConfig.redirectUri,
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-
+      const body = generateBodyForRefresh(
+        this.clientId,
+        this.clientSecret,
+        'refresh_token',
+        refreshToken
+      );
+      const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
       const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         null,
@@ -272,10 +258,8 @@ class SanboxApiClient {
   async  fetchAge(apiAccessToken: string): Promise<any> {
     
     try{
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${apiAccessToken}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
+
       const ageResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.ageEndpoint}`,
         {
@@ -293,10 +277,7 @@ class SanboxApiClient {
 
   async fetchAccounts(apiAccessToken: string): Promise<any> {
     try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${apiAccessToken}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
@@ -340,10 +321,7 @@ class SanboxApiClient {
       console.log('No access token stored');
     }
     try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${this.apiAccess}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
@@ -384,15 +362,9 @@ class SanboxApiClient {
     }
   }
   async fetchAccountsWithRefreshToken(access_token: string): Promise<any> {
-    // const refresh_token = await fetchRefreshedToken(1001);
-
-    // const access_token = await this.refreshToken(refresh_token);
     const apiAccessToken = access_token;
     try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${apiAccessToken}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
@@ -410,16 +382,10 @@ class SanboxApiClient {
     endPoint: string,
     access_token: string,
   ): Promise<any> {
-    // const refresh_token = await fetchRefreshedToken(1001);
-    // const access_token = await this.refreshToken(refresh_token);
-
     this.apiAccess = access_token;
 
     try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${this.apiAccess}`,
-      };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
