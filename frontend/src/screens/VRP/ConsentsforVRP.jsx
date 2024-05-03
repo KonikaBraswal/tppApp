@@ -64,7 +64,6 @@ const ConsentsforVRP = () => {
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -209,10 +208,12 @@ const ConsentsforVRP = () => {
                               marginTop: hp('2.5%'),
                             }}>
                             Account Number:{' '}
-                            {
-                              JSON.parse(item.vrppayload).DebtorAccount
-                                .Identification.replace(/\d(?=\d{4})/g,'*')
-                            }
+                            {JSON.parse(
+                              item.vrppayload,
+                            ).DebtorAccount.Identification.replace(
+                              /\d(?=\d{4})/g,
+                              '*',
+                            )}
                           </Text>
                         )}
                     </View>

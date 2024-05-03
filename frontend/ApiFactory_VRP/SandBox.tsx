@@ -195,6 +195,8 @@ class SandBox {
   async manualUserConsent(scope: string): Promise<string> {
     // console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
+    console.log(consentUrlWithVariables);
+
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
@@ -245,6 +247,7 @@ class SandBox {
         response.data.access_token,
         consentData.Links.Self,
       );
+
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
