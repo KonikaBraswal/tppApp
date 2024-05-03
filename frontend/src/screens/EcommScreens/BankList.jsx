@@ -1,12 +1,59 @@
-import { TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../../components/IconDialog';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import React, { useState, useEffect } from 'react';
+import * as products from '../../assets/data/product_catalogue.json';
+// import {Button, Searchbar, Icon} from 'react-native-paper';
+// import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
+import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
+import {
+    Keyboard,
+    Pressable,
+    TouchableOpacity,
+    VirtualizedList,
+} from 'react-native';
+import {
+    Title,
+    TextInput,
+    List,
+    Checkbox,
+    Searchbar,
+    Icon,
+    Button,
+    Modal,
+    Dialog,
+    Portal,
+
+    DataTable
+} from 'react-native-paper';
+
+import { RFValue } from 'react-native-responsive-fontsize';
+import imgarray from '../../assets/data/images';
+import { GridLayout } from 'react-native-layout-grid';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+import {
+    ScrollView,
+    Text,
+    Image,
+    View,
+    StyleSheet,
+    FlatList,
+
+} from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { TouchableHighlight } from 'react-native';
 
 const mode = 'sandbox';
+const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
+// const checkputApiFactory=new ApiFactory();
+// const checkoutApiClient=checkputApiFactory.createApiClient('sandbox');
 const BankList = () => {
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
@@ -18,27 +65,28 @@ const BankList = () => {
     const [isInputDialogVisible, setInputDialogVisible] = useState(false);
     const showInputDialog = () => setInputDialogVisible(true);
     const hideInputDialog = () => setInputDialogVisible(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [inputValue, setInputValue] = useState('');
     const [consentData, setConsentData] = useState([]);
 
-    const allbanks = [
-        { id: 101, name: 'Allied Irish Bank(NI)', icon: require('../../assets/images/ecomm-images/allied irish bank.jpeg') },
-        { id: 102, name: 'Lloyds', icon: require('../assets/images/lloyds.png') },
+    const [allbanks, setAllBanks] = useState([
+        { id: 101, name: 'Allied Irish Bank(NI)', icon: require('../../assets/images/ecomm-images/allied-irish-bank.jpeg') },
+        { id: 102, name: 'Lloyds', icon: require('../../assets/images/lloyds.png') },
         { id: 103, name: 'Bank Of Scotland', icon: require('../../assets/images/ecomm-images/bank-of-scotland.png') },
-        { id: 104, name: 'Natwest', icon: require('../assets/images/natwest.png') },
+        { id: 104, name: 'Natwest', icon: require('../../assets/images/natwest.png') },
         { id: 105, name: 'Coutts', icon: require('../../assets/images/ecomm-images/coutts.png') },
-        { id: 106, name: 'First Direct', icon: require('../../assets/images/ecomm-images/first direct bank.png') },
-        { id: 107, name: 'Danske Bank', icon: require('../../assets/images/ecomm-images/danske bank.png') },
-        { id: 108, name: 'Barclays', icon: require('../assets/images/barclays.png') }
-    ];
+        { id: 106, name: 'First Direct', icon: require('../../assets/images/ecomm-images/first-direct-bank.png') },
+        { id: 107, name: 'Danske Bank', icon: require('../../assets/images/ecomm-images/danske-bank.png') },
+        { id: 108, name: 'Barclays', icon: require('../../assets/images/barclays.png') }
+    ]);
     const jsondata =
     {
         "Data": {
             "ReadRefundAccount": "No",
             "ControlParameters": {
                 "InitialPayment": {
-                    "Amount": CartItem.amount,
+                    "Amount": "9.00",
                     "Currency": "GBP"
                 },
                 "VRPType": [
@@ -69,39 +117,53 @@ const BankList = () => {
         "Risk": {}
     };
     const handleConfirmButtonClick = async () => {
-        if (mode == 'sandbox') {
-            try {
-                const permissions = jsondata;
-                setLoading(true);
-                setError(null);
-                const accessTokenParams = {
-                    scope: 'payments',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: permissions,
-                    consentUrl: sandboxConfig.paymentRequestEndPoint
-                };
-                const consentdata = await sandboxApiClient.retrieveAccessToken(
-                    { accessTokenParams },
-                ); //here is data
-                setConsentData(consentdata);
-
-            } catch (error) {
-                console.error('Error:', error);
-                setError('Failed to retrieve access token.');
-            } finally {
-                setLoading(false);
+        // console.log(`Bank ID clicked: ${bankId}`);
+        try {
+            const permissions = jsondata;
+            
+            setLoading(true);
+            setError(null);
+            const accessTokenParams = {
+                scope: 'payments',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: permissions,
+                consentUrl: sandboxConfig.paymentRequestEndPoint
+            };
+            const consentdata = await sandboxApiClient.retrieveAccessToken(
+                { accessTokenParams },
+            );
+            setConsentData(consentdata);
+            console.log(consentdata);
+            if (way == 'web') {
+                const Vrpscope = 'openid payments';
+                const consentUrl = await sandboxApiClient.manualUserConsent(
+                    Vrpscope,
+                );
+                
+                showInputDialog();
             }
-        } else {
-            navigation.navigate('Consent');
+        } catch (error) {
+            console.error('Error:', error);
+            setError('Failed to retrieve access token.');
+        } finally {
+            setLoading(false);
         }
+
     };
+    const submit= async()=>{
+        const customerDetails = await sandboxApiClient.getDetailsCA();
+        console.log("lo",customerDetails);
+        navigation.navigate('Customer Details', {
+            customerDetails
+        });
+    }
     const handleSubmit = async () => {
         try {
 
             const response = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
-            const customerDetails = await getDetailsCA();
+            const customerDetails = await sandboxApiClient.getDetailsCA();
             navigation.navigate('Customer Details', {
                 customerDetails
             });
@@ -114,82 +176,99 @@ const BankList = () => {
         setInputValue('');
         hideInputDialog();
     };
+    const renderitem = ({ item, index }) => {
+        return (
+            <TouchableOpacity onPress={() => handleConfirmButtonClick()}>
+                <View style={styles.bankItemContainer}>
+                    <Image
+                        key={index}
+                        source={item.icon}
+                        style={{ height: 50, width: 50, resizeMode: 'contain' }}
+                    />
+                    <Text style={styles.name}>{item.name}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
     return (
-        <KeyboardAwareScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            enableOnAndroid
-            enableAutomaticScroll
-            extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}>
-            <View
-                style={{
-                    backgroundColor: '#fff',
-                    padding: 10,
-                }}>
-                <Searchbar
-                    placeholder="Search any banks"
-                    // onChangeText={onChangeSearch}
-                    value={searchQuery}
-                    icon={() => <Icon source="magnify" color="black" size={20} />}
+        // <KeyboardAwareScrollView
+        //     contentContainerStyle={{ flexGrow: 1 }}
+        //     enableOnAndroid
+        //     enableAutomaticScroll
+        //     extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}>
+            <SafeAreaView style={{flex: 1}}>
+                <View
                     style={{
-                        borderRadius: 5,
-                        backgroundColor: '#f4ebfe',
-                    }}
-                />
-            </View>
-            <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
-                <Surface elevation={10} category="medium">
-                    <Text
+                        backgroundColor: '#fff',
+                        padding: 10,
+                    }}>
+                    <Searchbar
+                        placeholder="Search any banks"
+                        // onChangeText={onChangeSearch}
+                        value={searchQuery}
+                        icon={() => <Icon source="magnify" color="black" size={20} />}
                         style={{
-                            fontSize: RFValue(18),
-                            padding: 15,
-                            color: 'black',
-                            fontWeight: 'bold',
-                            padding: 20,
-                        }}>
-                        All Banks
-                    </Text>
-                    {allbanks.map(bank => (
-                        <TouchableOpacity key={bank.id} onPress={handleConfirmButtonClick}>
-                            <ListItem
-                                key={`row_${bank.id}`}
-                                title={bank.name}
-                                leading={
-                                    <Image
-                                        source={bank.icon}
-                                        style={{ height: 30, width: 30, resizeMode: 'contain' }}
-                                    />
-                                }
-                                trailing={<Icon source="chevron-right" size={24} />}
-                            />
-                        </TouchableOpacity>
-                    ))}
-                </Surface>
-            </Stack>
-            <View>
-                <Portal>
-                    <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
-                        <Dialog.Title>Redirect Input</Dialog.Title>
-                        <Dialog.Content>
-                            <TextInput
-                                label="Paste URL from the browser"
-                                value={inputValue}
-                                onChangeText={text => setInputValue(text)}
-                            />
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={hideInputDialog}>Cancel</Button>
-                            <Button onPress={handleSubmit}>Submit</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
-            </View>
-
-        </KeyboardAwareScrollView>
+                            borderRadius: 5,
+                            backgroundColor: '#f4ebfe',
+                        }}
+                    />
+                    <Button onPress={submit} title="Press">Press</Button>
+                </View>
+                <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+                    <Surface elevation={10} category="medium">
+                        
+                        <FlatList
+                            data={allbanks}
+                            renderItem={renderitem}
+                            keyExtractor={bank => bank.id}
+                            contentContainerStyle={styles.container}
+                        />
+                        
+                    </Surface>
+                </Stack>
+                <View>
+                    <Portal>
+                        <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+                            <Dialog.Title>Redirect Input</Dialog.Title>
+                            <Dialog.Content>
+                                <TextInput
+                                    label="Paste URL from the browser"
+                                    value={inputValue}
+                                    onChangeText={text => setInputValue(text)}
+                                />
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                                <Button onPress={hideInputDialog}>Cancel</Button>
+                                <Button onPress={handleSubmit}>Submit</Button>
+                            </Dialog.Actions>
+                        </Dialog>
+                    </Portal>
+                </View>
+            </SafeAreaView>
+        // </KeyboardAwareScrollView>
     );
-
-
 };
 const styles = StyleSheet.create({
+    bankItemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 13,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    name: {
+        alignItems: 'center',
+        width: '100%',
+        // fontSize: 46,
+        fontWeight: 'bold',
+        // marginBottom: -wp('60%'),
+        // marginBottom: hp('40%'),
+        // padding: 60,
+        // marginTop: -wp('20%'),
+        // marginLeft: hp('1%'),
+        // marginRight: wp('5%'),
+        // overflow: 'hidden',
+      },
     container: {
         paddingHorizontal: 10,
         paddingTop: 10,

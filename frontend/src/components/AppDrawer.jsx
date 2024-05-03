@@ -12,6 +12,7 @@ import Database from '../../database/Database';
 import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
 import Landing from '../components/Landing';
+import BankList from '../screens/EcommScreens/BankList';
 
 const Drawer = createDrawerNavigator();
 
@@ -54,8 +55,8 @@ const AppDrawer = () => {
       />
       
       <Drawer.Screen
-        name="Notifications"
-        component={Dummy}
+        name="Banklist"
+        component={BankList}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bell" color={color} size={28} />
