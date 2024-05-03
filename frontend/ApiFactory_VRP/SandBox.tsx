@@ -49,9 +49,7 @@ class SandBox {
   private apiAccess: string = '';
   private consentId: string = '';
   private accessToken: string = '';
-  private apiAccessToken: string = '';
   private refreshtoken: string = '';
-
   constructor(
     baseUrl: string,
     clientId: string,
@@ -105,8 +103,6 @@ class SandBox {
           headers: headers,
         },
       );
-      // console.log("accesstoken",response.data.access_token);
-      this.apiAccessToken = response.data.access_token;
       return response.data.access_token;
     } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
@@ -116,14 +112,14 @@ class SandBox {
   async getDetailsCA(): Promise<any> {
     try {
       const accessToken = this.accessTokenCA();
-      console.log('accesstoken', this.apiAccessToken);
       const headers = {
-        Authorization: 'Bearer ' + this.apiAccessToken,
+        Authorization: 'Bearer ' + accessToken,
       };
       const url =
         'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
       const response: AxiosResponse<ResponseData> = await axios.get(
         `${this.baseUrl}/${url}`,
+
         {
           headers: headers,
         },
@@ -195,9 +191,9 @@ class SandBox {
   async manualUserConsent(scope: string): Promise<string> {
     // console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
+    Linking.openURL(consentUrlWithVariables);
     console.log(consentUrlWithVariables);
 
-    Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
 
@@ -247,7 +243,6 @@ class SandBox {
         response.data.access_token,
         consentData.Links.Self,
       );
-
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
