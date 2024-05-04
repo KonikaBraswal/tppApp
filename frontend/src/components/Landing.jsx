@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,10 +14,11 @@ import {
 } from 'react-native';
 import { Surface, FAB } from '@react-native-material/core';
 import { Icon, Searchbar, Card, Title } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useFocusEffect } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from './ViewAll';
+import ViewAllLocal from '../components/ViewAllLocal';
 import BottomTab from './BottomTab';
 
 const Landing = () => {
@@ -30,14 +31,48 @@ const Landing = () => {
     { id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png') },
     { id: 6, name: 'Santander', icon: require('../assets/icons/santander.png') },
   ];
-
-  const renderCard = ({ item }) => (
+  const [env, setEnv] = useState(global.env);
+  const [key, setKey] = useState(Date.now()); 
+  const render=()=>{
+    if(env==='sandbox'){
+      return <ViewAll/>
+    }
+    else{
+      return <ViewAllLocal/>;
+    }
+  }
+  useFocusEffect(
+    React.useCallback(() => {
+      // This function runs when the screen comes into focus
+      const checkEnvChange = () => {
+        if (global.env !== env) {
+          setEnv(global.env);
+          setKey(Date.now()); // Trigger remount by changing the key
+        }
+      };
+      checkEnvChange();
+  
+      const intervalId = setInterval(checkEnvChange, 1000); // Check every second
+      return () => clearInterval(intervalId); // Cleanup on unmount
+    }, [env])
+  )
+  // const renderCard = ({ item }) => (
+  //   <TouchableOpacity
+  //     onPress={() =>
+  //       // navigation.navigate('Your Accounts', {
+  //       //   selectedIcon: item.icon,
+  //       //   selectedBank: item.name,
+  //       // })
+  //       navigation.navigate('Consent')
+  //     }>
+  //     <Surface elevation={6} category="medium" style={styles.surface}>
+  //       <Image source={item.icon} style={styles.icon} />
+  //     </Surface>
+  //   </TouchableOpacity>
+  // );
+  const renderCard = ({item}) => (
     <TouchableOpacity
       onPress={() =>
-        // navigation.navigate('Your Accounts', {
-        //   selectedIcon: item.icon,
-        //   selectedBank: item.name,
-        // })
         navigation.navigate('Consent')
       }>
       <Surface elevation={6} category="medium" style={styles.surface}>
@@ -150,7 +185,7 @@ const Landing = () => {
           </ScrollView>
 
           <View style={styles.addBankContainer}>
-            <ViewAll />
+           {render()}
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>

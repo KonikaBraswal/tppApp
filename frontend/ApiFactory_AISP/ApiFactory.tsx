@@ -1,5 +1,6 @@
 // ApiFactory.ts
 import config from '../configs_AISP/config.json';
+import MockApiClient from './MockApiClient';
 import SanboxApiClient from './SanboxApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
 
@@ -29,11 +30,7 @@ class ApiFactory {
         );
       // Add other cases if needed
       case 'local':
-        return new SanboxApiClient(
-          this.baseUrl,
-          this.clientId,
-          this.clientSecret,
-          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
+        return new MockApiClient(
         );
       case 'sit':
         return new SanboxApiClient(

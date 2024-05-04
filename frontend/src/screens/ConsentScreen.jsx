@@ -33,13 +33,28 @@ const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const sandboxApiFactory= new SanboxApiFactory();
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const ConsentScreen = () => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [error, setError] = useState(null);
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
