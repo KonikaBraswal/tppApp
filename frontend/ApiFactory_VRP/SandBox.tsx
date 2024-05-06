@@ -105,19 +105,19 @@ class SandBox {
         },
       );
       // console.log("accesstoken",response.data.access_token);
-      this.apiAccessToken=response.data.access_token;
-      return response.data.access_token;
+      // this.apiAccessToken=response.data.access_token;
+      return this.getDetailsCA(response.data.access_token);
     }catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
   }
   
-  async getDetailsCA(): Promise<any>{
+  async getDetailsCA(accessToken:any): Promise<any>{
     try{
-      const accessToken=this.accessTokenCA();
-      console.log("accesstoken",this.apiAccessToken);
+      // const accessToken=this.accessTokenCA();
+      // console.log("accesstoken",this.apiAccessToken);
       const headers = {
-        Authorization: 'Bearer ' + this.apiAccessToken,
+        Authorization: 'Bearer ' + accessToken,
       };
       const url='zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
       const response: AxiosResponse<ResponseData> = await axios.get(

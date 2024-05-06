@@ -5,37 +5,46 @@ import { StyleSheet, View } from "react-native";
 import DataTable from "react-native-paper";
 import { Text } from "react-native-paper";
 import { Surface } from '@react-native-material/core';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const CustomerDetails = ({ route }) => {
     const { customerDetails } = route.params;
-    const click=()=>{
-        // const p=JSON.parse(customerDetails);
-        console.log(customerDetails.data.address);
-    }
+    
     return (
-        <View>
-            <Image source={require('../../assets/images/ecomm-images/customer.jpeg')} style={styles.image}
+        <View  style={styles.container}>
+            <Image source={require('../../assets/images/ecomm-images/customer.png')} style={styles.image}
             resizeMethod="resize"></Image>
-            <Button onPress={click}>press</Button>
-            <Text>
+            <View>
+            <Text style={styles.title}>
                 Your data has been shared
             </Text>
-            <View
-      style={[
-        styles.container,
-        {
-          // Try setting `flexDirection` to `"row"`.
-          flexDirection: 'row',
-        },
-      ]}>
-       <View style={styles.section}>
-                <Text style={styles.label}>Mobile</Text>
-                <Text>{customerDetails.contactDetails}</Text>
             </View>
-      <View style={{flex: 2, backgroundColor: 'darkorange'}} />
-      <View style={{flex: 3, backgroundColor: 'green'}} />
-    </View> 
+            <View style={styles.box}>
+                <MaterialCommunityIcons name="home" color='#D0B1E6' size={28} />
+                <View style={styles.addressContainer} >
+                <Text style={styles.addressText}>{customerDetails.data.address.residence.line1},{customerDetails.data.address.residence.line2},</Text>
+                {/* <Text style={styles.addressText}></Text> */}
+                <Text style={styles.addressText}>{customerDetails.data.address.residence.line3},</Text>
+                <Text style={styles.addressText}>{customerDetails.data.address.residence.line4},</Text>
+                <Text style={styles.addressText}>{customerDetails.data.address.residence.postcode},</Text>
+                </View>
+            </View>
+            <View style={styles.box}>
+                <MaterialCommunityIcons name="email" color='#D0B1E6' size={28} />
+                <View style={styles.addressContainer} >
+                <Text style={styles.addressText}>{customerDetails.data.contactDetails.email}</Text>
+                </View>
+            </View>
+            <View style={styles.box}>
+                <MaterialCommunityIcons name="cellphone" color='#D0B1E6' size={28} />
+                <View style={styles.addressContainer} >
+                <Text style={styles.addressText}>{customerDetails.data.contactDetails.mobile_phone_number}</Text>
+                </View>
+            </View>
 
         </View>
     );
@@ -45,15 +54,45 @@ const styles=StyleSheet.create({
     section: {
         marginBottom: 10,
     },
+    title:{
+        textAlign:'center',
+        fontWeight:'bold',
+        fontSize:20,
+        marginBottom: 10,
+    },
+    addressText:{
+        textAlign:'center',
+        
+        // fontSize: 16,
+    // marginBottom: 5,
+    },
+    addressContainer: {
+        marginLeft: 10,
+        flexShrink: 1, // Allow text to wrap within the container
+      },
+    box:{
+        // flex:1,
+        alignItems: 'center',
+        borderRadius:4,
+        borderColor:'#EDDDF3',
+        padding:10,
+        margin:8,
+        borderWidth:3,
+        flexDirection: 'row',
+        backgroundColor:'white',
+        width:330,
+        
+    },
     label: {
         fontWeight: 'bold',
         marginBottom: 5,
     },
     container: {
         flex: 1,
-        padding: 20,
-        alignItems: 'center',
+        padding: 10,
+        // alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor:'#FFFFFF'
       },
     image: {
         width: '100%',
@@ -62,7 +101,7 @@ const styles=StyleSheet.create({
         // marginTop: -hp('60%'),
         resizeMode: 'cover',
         borderRadius: 8,
-        marginBottom: 8,
+        marginBottom: 20,
         // marginLeft: hp('7%'),
         // marginRight: -hp('6%')
       },

@@ -163,7 +163,7 @@ const BankList = () => {
         try {
 
             const response = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
-            const customerDetails = await sandboxApiClient.getDetailsCA();
+            const customerDetails = await sandboxApiClient.accessTokenCA();
             navigation.navigate('Customer Details', {
                 customerDetails
             });
@@ -212,7 +212,7 @@ const BankList = () => {
                             backgroundColor: '#f4ebfe',
                         }}
                     />
-                    <Button onPress={submit} title="Press">Press</Button>
+                    {/* <Button onPress={submit} title="Press">Press</Button> */}
                 </View>
                 <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
                     <Surface elevation={10} category="medium">
