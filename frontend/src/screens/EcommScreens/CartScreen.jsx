@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Button, IconButton} from 'react-native-paper';
+import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wp,
@@ -17,7 +18,10 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import CartItem from '../../components/EcommComponents/CartItem';
 import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
+import {fetchAllDataforScope} from '../../../database/Database';
 import {useNavigation} from '@react-navigation/native';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const CART_STORAGE_KEY = '@OneBank:cart';
 
@@ -42,6 +46,27 @@ const CartScreen = () => {
   useEffect(() => {
     calculateTotalPrice();
   }, [cart]);
+
+  const scope = 'vrp';
+  const [consentData, setConsentData] = useState([]);
+
+  useEffect(() => {
+    fetchAllDataforScope(scope)
+      .then(data => {
+        if (data !== null) {
+          setConsentData(data);
+        } else {
+          console.log(`No entry found for scope ${scope}.`);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching Consent data:', error);
+      });
+  }, [scope]);
+
+  const findDataByConsentId = consentId => {
+    return consentData.find(consent => consent.consentid === consentId);
+  };
 
   const loadCartFromStore = async () => {
     try {
@@ -73,6 +98,44 @@ const CartScreen = () => {
   const uniqueProductsMap = new Map();
   cart.forEach(item => uniqueProductsMap.set(item.id, item));
   const uniqueProducts = Array.from(uniqueProductsMap.values());
+
+  const getConsentData = async () => {
+    try {
+      const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
+      if (EcommConsentId !== null) {
+        EcommConsentData = findDataByConsentId(EcommConsentId);
+        console.log('EcommConsentData', EcommConsentData);
+        return EcommConsentData;
+      } else {
+        console.log('EcommConsentData not found');
+      }
+    } catch (error) {
+      console.error('Error retrieving EcommConsentData:', error);
+    }
+  };
+
+  const handleCheckout = async () => {
+    const formData = {
+      firstName: 'Natwest Cart',
+      sortCode: '',
+      accountNumber: '50499910000996',
+      reference: 'Tools',
+      amount: '9.00',
+    };
+    try {
+      const selectconsentData = await getConsentData();
+      const response = await sandboxApiClient.refreshToken(
+        selectconsentData,
+        formData,
+      );
+      console.log('response', response);
+      console.log('Form submitted:', formData);
+      navigation.navigate('Order Placed');
+      //navigation.navigate('VRP Details', {data: formData});
+    } catch (error) {
+      console.log('error in fetching refresh', error);
+    }
+  };
 
   return (
     <>
@@ -126,12 +189,7 @@ const CartScreen = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
-        // onPress={() => {
-        //   navigation.navigate('Select Your Bank');
-        // }}
-        onPress={() => {
-          navigation.navigate('Order Placed');
-        }}
+        onPress={handleCheckout}
         style={styles.footer}
         activeOpacity={1}>
         <Text style={styles.footerText}>Checkout</Text>

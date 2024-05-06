@@ -1,52 +1,52 @@
 import IconDialog from '../../components/IconDialog';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import * as products from '../../assets/data/product_catalogue.json';
 // import {Button, Searchbar, Icon} from 'react-native-paper';
 // import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
-import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
+import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';
 import {
-    Keyboard,
-    Pressable,
-    TouchableOpacity,
-    VirtualizedList,
+  Keyboard,
+  Pressable,
+  TouchableOpacity,
+  VirtualizedList,
 } from 'react-native';
 import {
-    Title,
-    TextInput,
-    List,
-    Checkbox,
-    Searchbar,
-    Icon,
-    Button,
-    Modal,
-    Dialog,
-    Portal,
-
-    DataTable
+  Title,
+  TextInput,
+  List,
+  Checkbox,
+  Searchbar,
+  Icon,
+  Button,
+  Modal,
+  Dialog,
+  Portal,
+  DataTable,
 } from 'react-native-paper';
 
-import { RFValue } from 'react-native-responsive-fontsize';
+import {RFValue} from 'react-native-responsive-fontsize';
 import imgarray from '../../assets/data/images';
-import { GridLayout } from 'react-native-layout-grid';
+import {GridLayout} from 'react-native-layout-grid';
 import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useNavigation } from '@react-navigation/native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {useNavigation} from '@react-navigation/native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import sandboxConfig from '../../../configs_VRP/Sandbox.json';
 import {
-    ScrollView,
-    Text,
-    Image,
-    View,
-    StyleSheet,
-    FlatList,
-
+  ScrollView,
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  FlatList,
 } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableHighlight } from 'react-native';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {TouchableHighlight} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OrderSuccessful from './OrderSuccessful';
 
 const mode = 'sandbox';
 const way = 'web';
@@ -55,51 +55,72 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 // const checkputApiFactory=new ApiFactory();
 // const checkoutApiClient=checkputApiFactory.createApiClient('sandbox');
 const BankList = () => {
-    const navigation = useNavigation();
-    const [loading, setLoading] = useState(false);
-    const [allPayments, setAllPayments] = useState('');
-    const [error, setError] = useState(null);
-    const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
-    const showErrorDialog = () => setErrorDialogVisible(true);
-    const hideErrorDialog = () => setErrorDialogVisible(false);
-    const [isInputDialogVisible, setInputDialogVisible] = useState(false);
-    const showInputDialog = () => setInputDialogVisible(true);
-    const hideInputDialog = () => setInputDialogVisible(false);
-    const [searchQuery, setSearchQuery] = useState('');
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [allPayments, setAllPayments] = useState('');
+  const [error, setError] = useState(null);
+  const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
+  const showErrorDialog = () => setErrorDialogVisible(true);
+  const hideErrorDialog = () => setErrorDialogVisible(false);
+  const [isInputDialogVisible, setInputDialogVisible] = useState(false);
+  const showInputDialog = () => setInputDialogVisible(true);
+  const hideInputDialog = () => setInputDialogVisible(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-    const [inputValue, setInputValue] = useState('');
-    const [consentData, setConsentData] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [consentData, setConsentData] = useState([]);
 
-    const [allbanks, setAllBanks] = useState([
-        { id: 101, name: 'Allied Irish Bank(NI)', icon: require('../../assets/images/ecomm-images/allied-irish-bank.jpeg') },
-        { id: 102, name: 'Lloyds', icon: require('../../assets/images/lloyds.png') },
-        { id: 103, name: 'Bank Of Scotland', icon: require('../../assets/images/ecomm-images/bank-of-scotland.png') },
-        { id: 104, name: 'Natwest', icon: require('../../assets/images/natwest.png') },
-        { id: 105, name: 'Coutts', icon: require('../../assets/images/ecomm-images/coutts.png') },
-        { id: 106, name: 'First Direct', icon: require('../../assets/images/ecomm-images/first-direct-bank.png') },
-        { id: 107, name: 'Danske Bank', icon: require('../../assets/images/ecomm-images/danske-bank.png') },
-        { id: 108, name: 'Barclays', icon: require('../../assets/images/barclays.png') }
-    ]);
-    const jsondata =
+  const [allbanks, setAllBanks] = useState([
     {
-        "Data": {
-            "ReadRefundAccount": "No",
-            "ControlParameters": {
-                "InitialPayment": {
-                    "Amount": "9.00",
-                    "Currency": "GBP"
-                },
-                "VRPType": [
-                    "UK.OBIE.VRPType.Other"
-                ],
+      id: 101,
+      name: 'Allied Irish Bank(NI)',
+      icon: require('../../assets/images/ecomm-images/allied-irish-bank.jpeg'),
+    },
+    {id: 102, name: 'Lloyds', icon: require('../../assets/images/lloyds.png')},
+    {
+      id: 103,
+      name: 'Bank Of Scotland',
+      icon: require('../../assets/images/ecomm-images/bank-of-scotland.png'),
+    },
+    {
+      id: 104,
+      name: 'Natwest',
+      icon: require('../../assets/images/natwest.png'),
+    },
+    {
+      id: 105,
+      name: 'Coutts',
+      icon: require('../../assets/images/ecomm-images/coutts.png'),
+    },
+    {
+      id: 106,
+      name: 'First Direct',
+      icon: require('../../assets/images/ecomm-images/first-direct-bank.png'),
+    },
+    {
+      id: 107,
+      name: 'Danske Bank',
+      icon: require('../../assets/images/ecomm-images/danske-bank.png'),
+    },
+    {
+      id: 108,
+      name: 'Barclays',
+      icon: require('../../assets/images/barclays.png'),
+    },
+  ]);
+  const jsondata = {
+    Data: {
+      ReadRefundAccount: 'No',
+      ControlParameters: {
+        InitialPayment: {
+          Amount: '9.00',
+          Currency: 'GBP',
+        },
+        VRPType: ['UK.OBIE.VRPType.Other'],
 
-                "VRPSubType": [
-                    "UK.NWG.VRPSubType.Ongoing"
-                ],
-                "PSUAuthenticationMethods": [
-                    "UK.OBIE.SCANotRequired"
-                ],
-            },
+        VRPSubType: ['UK.NWG.VRPSubType.Ongoing'],
+        PSUAuthenticationMethods: ['UK.OBIE.SCANotRequired'],
+      },
 
             "Initiation": {
                 "CreditorAccount": {
@@ -136,6 +157,11 @@ const BankList = () => {
             );
             setConsentData(consentdata);
             console.log(consentdata);
+            await AsyncStorage.setItem(
+                'EcommConsentId',
+                JSON.stringify(consentdata.Data.ConsentId),
+              );
+          
             if (way == 'web') {
                 const Vrpscope = 'openid payments';
                 const consentUrl = await sandboxApiClient.manualUserConsent(
@@ -249,170 +275,106 @@ const BankList = () => {
     );
 };
 const styles = StyleSheet.create({
-    bankItemContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 13,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-    name: {
-        alignItems: 'center',
-        width: '100%',
-        // fontSize: 46,
-        fontWeight: 'bold',
-        // marginBottom: -wp('60%'),
-        // marginBottom: hp('40%'),
-        // padding: 60,
-        // marginTop: -wp('20%'),
-        // marginLeft: hp('1%'),
-        // marginRight: wp('5%'),
-        // overflow: 'hidden',
-      },
-    container: {
-        paddingHorizontal: 10,
-        paddingTop: 10,
-        // paddingBottom: 20,
-        borderRadius: 8, // Border radius to make it rounded
-        borderWidth: 1, // Border width
-        borderColor: '#ccc',
-        flexGrow: 1,
-        marginBottom: 10,
-        // justifyContent: 'space-between',
-        // flexWrap:'wrap',
-        // width:'90%'
-    },
-    itemContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 60,
-        overflow: 'hidden',
-        // height:200
-    },
-    item: {
-        // flexDirection: 'row',
-        // justifyContent: 'space-around',
-        // width: '63%',
-        // margin:3,
-        flex: 1,
-        margin: 8,
-        // alignItems: 'center',
-        borderRadius: 8,
-        borderWidth: 3,
-        borderColor: '#ddd',
-        padding: 8,
-        backgroundColor: '#fff',
-    },
-    modalContainer: {
-        position: 'absolute',
-        right: 20,
-        left: 20,
-        backgroundColor: 'white',
-        borderRadius: 5,
-        padding: 20,
-        elevation: 4,
-    },
-    image: {
-        width: '100%',
-        height: 200,
-        // aspectRatio:1,
-        // marginTop: -hp('60%'),
-        resizeMode: 'cover',
-        borderRadius: 8,
-        marginBottom: 8,
-        // marginLeft: hp('7%'),
-        // marginRight: -hp('6%')
-    },
-    name: {
-        // alignItems: 'center',
-        // width: '100%',
-        fontSize: 16,
-        fontWeight: 'bold',
-        // marginBottom: -wp('60%'),
-        marginBottom: wp('5%'),
-        // padding: 8,
-        // marginTop: -wp('20%'),
-        // marginLeft: hp('1%'),
-        // marginRight: wp('5%'),
-        // overflow: 'hidden',
-    },
-    description: {
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    price: {
-        // overflow: 'hidden',
-        // alignItems: 'center',
-        // padding: hp('3%'),
-        fontSize: 16,
-        fontWeight: 'bold',
-        // width: '100%',
-        color: 'green',
-        // marginTop: hp('55%'),
-        // marginBottom: -wp('50%'),
-        // marginRight: wp('10%')
-    },
-    rowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-    },
-    searchbar: {
-        paddingHorizontal: wp('3%'),
-        paddingVertical: hp('0%'),
-        borderWidth: hp('1%'),
-        borderRadius: wp('5%'),
-        backgroundColor: 'white',
-    },
-    input: {
-        fontSize: wp('5%'),
-        backgroundColor: 'white',
-        height: 40, // Set the height of the search bar
-        fontSize: 16, // Font size of the text input
-        paddingHorizontal: 8,
-    },
-    toggle: {
-        padding: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        // justifyContent: 'space-around'
-    },
+  bankItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 13,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  name: {
+    alignItems: 'center',
+    width: '100%',
+    fontWeight: 'bold',
+    
+  },
+  container: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    borderRadius: 8, // Border radius to make it rounded
+    borderWidth: 1, // Border width
+    borderColor: '#ccc',
+    flexGrow: 1,
+    marginBottom: 10,
+    
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 60,
+    overflow: 'hidden',
+    
+  },
+  item: {
+    flex: 1,
+    margin: 8,
+    borderRadius: 8,
+    borderWidth: 3,
+    borderColor: '#ddd',
+    padding: 8,
+    backgroundColor: '#fff',
+  },
+  modalContainer: {
+    position: 'absolute',
+    right: 20,
+    left: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 20,
+    elevation: 4,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 8,
+    marginBottom: 8,
+    
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: wp('5%'),
+    
+  },
+  description: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'green',
+    
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  searchbar: {
+    paddingHorizontal: wp('3%'),
+    paddingVertical: hp('0%'),
+    borderWidth: hp('1%'),
+    borderRadius: wp('5%'),
+    backgroundColor: 'white',
+  },
+  input: {
+    fontSize: wp('5%'),
+    backgroundColor: 'white',
+    height: 40, // Set the height of the search bar
+    fontSize: 16, // Font size of the text input
+    paddingHorizontal: 8,
+  },
+  toggle: {
+    padding: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // justifyContent: 'space-around'
+  },
 });
-const SelectBankStyle = StyleSheet.create({
-    row: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        flexWrap: 'wrap',
-    },
-    text: {
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        padding: 10,
-        borderColor: '#ccc',
-        marginBottom: 10,
-    },
-    surface: {
-        backgroundColor: 'white',
-        width: 80,
-        height: 80,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: 'white',
-        margin: 10,
-    },
 
-    image: {
-        width: 80,
-        height: 80,
-        resizeMode: 'contain',
-        // flexWrap:"wrap"
-    },
-});
 
 export default BankList;

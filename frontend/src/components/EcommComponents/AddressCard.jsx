@@ -6,8 +6,10 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
+import {useNavigation} from '@react-navigation/native';
 
 const AddressCard = props => {
+  const navigation = useNavigation();
   const {full_name, line1, line2, line3, line4, postcode, country} = props;
   return (
     <TouchableOpacity style={styles.container} activeOpacity={1}>
@@ -36,7 +38,14 @@ const AddressCard = props => {
         </View>
       </View>
       <View style={styles.chevron}>
-        <IconButton icon="chevron-right" size={32} iconColor="#2A62B9" />
+        <IconButton
+          icon="chevron-right"
+          size={32}
+          iconColor="#2A62B9"
+          onPress={() => {
+            navigation.navigate('Banklist');
+          }}
+        />
       </View>
     </TouchableOpacity>
   );

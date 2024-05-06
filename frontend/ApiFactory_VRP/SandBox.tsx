@@ -49,9 +49,7 @@ class SandBox {
   private apiAccess: string = '';
   private consentId: string = '';
   private accessToken: string = '';
-  private apiAccessToken: string = '';
   private refreshtoken: string = '';
-
   constructor(
     baseUrl: string,
     clientId: string,
@@ -87,21 +85,22 @@ class SandBox {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
-  
-  async accessTokenCA() : Promise<string>{
-    try{
-      const body={
+
+  async accessTokenCA(): Promise<string> {
+    try {
+      const body = {
         grant_type: sandboxConfig.grant_type,
         client_id: this.clientId,
         client_secret: this.clientSecret,
       };
-      const headers={
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
-        body,{
-          headers:headers
+        body,
+        {
+          headers: headers,
         },
       );
       // console.log("accesstoken",response.data.access_token);
@@ -119,15 +118,17 @@ class SandBox {
       const headers = {
         Authorization: 'Bearer ' + accessToken,
       };
-      const url='zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
+      const url =
+        'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
       const response: AxiosResponse<ResponseData> = await axios.get(
         `${this.baseUrl}/${url}`,
+
         {
           headers: headers,
         },
       );
       return response.data;
-    }catch (error) {
+    } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
   }
@@ -194,13 +195,12 @@ class SandBox {
     // console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
     Linking.openURL(consentUrlWithVariables);
+    console.log(consentUrlWithVariables);
+
     return consentUrlWithVariables;
   }
 
-  async exchangeAccessToken(
-    authTokenUrl: string,
-    consentData: any,
-  ) {
+  async exchangeAccessToken(authTokenUrl: string, consentData: any) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
