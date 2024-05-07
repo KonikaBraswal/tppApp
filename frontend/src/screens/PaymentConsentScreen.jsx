@@ -25,11 +25,15 @@ import {
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
-
+import SanboxApiFactory from '../../ApiFactory/SandboxApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
+//<<<<<<< HEAD
+//=======
+const sandboxApiFactoryPisp= new SanboxApiFactory();
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
 const CustomListItem = ({title, value}) => (
   <View
     style={{
@@ -71,13 +75,13 @@ const PaymentConsentScreen = ({route}) => {
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
       try {
-        const consentData = await sandboxApiClient.retrieveAccessToken(
-          'payments',
+        const consentData = await sandboxApiFactoryPisp.callSandboxApiFactory(
+          "payments",null,
           DebtorAccount,
         );
         console.log('Consent id:', consentData);
         if (way == 'web') {
-          const consentUrl = await sandboxApiClient.manualUserConsent(
+          const consentUrl = await sandboxApiFactoryPisp.manualUserConsent(
             consentData,
           );
           console.log(consentUrl);
@@ -93,7 +97,7 @@ const PaymentConsentScreen = ({route}) => {
 
   const handleSubmit = async () => {
     try {
-      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      const data = await sandboxApiFactoryPisp.exchangeAccessToken(inputValue,null);
       navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);
@@ -320,7 +324,11 @@ const styles = StyleSheet.create({
     marginVertical: hp('1%'),
   },
   title: {
+//<<<<<<< HEAD
     fontSize: RFValue(22),
+//=======
+    fontSize: RFValue(20),
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: hp('1.5%'),

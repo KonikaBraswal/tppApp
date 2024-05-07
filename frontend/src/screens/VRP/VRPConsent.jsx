@@ -1,6 +1,11 @@
+//<<<<<<< HEAD
 
+//=======
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
 import React, { useState, useEffect } from 'react';
 import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+import SanboxApiFactory from '../../../ApiFactory/SandboxApiFactory';
+const SanboxApiFactoryVrp=new SanboxApiFactory();
 import {
     Title,
     Text,
@@ -107,6 +112,7 @@ const VRPConsent = ({ route }) => {
                     body: permissions,
                     consentUrl: sandboxConfig.paymentRequestEndPoint
                 };
+//<<<<<<< HEAD
                 const consentdata = await sandboxApiClient.retrieveAccessToken(
                     { accessTokenParams },
                 ); //here is data
@@ -117,9 +123,24 @@ const VRPConsent = ({ route }) => {
                         Vrpscope,
                     );
                     
+//=======
+                const consentData= await SanboxApiFactoryVrp.callSandboxApiFactory('vrp',permissions,null);
+                // const consentData = await sandboxApiClient.retrieveAccessToken({ accessTokenParams },
+                // ); //here is data
+                console.log('Consent id:', consentData);
+                if (way == 'web') 
+                    try {
+                {
+                    const Vrpscope = 'openid payments';
+                    // const consentUrl = await sandboxApiClient.manualUserConsent(
+                    //     Vrpscope,
+                    // );
+                    const consentUrl=await SanboxApiFactoryVrp.manualUserConsent(consentData);
+                    console.log(consentUrl);
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
                     showInputDialog();
                 }
-            } catch (error) {
+            }  catch (error) {
                 console.error('Error:', error);
                 setError('Failed to retrieve access token.');
             } finally {
@@ -132,6 +153,7 @@ const VRPConsent = ({ route }) => {
 
     const handleSubmit = async () => {
         try {
+//<<<<<<< HEAD
             
             const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
             
@@ -148,6 +170,11 @@ const VRPConsent = ({ route }) => {
                 referencenumber:formData.reference,
                 selectconsentData: updatedResponse,
               });
+//=======
+            console.log(inputValue);
+            await SanboxApiFactoryVrp.exchangeAccessToken(inputValue, formData);
+            navigation.navigate('ConsentsforVRP');
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
         } catch (error) {
             console.error('Error:', error);
             setError('Failed to retrieve access token.');

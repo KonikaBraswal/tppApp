@@ -3,11 +3,18 @@ import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
 import uuid from 'react-native-uuid';
+<<<<<<< HEAD
 import {
   addDetails,
   addTransactions,
   updateDetailsForVrp,
 } from '../database/Database';
+=======
+import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
+import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
+const databaseFactoryVrp = new DatabaseFactory();
+const androidClientVrp = databaseFactoryVrp.createDatabaseClient('android','vrp');
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -25,6 +32,20 @@ interface ResponseData {
     Status?: any;
   };
 }
+let vrpToStore = {
+  userId: '999934356',
+  scope: '',
+  bankName: 'NatWest',
+  consentId: '',
+  consentPayload: '',
+  vrpId: '', // Add vrpId field
+  paymentId: '', // Add paymentId field
+  vrpPayload: '', // Add vrpPayload field
+  refreshToken: '',
+  responseVrp: '',
+  status:'' // Add responseVrp field
+};
+
 interface ApiHeaders {
   Authorization: string;
   'Content-Type': string;
@@ -80,7 +101,7 @@ class SandBox {
       );
 
       this.accessToken = response.data.access_token;
-      return this.accountRequest(params.accessTokenParams.consentUrl);
+      return this.accountRequest(params.accessTokenParams.cossentUrl);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -105,6 +126,7 @@ class SandBox {
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
       this.consentId = response.data.Data?.ConsentId || '';
+      const consentIdVrp = response.data.Data?.ConsentId || '';
       const details1 = {
         bankname: 'Natwest',
         consentid: this.consentId,
@@ -113,7 +135,16 @@ class SandBox {
         scope: 'vrp',
         account_details: JSON.stringify(Payload),
       };
+<<<<<<< HEAD
 
+=======
+      vrpToStore.scope="vrp";
+      vrpToStore.consentId=consentIdVrp;
+      vrpToStore.consentPayload=JSON.stringify(Payload);
+      vrpToStore.status=Status;
+      
+      console.log('details', details1);
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       addDetails(details1);
       return response.data;
     } catch (error) {
@@ -197,11 +228,16 @@ class SandBox {
         columnsToUpdate2,
       );
       refreshTokenExists = true;
+<<<<<<< HEAD
       this.getDomesticConsent(
         response.data.access_token,
         consentData.Links.Self,
       );
       return response.data;
+=======
+      vrpToStore.refreshToken=response.data.refresh_token;
+      // return this.vrpPayments(response.data.access_token,this.consentId,formData);
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -339,6 +375,16 @@ class SandBox {
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status,
       };
+<<<<<<< HEAD
+=======
+      vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
+      vrpToStore.vrpPayload=JSON.stringify(payload);
+      vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
+      vrpToStore.responseVrp=JSON.stringify(allVrpPaymentsResponse.data.Data);
+      console.log("^^^^^^^");
+      console.log(vrpToStore);
+      console.log("$$$$$$$$$$");
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       addTransactions(details);
       return allVrpPaymentsResponse.data;
     } catch (error) {

@@ -5,7 +5,17 @@ import config from '../configs_AISP/config.json';
 import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
+import {insertLog} from '../database/DatabaseLogs';
+import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
+const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
+const scope = "Aisp"; // Replace "YourScope" with the actual scope
 
+const androidClientAisp = new AndroidClient(companyName, apiClient, scope);
+
+//const databaseFactoryAisp = new DatabaseFactory();
+//const androidClientAisp = databaseFactoryAisp.createDatabaseClient('android','aisp');
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -38,6 +48,16 @@ interface UserCredentials {
   username: string;
   password: string;
 }
+
+let aispToStore = {
+  userId: '999934356',
+  scope: '',
+  bankName: 'NatWest',
+  consentId: '',
+  consentPayload: '',
+  refreshToken: '',
+  accountsList: '',
+};
 
 class SanboxApiClient {
   private baseUrl: string;
@@ -110,8 +130,32 @@ class SanboxApiClient {
 
       addDetails(details1);
       // store
+      let responseApi = 'Fail';
+      if (response.status >= 200 && response.status < 300) {
+        responseApi = 'Success';
+      }
+      //apilogs
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const logDetails = {
+        date: currentDate,
+        time: currentTime,
+        api_name: sandboxConfig.tokenEndpoint,
+        //header,body, call name post or get,
+        //table name sanbox_nwb
+        scope: response.data.scope,
+        status: response.status,
+        response: JSON.stringify(response),
+      };
+      insertLog(logDetails);
+
+      //apilogs
       console.log('Access token', response.data.access_token);
+<<<<<<< HEAD
       await this.eCommQuickCheckout(response.data.access_token);
+=======
+      aispToStore.scope = response.data.scope;
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -154,6 +198,27 @@ class SanboxApiClient {
 
       await updateDetails(updatedDetails1, 1001, columnsToUpdate1);
       //DB
+
+      //api logs
+      //apilogs
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const logDetails = {
+        date: currentDate,
+        time: currentTime,
+        api_name: sandboxConfig.tokenEndpoint,
+        //header,body, call name post or get,
+        scope: response.data.scope,
+        status: response.status,
+        response: JSON.stringify(response),
+      };
+      insertLog(logDetails);
+
+      //apilogs
+
+      //api logs
+      aispToStore.consentId = ConsentId;
+      aispToStore.consentPayload = JSON.stringify(body);
       return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -261,7 +326,7 @@ class SanboxApiClient {
       const columnsToUpdate3 = ['refreshedtoken'];
 
       await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
-
+      aispToStore.refreshToken = responseRefresh.data.refresh_token;
       //return this.fetchAccounts(responseRefresh.data.access_token);
       return responseRefresh.data.access_token;
     } catch (error) {
@@ -325,7 +390,19 @@ class SanboxApiClient {
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
+<<<<<<< HEAD
       await this.fetchAge(apiAccessToken);
+=======
+      aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
+      //print aispToSTore
+      console.log('***************');
+      console.log(aispToStore);
+      await androidClientAisp.initDatabaseAndroidAisp();
+      await androidClientAisp.insertDataAisp(aispToStore);
+      console.log('^^^^^^^^^^^^');
+      await androidClientAisp.displayData();
+      console.log('###########');
+>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
