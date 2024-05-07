@@ -122,7 +122,6 @@ class SandBox {
         'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
       const response: AxiosResponse<ResponseData> = await axios.get(
         `${this.baseUrl}/${url}`,
-
         {
           headers: headers,
         },

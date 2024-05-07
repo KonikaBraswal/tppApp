@@ -115,6 +115,7 @@ const CartScreen = () => {
   };
 
   const handleCheckout = async () => {
+    navigation.navigate('Add Your Details');
     const formData = {
       firstName: 'Natwest Cart',
       sortCode: '',
@@ -124,13 +125,12 @@ const CartScreen = () => {
     };
     try {
       const selectconsentData = await getConsentData();
-      const response = await sandboxApiClient.refreshToken(
-        selectconsentData,
-        formData,
-      );
+      // const response = await sandboxApiClient.refreshToken(
+      //   selectconsentData,
+      //   formData,
+      // );
       console.log('response', response);
       console.log('Form submitted:', formData);
-      navigation.navigate('Order Placed');
       //navigation.navigate('VRP Details', {data: formData});
     } catch (error) {
       console.log('error in fetching refresh', error);
