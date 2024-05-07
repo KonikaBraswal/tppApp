@@ -151,11 +151,11 @@ class SanboxApiClient {
 
       //apilogs
       console.log('Access token', response.data.access_token);
-<<<<<<< HEAD
+//<<<<<<< HEAD
       await this.eCommQuickCheckout(response.data.access_token);
-=======
+//=======
       aispToStore.scope = response.data.scope;
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -390,9 +390,9 @@ class SanboxApiClient {
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
-<<<<<<< HEAD
+//<<<<<<< HEAD
       await this.fetchAge(apiAccessToken);
-=======
+//=======
       aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
       //print aispToSTore
       console.log('***************');
@@ -402,7 +402,7 @@ class SanboxApiClient {
       console.log('^^^^^^^^^^^^');
       await androidClientAisp.displayData();
       console.log('###########');
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);

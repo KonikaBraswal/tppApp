@@ -14,6 +14,9 @@ import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
 import Landing from '../components/Landing';
 
+
+import APILogDashboardScreen from '../screens/APILogDashboardScreen';
+
 //=======
 import ApiLogs from '../screens/ApiLogs';
 //>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
@@ -59,7 +62,7 @@ const AppDrawer = () => {
       
       <Drawer.Screen
         name="Notifications"
-        component={Dummy}
+        component={APILogDashboardScreen}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bell" color={color} size={28} />

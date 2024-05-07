@@ -3,18 +3,18 @@ import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
 import {Linking, Alert} from 'react-native';
 import uuid from 'react-native-uuid';
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import {
   addDetails,
   addTransactions,
   updateDetailsForVrp,
 } from '../database/Database';
-=======
-import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
+//=======
+//import { addDetails, addTransactions, updateDetailsForVrp,  } from '../database/Database';
 import DatabaseFactory from '../DatabaseFactory/DatabaseFactory';
 const databaseFactoryVrp = new DatabaseFactory();
 const androidClientVrp = databaseFactoryVrp.createDatabaseClient('android','vrp');
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -135,16 +135,16 @@ class SandBox {
         scope: 'vrp',
         account_details: JSON.stringify(Payload),
       };
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
-=======
+//=======
       vrpToStore.scope="vrp";
       vrpToStore.consentId=consentIdVrp;
       vrpToStore.consentPayload=JSON.stringify(Payload);
       vrpToStore.status=Status;
       
       console.log('details', details1);
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       addDetails(details1);
       return response.data;
     } catch (error) {
@@ -228,16 +228,16 @@ class SandBox {
         columnsToUpdate2,
       );
       refreshTokenExists = true;
-<<<<<<< HEAD
+//<<<<<<< HEAD
       this.getDomesticConsent(
         response.data.access_token,
         consentData.Links.Self,
       );
       return response.data;
-=======
+//=======
       vrpToStore.refreshToken=response.data.refresh_token;
       // return this.vrpPayments(response.data.access_token,this.consentId,formData);
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -375,8 +375,8 @@ class SandBox {
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status,
       };
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
       vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
       vrpToStore.vrpPayload=JSON.stringify(payload);
       vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
@@ -384,7 +384,7 @@ class SandBox {
       console.log("^^^^^^^");
       console.log(vrpToStore);
       console.log("$$$$$$$$$$");
->>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
+//>>>>>>> 9e47454d5bae3abebece009f81cd08109bded72b
       addTransactions(details);
       return allVrpPaymentsResponse.data;
     } catch (error) {

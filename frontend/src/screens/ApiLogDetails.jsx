@@ -28,7 +28,7 @@ import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Title, Caption, Divider } from 'react-native-paper';
 
 const ApiLogDetails = ({ route }) => {
-  const { log } = route.params; // Get log data from navigation route
+  const { log } = route.params; 
   const responseData = JSON.parse(log.response);
 
   return (
