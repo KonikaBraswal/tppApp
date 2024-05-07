@@ -188,8 +188,8 @@ const BankList = () => {
     const handleSubmit = async () => {
         try {
 
-            const response = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
-            const customerDetails = await sandboxApiClient.accessTokenCA();
+            const customerDetails = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
+            // const customerDetails = await sandboxApiClient.accessTokenCA();
             navigation.navigate('Customer Details', {
                 customerDetails
             });

@@ -245,7 +245,8 @@ class SandBox {
         response.data.access_token,
         consentData.Links.Self,
       );
-      return response.data;
+      // return response.data;
+      return this.getDetailsCA(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
