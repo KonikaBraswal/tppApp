@@ -7,14 +7,12 @@ import {addDetails} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import configvrp from '../configs_VRP/config.json'
 import sandboxConfigvrp from '../configs_VRP/Sandbox.json';
-import {insertLog} from '../database/DatabaseLogs';
+//import {insertLog} from '../database/DatabaseLogs';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from '../configs_PISP/Sandbox.json';
 import uuid from 'react-native-uuid';
 const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
-const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client// Replace "YourScope" with the actual scope
-
-
+const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -70,14 +68,14 @@ class SanboxApiFactory {
   private scopeForThisCall: string = '';
   private DebtorAccount: any;
   private consentIdVrp:string ='';
-  constructor() {
+  constructor(apiscope:"accounts") {
     this.baseUrl = config.baseUrl;
     this.clientId = config.clientId;
     this.clientSecret = config.clientSecret;
     this.commonHeaders = config.contentType;
   }
 
-  async callSandboxApiFactory(
+  async callApiFactory(
     apiScope: string,
     permission: string[],
     DebtorAccount: any,
@@ -98,13 +96,13 @@ class SanboxApiFactory {
         this.scopeForThisCall = 'payments';
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
-        break;
+        //break;
       case 'vrp':
         console.log('******VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
         return returnthisVrp;
-        break;
+        //break;
       default:
         console.log(
           'Wrong Scope: Sandbox has only three scopes, accounts, payments and vrp',

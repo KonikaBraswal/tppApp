@@ -45,6 +45,7 @@ const CustomDrawerContent = ({ navigation }) => {
   const handleMenuItemClick = (item) => {
     console.log('Clicked:', item);
     // setModeinDatabase(item);
+    console.log("item");
     setMode(item);
    
   };

@@ -48,7 +48,10 @@ import ProductDetails from './src/screens/EcommScreens/ProductDetails';
 import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
 import CartScreen from './src/screens/EcommScreens/CartScreen';
+import './global';
 
+import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
+import { GlobalEnvProvider } from './GlobalEnvContext';
 function App(): React.JSX.Element {
   useEffect(() => {
     initDatabaseApi();
@@ -64,6 +67,7 @@ function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
   useEffect(() => Appearance.setColorScheme('light'), []);
   return (
+    <GlobalEnvProvider>
     <PaperProvider>
       <SafeAreaProvider>
         <SafeAreaView style={backgroundStyle}>
@@ -150,12 +154,13 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
               <Stack.Screen name="Cart" component={CartScreen} />
+              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaView>
       </SafeAreaProvider>
     </PaperProvider>
-
+</GlobalEnvProvider>
     // <MyComponent/>
   );
 }

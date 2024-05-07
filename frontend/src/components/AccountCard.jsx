@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
 import {StyleSheet, View, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import balanceData from '../assets/data/localbalance.json';
+
 import {Surface, Button} from '@react-native-material/core';
 import {
   widthPercentageToDP as wp,
@@ -9,12 +11,12 @@ import {
 } from 'react-native-responsive-screen';
 
 import {IconButton} from 'react-native-paper';
-import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient("sandbox");
 
 const AccountCard = props => {
   const navigation = useNavigation();
@@ -22,9 +24,15 @@ const AccountCard = props => {
   const permissions = props.permissions;
 
   const [accountBalance, setAccountBalance] = useState(null);
+
+
   useEffect(() => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
+        if(global.env=='local'){
+          setAccountBalance(balanceData);
+        }
+        else{
         try {
           const response = await sandboxApiClient.allCalls(
             `${accountId}/balances`,
@@ -34,9 +42,25 @@ const AccountCard = props => {
           console.error('Error fetching balance:', error);
         }
       }
+    }
     };
     fetchBalance();
   }, [accountId]);
+  // useEffect(() => {
+  //   const fetchBalance = async () => {
+  //     if (permissions.includes('ReadBalances')) {
+  //       try {
+  //         const response = await sandboxApiClient.allCalls(
+  //           `${accountId}/balances`,
+  //         );
+  //         setAccountBalance(response);
+  //       } catch (error) {
+  //         console.error('Error fetching balance:', error);
+  //       }
+  //     }
+  //   };
+  //   fetchBalance();
+  // }, [accountId]);
 
   const handleCardClick = async accountId => {
     navigation.navigate('Details', {
