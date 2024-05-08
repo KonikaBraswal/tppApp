@@ -106,13 +106,13 @@ class SandBox {
       // console.log("accesstoken",response.data.access_token);
       // this.apiAccessToken=response.data.access_token;
       return this.getDetailsCA(response.data.access_token);
-    }catch (error) {
+    } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
   }
-  
-  async getDetailsCA(accessToken:any): Promise<any>{
-    try{
+
+  async getDetailsCA(accessToken: any): Promise<any> {
+    try {
       // const accessToken=this.accessTokenCA();
       // console.log("accesstoken",this.apiAccessToken);
       const headers = {
