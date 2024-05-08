@@ -28,7 +28,9 @@ const CustomerDetails = ({route}) => {
     fetchAllDataforScope(scope)
       .then(data => {
         if (data !== null) {
-          getConsentData(data);
+          setTimeout(() => {
+            getConsentData(data);
+          }, 0);
         } else {
           console.log(`No entry found for scope ${scope}.`);
         }
@@ -62,7 +64,7 @@ const CustomerDetails = ({route}) => {
       console.error('Error retrieving EcommConsentData:', error);
     }
   };
-
+  console.log(debitorDetails, '----------');
   return (
     <View style={styles.container}>
       <Image
