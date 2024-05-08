@@ -4,12 +4,26 @@ import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import TransactionCard from './TransactionCard';
-import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
+import transactionData from '../assets/data/transactions.json';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const TransactionList = props => {
+  const [EnvApiClient, setEnvApiClient] = useState(null);
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+  
+    setEnvApiClient(newApiClient);
+    return () => {
+    };
+  }, []);
   const permissions = props.permissions;
   const AccountId = props.accountId;
   const [transactionDetails, setTransactionDetails] = useState(null);
@@ -18,6 +32,13 @@ const TransactionList = props => {
     'No Transactions Found',
   );
   useEffect(() => {
+    if(global.env==='local'){
+      console.log("inside local transactionListtttttttttt",transactionData.Data);
+      setTransactionDetails(transactionData.Data);
+      setLoading(false);
+
+    }
+    else{
     const fetchTransaction = async () => {
       if (
         permissions.includes('ReadTransactionsDetail') &&
@@ -25,9 +46,10 @@ const TransactionList = props => {
           permissions.includes('ReadTransactionsDebits'))
       ) {
         try {
-          const response = await sandboxApiClient.allCalls(
+          const response = await EnvApiClient.allCalls(
             `${AccountId}/transactions`,
           );
+          console.log("inside transactionssssssssssssssssssssssss",response);
           setTransactionDetails(response);
         } catch (error) {
           console.error('Error fetching transactions:', error);
@@ -41,6 +63,8 @@ const TransactionList = props => {
     };
 
     fetchTransaction();
+    console.log("inside transactionssssssssssssssssssssssss",transactionDetails);
+  }
   }, [AccountId]);
   const transactions = transactionDetails;
   return (

@@ -15,10 +15,24 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient("sandbox");
+
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 
 const AccountCard = props => {
+  const [EnvApiClient, setEnvApiClient] = useState(null);
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+  
+    setEnvApiClient(newApiClient);
+    return () => {
+    };
+  }, []);
   const navigation = useNavigation();
   const accountId = props.item.AccountId;
   const permissions = props.permissions;
@@ -30,11 +44,13 @@ const AccountCard = props => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         if(global.env=='local'){
+          console.log("%%%%%%%%%%%%%%%%555")
           setAccountBalance(balanceData);
+          console.log(balanceData);
         }
         else{
         try {
-          const response = await sandboxApiClient.allCalls(
+          const response = await EnvApiClient.allCalls(
             `${accountId}/balances`,
           );
           setAccountBalance(response);

@@ -17,12 +17,6 @@ import AccountDetails from '../components/AccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import TransactionList from '../components/TransactionList';
 import SortDropdown from '../components/SortDropdown';
-import ApiFactory from '../../ApiFactory/ApiFactory';
-
-const mode = 'sandbox';
-const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
