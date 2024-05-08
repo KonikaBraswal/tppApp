@@ -21,10 +21,8 @@ const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const CustomerDetails = ({route}) => {
   const {customerDetails} = route.params;
   const navigation = useNavigation();
-
-  const scope = 'vrp';
-
   const [debitorDetails, setDebitorDetails] = useState(null);
+  const scope = 'vrp';
 
   useEffect(() => {
     fetchAllDataforScope(scope)
@@ -49,14 +47,14 @@ const CustomerDetails = ({route}) => {
   const getConsentData = async consentData => {
     try {
       const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
-      console.log('Consent ID:', EcommConsentId);
       if (EcommConsentId !== null) {
         const EcommConsentData = await findDataByConsentId(
           consentData,
           EcommConsentId,
         );
-        console.log('EcommConsentData', EcommConsentData);
-        setDebitorDetails(EcommConsentData.vrppayload.DebtorAccount);
+        setDebitorDetails(
+          JSON.parse(EcommConsentData.vrppayload).DebtorAccount,
+        );
       } else {
         console.log('EcommConsentData not found');
       }
