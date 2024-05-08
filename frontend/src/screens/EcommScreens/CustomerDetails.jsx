@@ -64,7 +64,7 @@ const CustomerDetails = ({route}) => {
       console.error('Error retrieving EcommConsentData:', error);
     }
   };
-  console.log(debitorDetails, '----------');
+
   return (
     <View style={styles.container}>
       <Image
