@@ -179,7 +179,7 @@ const BankList = () => {
 
     };
     const submit= async()=>{
-        const customerDetails = await sandboxApiClient.accessTokenCA();
+        const customerDetails = await sandboxApiClient.getDomesticConsent();
         console.log("lo",customerDetails);
         navigation.navigate('Customer Details', {
             customerDetails

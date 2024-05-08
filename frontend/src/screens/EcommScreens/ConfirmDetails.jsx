@@ -38,8 +38,8 @@ return(
         <Text style={styles.label}>Account Number:</Text>
             <Text style={styles.input}>{accountNumber}</Text>
 
-        <Text style={styles.label}>Sort Code:</Text>
-            <Text style={styles.input}>{sortCode}</Text>
+        {/* <Text style={styles.label}>Sort Code:</Text>
+            <Text style={styles.input}>{sortCode}</Text> */}
     
             <Text style={styles.subtext}> We treat your information in accordance with our</Text>
             <Text style={styles.hyperlink}>Privacy policy</Text>
@@ -49,7 +49,7 @@ return(
             <TouchableOpacity 
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Add Your Details');
+          navigation.navigate('Order Placed');
         }}
         activeOpacity={1}
       >

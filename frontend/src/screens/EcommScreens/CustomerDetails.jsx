@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Image } from "react-native-elements";
 import { Button, Icon } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
@@ -12,10 +12,65 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
+import {fetchAllDataforScope} from '../../../database/Database';
+import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const apiFactory = new ApiFactory();
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
+
+
 
 const CustomerDetails = ({ route }) => {
     const { customerDetails } = route.params;
     const navigation = useNavigation();
+
+    const scope = 'vrp';
+    const [consentData, setConsentData] = useState([]);
+    const [debitorDetails, setDebitorDetails] = useState(null);
+  
+    useEffect(() => {
+       fetchAllDataforScope(scope)
+        .then(data => {
+          if (data !== null) {
+            setConsentData(data);
+            // console.log(data);
+          } else {
+            console.log(`No entry found for scope ${scope}.`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching Consent data:', error);
+        });
+    }, [scope]);
+  
+    const findDataByConsentId = async consentId => {
+        console.log('consent data:', consentData)
+        return consentData.find(consent => consent.consentid === consentId);
+    };
+
+    const getConsentData = async () => {
+        try {
+          const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
+          console.log('Consent ID:', EcommConsentId);
+          if (EcommConsentId !== null) {
+            const EcommConsentData = await findDataByConsentId(EcommConsentId);
+            console.log('EcommConsentData', EcommConsentData);
+            setDebitorDetails(EcommConsentData.vrppayload.DebtorAccount);
+            return EcommConsentData;
+          } else {
+            console.log('EcommConsentData not found');
+          }
+        } catch (error) {
+          console.error('Error retrieving EcommConsentData:', error);
+        }
+      };
+    
+      useEffect(()=> {
+        getConsentData();
+      },[])
+
+      
+
     return (
         <View style={styles.container}>
             <Image source={require('../../assets/images/ecomm-images/customer.png')} style={styles.image}
@@ -50,7 +105,7 @@ const CustomerDetails = ({ route }) => {
             <View >
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('Confirm Details');
+                        navigation.navigate('Confirm Details', {email: customerDetails.data.contactDetails.email, fullName:customerDetails.data.name.full_name, billingAddress: customerDetails.data.address.residence.line1 + " , " + customerDetails.data.address.residence.line2 + " , " + customerDetails.data.address.residence.line3 + "," + customerDetails.data.address.residence.line4 + ","+ customerDetails.data.address.residence.postcode, contactNumber: customerDetails.data.contactDetails.mobile_phone_number, accountNumber: debitorDetails.Identification, sortCode:''});
                     }}
                     style={styles.footer}
                     activeOpacity={1}>
