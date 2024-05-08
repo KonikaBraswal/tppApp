@@ -31,7 +31,7 @@ const screenWidth = wp('100%');
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  const apiClient = apiFactory.createApiClient(global.env,"accounts");
   return apiClient;
   // Use the new apiClient as needed
  };
@@ -127,74 +127,6 @@ const ConsentScreen = () => {
     const condition3 = !checked3 && !checked4 && !checked5;
     return condition1 && (condition2 || condition3);
   };
-/////old code to be removed
-  // const handleConfirmButtonClick = async () => {
-  //   if (mode == 'sandbox') {
-  //     try {
-  //       // const permissions = [
-  //       //   'ReadAccountsDetail',
-  //       //   'ReadBalances',
-  //       //   'ReadTransactionsCredits',
-  //       //   'ReadTransactionsDebits',
-  //       //   'ReadTransactionsDetail',
-  //       // ];
-  //       const permissions = new Array();
-  //       if (checked1) {
-  //         permissions.push('ReadAccountsDetail');
-  //       }
-  //       if (checked2) {
-  //         permissions.push('ReadBalances');
-  //       }
-  //       if (checked3) {
-  //         permissions.push('ReadTransactionsDebits');
-  //       }
-  //       if (checked4) {
-  //         permissions.push('ReadTransactionsCredits');
-  //       }
-  //       if (checked5) {
-  //         permissions.push('ReadTransactionsDetail');
-  //       }
-  //       // console.log(permissions);
-  //       setPermission(permissions);
-
-  //       setLoading(true);
-  //       setError(null);
-  //       const consentData=await apiClient.callSandboxApiFactory("accounts",permissions,null);
-  //       console.log('Consent id:', consentData);
-  //       if (way == 'web') {
-  //         const consentUrl = await sandboxApiFactory.manualUserConsent(
-  //           consentData,
-  //         );
-  //         console.log(consentUrl);
-  //         showInputDialog(permissions);
-  //       } else {
-  //         //const data2 = await sandboxApiClient.userConsentProgammatically();
-  //         const data2 = await sandboxApiFactory.userConsentProgammatically();
-  //         const transactionData = await sandboxApiFactory.allCalls(
-  //           '124b77ad-a58a-4d0c-9cf4-354f56eaec01/transactions',
-  //         );
-  //         console.log(transactionData);
-  //         const balanceData = await sandboxApiFactory.allCalls(
-  //           '124b77ad-a58a-4d0c-9cf4-354f56eaec01/balances',
-  //         );
-  //         navigation.navigate('Your Accounts', {
-  //           selectedBank: 'Natwest',
-  //           selectedIcon: "'../assets/icons/natwest.png'",
-  //           accounts: data2,
-  //           transactions: transactionData,
-  //           // balance: balanceData,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //       setError('Failed to retrieve access token.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     navigation.navigate('Consent');
-  //   }
-  // };
 
   const handleConfirmButtonClick = async () => {
     console.log("calling mode",global.env)

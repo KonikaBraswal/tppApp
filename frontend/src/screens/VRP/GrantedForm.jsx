@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {TextInput} from '@react-native-material/core';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../ApiFactory/ApiFactory';
 import {
   View,
   Text,
@@ -11,10 +11,21 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env,"vrp");
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const GrantedForm = ({route}) => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setEnvApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const {
     creditorName,
     accountnumber,
@@ -24,6 +35,8 @@ const GrantedForm = ({route}) => {
   } = route.params;
   const [edit, setEdit] = useState(true);
   const [firstName, setFirstName] = useState('');
+  const [status, setStatus] = useState('');
+  const [EnvApiClient, setEnvApiClient] = useState(null);
   const [sortCode, setSortCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');
@@ -54,13 +67,16 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
-      const response = await sandboxApiClient.refreshToken(
+      console.log("after payyyyyyyyyyyyyyyyyyyyy",global.env);
+      const response = await EnvApiClient.refreshToken(
         selectconsentData,
         formData,
       );
+      console.log("hiiiiiiiiiiiiiii",response);
       console.log('response', response);
+      console.log(response.Data.Status)
       console.log('Form submitted:', formData);
-      navigation.navigate('VRP Details', {data: formData});
+      navigation.navigate('VRP Details', {data: response.Data.Status});
     } catch (error) {
       console.log('error in fetching refresh', error);
     }

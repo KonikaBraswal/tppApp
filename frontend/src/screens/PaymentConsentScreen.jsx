@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -24,13 +24,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
-import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
-import SanboxApiFactory from '../../ApiFactory/SandboxApiFactory';
-const mode = 'sandbox';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-const sandboxApiFactoryPisp= new SanboxApiFactory();
 const CustomListItem = ({title, value}) => (
   <View
     style={{
@@ -43,14 +38,28 @@ const CustomListItem = ({title, value}) => (
     <Text style={styles.rightContent}>{value}</Text>
   </View>
 );
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env,"payments");
+  console.log("PISPPPPPPPPPPPPPP",global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const PaymentConsentScreen = ({route}) => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setEnvApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
-
+  const [EnvApiClient, setEnvApiClient] = useState(null);
   const showInputDialog = () => setInputDialogVisible(true);
   const hideInputDialog = () => setInputDialogVisible(false);
   const [expanded1, setExpanded1] = useState(true);
@@ -70,15 +79,15 @@ const PaymentConsentScreen = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
 
   const handleConfirmButtonClick = async () => {
-    if (mode == 'sandbox') {
       try {
-        const consentData = await sandboxApiFactoryPisp.callSandboxApiFactory(
-          "payments",null,
+        const consentData = await EnvApiClient.callApiFactory(
+          'payments',
           DebtorAccount,
+          null
         );
         console.log('Consent id:', consentData);
         if (way == 'web') {
-          const consentUrl = await sandboxApiFactoryPisp.manualUserConsent(
+          const consentUrl = await EnvApiClient.manualUserConsent(
             consentData,
           );
           console.log(consentUrl);
@@ -87,14 +96,12 @@ const PaymentConsentScreen = ({route}) => {
       } catch (error) {
         console.error('Error:', error);
       }
-    } else {
-      navigation.navigate('PISP');
-    }
   };
 
   const handleSubmit = async () => {
     try {
-      const data = await sandboxApiFactoryPisp.exchangeAccessToken(inputValue,null);
+      const data = await EnvApiClient.exchangeAccessToken(inputValue);
+      console.log("data from locallllllllllllllllllllllllllllllllllllllll",data);
       navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);
@@ -322,7 +329,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: RFValue(22),
-    fontSize: RFValue(20),
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: hp('1.5%'),

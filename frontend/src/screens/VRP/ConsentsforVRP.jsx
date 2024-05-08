@@ -16,7 +16,6 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
 import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
@@ -35,10 +34,9 @@ import {
 } from 'react-native-responsive-screen';
 import ConsentInfo from './ConsentInfo';
 import {fetchTransactionsForUserConsent} from '../../../database/Database';
+import { fetchVRPData } from '../../../database/LocalDatabase';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const Drawer = createDrawerNavigator();
 
 const ConsentsforVRP = () => {
@@ -50,6 +48,8 @@ const ConsentsforVRP = () => {
   const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
   const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
   const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
+  const [localdata, setLocalData] = useState([]);
+
   const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
   const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
@@ -59,12 +59,20 @@ const ConsentsforVRP = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    if(global.env==='local')
+    {
+
+      fetchVRPData().then(results => {
+        setLocalData(results);
+      });
+    }
+    else{
     if (isFocused) {
       fetchAllDataforScope(scope)
         .then(data => {
           if (data !== null) {
+            console.log("databaseeeeeeeeeeeeeeeeeeee",data);
             setConsentData(data);
-            
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -72,7 +80,7 @@ const ConsentsforVRP = () => {
         .catch(error => {
           console.error('Error fetching Consent data:', error);
         });
-    }
+    }}
   }, [isFocused, scope]);
   const mode = 'sandbox';
   const [transactionDetails, setTransactionDetails] = useState(null);
@@ -129,7 +137,7 @@ const ConsentsforVRP = () => {
   };
 
   return (
-    <>
+      <>
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -155,131 +163,267 @@ const ConsentsforVRP = () => {
               <View style={styles.rowContainer}>
                 <View style={styles.searchBarContainer}></View>
               </View>
-              <ScrollView>
-                {consentData.map((item, index) => (
-                  <Surface
-                    key={index}
-                    style={{
-                      marginBottom: hp('2%'),
-                      backgroundColor: '#c8e1cc',
-                      borderRadius: 12,
-                      elevation: 3,
-                      paddingTop: hp('2.5%'),
-                      paddingHorizontal: hp('2%'),
-                      width: cardWidth,
-                    }}
-                    elevation={2}>
-                    <View
-                      style={{
-                        flexDirection: 'column',
-                        alignItems: 'left',
-                        justifyContent: 'left',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}>
-                        <Image
-                          source={require('../../assets/images/natwest2.png')}
-                          style={styles.iconNatwest}
-                        />
-
-                        <Text
+      {localdata && localdata.length > 0 ? (
+        <ScrollView>
+                      {localdata.map((item, index) => (
+                        <Surface
+                          key={index}
                           style={{
-                            fontSize: RFValue(18),
-                            color: 'black',
-                            fontWeight: 'bold',
-                            marginTop: hp('2.5%'),
-                          }}>
-                          {
-                            JSON.parse(item.consentpayload).Initiation
-                              .CreditorAccount.Name
-                          }
-                        </Text>
-                      </View>
-                      {item.vrppayload &&
-                        JSON.parse(item.vrppayload).DebtorAccount && (
-                          <Text
+                            marginBottom: hp('2%'),
+                            backgroundColor: '#c8e1cc',
+                            borderRadius: 12,
+                            elevation: 3,
+                            paddingTop: hp('2.5%'),
+                            paddingHorizontal: hp('2%'),
+                            width: cardWidth,
+                          }}
+                          elevation={2}>
+                          <View
                             style={{
-                              fontSize: RFValue(15),
-                              color: 'black',
-                              fontWeight: 'bold',
-                              marginTop: hp('2.5%'),
+                              flexDirection: 'column',
+                              alignItems: 'left',
+                              justifyContent: 'left',
                             }}>
-                            Account Number:{' '}
-                            {
-                              JSON.parse(item.vrppayload).DebtorAccount
-                                .Identification.replace(/\d(?=\d{4})/g,'*')
-                            }
-                          </Text>
-                        )}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: hp('3%'),
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginTop: hp('1%'),
-                        }}>
-                        <Button
-                          mode="contained"
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}>
+                              <Image
+                                source={require('../../assets/images/natwest2.png')}
+                                style={styles.iconNatwest}
+                              />
+      
+                              <Text
+                                style={{
+                                  fontSize: RFValue(18),
+                                  color: 'black',
+                                  fontWeight: 'bold',
+                                  marginTop: hp('2.5%'),
+                                }}>
+                                {item.creditorname}
+
+                              </Text>
+                            </View>
+                            {item.debtoraccnum && (
+                                <Text
+                                  style={{
+                                    fontSize: RFValue(15),
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    marginTop: hp('2.5%'),
+                                  }}>
+                                  Account Number:{' '}
+                                  {/* {JSON.parse(
+                                    item.vrppayload,
+                                  ).DebtorAccount.Identification.replace(
+                                    /\d(?=\d{4})/g,
+                                    '*',
+                                  )} */}
+                                  {item.debtoraccnum}
+                                </Text>
+                              )}
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              marginTop: hp('3%'),
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginTop: hp('1%'),
+                              }}>
+                              <Button
+                                mode="contained"
+                                style={{
+                                  backgroundColor: 'white',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginRight: wp('1.5%'),
+                                  marginBottom: hp('2%'),
+                                }}
+                                labelStyle={{color: 'black'}}
+                                onPress={() => navigation.navigate('GrantedForm',{
+                                  creditorName: item.creditorname,
+                                    accountnumber: item.debtoraccnum,
+                                    sortcode: "111111",
+                                    referencenumber:
+                                      "jsonObject.Initiation.RemittanceInformation.Reference",
+                                    selectconsentData:" consentData[index]",
+                                })}>
+                                Pay
+                              </Button>
+                              <Button
+                                mode="contained"
+                                style={{
+                                  backgroundColor: 'white',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginBottom: hp('2%'),
+                                  marginLeft: wp('1.5%'),
+                                }}
+                                labelStyle={{color: 'black'}}
+                                // title={`Go to ${VrpTransactions}`}
+                                onPress={() =>
+                                 navigation.navigate('Local Transactions')
+                                }>
+                                Transactions
+                              </Button>
+                            </View>
+                            {/* <IconButton
+                              icon="information"
+                              style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: hp('1.2%'),
+                              }}
+                              labelStyle={{color: 'black'}}
+                              // title={`Go to ${ConsentInfo}`}
+                              onPress={() => handleConsent(index, 'ConsentInfo')}>
+                              Info
+                            </IconButton> */}
+                          </View>
+                        </Surface>
+                      ))}
+                    </ScrollView>
+      ) : (
+        consentData && consentData.length > 0 ? (
+          <ScrollView>
+                      {consentData.map((item, index) => (
+                        <Surface
+                          key={index}
                           style={{
-                            backgroundColor: 'white',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginRight: wp('1.5%'),
                             marginBottom: hp('2%'),
+                            backgroundColor: '#c8e1cc',
+                            borderRadius: 12,
+                            elevation: 3,
+                            paddingTop: hp('2.5%'),
+                            paddingHorizontal: hp('2%'),
+                            width: cardWidth,
                           }}
-                          labelStyle={{color: 'black'}}
-                          onPress={() => handleSubmit(index)}>
-                          Pay
-                        </Button>
-                        <Button
-                          mode="contained"
-                          style={{
-                            backgroundColor: 'white',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: hp('2%'),
-                            marginLeft: wp('1.5%'),
-                          }}
-                          labelStyle={{color: 'black'}}
-                          // title={`Go to ${VrpTransactions}`}
-                          onPress={() =>
-                            handleConsent(index, 'VrpTransactions')
-                          }>
-                          Transactions
-                        </Button>
-                      </View>
-                      <IconButton
-                        icon="information"
-                        style={{
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          marginTop: hp('1.2%'),
-                        }}
-                        labelStyle={{color: 'black'}}
-                        // title={`Go to ${ConsentInfo}`}
-                        onPress={() => handleConsent(index, 'ConsentInfo')}>
-                        Info
-                      </IconButton>
-                    </View>
-                  </Surface>
-                ))}
-              </ScrollView>
-            </View>
-          </View>
+                          elevation={2}>
+                          <View
+                            style={{
+                              flexDirection: 'column',
+                              alignItems: 'left',
+                              justifyContent: 'left',
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}>
+                              <Image
+                                source={require('../../assets/images/natwest2.png')}
+                                style={styles.iconNatwest}
+                              />
+      
+                              <Text
+                                style={{
+                                  fontSize: RFValue(18),
+                                  color: 'black',
+                                  fontWeight: 'bold',
+                                  marginTop: hp('2.5%'),
+                                }}>
+                                {
+                                  JSON.parse(item.consentpayload).Initiation
+                                    .CreditorAccount.Name
+                                }
+                              </Text>
+                            </View>
+                            {item.vrppayload &&
+                              JSON.parse(item.vrppayload).DebtorAccount && (
+                                <Text
+                                  style={{
+                                    fontSize: RFValue(15),
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    marginTop: hp('2.5%'),
+                                  }}>
+                                  Account Number:{' '}
+                                  {JSON.parse(
+                                    item.vrppayload,
+                                  ).DebtorAccount.Identification.replace(
+                                    /\d(?=\d{4})/g,
+                                    '*',
+                                  )}
+                                </Text>
+                              )}
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              marginTop: hp('3%'),
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginTop: hp('1%'),
+                              }}>
+                              <Button
+                                mode="contained"
+                                style={{
+                                  backgroundColor: 'white',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginRight: wp('1.5%'),
+                                  marginBottom: hp('2%'),
+                                }}
+                                labelStyle={{color: 'black'}}
+                                onPress={() => handleSubmit(index)}>
+                                Pay
+                              </Button>
+                              <Button
+                                mode="contained"
+                                style={{
+                                  backgroundColor: 'white',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginBottom: hp('2%'),
+                                  marginLeft: wp('1.5%'),
+                                }}
+                                labelStyle={{color: 'black'}}
+                                // title={`Go to ${VrpTransactions}`}
+                                onPress={() =>
+                                  handleConsent(index, 'VrpTransactions')
+                                }>
+                                Transactions
+                              </Button>
+                            </View>
+                            <IconButton
+                              icon="information"
+                              style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: hp('1.2%'),
+                              }}
+                              labelStyle={{color: 'black'}}
+                              // title={`Go to ${ConsentInfo}`}
+                              onPress={() => handleConsent(index, 'ConsentInfo')}>
+                              Info
+                            </IconButton>
+                          </View>
+                        </Surface>
+                      ))}
+                    </ScrollView> // Render something specific to consentData
+        ) : (
+          <Text>No Data Available</Text> // Default message if both localdata and consentData are empty
+        )
+      )}
+               </View>
+         </View>
         </KeyboardAvoidingView>
       </ScrollView>
-      <TouchableOpacity
+       <TouchableOpacity
         onPress={() => {
           navigation.navigate('CreditorDetails');
         }}

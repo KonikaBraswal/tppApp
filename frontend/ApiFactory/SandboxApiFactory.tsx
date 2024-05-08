@@ -87,18 +87,18 @@ class SanboxApiFactory {
     switch (apiScope) {
       case 'accounts':
         androidClientAisp = new AndroidClient(companyName, apiClient, apiScope);
-        console.log('******ACCOUNTS CALL********');
+        console.log('******NWB SANDBOX ACCOUNTS CALL********');
         let returnthisAisp = this.retrieveAccessToken();
         return returnthisAisp;
       case 'payments':
         androidClientPisp = new AndroidClient(companyName, apiClient, apiScope);
-        console.log('******PAYMENTS CALL********');
+        console.log('******NWB SANDBOX PAYMENTS CALL********');
         this.scopeForThisCall = 'payments';
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
         //break;
       case 'vrp':
-        console.log('******VRP CALL********');
+        console.log('******NWB VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
         return returnthisVrp;

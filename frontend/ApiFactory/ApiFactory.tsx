@@ -2,16 +2,15 @@
 import MockApiFactory from './MockApiFactory';
 import SanboxApiFactory from './SandboxApiFactory';
 class ApiFactory {
-  createApiClient(type: string) {
+  createApiClient(type: string, scope:any) {
     switch (type) {
       case 'sandbox':
         console.log(type);
-        return new SanboxApiFactory('accounts'
-        );
+        return new SanboxApiFactory(scope);
       // Add other cases if needed
       case 'local':
         console.log(type,"API Factory");
-        return new MockApiFactory('accounts'
+        return new MockApiFactory(scope
         );
       case 'sit':
         return new MockApiFactory('accounts'

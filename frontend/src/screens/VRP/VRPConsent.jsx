@@ -1,7 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
 import sandboxConfig from '../../../configs_VRP/Sandbox.json';
-import SanboxApiFactory from '../../../ApiFactory/SandboxApiFactory';
-const SanboxApiFactoryVrp=new SanboxApiFactory();
 import {
     Title,
     Text,
@@ -24,16 +23,28 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../../components/IconDialog';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../ApiFactory/ApiFactory';
 import { all } from 'axios';
 import { Surface } from '@react-native-material/core';
 
 const screenWidth = Dimensions.get('window').width;
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"vrp");
+    return apiClient;
+    // Use the new apiClient as needed
+   };
 const VRPConsent = ({ route }) => {
+    useEffect(() => {
+        const newApiClient = switchEnvironment(global.env);
+    
+        setEnvApiClient(newApiClient);
+        return () => {
+        };
+     }, []);
     const formData = route.params?.formData;
     const identification =  formData.accountNumber+formData.sortCode ;
     const jsondata =
@@ -83,6 +94,7 @@ const VRPConsent = ({ route }) => {
     const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
     const showErrorDialog = () => setErrorDialogVisible(true);
     const hideErrorDialog = () => setErrorDialogVisible(false);
+    const [EnvApiClient, setEnvApiClient] = useState(null);
     const [isInputDialogVisible, setInputDialogVisible] = useState(false);
     const showInputDialog = () => setInputDialogVisible(true);
     const hideInputDialog = () => setInputDialogVisible(false);
@@ -93,7 +105,7 @@ const VRPConsent = ({ route }) => {
 
 
     const handleConfirmButtonClick = async () => {
-        if (mode == 'sandbox') {
+        console.log("calling mode in VRP",global.env);
             try {
                 const permissions = jsondata;
 
@@ -108,13 +120,11 @@ const VRPConsent = ({ route }) => {
                     body: permissions,
                     consentUrl: sandboxConfig.paymentRequestEndPoint
                 };
-                const consentdata = await sandboxApiClient.retrieveAccessToken(
-                    { accessTokenParams },
-                ); //here is data
+                const consentdata = await EnvApiClient.callApiFactory('vrp',permissions,null) //here is data
                 setConsentData(consentdata);
                 if (way == 'web') {
                     const Vrpscope = 'openid payments';
-                    const consentUrl = await sandboxApiClient.manualUserConsent(
+                    const consentUrl = await EnvApiClient.manualUserConsent(
                         Vrpscope,
                     );
                     
@@ -126,15 +136,25 @@ const VRPConsent = ({ route }) => {
             } finally {
                 setLoading(false);
             }
-        } else {
-            navigation.navigate('Consent');
-        }
     };
 
     const handleSubmit = async () => {
+        if(global.env=='local'){
+         
+            navigation.navigate('GrantedForm', {
+                creditorName: formData.firstName,
+                accountnumber: formData.accountNumber,
+                sortcode: formData.sortCode,
+                referencenumber:formData.reference,
+                selectconsentData: "updatedResponse",
+              });
+              setInputValue('');
+              hideInputDialog();
+        }
+        else{
         try {
             
-            const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
+            const response=await EnvApiClient.exchangeAccessToken(inputValue, formData,consentData);
             
             const updatedResponse = {
                 ...response,
@@ -157,7 +177,8 @@ const VRPConsent = ({ route }) => {
         }
         setInputValue('');
         hideInputDialog();
-    };
+    }
+};
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
