@@ -120,7 +120,7 @@ const VRPConsent = ({ route }) => {
                     body: permissions,
                     consentUrl: sandboxConfig.paymentRequestEndPoint
                 };
-                const consentdata = await EnvApiClient.callApiFactory('vrp',permissions,null) //here is data
+                const consentdata = await EnvApiClient.callApiFactory('vrp',jsondata,null) //here is data
                 setConsentData(consentdata);
                 if (way == 'web') {
                     const Vrpscope = 'openid payments';

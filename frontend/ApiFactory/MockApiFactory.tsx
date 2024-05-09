@@ -81,6 +81,9 @@ class MockApiFactory {
     insertVRPData(userId, flow, creditorname, debtoraccnum);
     return VRPData;
   }
+  async allCalls(endpoint:any):Promise<any>{
+    return "nothing"
+  }
 }
 
 export default MockApiFactory;

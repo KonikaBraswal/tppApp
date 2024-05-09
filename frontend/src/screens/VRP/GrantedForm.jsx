@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
+let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
@@ -21,7 +22,7 @@ const switchEnvironment = (newEnv) => {
 const GrantedForm = ({route}) => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-
+    env=newApiClient;
     setEnvApiClient(newApiClient);
     return () => {
     };
@@ -68,7 +69,7 @@ const GrantedForm = ({route}) => {
     };
     try {
       console.log("after payyyyyyyyyyyyyyyyyyyyy",global.env);
-      const response = await EnvApiClient.refreshToken(
+      const response = await env.refreshToken(
         selectconsentData,
         formData,
       );

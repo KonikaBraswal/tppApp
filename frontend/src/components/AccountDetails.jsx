@@ -7,20 +7,20 @@ import {
 } from 'react-native-responsive-screen';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 import balanceData from '../assets/data/balances.json';
+let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  const apiClient = apiFactory.createApiClient(global.env,"accounts");
   return apiClient;
   // Use the new apiClient as needed
  };
 
 const AccountDetails = props => {
-  const [EnvApiClient, setEnvApiClient] = useState(null);
+  
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-  
-    setEnvApiClient(newApiClient);
+    env=newApiClient;
     return () => {
     };
   }, []);
@@ -45,7 +45,7 @@ const AccountDetails = props => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         try {
-          const response = await EnvApiClient.allCalls(
+          const response = await env.allCalls(
             `${AccountId}/balances`,
           );
           setBalanceDetails(response);

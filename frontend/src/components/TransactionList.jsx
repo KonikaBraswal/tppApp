@@ -8,19 +8,18 @@ import transactionData from '../assets/data/transactions.json';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
+let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  const apiClient = apiFactory.createApiClient(global.env,"accounts");
   return apiClient;
   // Use the new apiClient as needed
  };
 const TransactionList = props => {
-  const [EnvApiClient, setEnvApiClient] = useState(null);
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-  
-    setEnvApiClient(newApiClient);
+    env=newApiClient;  
     return () => {
     };
   }, []);
@@ -46,7 +45,7 @@ const TransactionList = props => {
           permissions.includes('ReadTransactionsDebits'))
       ) {
         try {
-          const response = await EnvApiClient.allCalls(
+          const response = await env.allCalls(
             `${AccountId}/transactions`,
           );
           console.log("inside transactionssssssssssssssssssssssss",response);

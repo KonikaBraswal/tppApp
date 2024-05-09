@@ -156,9 +156,9 @@ const ConsentScreen = () => {
         const consentData=await EnvApiClient.callApiFactory("accounts",permissions,null);
         console.log('Consent id:', consentData);
         // if (way == 'web') {
-        //   const consentUrl = await sandboxApiClient.manualUserConsent(
-        //     consentData,
-        //   );
+        // const consentUrl = await EnvApiClient.manualUserConsent(
+        // consentData,
+        // );
         //   console.log(consentUrl);
         showInputDialog(permissions);
         // }

@@ -12,24 +12,19 @@ import {
 
 import {IconButton} from 'react-native-paper';
 import ApiFactory from '../../ApiFactory/ApiFactory';
-
-const mode = 'sandbox';
-const way = 'web';
-
+let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  const apiClient = apiFactory.createApiClient(global.env,"accounts");
   return apiClient;
   // Use the new apiClient as needed
  };
 
 const AccountCard = props => {
-  const [EnvApiClient, setEnvApiClient] = useState(null);
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-  
-    setEnvApiClient(newApiClient);
+    env=newApiClient;    
     return () => {
     };
   }, []);
@@ -50,9 +45,12 @@ const AccountCard = props => {
         }
         else{
         try {
-          const response = await EnvApiClient.allCalls(
+          console.log("sandbox all calls");
+          console.log(env);
+          const response = await env.allCalls(
             `${accountId}/balances`,
           );
+          console.log(response);
           setAccountBalance(response);
         } catch (error) {
           console.error('Error fetching balance:', error);
@@ -62,22 +60,7 @@ const AccountCard = props => {
     };
     fetchBalance();
   }, [accountId]);
-  // useEffect(() => {
-  //   const fetchBalance = async () => {
-  //     if (permissions.includes('ReadBalances')) {
-  //       try {
-  //         const response = await sandboxApiClient.allCalls(
-  //           `${accountId}/balances`,
-  //         );
-  //         setAccountBalance(response);
-  //       } catch (error) {
-  //         console.error('Error fetching balance:', error);
-  //       }
-  //     }
-  //   };
-  //   fetchBalance();
-  // }, [accountId]);
-
+ 
   const handleCardClick = async accountId => {
     navigation.navigate('Details', {
       accountDetails: props.item,

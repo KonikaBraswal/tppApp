@@ -1,4 +1,5 @@
-const uuid = require('uuid');
+//const uuid = require('uuid');
+import uuid from 'react-native-uuid';
 const config = require('../configs_AISP/config.json');
 const configVRP = require('../configs_VRP/configvrp.json');
 
@@ -30,12 +31,14 @@ export function generateHeaders(
         ...commonHeaders,
       };
     case sandboxConfig.accountRequestEndpointPisp:
+      const id = uuid.v4();
       return {
+        
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
         'x-fapi-financial-id': sandboxConfig.financialId,
         'x-jws-signature': sandboxConfig.signatureJws,
-        'x-idempotency-key': uuid.v4(),
+        'x-idempotency-key': `${id}`,
         ...commonHeaders,
       };
     default:
@@ -58,10 +61,11 @@ export function generateAccessTokenBody(
 }
 
 export function generateAccountRequestHeaders(apiAccessToken: string) {
+  const idd = uuid.v4();
   return {
     ...configVRP.vrpHeaders,
     Authorization: `Bearer ${apiAccessToken}`,
-    'x-idempotency-key': uuid.v4(),
+    'x-idempotency-key': `${idd}`,
   };
 }
 
