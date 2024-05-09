@@ -21,7 +21,7 @@ const CartItem = props => {
     const getProductCountById = async () => {
       try {
         const cartItems = await AsyncStorage.getItem(CART_STORAGE_KEY);
-        console.log(cartItems);
+        //console.log(cartItems);
         if (cartItems !== null) {
           const products = JSON.parse(cartItems);
 

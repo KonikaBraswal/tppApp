@@ -25,19 +25,20 @@ const CustomerDetails = ({route}) => {
   const scope = 'vrp';
 
   useEffect(() => {
-    fetchAllDataforScope(scope)
-      .then(data => {
-        if (data !== null) {
-          setTimeout(() => {
+    const fetchData = async () => {
+      fetchAllDataforScope(scope)
+        .then(data => {
+          if (data !== null) {
             getConsentData(data);
-          }, 0);
-        } else {
-          console.log(`No entry found for scope ${scope}.`);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching Consent data:', error);
-      });
+          } else {
+            console.log(`No entry found for scope ${scope}.`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching Consent data:', error);
+        });
+    };
+    fetchData();
   }, [scope]);
 
   const findDataByConsentId = async (consentData, consentId) => {

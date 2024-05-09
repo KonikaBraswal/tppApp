@@ -56,6 +56,7 @@ const ConfirmDetails = ({route}) => {
   const getConsentData = async () => {
     try {
       const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
+
       if (EcommConsentId !== null) {
         EcommConsentData = findDataByConsentId(JSON.parse(EcommConsentId));
         console.log('EcommConsentData', EcommConsentData);
