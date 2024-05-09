@@ -1,3 +1,5 @@
+//finaldraft
+
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -43,6 +45,10 @@ const ApiLogsList = ({ route }) => {
 
 export default ApiLogsList;
 
+
+// //working
+
+
 // import React from 'react';
 // import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
@@ -75,21 +81,29 @@ export default ApiLogsList;
 
 // export default ApiLogsList;
 
+
+
+
+// //trail4
+
 // import React from 'react';
 // import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+// import PropTypes from 'prop-types';
 // import { useNavigation } from '@react-navigation/native';
+// import { useTheme } from 'react-native-paper';
 
 // const ApiLogsList = ({ route }) => {
-//   const { logs } = route.params; // Get logs data from navigation route
-//   const navigation = useNavigation(); // Hook for navigation
+//   const navigation = useNavigation();
+//   const { logs } = route.params || {};
+//   const { colors } = useTheme();
 
 //   const handleLogPress = (log) => {
-//     navigation.navigate('ApiLogDetails', { log }); // Navigate to LogDetailsPage with log data
+//     navigation.navigate('ApiLogDetails', { log });
 //   };
 
 //   return (
 //     <View style={styles.container}>
-//       <Text style={styles.title}>Api Logs List</Text>
+//       <Text style={[styles.title, { color: colors.primary }]}>Api Logs List</Text>
 //       <FlatList
 //         data={logs}
 //         keyExtractor={(item, index) => index.toString()}
@@ -105,13 +119,17 @@ export default ApiLogsList;
 //   );
 // };
 
+// ApiLogsList.propTypes = {
+//   route: PropTypes.object.isRequired,
+// };
+
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
 //     padding: 20,
 //   },
 //   title: {
-//     fontSize: 20,
+//     fontSize: 24,
 //     fontWeight: 'bold',
 //     marginBottom: 10,
 //   },
@@ -128,4 +146,129 @@ export default ApiLogsList;
 // });
 
 // export default ApiLogsList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// //trail3
+
+// // import React from 'react';
+// // import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+// // import PropTypes from 'prop-types';
+// // import { useNavigation } from '@react-navigation/native';
+// // import { useTheme } from 'react-native-paper';
+
+// // const ApiLogsList = ({ route }) => {
+// //   const navigation = useNavigation();
+// //   const { logs } = route.params || {};
+// //   const { colors } = useTheme();
+
+// //   const handleLogPress = (log) => {
+// //     navigation.navigate('ApiLogDetails', { log });
+// //   };
+
+// //   return (
+// //     <View style={styles.container}>
+// //       <Text style={[styles.title, { color: colors.primary }]}>Api Logs List</Text>
+// //       <FlatList
+// //         data={logs}
+// //         keyExtractor={(item, index) => index.toString()}
+// //         renderItem={({ item }) => (
+// //           <TouchableOpacity onPress={() => handleLogPress(item)} style={styles.logItem}>
+// //             <Text style={styles.logText}>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+// //             <Text style={styles.logText}>{`API Name: ${item.api_name}`}</Text>
+// //             <Text style={styles.logText}>{`Status: ${item.status}, Scope: ${item.scope}`}</Text>
+// //           </TouchableOpacity>
+// //         )}
+// //       />
+// //     </View>
+// //   );
+// // };
+
+// // ApiLogsList.propTypes = {
+// //   route: PropTypes.object.isRequired,
+// // };
+
+// // const styles = StyleSheet.create({
+// //   container: {
+// //     flex: 1,
+// //     padding: 20,
+// //   },
+// //   title: {
+// //     fontSize: 24,
+// //     fontWeight: 'bold',
+// //     marginBottom: 10,
+// //   },
+// //   logItem: {
+// //     backgroundColor: '#f0f0f0',
+// //     padding: 10,
+// //     marginBottom: 10,
+// //     borderRadius: 5,
+// //   },
+// //   logText: {
+// //     fontSize: 16,
+// //     marginBottom: 5,
+// //   },
+// // });
+
+// // export default ApiLogsList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
