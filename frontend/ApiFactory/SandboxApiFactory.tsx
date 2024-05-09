@@ -11,6 +11,20 @@ import sandboxConfigvrp from '../configs_VRP/Sandbox.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from '../configs_PISP/Sandbox.json';
 import uuid from 'react-native-uuid';
+const {generateVrpAccountRequestHeaders,
+  generateVrpPaymentBody,
+  generateDomesticConsentHeaders,
+  generateAccessTokenBody,
+  generateAccountRequestHeaders,
+  generateHeaders,
+  generateBody,
+  generateBodyForExchange,
+  generateBodyForRefresh,
+  generateBodyForPaymentRequest,
+  generateHeadersForPisp,
+  generateDomesticPaymentRequestBody,
+  generatePaymentStatusHeaders, } = require('../ConfigFiles/apiUtils.tsx');
+
 const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
 const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
 interface BodyData {
@@ -53,7 +67,9 @@ let aispToStore = {
   refreshToken: '',
   accountsList: ''
 };
-
+interface CommonHeaders {
+  [key: string]: string;
+}
 interface UserCredentials {
   username: string;
   password: string;
@@ -74,7 +90,21 @@ class SanboxApiFactory {
     this.clientSecret = config.clientSecret;
     this.commonHeaders = config.contentType;
   }
+  private generateHeaders(endpoint: string,accessToken: string | null = null): CommonHeaders {
+    return generateHeaders(endpoint,accessToken, this.commonHeaders);
+ }
 
+ private generateBody(endpoint: string, data: Record<string, any>): Record<string, any> {
+    return generateBody(endpoint, data, this.permissions);
+ }
+
+ private generateBodyForExchange(authToken: string): Record<string, string> {
+    return generateBodyForExchange(authToken, this.clientId, this.clientSecret);
+ }
+
+ private generateBodyForRefresh(refreshToken: string): Record<string, string> {
+    return generateBodyForRefresh(refreshToken, this.clientId, this.clientSecret);
+ }
   async callApiFactory(
     apiScope: string,
     permission: string[],
@@ -112,12 +142,14 @@ class SanboxApiFactory {
   async retrieveAccessToken() {
     if (this.scopeForThisCall == 'accounts') {
       try {
-        const body: Record<string, string> = {
-          grant_type: sandboxConfig.grant_type,
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          scope: sandboxConfig.scope,
-        };
+        // const body: Record<string, string> = {
+        //   grant_type: sandboxConfig.grant_type,
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   scope: sandboxConfig.scope,
+        // };
+        const body = this.generateBody(sandboxConfig.tokenEndpoint, {});
+
         const headers = {...this.commonHeaders};
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
@@ -135,16 +167,23 @@ class SanboxApiFactory {
     }
     if (this.scopeForThisCall == 'payments') {
       try {
-        const body = {
-          grant_type: sandboxConfig.grant_type,
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          scope: 'payments',
-        };
-        const header = {
-          'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
-        };
-
+        // const body = {
+        //   grant_type: sandboxConfig.grant_type,
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   scope: 'payments',
+        // };
+        // const header = {
+        //   'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
+        // };
+        const body = generateAccessTokenBody(
+          sandboxConfig.grant_type,
+          this.clientId,
+          this.clientSecret,
+          this.scopeForThisCall
+        );
+        const header = generateHeaders(sandboxConfig.tokenEndpoint);
+      
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -161,15 +200,22 @@ class SanboxApiFactory {
     }
     if (this.scopeForThisCall == 'vrp') {
       try {
-        const body = {
-          grant_type: sandboxConfig.grant_type,
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          scope: 'payments',
-        };
-        const header = {
-          'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
-        };
+        // const body = {
+        //   grant_type: sandboxConfig.grant_type,
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   scope: 'payments',
+        // };
+        const body = generateAccessTokenBody(
+          sandboxConfig.grant_type,
+          this.clientId,
+          this.clientSecret,
+          'payments',
+        );
+        // const header = {
+        //   'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
+        // };
+        const header = generateHeaders(sandboxConfig.tokenEndpoint);
 
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfigvrp.tokenEndpoint}`,
@@ -190,16 +236,19 @@ class SanboxApiFactory {
   async accountRequest(accessToken: string) {
     if (this.scopeForThisCall == 'accounts') {
       try {
-        const body: BodyData = {
-          Data: {
-            Permissions: this.permissions,
-          },
-          Risk: {},
-        };
-        const headers = {
-          ...this.commonHeaders,
-          Authorization: 'Bearer ' + accessToken,
-        };
+        // const body: BodyData = {
+        //   Data: {
+        //     Permissions: this.permissions,
+        //   },
+        //   Risk: {},
+        // };
+        // const headers = {
+        //   ...this.commonHeaders,
+        //   Authorization: 'Bearer ' + accessToken,
+        // };
+        const body = this.generateBody(sandboxConfig.accountRequestEndpoint, {});
+
+        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,accessToken);
 
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.accountRequestEndpoint}`,
@@ -220,43 +269,45 @@ class SanboxApiFactory {
         var accountRequestEndpoint =
           sandboxConfigPisp.accountRequestEndpointPisp;
         const id = uuid.v4();
-        const body = {
-          Data: {
-            Initiation: {
-              InstructionIdentification: 'instr-identification',
-              EndToEndIdentification: 'e2e-identification',
-              InstructedAmount: {
-                Amount: '1.00',
-                Currency: 'GBP',
-              },
-              DebtorAccount: this.DebtorAccount,
-              CreditorAccount: {
-                SchemeName: 'IBAN',
-                Identification: 'BE56456394728288',
-                Name: 'ACME DIY',
-                SecondaryIdentification: 'secondary-identif',
-              },
-              RemittanceInformation: {
-                Unstructured: 'Tools',
-                Reference: 'Tools',
-              },
-            },
-          },
-          Risk: {
-            PaymentContextCode: 'EcommerceGoods',
-            MerchantCategoryCode: null,
-            MerchantCustomerIdentification: null,
-            DeliveryAddress: null,
-          },
-        };
+        // const body = {
+        //   Data: {
+        //     Initiation: {
+        //       InstructionIdentification: 'instr-identification',
+        //       EndToEndIdentification: 'e2e-identification',
+        //       InstructedAmount: {
+        //         Amount: '1.00',
+        //         Currency: 'GBP',
+        //       },
+        //       DebtorAccount: this.DebtorAccount,
+        //       CreditorAccount: {
+        //         SchemeName: 'IBAN',
+        //         Identification: 'BE56456394728288',
+        //         Name: 'ACME DIY',
+        //         SecondaryIdentification: 'secondary-identif',
+        //       },
+        //       RemittanceInformation: {
+        //         Unstructured: 'Tools',
+        //         Reference: 'Tools',
+        //       },
+        //     },
+        //   },
+        //   Risk: {
+        //     PaymentContextCode: 'EcommerceGoods',
+        //     MerchantCategoryCode: null,
+        //     MerchantCustomerIdentification: null,
+        //     DeliveryAddress: null,
+        //   },
+        // };
 
-        const headers = {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + accessToken,
-          'x-fapi-financial-id': sandboxConfigPisp.financialId,
-          'x-jws-signature': sandboxConfigPisp.signatureJws,
-          'x-idempotency-key': `${id}`,
-        };
+        // const headers = {
+        //   'Content-Type': 'application/json',
+        //   Authorization: 'Bearer ' + accessToken,
+        //   'x-fapi-financial-id': sandboxConfigPisp.financialId,
+        //   'x-jws-signature': sandboxConfigPisp.signatureJws,
+        //   'x-idempotency-key': `${id}`,
+        // };
+       const body = generateBodyForPaymentRequest(this.DebtorAccount, true, '');
+       const headers = generateHeadersForPisp(accessToken, id, sandboxConfig.financialId, sandboxConfig.signatureJws);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${accountRequestEndpoint}`,
           body,
@@ -279,11 +330,13 @@ class SanboxApiFactory {
       try {
         const body = this.permissions;
         const id = uuid.v4();
-        const headers = {
-          ...configvrp.vrpHeaders,
-          Authorization: 'Bearer ' + accessToken,
-          'x-idempotency-key': `${id}`,
-        };
+        // const headers = {
+        //   ...configvrp.vrpHeaders,
+        //   Authorization: 'Bearer ' + accessToken,
+        //   'x-idempotency-key': `${id}`,
+        // };
+        const headers = generateAccountRequestHeaders(accessToken);
+
         console.log(body);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfigvrp.paymentRequestEndPoint}`,
@@ -362,17 +415,24 @@ class SanboxApiFactory {
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
         console.log('AuthToken', authToken);
-        const body: Record<string, string> = {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          redirect_uri: sandboxConfig.redirectUri,
-          grant_type: 'authorization_code',
-          code: authToken,
-        };
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        };
-
+        // const body: Record<string, string> = {
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   redirect_uri: sandboxConfig.redirectUri,
+        //   grant_type: 'authorization_code',
+        //   code: authToken,
+        // };
+        // const headers = {
+        //   'Content-Type': 'application/x-www-form-urlencoded',
+        // };
+        const body = generateBodyForExchange(
+          this.clientId, 
+          this.clientSecret,
+          sandboxConfig.redirectUri,
+          'authorization_code',
+          authToken
+        );
+        const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -394,17 +454,24 @@ class SanboxApiFactory {
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
         console.log('AuthToken', authToken);
-        const body: Record<string, string> = {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          redirect_uri: sandboxConfig.redirectUri,
-          grant_type: 'authorization_code',
-          code: authToken,
-        };
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        };
-
+        // const body: Record<string, string> = {
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   redirect_uri: sandboxConfig.redirectUri,
+        //   grant_type: 'authorization_code',
+        //   code: authToken,
+        // };
+        // const headers = {
+        //   'Content-Type': 'application/x-www-form-urlencoded',
+        // };
+        const body = generateBodyForExchange(
+          this.clientId,
+          this.clientSecret, 
+          sandboxConfig.redirectUri,
+          'authorization_code',
+          authToken
+        );
+  const headers = generateHeaders(sandboxConfig.tokenEndpoint);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -429,17 +496,24 @@ class SanboxApiFactory {
         const authToken = authTokenUrl.slice(start, end);
        
         console.log('AuthToken', authToken);
-        const body: Record<string, string> = {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          redirect_uri: sandboxConfig.redirectUri,
-          grant_type: 'authorization_code',
-          code: authToken,
-        };
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        };
-  
+        // const body: Record<string, string> = {
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   redirect_uri: sandboxConfig.redirectUri,
+        //   grant_type: 'authorization_code',
+        //   code: authToken,
+        // };
+        // const headers = {
+        //   'Content-Type': 'application/x-www-form-urlencoded',
+        // };
+        const body = generateBodyForExchange(
+          this.clientId,
+          this.clientSecret,
+          sandboxConfig.redirectUri,
+          'authorization_code',
+          authToken,
+        );
+        const headers = generateHeaders(sandboxConfig.tokenEndpoint);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfigvrp.tokenEndpoint}`,
           null,
@@ -469,51 +543,55 @@ class SanboxApiFactory {
   async vrpPayments(apiAccessToken: string,consentid: string,formData: any,): Promise<any> {
     try {
       const id = uuid.v4();
-      const headers = {
-        ...configvrp.vrpHeaders,
-        Authorization: 'Bearer '+ apiAccessToken,
-        'x-idempotency-key': `${id}`,
-      };
-      const Identification=formData.accountNumber+formData.sortCode;
-      console.log("identification-->",Identification);
-      const body = {
-        Data: {
-          ConsentId: `${this.consentIdVrp}`,
-          PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
-          Initiation: {
-            CreditorAccount: {
-              SchemeName: 'SortCodeAccountNumber',
-              Identification: Identification,
-              Name: formData.firstName,
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: formData.reference,
-            },
-          },
-          Instruction: {
-            InstructionIdentification: 'instr-identification',
-            EndToEndIdentification: 'e2e-identification',
-            InstructedAmount: {
-              // Amount: '7.00', //must be called with pay now button
-              Amount: formData.amount,
-              Currency: 'GBP',
-            },
-            CreditorAccount: {
-              SchemeName: 'SortCodeAccountNumber',
-              Identification: Identification,
-              Name: formData.firstName,
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: formData.reference,
-            },
-          },
-        },
-        Risk: {},
-      };
+      
+      const headers = generateAccountRequestHeaders(apiAccessToken);
+
+      const body = generateVrpPaymentBody(formData, consentid);
+      // const headers = {
+      //   ...configvrp.vrpHeaders,
+      //   Authorization: 'Bearer '+ apiAccessToken,
+      //   'x-idempotency-key': `${id}`,
+      // };
+      // const Identification=formData.accountNumber+formData.sortCode;
+      // console.log("identification-->",Identification);
+      // const body = {
+      //   Data: {
+      //     ConsentId: `${this.consentIdVrp}`,
+      //     PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
+      //     Initiation: {
+      //       CreditorAccount: {
+      //         SchemeName: 'SortCodeAccountNumber',
+      //         Identification: Identification,
+      //         Name: formData.firstName,
+      //         SecondaryIdentification: 'secondary-identif',
+      //       },
+      //       RemittanceInformation: {
+      //         Unstructured: 'Tools',
+      //         Reference: formData.reference,
+      //       },
+      //     },
+      //     Instruction: {
+      //       InstructionIdentification: 'instr-identification',
+      //       EndToEndIdentification: 'e2e-identification',
+      //       InstructedAmount: {
+      //         // Amount: '7.00', //must be called with pay now button
+      //         Amount: formData.amount,
+      //         Currency: 'GBP',
+      //       },
+      //       CreditorAccount: {
+      //         SchemeName: 'SortCodeAccountNumber',
+      //         Identification: Identification,
+      //         Name: formData.firstName,
+      //         SecondaryIdentification: 'secondary-identif',
+      //       },
+      //       RemittanceInformation: {
+      //         Unstructured: 'Tools',
+      //         Reference: formData.reference,
+      //       },
+      //     },
+      //   },
+      //   Risk: {},
+      // };
       console.log("(99");
       console.log('body', body);
       console.log(formData);
@@ -534,10 +612,14 @@ class SanboxApiFactory {
 
   async getAllVrpPayments(url: string): Promise<any> {
     try {
-      const headers = {
-        Authorization: `Bearer ${this.apiAccess}`,
-        'x-fapi-financial-id': '0015800000jfwxXAAQ',
-      };
+      // const headers = {
+      //   Authorization: `Bearer ${this.apiAccess}`,
+      //   'x-fapi-financial-id': '0015800000jfwxXAAQ',
+      // };
+      const headers = generateVrpAccountRequestHeaders(
+        this.apiAccess,
+        '0015800000jfwxXAAQ',
+      );
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,
       });
@@ -575,17 +657,23 @@ class SanboxApiFactory {
   async refreshToken(refreshToken: string): Promise<any> {
     if (this.scopeForThisCall == 'accounts') {
       try {
-        const body: Record<string, string> = {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          //redirect_uri: sandboxConfig.redirectUri,
-          grant_type: 'refresh_token',
-          refresh_token: refreshToken,
-        };
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        };
-
+        // const body: Record<string, string> = {
+        //   client_id: this.clientId,
+        //   client_secret: this.clientSecret,
+        //   //redirect_uri: sandboxConfig.redirectUri,
+        //   grant_type: 'refresh_token',
+        //   refresh_token: refreshToken,
+        // };
+        // const headers = {
+        //   'Content-Type': 'application/x-www-form-urlencoded',
+        // };
+        const body = generateBodyForRefresh(
+          this.clientId,
+          this.clientSecret,
+          'refresh_token',
+          refreshToken
+        );
+        const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
         const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -609,42 +697,53 @@ class SanboxApiFactory {
     try {
       const idd = uuid.v4();
       console.log('m here');
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + apiAccess,
-        'x-fapi-financial-id': sandboxConfigPisp.financialId,
-        'x-jws-signature': sandboxConfigPisp.signatureJws,
-        'x-idempotency-key': `${idd}`,
-      };
-      console.log(consentID);
-      const requestBody = {
-        Data: {
-          ConsentId: consentID,
-          Initiation: {
-            InstructionIdentification: 'instr-identification',
-            EndToEndIdentification: 'e2e-identification',
-            InstructedAmount: {
-              Amount: '1.00',
-              Currency: 'GBP',
-            },
-            DebtorAccount: this.DebtorAccount,
-            CreditorAccount: {
-              SchemeName: 'IBAN',
-              Identification: 'BE56456394728288',
-              Name: 'ACME DIY',
-              SecondaryIdentification: 'secondary-identif',
-            },
-            RemittanceInformation: {
-              Unstructured: 'Tools',
-              Reference: 'Tools',
-            },
-          },
+      // const headers = {
+      //   'Content-Type': 'application/json',
+      //   Authorization: 'Bearer ' + apiAccess,
+      //   'x-fapi-financial-id': sandboxConfigPisp.financialId,
+      //   'x-jws-signature': sandboxConfigPisp.signatureJws,
+      //   'x-idempotency-key': `${idd}`,
+      // };
+      // console.log(consentID);
+      // const requestBody = {
+      //   Data: {
+      //     ConsentId: consentID,
+      //     Initiation: {
+      //       InstructionIdentification: 'instr-identification',
+      //       EndToEndIdentification: 'e2e-identification',
+      //       InstructedAmount: {
+      //         Amount: '1.00',
+      //         Currency: 'GBP',
+      //       },
+      //       DebtorAccount: this.DebtorAccount,
+      //       CreditorAccount: {
+      //         SchemeName: 'IBAN',
+      //         Identification: 'BE56456394728288',
+      //         Name: 'ACME DIY',
+      //         SecondaryIdentification: 'secondary-identif',
+      //       },
+      //       RemittanceInformation: {
+      //         Unstructured: 'Tools',
+      //         Reference: 'Tools',
+      //       },
+      //     },
+      //   },
+      //   Risk: {
+      //     PaymentContextCode: 'EcommerceGoods',
+      //   },
+      // };
+      const headers = generateHeadersForPisp(apiAccess, idd, sandboxConfig.financialId, sandboxConfig.signatureJws);
+      const requestBody = generateDomesticPaymentRequestBody(
+        consentID,
+        this.DebtorAccount,
+        {
+          SchemeName: 'IBAN',
+          Identification: 'BE56456394728288',
+          Name: 'ACME DIY',
+          SecondaryIdentification: 'secondary-identif',
         },
-        Risk: {
-          PaymentContextCode: 'EcommerceGoods',
-        },
-      };
-
+        'EcommerceGoods'
+      );
       const paymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfigPisp.domesticPaymentsEndpoint}`,
         requestBody,
@@ -667,10 +766,11 @@ class SanboxApiFactory {
     domesticPaymentsId: string,
   ): Promise<any> {
     try {
-      const headers = {
-        Authorization: 'Bearer ' + apiAccessToken,
-        'x-fapi-financial-id': sandboxConfigPisp.financialId,
-      };
+      // const headers = {
+      //   Authorization: 'Bearer ' + apiAccessToken,
+      //   'x-fapi-financial-id': sandboxConfigPisp.financialId,
+      // };
+      const headers = generatePaymentStatusHeaders(apiAccessToken);
 
       const payResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfigPisp.paymentSelfLink}/${domesticPaymentsId}`,
@@ -695,10 +795,11 @@ class SanboxApiFactory {
   }
   async fetchAccounts(apiAccessToken: string) {
     try {
-      const headers = {
-        ...this.commonHeaders,
-        Authorization: `Bearer ${apiAccessToken}`,
-      };
+      // const headers = {
+      //   ...this.commonHeaders,
+      //   Authorization: `Bearer ${apiAccessToken}`,
+      // };
+      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
@@ -758,10 +859,11 @@ class SanboxApiFactory {
         console.log('No access token stored');
       }
       try {
-        const headers = {
-          ...this.commonHeaders,
-          Authorization: `Bearer ${this.apiAccess}`,
-        };
+        // const headers = {
+        //   ...this.commonHeaders,
+        //   Authorization: `Bearer ${this.apiAccess}`,
+        // };
+        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
@@ -813,10 +915,11 @@ class SanboxApiFactory {
       // const access_token = await this.refreshToken(refresh_token);
       const apiAccessToken = access_token;
       try {
-        const headers = {
-          ...this.commonHeaders,
-          Authorization: `Bearer ${apiAccessToken}`,
-        };
+        // const headers = {
+        //   ...this.commonHeaders,
+        //   Authorization: `Bearer ${apiAccessToken}`,
+        // };
+        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
@@ -842,10 +945,11 @@ class SanboxApiFactory {
     this.apiAccess = access_token;
     if (this.scopeForThisCall == 'accounts') {
       try {
-        const headers = {
-          ...this.commonHeaders,
-          Authorization: `Bearer ${this.apiAccess}`,
-        };
+        // const headers = {
+        //   ...this.commonHeaders,
+        //   Authorization: `Bearer ${this.apiAccess}`,
+        // };
+        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
@@ -867,3 +971,889 @@ class SanboxApiFactory {
 }
 
 export default SanboxApiFactory;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import axios, {AxiosResponse} from 'axios';
+// import {Linking, Alert} from 'react-native';
+// import * as Keychain from 'react-native-keychain';
+// import config from '../ConfigFiles/config.json';
+// import sandboxConfig from '../ConfigFiles/Sandbox.json';
+// import {addDetails} from '../database/Database';
+// import {updateDetails, fetchRefreshedToken} from '../database/Database';
+// import configvrp from '../configs_VRP/config.json'
+// import sandboxConfigvrp from '../configs_VRP/Sandbox.json';
+// //import {insertLog} from '../database/DatabaseLogs';
+// import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+// import sandboxConfigPisp from '../configs_PISP/Sandbox.json';
+// import uuid from 'react-native-uuid';
+// const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
+// const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
+// interface BodyData {
+//   Data: {
+//     Permissions: string[];
+//   };
+//   Risk: {};
+// }
+// var consentID = '';
+// interface ResponseData {
+//   refresh_token: string;
+//   access_token: string;
+//   scope: string;
+//   expires_in: number;
+//   Data?: {
+//     ConsentId?: string;
+//     Status: string;
+//   };
+// }
+// let pispToStore = {
+//   consentId: '',
+//   scope: '',
+//   payload: '',
+//   refreshtoken: '',
+//   paymentId: '',
+//   response: '',
+//   userId: '999999999',
+// };
+// let pispToUpdate={
+//   userId:"7777777",
+// }
+// let androidClientAisp: AndroidClient;
+// let androidClientPisp:AndroidClient;
+// let aispToStore = {
+//   userId: '999934356',
+//   scope: '',
+//   bankName: 'NatWest',
+//   consentId: '',
+//   consentPayload: '',
+//   refreshToken: '',
+//   accountsList: ''
+// };
+
+// interface UserCredentials {
+//   username: string;
+//   password: string;
+// }
+// class SanboxApiFactory {
+//   private baseUrl: string;
+//   private clientId: string;
+//   private clientSecret: string;
+//   private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
+//   private permissions: string[] = [];
+//   private apiAccess: string = '';
+//   private scopeForThisCall: string = '';
+//   private DebtorAccount: any;
+//   private consentIdVrp:string ='';
+//   constructor(apiscope:"accounts") {
+//     this.baseUrl = config.baseUrl;
+//     this.clientId = config.clientId;
+//     this.clientSecret = config.clientSecret;
+//     this.commonHeaders = config.contentType;
+//   }
+
+//   async callApiFactory(
+//     apiScope: string,
+//     permission: string[],
+//     DebtorAccount: any,
+//   ) {
+    
+//     this.permissions = permission;
+//     this.scopeForThisCall = apiScope;
+//     this.DebtorAccount = DebtorAccount;
+//     switch (apiScope) {
+//       case 'accounts':
+//         androidClientAisp = new AndroidClient(companyName, apiClient, apiScope);
+//         console.log('******NWB SANDBOX ACCOUNTS CALL********');
+//         let returnthisAisp = this.retrieveAccessToken();
+//         return returnthisAisp;
+//       case 'payments':
+//         androidClientPisp = new AndroidClient(companyName, apiClient, apiScope);
+//         console.log('******NWB SANDBOX PAYMENTS CALL********');
+//         this.scopeForThisCall = 'payments';
+//         let returnthisPisp = this.retrieveAccessToken();
+//         return returnthisPisp;
+//         //break;
+//       case 'vrp':
+//         console.log('******NWB VRP CALL********');
+//         this.scopeForThisCall = 'vrp';
+//         let returnthisVrp = this.retrieveAccessToken();
+//         return returnthisVrp;
+//         //break;
+//       default:
+//         console.log(
+//           'Wrong Scope: Sandbox has only three scopes, accounts, payments and vrp',
+//         );
+//     }
+//   }
+//   async retrieveAccessToken() {
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         const body: Record<string, string> = {
+//           grant_type: sandboxConfig.grant_type,
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           scope: sandboxConfig.scope,
+//         };
+//         const headers = {...this.commonHeaders};
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: headers,
+//             params: body,
+//           },
+//         );
+//         aispToStore.scope=response.data.scope;
+//         return this.accountRequest(response.data.access_token);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//       try {
+//         const body = {
+//           grant_type: sandboxConfig.grant_type,
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           scope: 'payments',
+//         };
+//         const header = {
+//           'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
+//         };
+
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: header,
+//             params: body,
+//           },
+//         );
+//         pispToStore.scope = response.data.scope;
+//         return this.accountRequest(response.data.access_token);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//       try {
+//         const body = {
+//           grant_type: sandboxConfig.grant_type,
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           scope: 'payments',
+//         };
+//         const header = {
+//           'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
+//         };
+
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfigvrp.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: header,
+//             params: body,
+//           },
+//         );
+        
+//         return this.accountRequest(response.data.access_token);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//   }
+
+//   async accountRequest(accessToken: string) {
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         const body: BodyData = {
+//           Data: {
+//             Permissions: this.permissions,
+//           },
+//           Risk: {},
+//         };
+//         const headers = {
+//           ...this.commonHeaders,
+//           Authorization: 'Bearer ' + accessToken,
+//         };
+
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.accountRequestEndpoint}`,
+//           body,
+//           {
+//             headers: headers,
+//           },
+//         );
+//         aispToStore.consentId=response.data.Data?.ConsentId||'';
+//       aispToStore.consentPayload=JSON.stringify(body);
+//         return response.data.Data?.ConsentId || '';
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//       try {
+//         var accountRequestEndpoint =
+//           sandboxConfigPisp.accountRequestEndpointPisp;
+//         const id = uuid.v4();
+//         const body = {
+//           Data: {
+//             Initiation: {
+//               InstructionIdentification: 'instr-identification',
+//               EndToEndIdentification: 'e2e-identification',
+//               InstructedAmount: {
+//                 Amount: '1.00',
+//                 Currency: 'GBP',
+//               },
+//               DebtorAccount: this.DebtorAccount,
+//               CreditorAccount: {
+//                 SchemeName: 'IBAN',
+//                 Identification: 'BE56456394728288',
+//                 Name: 'ACME DIY',
+//                 SecondaryIdentification: 'secondary-identif',
+//               },
+//               RemittanceInformation: {
+//                 Unstructured: 'Tools',
+//                 Reference: 'Tools',
+//               },
+//             },
+//           },
+//           Risk: {
+//             PaymentContextCode: 'EcommerceGoods',
+//             MerchantCategoryCode: null,
+//             MerchantCustomerIdentification: null,
+//             DeliveryAddress: null,
+//           },
+//         };
+
+//         const headers = {
+//           'Content-Type': 'application/json',
+//           Authorization: 'Bearer ' + accessToken,
+//           'x-fapi-financial-id': sandboxConfigPisp.financialId,
+//           'x-jws-signature': sandboxConfigPisp.signatureJws,
+//           'x-idempotency-key': `${id}`,
+//         };
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${accountRequestEndpoint}`,
+//           body,
+//           {
+//             headers: headers,
+//           },
+//         );
+//         console.log('GGGG');
+//         console.log(response.data);
+//         const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
+//         pispToStore.consentId = consentId; // Storing consent ID in toStore object
+//         pispToStore.payload = JSON.stringify(body);
+  
+//         return response.data.Data?.ConsentId || '';
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//       try {
+//         const body = this.permissions;
+//         const id = uuid.v4();
+//         const headers = {
+//           ...configvrp.vrpHeaders,
+//           Authorization: 'Bearer ' + accessToken,
+//           'x-idempotency-key': `${id}`,
+//         };
+//         console.log(body);
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfigvrp.paymentRequestEndPoint}`,
+//           body,
+//           {
+//             headers: headers,
+//           },
+//         );
+//         const Status = response.data.Data?.Status;
+//         const Payload = response.data.Data;
+//         this.consentIdVrp = response.data.Data?.ConsentId || '';
+        
+//         //const consentIdVrp = response.data.Data?.ConsentId || '';
+//         const details1 = {
+//           bankname: 'Natwest',
+//           consentid: this.consentIdVrp,
+//           status: Status,
+//           consentpayload: JSON.stringify(Payload),
+//           scope: 'vrp',
+//         };
+//         // vrpToStore.scope="vrp";
+//         // vrpToStore.consentId=consentIdVrp;
+//         // vrpToStore.consentPayload=JSON.stringify(Payload);
+//         // vrpToStore.status=Status;
+        
+//         console.log('details', details1);
+//         addDetails(details1);
+//         console.log('hhh');
+//         return response.data.Data?.ConsentId || '';
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+
+//   }
+
+//   async manualUserConsent(consentId: string) {
+//     let consentUrlWithVariables = '';
+
+//     console.log('manual consent');
+//     if (this.scopeForThisCall == 'accounts') {
+//       consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//       consentID = consentId;
+//       consentUrlWithVariables = `${sandboxConfigPisp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfigPisp.redirectUri}&request=${consentId}`;
+//     }
+//     if(this.scopeForThisCall=='vrp'){
+//       consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentIdVrp}`;
+//     }
+//     Linking.openURL(consentUrlWithVariables);
+//     return consentUrlWithVariables;
+//   }
+//   async userConsentProgammatically(consentId: string) {
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         console.log('ConsentID:', consentId);
+//         const accountResponse: AxiosResponse<any> = await axios.get(
+//           `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
+//         );
+//         return this.exchangeAccessToken(accountResponse.data.redirectUri,null);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data for accounts: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+
+//   async exchangeAccessToken(authTokenUrl: string,formData:any) {
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         const start = authTokenUrl.indexOf('=') + 1;
+//         const end = authTokenUrl.indexOf('&');
+//         const authToken = authTokenUrl.slice(start, end);
+//         console.log('AuthToken', authToken);
+//         const body: Record<string, string> = {
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           redirect_uri: sandboxConfig.redirectUri,
+//           grant_type: 'authorization_code',
+//           code: authToken,
+//         };
+//         const headers = {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         };
+
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: headers,
+//             params: body,
+//           },
+//         );
+//         aispToStore.refreshToken = response.data.refresh_token;
+//         return this.fetchAccounts(response.data.access_token);
+//         //console.log('Api access token', response.data.access_token);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//       try {
+//         const start = authTokenUrl.indexOf('=') + 1;
+//         const end = authTokenUrl.indexOf('&');
+//         const authToken = authTokenUrl.slice(start, end);
+//         console.log('AuthToken', authToken);
+//         const body: Record<string, string> = {
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           redirect_uri: sandboxConfig.redirectUri,
+//           grant_type: 'authorization_code',
+//           code: authToken,
+//         };
+//         const headers = {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         };
+
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: headers,
+//             params: body,
+//           },
+//         );
+//         console.log('Api access token', response.data.access_token);
+//         pispToStore.refreshtoken = response.data.refresh_token;
+//         return this.domesticPayments(response.data.access_token);
+
+//         //return this.refreshToken(response.data.refresh_token);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//       try {
+//         const start = authTokenUrl.indexOf('=') + 1;
+//         const end = authTokenUrl.indexOf('&');
+//         const authToken = authTokenUrl.slice(start, end);
+       
+//         console.log('AuthToken', authToken);
+//         const body: Record<string, string> = {
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           redirect_uri: sandboxConfig.redirectUri,
+//           grant_type: 'authorization_code',
+//           code: authToken,
+//         };
+//         const headers = {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         };
+  
+//         const response: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfigvrp.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: headers,
+//             params: body,
+//           },
+//         );
+  
+//         console.log('Api access token', response.data.access_token);
+//         const RefreshToken = response.data.refresh_token;
+//         const consentExpiresIn = response.data.expires_in;
+//         const Scope = response.data.scope;
+  
+//         const updatedDetails2 = {
+//           refreshedtoken: RefreshToken,
+//           status: 'Authorised',
+//           consentexpiry: consentExpiresIn,
+//         };
+//         return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       } 
+//     }
+//   }
+
+//   async vrpPayments(apiAccessToken: string,consentid: string,formData: any,): Promise<any> {
+//     try {
+//       const id = uuid.v4();
+//       const headers = {
+//         ...configvrp.vrpHeaders,
+//         Authorization: 'Bearer '+ apiAccessToken,
+//         'x-idempotency-key': `${id}`,
+//       };
+//       const Identification=formData.accountNumber+formData.sortCode;
+//       console.log("identification-->",Identification);
+//       const body = {
+//         Data: {
+//           ConsentId: `${this.consentIdVrp}`,
+//           PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
+//           Initiation: {
+//             CreditorAccount: {
+//               SchemeName: 'SortCodeAccountNumber',
+//               Identification: Identification,
+//               Name: formData.firstName,
+//               SecondaryIdentification: 'secondary-identif',
+//             },
+//             RemittanceInformation: {
+//               Unstructured: 'Tools',
+//               Reference: formData.reference,
+//             },
+//           },
+//           Instruction: {
+//             InstructionIdentification: 'instr-identification',
+//             EndToEndIdentification: 'e2e-identification',
+//             InstructedAmount: {
+//               // Amount: '7.00', //must be called with pay now button
+//               Amount: formData.amount,
+//               Currency: 'GBP',
+//             },
+//             CreditorAccount: {
+//               SchemeName: 'SortCodeAccountNumber',
+//               Identification: Identification,
+//               Name: formData.firstName,
+//               SecondaryIdentification: 'secondary-identif',
+//             },
+//             RemittanceInformation: {
+//               Unstructured: 'Tools',
+//               Reference: formData.reference,
+//             },
+//           },
+//         },
+//         Risk: {},
+//       };
+//       console.log("(99");
+//       console.log('body', body);
+//       console.log(formData);
+//       const vrpPaymentResponse: AxiosResponse = await axios.post(
+//         `${this.baseUrl}/${sandboxConfigvrp.domesticVrpPayments}`,
+//         body,
+//         {
+//           headers: headers,
+//         },
+//       );
+//       this.apiAccess = apiAccessToken;
+//       console.log('payments-->', vrpPaymentResponse.data.Links.Self);
+//       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
+//     } catch (error) {
+//       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
+//     }
+//   }
+
+//   async getAllVrpPayments(url: string): Promise<any> {
+//     try {
+//       const headers = {
+//         Authorization: `Bearer ${this.apiAccess}`,
+//         'x-fapi-financial-id': '0015800000jfwxXAAQ',
+//       };
+//       const allVrpPaymentsResponse = await axios.get(url, {
+//         headers: headers,
+//       });
+//       console.log(
+//         'allVrpPaymentsResponse of final call',
+//         allVrpPaymentsResponse.data,
+//       );
+//       const payload=allVrpPaymentsResponse.data.Data;
+//       const updatedDetails3 = {
+        
+//       };
+//       const details = {
+//         bankname: 'Natwest',
+//         consentid: allVrpPaymentsResponse.data.Data.ConsentId,
+//         scope: 'vrp_transactions',
+//         vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
+//         vrppayload: JSON.stringify(payload),
+//         status: allVrpPaymentsResponse.data.Data.Status
+//       };
+//       // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
+//       // vrpToStore.vrpPayload=JSON.stringify(payload);
+//       // vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
+//       // vrpToStore.responseVrp=JSON.stringify(allVrpPaymentsResponse.data.Data);
+//       // console.log("^^^^^^^");
+//       // console.log(vrpToStore);
+//       console.log("$$$$$$$$$$");
+//       // addTransactions(details);
+
+//       return allVrpPaymentsResponse.data;
+//     } catch (error) {
+//       console.log('error in getting in vrp payments', error);
+//     }
+//   }
+
+//   async refreshToken(refreshToken: string): Promise<any> {
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         const body: Record<string, string> = {
+//           client_id: this.clientId,
+//           client_secret: this.clientSecret,
+//           //redirect_uri: sandboxConfig.redirectUri,
+//           grant_type: 'refresh_token',
+//           refresh_token: refreshToken,
+//         };
+//         const headers = {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         };
+
+//         const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+//           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+//           null,
+//           {
+//             headers: headers,
+//             params: body,
+//           },
+//         );
+//         return responseRefresh.data.access_token;
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//     }
+
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+//   async domesticPayments(apiAccess: string) {
+//     try {
+//       const idd = uuid.v4();
+//       console.log('m here');
+//       const headers = {
+//         'Content-Type': 'application/json',
+//         Authorization: 'Bearer ' + apiAccess,
+//         'x-fapi-financial-id': sandboxConfigPisp.financialId,
+//         'x-jws-signature': sandboxConfigPisp.signatureJws,
+//         'x-idempotency-key': `${idd}`,
+//       };
+//       console.log(consentID);
+//       const requestBody = {
+//         Data: {
+//           ConsentId: consentID,
+//           Initiation: {
+//             InstructionIdentification: 'instr-identification',
+//             EndToEndIdentification: 'e2e-identification',
+//             InstructedAmount: {
+//               Amount: '1.00',
+//               Currency: 'GBP',
+//             },
+//             DebtorAccount: this.DebtorAccount,
+//             CreditorAccount: {
+//               SchemeName: 'IBAN',
+//               Identification: 'BE56456394728288',
+//               Name: 'ACME DIY',
+//               SecondaryIdentification: 'secondary-identif',
+//             },
+//             RemittanceInformation: {
+//               Unstructured: 'Tools',
+//               Reference: 'Tools',
+//             },
+//           },
+//         },
+//         Risk: {
+//           PaymentContextCode: 'EcommerceGoods',
+//         },
+//       };
+
+//       const paymentResponse: AxiosResponse<any> = await axios.post(
+//         `${this.baseUrl}/${sandboxConfigPisp.domesticPaymentsEndpoint}`,
+//         requestBody,
+//         {
+//           headers: headers,
+//         },
+//       );
+//       console.log('success 777');
+//       console.log(paymentResponse.data);
+//       return this.getPaymentSatus(
+//         apiAccess,
+//         paymentResponse.data.Data.DomesticPaymentId,
+//       );
+//     } catch (error) {
+//       throw new Error(`Failed to fetch data for accounts: ${error}`);
+//     }
+//   }
+//   async getPaymentSatus(
+//     apiAccessToken: string,
+//     domesticPaymentsId: string,
+//   ): Promise<any> {
+//     try {
+//       const headers = {
+//         Authorization: 'Bearer ' + apiAccessToken,
+//         'x-fapi-financial-id': sandboxConfigPisp.financialId,
+//       };
+
+//       const payResponse: AxiosResponse<any> = await axios.get(
+//         `${this.baseUrl}/${sandboxConfigPisp.paymentSelfLink}/${domesticPaymentsId}`,
+//         {
+//           headers: headers,
+//         },
+//       );
+//       console.log(payResponse.data.Data);
+//       console.log('AllSet');
+//       pispToStore.response = JSON.stringify(payResponse);
+//       pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
+//       console.log(pispToStore);
+//       //stroing all data in db
+//       await androidClientPisp.initDatabaseAndroidPisp();
+//       await androidClientPisp.insertDataPisp(pispToStore);
+//       console.log("Storing this to the table");
+//       await androidClientPisp.displayData();
+//       return payResponse.data.Data;
+//     } catch (error) {
+//       throw new Error(`Failed to fetch data for accounts: ${error}`);
+//     }
+//   }
+//   async fetchAccounts(apiAccessToken: string) {
+//     try {
+//       const headers = {
+//         ...this.commonHeaders,
+//         Authorization: `Bearer ${apiAccessToken}`,
+//       };
+
+//       const accountResponse: AxiosResponse<any> = await axios.get(
+//         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
+//         {
+//           headers: headers,
+//         },
+//       );
+//       //store
+//       const acDetails = accountResponse.data.Data;
+//       const accountIds = acDetails.Account.map(
+//         (account: any) => account.AccountId,
+//       );
+//       const allAccountDetails = acDetails.Account;
+
+//       const updatedDetails3 = {
+//         account_customer_consented: accountIds,
+//         account_details: JSON.stringify(allAccountDetails),
+//       };
+
+//       const columnsToUpdate3 = [
+//         'account_customer_consented',
+//         'account_details',
+//       ];
+
+//       await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
+//       //store
+//       this.apiAccess = apiAccessToken;
+//       await this.storeAccessToken(apiAccessToken);
+//       aispToStore.accountsList=JSON.stringify(accountResponse.data.Data);
+//       //print aispToSTore
+//       console.log("***************");
+//       console.log(aispToStore);
+//       await androidClientAisp.initDatabaseAndroidAisp();
+//       await androidClientAisp.insertDataAisp(aispToStore);
+//       console.log("^^^^^^^^^^^^");
+//       await androidClientAisp.displayData();
+//       console.log("###########");
+//       //await androidClientAispDb.initDatabaseAndroidAisp();
+
+//       //await androidClientAispDb.displayData();
+//       console.log('ACCOUNT ADDED SUCCESSFULLY');
+//       return accountResponse.data.Data;
+//     } catch (error) {
+//       throw new Error(`Failed to fetch data for accounts: ${error}`);
+//     }
+
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+//   async allCalls(endPoint: string): Promise<any> {
+//     if (this.scopeForThisCall == 'accounts') {
+//       const access_token = await this.getAccessToken();
+//       if (access_token !== null) {
+//         this.apiAccess = access_token;
+//         //console.log(access_token);
+//       } else {
+//         console.log('No access token stored');
+//       }
+//       try {
+//         const headers = {
+//           ...this.commonHeaders,
+//           Authorization: `Bearer ${this.apiAccess}`,
+//         };
+
+//         const accountResponse: AxiosResponse<any> = await axios.get(
+//           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
+//           {
+//             headers: headers,
+//           },
+//         );
+
+//         return accountResponse.data.Data;
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data for accounts: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+
+//   async storeAccessToken(accessToken: string) {
+//     try {
+//       await Keychain.setGenericPassword('access_token', accessToken);
+//       console.log('Access token stored or updated successfully for user');
+//     } catch (error) {
+//       console.error('Error storing or updating access token for user', error);
+//     }
+//   }
+
+//   async getAccessToken() {
+//     const key = 'access_token';
+//     try {
+//       const credentials = await Keychain.getGenericPassword();
+//       if (credentials && credentials.username === key) {
+//         // console.log('Access token:', credentials.password);
+//         return credentials.password;
+//       } else {
+//         console.log(`No access token stored`);
+//         return null;
+//       }
+//     } catch (error) {
+//       console.error('Error retrieving access token for user', error);
+//       return null;
+//     }
+//   }
+//   async fetchAccountsWithRefreshToken(access_token: string): Promise<any> {
+//     if (this.scopeForThisCall == 'accounts') {
+//       // const refresh_token = await fetchRefreshedToken(1001);
+
+//       // const access_token = await this.refreshToken(refresh_token);
+//       const apiAccessToken = access_token;
+//       try {
+//         const headers = {
+//           ...this.commonHeaders,
+//           Authorization: `Bearer ${apiAccessToken}`,
+//         };
+
+//         const accountResponse: AxiosResponse<any> = await axios.get(
+//           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
+//           {
+//             headers: headers,
+//           },
+//         );
+
+//         return accountResponse.data.Data;
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data for accounts: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+//   async allCallsWithRefreshToken(endPoint: string, access_token: string) {
+//     // const refresh_token = await fetchRefreshedToken(1001);
+//     // const access_token = await this.refreshToken(refresh_token);
+
+//     this.apiAccess = access_token;
+//     if (this.scopeForThisCall == 'accounts') {
+//       try {
+//         const headers = {
+//           ...this.commonHeaders,
+//           Authorization: `Bearer ${this.apiAccess}`,
+//         };
+
+//         const accountResponse: AxiosResponse<any> = await axios.get(
+//           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
+//           {
+//             headers: headers,
+//           },
+//         );
+
+//         return accountResponse.data.Data;
+//       } catch (error) {
+//         throw new Error(`Failed to fetch data for accounts: ${error}`);
+//       }
+//     }
+//     if (this.scopeForThisCall == 'payments') {
+//     }
+//     if (this.scopeForThisCall == 'vrp') {
+//     }
+//   }
+// }
+
+// export default SanboxApiFactory;
