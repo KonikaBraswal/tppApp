@@ -14,7 +14,6 @@ import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
 import {fetchAllDataforScope} from '../../../database/Database';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
@@ -29,7 +28,11 @@ const CustomerDetails = ({route}) => {
       fetchAllDataforScope(scope)
         .then(data => {
           if (data !== null) {
-            getConsentData(data);
+            // console.log(data);
+            const latestObject = getObjectWithLatestCreationTime(data);
+            setDebitorDetails(
+              JSON.parse(latestObject.vrppayload).DebtorAccount,
+            );
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }
@@ -41,30 +44,16 @@ const CustomerDetails = ({route}) => {
     fetchData();
   }, [scope]);
 
-  const findDataByConsentId = async (consentData, consentId) => {
-    return consentData.find(
-      consent => consent.consentid === JSON.parse(consentId),
+  function getObjectWithLatestCreationTime(objects) {
+    const sortedArray = objects.sort(
+      (a, b) =>
+        new Date(JSON.parse(b.consentpayload).CreationDateTime) -
+        new Date(JSON.parse(a.consentpayload).CreationDateTime),
     );
-  };
+    return sortedArray[0];
+  }
 
-  const getConsentData = async consentData => {
-    try {
-      const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
-      if (EcommConsentId !== null) {
-        const EcommConsentData = await findDataByConsentId(
-          consentData,
-          EcommConsentId,
-        );
-        setDebitorDetails(
-          JSON.parse(EcommConsentData.vrppayload).DebtorAccount,
-        );
-      } else {
-        console.log('EcommConsentData not found');
-      }
-    } catch (error) {
-      console.error('Error retrieving EcommConsentData:', error);
-    }
-  };
+  console.log(debitorDetails);
 
   return (
     <View style={styles.container}>

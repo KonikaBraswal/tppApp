@@ -64,7 +64,7 @@ const ConsentsforVRP = () => {
         .then(data => {
           if (data !== null) {
             setConsentData(data);
-            console.log("======",JSON.parse (data[0].vrppayload).DebtorAccount.Identification);
+            // console.log("======",JSON.parse (data[0].vrppayload).DebtorAccount.Identification);
           } else {
             console.log(`No entry found for scope ${scope}.`);
           }

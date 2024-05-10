@@ -14,7 +14,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchAllDataforScope} from '../../../database/Database';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -31,43 +30,38 @@ const ConfirmDetails = ({route}) => {
 
   const navigation = useNavigation();
   const scope = 'vrp';
-  const [consentData, setConsentData] = useState([]);
+
+  const [consentData, setConsentData] = useState(null);
 
   useEffect(() => {
-    fetchAllDataforScope(scope)
-      .then(data => {
-        if (data !== null) {
-          setConsentData(data);
-        } else {
-          console.log(`No entry found for scope ${scope}.`);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching Consent data:', error);
-      });
+    const fetchData = async () => {
+      fetchAllDataforScope(scope)
+        .then(data => {
+          if (data !== null) {
+            console.log(data);
+            const latestObject = getObjectWithLatestCreationTime(data);
+            setConsentData(latestObject);
+          } else {
+            console.log(`No entry found for scope ${scope}.`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching Consent data:', error);
+        });
+    };
+    fetchData();
   }, [scope]);
 
-  const findDataByConsentId = consentId => {
-    console.log(typeof consentId + typeof consentData[0].consentid);
+  function getObjectWithLatestCreationTime(objects) {
+    const sortedArray = objects.sort(
+      (a, b) =>
+        new Date(JSON.parse(b.consentpayload).CreationDateTime) -
+        new Date(JSON.parse(a.consentpayload).CreationDateTime),
+    );
+    return sortedArray[0];
+  }
 
-    return consentData.find(consent => consent.consentid === consentId);
-  };
-
-  const getConsentData = async () => {
-    try {
-      const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
-
-      if (EcommConsentId !== null) {
-        EcommConsentData = findDataByConsentId(JSON.parse(EcommConsentId));
-        console.log('EcommConsentData', EcommConsentData);
-        return EcommConsentData;
-      } else {
-        console.log('EcommConsentData not found');
-      }
-    } catch (error) {
-      console.error('Error retrieving EcommConsentData:', error);
-    }
-  };
+  console.log(consentData);
 
   const handleCheckout = async () => {
     const formData = {
@@ -78,7 +72,7 @@ const ConfirmDetails = ({route}) => {
       amount: '9.00',
     };
     try {
-      const selectconsentData = await getConsentData();
+      const selectconsentData = consentData;
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
