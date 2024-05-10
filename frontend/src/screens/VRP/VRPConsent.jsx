@@ -155,7 +155,8 @@ const VRPConsent = ({ route }) => {
         try {
             
             const response=await EnvApiClient.exchangeAccessToken(inputValue, formData,consentData);
-            
+            console.log("data",response);
+            console.log("data2",consentData);
             const updatedResponse = {
                 ...response,
                 refreshtoken: response.refresh_token,

@@ -273,6 +273,9 @@ export function generateDomesticConsentHeaders(
 
 export function generateVrpPaymentBody(formData: any, consentId: string) {
   const Identification = formData.accountNumber + formData.sortCode;
+  console.log("1",formData);
+  console.log("2",consentId);
+  console.log("3",Identification);
   return {
     Data: {
       ConsentId: consentId,
@@ -293,7 +296,7 @@ export function generateVrpPaymentBody(formData: any, consentId: string) {
         InstructionIdentification: 'instr-identification',
         EndToEndIdentification: 'e2e-identification',
         InstructedAmount: {
-          Amount: formData.amount,
+          Amount: '7.00',
           Currency: 'GBP',
         },
         CreditorAccount: {
