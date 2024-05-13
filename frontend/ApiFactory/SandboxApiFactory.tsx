@@ -3,7 +3,7 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from '../ConfigFiles/config.json';
 import sandboxConfig from '../ConfigFiles/Sandbox.json';
-import {addDetails} from '../database/Database';
+import {addDetails, updateDetailsForVrp} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import configvrp from '../configs_VRP/config.json'
 import sandboxConfigvrp from '../configs_VRP/Sandbox.json';
@@ -538,7 +538,8 @@ class SanboxApiFactory {
           status: 'Authorised',
           consentexpiry: consentExpiresIn,
         };
-        console.log("UUUu");
+        console.log("response",response.data);
+        return response.data;
         return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -697,8 +698,53 @@ class SanboxApiFactory {
     }
 
     if (this.scopeForThisCall == 'vrp') {
+      
     }
   }
+  async refreshTokenForVRP(refreshToken: any, grantedformData: any): Promise<any> {
+    try {
+      const body: Record<string, string> = {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken.refreshtoken,
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        null,
+        {
+          headers: headers,
+          params: body,
+        },
+      );
+
+      console.log('Refresh call response', responseRefresh.data);
+      const RefreshToken = responseRefresh.data.refresh_token;
+      const updatedDetails3 = {
+        refreshedtoken: RefreshToken,
+      };
+
+      const columnsToUpdate3 = ['refreshedtoken'];
+      await updateDetailsForVrp(
+        updatedDetails3,
+        refreshToken.consentid,
+        columnsToUpdate3,
+      );
+
+      return this.vrpPayments(
+        responseRefresh.data.access_token,
+        refreshToken.consentid,
+        grantedformData,
+      );
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
+
   async domesticPayments(apiAccess: string) {
     try {
       const idd = uuid.v4();

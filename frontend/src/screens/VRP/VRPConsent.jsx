@@ -160,7 +160,7 @@ const VRPConsent = ({ route }) => {
             const updatedResponse = {
                 ...response,
                 refreshtoken: response.refresh_token,
-                consentid: consentData.Data.ConsentId,
+                consentid: consentData,
               };
               
             navigation.navigate('GrantedForm', {

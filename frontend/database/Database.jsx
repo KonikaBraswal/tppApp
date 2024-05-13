@@ -310,7 +310,7 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
   });
 };
 
-
+// VRP-24b3155c-8b48-4849-9581-69b3be433d80
 
 export const fetchTransactionsForUserConsent = consentid => {
   return new Promise((resolve, reject) => {
@@ -347,6 +347,42 @@ export const fetchTransactionsForUserConsent = consentid => {
     });
   });
 };
+// VRP-a1f47094-7064-4c02-af8e-ed5f6515226c
+// export const fetch = consentid => {
+//   return new Promise((resolve, reject) => {
+//     db.transaction(tx => {
+//       tx.executeSql(
+//         'SELECT * FROM userconsent_sandbox WHERE consentid = ?ORDER BY date DESC,time DESC;',
+//         [consentid],
+//         (_, results) => {
+//           console.log('Query results:', results.rows); // Log the results for debugging
+//           const rows = results.rows;
+//           const data = [];
+//           if (rows.length > 0) {
+//             for (let i = 0; i < rows.length; i++) {
+//               const row = rows.item(i);
+//               data.push(row);
+//               // if(row.status=='AcceptedSettlementCompleted'){
+//               //   // console.log("transactions-->",row);
+//               // }
+//             }
+//             if (data.length > 0) resolve(data);
+//           } else {
+//             // If no entry is found, clear the globalConsentId
+//             // globalConsentId = null;
+//             console.log('No entry found for this consentid:', consentid); // Log for debugging
+//             resolve(null);
+//           }
+//         },
+//         (_, error) => {
+//           //-----------------------------------------
+//           console.error('Error fetching consent Id: ', error);
+//           reject(error);
+//         },
+//       );
+//     });
+//   });
+// };//demo function to check whether consent id is there or not in database
 
 export const fetchAllDataforScope = scope => {
   return new Promise((resolve, reject) => {
@@ -511,6 +547,7 @@ const Database = () => {
     <View>
       <Text>SQLite Database</Text>
       {/* <Button title="Add Dummy Entry" onPress={addDummyEntry} /> */}
+      {/* <Button title="Display Results" onPress={()=>fetch('VRP-a1f47094-7064-4c02-af8e-ed5f6515226c')} /> */}
       <Button title="Display Results" onPress={displayResults} />
       <Button title="Delete All Entries" onPress={deleteAllEntries} />
 

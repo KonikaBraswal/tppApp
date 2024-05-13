@@ -296,7 +296,7 @@ export function generateVrpPaymentBody(formData: any, consentId: string) {
         InstructionIdentification: 'instr-identification',
         EndToEndIdentification: 'e2e-identification',
         InstructedAmount: {
-          Amount: '7.00',
+          Amount: formData.amount,
           Currency: 'GBP',
         },
         CreditorAccount: {
