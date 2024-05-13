@@ -538,7 +538,7 @@ class SanboxApiFactory {
           status: 'Authorised',
           consentexpiry: consentExpiresIn,
         };
-        console.log("UUUu")
+        console.log("UUUu");
         return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -598,6 +598,9 @@ class SanboxApiFactory {
       //   Risk: {},
       // };
       console.log("(99");
+      console.log(headers);
+      console.log(body);
+
           const vrpPaymentResponse: AxiosResponse = await axios.post(
         `${this.baseUrl}/${sandboxConfigvrp.domesticVrpPayments}`,
         body,
