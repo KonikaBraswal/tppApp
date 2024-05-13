@@ -579,8 +579,8 @@ class SanboxApiFactory {
       //       InstructionIdentification: 'instr-identification',
       //       EndToEndIdentification: 'e2e-identification',
       //       InstructedAmount: {
-      //         // Amount: '7.00', //must be called with pay now button
-      //         Amount: formData.amount,
+      //         Amount: '7.00', //must be called with pay now button
+      //         // Amount: formData.amount,
       //         Currency: 'GBP',
       //       },
       //       CreditorAccount: {
