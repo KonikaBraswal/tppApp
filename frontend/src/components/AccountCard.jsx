@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
 import {StyleSheet, View, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import balanceData from '../../ApiFactory/MockData/localbalance.json';
+import balanceData from '../../DatabaseFactory/MockData/localbalance.json';
 
 import {Surface, Button} from '@react-native-material/core';
 import {

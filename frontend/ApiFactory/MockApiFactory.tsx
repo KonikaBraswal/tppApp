@@ -70,7 +70,7 @@ class MockApiFactory {
     }
   }
 
-  async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
+  async refreshTokenForVRP(refreshToken: any, grantedformData: any): Promise<any> {
     console.log('callleddddddddddddd me', VRPData);
     const userId = VRPData.Data.DomesticVRPId;
     const flow = 'VRP';

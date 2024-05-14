@@ -23,10 +23,10 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import readNatwestAccount from '../../ApiFactory/MockData/accounts.json';
-import readNatwestBalance from '../../ApiFactory/MockData/balances.json';
-import readBarclaysAccount from '../../ApiFactory/MockData/barclaysAccounts.json';
-import readBarclaysBalance from '../../ApiFactory/MockData/barclaysBalances.json';
+import readNatwestAccount from '../../DatabaseFactory/MockData/accounts.json';
+import readNatwestBalance from '../../DatabaseFactory/MockData/balances.json';
+import readBarclaysAccount from '../../DatabaseFactory/MockData/barclaysAccounts.json';
+import readBarclaysBalance from '../../DatabaseFactory/MockData/barclaysBalances.json';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.93;
 const ViewAllAccounts = () => {

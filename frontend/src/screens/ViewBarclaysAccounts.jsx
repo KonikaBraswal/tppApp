@@ -19,8 +19,8 @@ import {
   IconButton,
   Icon,
 } from 'react-native-paper';
-import readBarclaysAccount from '../../ApiFactory/MockData/barclaysAccounts.json';
-import readBarclaysBalance from '../../ApiFactory/MockData/barclaysBalances.json';
+import readBarclaysAccount from '../../DatabaseFactory/MockData/barclaysAccounts.json';
+import readBarclaysBalance from '../../DatabaseFactory/MockData/barclaysBalances.json';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,

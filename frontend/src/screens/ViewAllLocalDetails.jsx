@@ -16,12 +16,12 @@ import {Surface} from '@react-native-material/core';
 import LocalAccountDetails from '../components/LocalAccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import SortDropdown from '../components/SortDropdown';
-import readNatwestAccount from '../../ApiFactory/MockData/accounts.json';
-import readNatwestBalance from '../../ApiFactory/MockData/balances.json';
-import readBarclaysAccount from '../../ApiFactory/MockData/barclaysAccounts.json';
-import readBarclaysBalance from '../../ApiFactory/MockData/barclaysBalances.json';
-import readNatwestTransaction from '../../ApiFactory/MockData/transactions.json';
-import readBarclaysTransaction from '../../ApiFactory/MockData/barclaysTransactions.json';
+import readNatwestAccount from '../../DatabaseFactory/MockData/accounts.json';
+import readNatwestBalance from '../../DatabaseFactory/MockData/balances.json';
+import readBarclaysAccount from '../../DatabaseFactory/MockData/barclaysAccounts.json';
+import readBarclaysBalance from '../../DatabaseFactory/MockData/barclaysBalances.json';
+import readNatwestTransaction from '../../DatabaseFactory/MockData/transactions.json';
+import readBarclaysTransaction from '../../DatabaseFactory/MockData/barclaysTransactions.json';
 import LocalTransactionList from '../components/LocalTransactionList';
 import BarclaysLocalTransactionList from '../components/BarclaysLocalTransactionList';
 

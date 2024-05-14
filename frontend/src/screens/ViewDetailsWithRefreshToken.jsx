@@ -20,7 +20,7 @@ import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import SortDropdown from '../components/SortDropdown';
 import LocalTransactionList from '../components/LocalTransactionList';
 import {fetchRefreshedToken, RetrieveData} from '../../database/Database';
-import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();

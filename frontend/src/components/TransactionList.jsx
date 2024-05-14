@@ -4,7 +4,7 @@ import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
 import TransactionCard from './TransactionCard';
-import transactionData from '../../ApiFactory/MockData/transactions.json';
+import transactionData from '../../DatabaseFactory/MockData/transactions.json';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';

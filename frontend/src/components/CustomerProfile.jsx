@@ -80,7 +80,7 @@
 import React, { useState } from "react";
 import { List, Icon } from "react-native-paper";
 import { Surface, Stack, ListItem, TextInput } from "@react-native-material/core"; // assuming you have a TextInput component
-import readCustomerData from '../../ApiFactory/MockData/customerprofile.json';
+import readCustomerData from '../../DatabaseFactory/MockData/customerprofile.json';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const CustomerProfile = () => {
