@@ -22,10 +22,10 @@ import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
 import {RFValue} from 'react-native-responsive-fontsize';
 import VRPConsent from '../VRP/VRPConsent';
 import {Surface, Stack} from '@react-native-material/core';
-import readNatwestAccount from '../../assets/data/accounts.json';
-import readNatwestBalance from '../../assets/data/balances.json';
-import readBarclaysAccount from '../../assets/data/barclaysAccounts.json';
-import readBarclaysBalance from '../../assets/data/barclaysBalances.json';
+import readNatwestAccount from '../../../ApiFactory/MockData/accounts.json';
+import readNatwestBalance from '../../../ApiFactory/MockData/balances.json';
+import readBarclaysAccount from '../../../ApiFactory/MockData/barclaysAccounts.json';
+import readBarclaysBalance from '../../../ApiFactory/MockData/barclaysBalances.json';
 import {fetchAllDataforScope} from '../../../database/Database';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {

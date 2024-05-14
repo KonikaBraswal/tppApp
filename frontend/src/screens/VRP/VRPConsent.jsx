@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+import sandboxConfig from '../../../ApiFactory/ConfigFiles/Nwb_Sandbox_VRP.json';
 import {
     Title,
     Text,

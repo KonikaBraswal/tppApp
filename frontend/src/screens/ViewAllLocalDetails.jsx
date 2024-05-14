@@ -16,12 +16,12 @@ import {Surface} from '@react-native-material/core';
 import LocalAccountDetails from '../components/LocalAccountDetails';
 import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
 import SortDropdown from '../components/SortDropdown';
-import readNatwestAccount from '../assets/data/accounts.json';
-import readNatwestBalance from '../assets/data/balances.json';
-import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
-import readBarclaysBalance from '../assets/data/barclaysBalances.json';
-import readNatwestTransaction from '../assets/data/transactions.json';
-import readBarclaysTransaction from '../assets/data/barclaysTransactions.json';
+import readNatwestAccount from '../../ApiFactory/MockData/accounts.json';
+import readNatwestBalance from '../../ApiFactory/MockData/balances.json';
+import readBarclaysAccount from '../../ApiFactory/MockData/barclaysAccounts.json';
+import readBarclaysBalance from '../../ApiFactory/MockData/barclaysBalances.json';
+import readNatwestTransaction from '../../ApiFactory/MockData/transactions.json';
+import readBarclaysTransaction from '../../ApiFactory/MockData/barclaysTransactions.json';
 import LocalTransactionList from '../components/LocalTransactionList';
 import BarclaysLocalTransactionList from '../components/BarclaysLocalTransactionList';
 

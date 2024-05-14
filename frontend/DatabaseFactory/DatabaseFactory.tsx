@@ -3,7 +3,7 @@ import WebClient from "./WebClient";
 import ApiLogsDb from "./ApiLogsDb";
 //import AndroidClient from './AndroidClient';
 //import WebClient from './WebClient';
-import DatabaseConfig from '../ConfigFiles/DatabaseConfig.json';
+import DatabaseConfig from '../ApiFactory/ConfigFiles/DatabaseConfig.json';
 
 class DatabaseFactory {
     private company: string;

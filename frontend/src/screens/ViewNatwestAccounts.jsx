@@ -23,8 +23,8 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import readNatwestAccount from '../assets/data/accounts.json';
-import readNatwestBalance from '../assets/data/balances.json';
+import readNatwestAccount from '../../ApiFactory/MockData/accounts.json';
+import readNatwestBalance from '../../ApiFactory/MockData/balances.json';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.93;
 

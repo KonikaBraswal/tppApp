@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import * as products from '../../assets/data/product_catalogue.json';
+import * as products from '../../../ApiFactory/MockData/product_catalogue.json';
 import {Button, Searchbar, Icon} from 'react-native-paper';
 import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
 import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';

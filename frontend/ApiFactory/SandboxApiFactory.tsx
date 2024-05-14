@@ -1,15 +1,14 @@
 import axios, {AxiosResponse} from 'axios';
 import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
-import config from '../ConfigFiles/config.json';
-import sandboxConfig from '../ConfigFiles/Sandbox.json';
+import config from './ConfigFiles/config.json';
+import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
 import {addDetails, updateDetailsForVrp} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
-import configvrp from '../configs_VRP/config.json'
-import sandboxConfigvrp from '../configs_VRP/Sandbox.json';
+import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
 //import {insertLog} from '../database/DatabaseLogs';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
-import sandboxConfigPisp from '../configs_PISP/Sandbox.json';
+import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 const {generateVrpAccountRequestHeaders,
   generateVrpPaymentBody,
@@ -23,7 +22,7 @@ const {generateVrpAccountRequestHeaders,
   generateBodyForPaymentRequest,
   generateHeadersForPisp,
   generateDomesticPaymentRequestBody,
-  generatePaymentStatusHeaders, } = require('../ConfigFiles/apiUtils.tsx');
+  generatePaymentStatusHeaders, } = require('./ConfigFiles/apiUtils.tsx');
 
 const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
 const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client

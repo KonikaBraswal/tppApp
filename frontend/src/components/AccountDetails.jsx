@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ApiFactory from '../../ApiFactory/ApiFactory';
-import balanceData from '../assets/data/balances.json';
+import balanceData from '../../ApiFactory/MockData/balances.json';
 let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable

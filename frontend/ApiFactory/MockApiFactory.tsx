@@ -1,10 +1,8 @@
 // Imports
 import {insertAISPData, insertVRPData} from '../database/LocalDatabase';
-import axios from 'axios';
-import {Alert} from 'react-native';
-import paymentData from '../src/assets/data/pisp.json';
-import VRPData from '../src/assets/data/vrp.json';
-import accountResponse from '../src/assets/data/accounts.json';
+import paymentData from '../DatabaseFactory/MockData/pisp.json';
+import VRPData from '../DatabaseFactory/MockData/vrp.json';
+import accountResponse from '../DatabaseFactory/MockData/accounts.json';
 
 class MockApiFactory {
   private apiScope: string = '';
