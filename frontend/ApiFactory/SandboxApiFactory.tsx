@@ -733,7 +733,7 @@ class SanboxApiFactory {
         refreshToken.consentid,
         columnsToUpdate3,
       );
-
+      console.log("000000000");
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentid,
