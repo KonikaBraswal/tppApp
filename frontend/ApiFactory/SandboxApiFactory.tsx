@@ -883,7 +883,7 @@ class SanboxApiFactory {
       //print aispToSTore
       console.log("***************");
       console.log(aispToStore);
-      await androidClientAisp.initDatabaseAndroidAisp();
+      await androidClientAisp.initDatabaseAndroidAisp();//create the table
       await androidClientAisp.insertDataAisp(aispToStore);
       console.log("^^^^^^^^^^^^");
       await androidClientAisp.displayData();
