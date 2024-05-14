@@ -56,7 +56,7 @@ const ProductDetails = ({route}) => {
     navigation.navigate('Cart');
   };
 
-  console.log(route.params.product);
+  // console.log(route.params.product);
   const product = route.params.product;
   const productImages = imgArray.find(object => object.id === product.id);
   return (
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 8,
-    backgroundColor: '#0047AB',
+    backgroundColor: '#3559AA',
     marginHorizontal: wp('1%'),
   },
   buttonText: {
