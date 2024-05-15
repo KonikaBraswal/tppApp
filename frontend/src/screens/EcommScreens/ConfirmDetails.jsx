@@ -73,7 +73,7 @@ const ConfirmDetails = ({route}) => {
     };
     try {
       const selectconsentData = consentData;
-      const response = await sandboxApiClient.refreshToken(
+      const response = await sandboxApiClient.refreshTokenForVRP(
         selectconsentData,
         formData,
       );

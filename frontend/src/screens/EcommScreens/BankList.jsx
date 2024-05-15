@@ -152,7 +152,7 @@ const BankList = () => {
                 body: permissions,
                 consentUrl: sandboxConfig.paymentRequestEndPoint
             };
-            const consentdata=await sandboxApiClient.allCalls("vrp",{accessTokenParams},null)
+           const consentdata=await sandboxApiClient.callApiFactory("vrp",{accessTokenParams},null)
             // const consentdata = await sandboxApiClient.retrieveAccessToken(
             //     { accessTokenParams },
             // );
