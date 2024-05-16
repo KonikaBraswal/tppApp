@@ -9,7 +9,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {IconButton} from 'react-native-paper';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';

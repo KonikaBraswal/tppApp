@@ -15,8 +15,9 @@ import {
 import {Surface, FAB} from '@react-native-material/core';
 import {Icon, Searchbar, Card, Title} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// import ViewAll from '../components/ViewAll';
+import ViewAll from '../components/ViewAll';
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -84,7 +85,7 @@ const Landing = () => {
             marginLeft: 10,
             fontWeight: 'bold',
             color: '#5a287d',
-            fontSize: 17,
+            fontSize: RFValue(17),
           }}>
           Added Banks
         </Text>
@@ -133,7 +134,7 @@ const Landing = () => {
                 key={item.id}
                 onPress={() => {
                   if (item.name === 'Natwest') {
-                    navigation.navigate('Your Natwest Accounts');
+                    navigation.navigate('Added Bank Accounts');
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
                   } else {
@@ -146,15 +147,15 @@ const Landing = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-{/* 
+
           <View style={styles.addBankContainer}>
             <ViewAll />
-          </View> */}
+          </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('Added Accounts');
+                  navigation.navigate('Transfer Money', {DebtorAccount: null});
                 }}>
                 <Surface
                   elevation={1}
@@ -162,7 +163,7 @@ const Landing = () => {
                   style={styles.cardsurface}>
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: RFValue(16),
                       color: 'black',
                       fontWeight: 'bold',
                       marginTop: 10,
@@ -172,14 +173,17 @@ const Landing = () => {
                   <Image source={Payments.image} style={styles.images} />
                 </Surface>
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{navigation.navigate("Accounts for VRP")}}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('ConsentsforVRP');
+                }}>
                 <Surface
                   elevation={1}
                   category="medium"
-                  style={styles.cardsurface} >
+                  style={styles.cardsurface}>
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: RFValue(16),
                       color: 'black',
                       fontWeight: 'bold',
                       marginTop: 10,

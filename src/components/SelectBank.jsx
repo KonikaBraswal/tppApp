@@ -79,7 +79,7 @@ const SelectBank = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       enableOnAndroid
       enableAutomaticScroll
-      extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}
+      // extraScrollHeight={Platform.OS === 'ios' ? 30 : 0}
     >
         <View>
           <View

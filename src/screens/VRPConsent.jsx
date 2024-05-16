@@ -522,7 +522,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
-import ApiFactory from '../../ApiFactory/ApiFactory';
+import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
 import { all } from 'axios';
 
 const screenWidth = Dimensions.get('window').width;

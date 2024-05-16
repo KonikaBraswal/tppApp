@@ -54,7 +54,7 @@ const AllAccounts = ({route}) => {
   return (
     <>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
         <View style={styles.headerContainer}>
           <Searchbar

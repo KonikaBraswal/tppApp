@@ -1,5 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+// src/PaymentForm.js
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,17 +9,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from 'react-native';
-
-const MakeTransfer = () => {
+import {RFValue} from 'react-native-responsive-fontsize';
+const MakeTransfer = ({route}) => {
+  const DebtorAccount = route.params.DebtorAccount;
   const navigation = useNavigation();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [sortCode, setSortCode] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [reference, setReference] = useState('');
-  const [amount, setAmount] = useState('');
+  const [firstName, setFirstName] = useState('ACME');
+  const [lastName, setLastName] = useState('DIY');
+  const [sortCode, setSortCode] = useState('12345678');
+  const [accountNumber, setAccountNumber] = useState('BE56456394728288');
+  const [reference, setReference] = useState('Tools');
+  const [amount, setAmount] = useState('1.00');
 
   const handleSubmit = () => {
     console.log('Form submitted:', {
@@ -30,18 +31,26 @@ const MakeTransfer = () => {
       amount,
     });
 
-    navigation.navigate('Consent For Payment');
+    navigation.navigate('PISP', {
+      FirstName: firstName,
+      LastName: lastName,
+      SortCode: sortCode,
+      AccountNumber: accountNumber,
+      Reference: reference,
+      Amount: amount,
+      DebtorAccount: DebtorAccount,
+    });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
-        <View style={styles.content}>
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={{padding: 20}}>
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>First Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your first name"
+              placeholder="Enter creditor's first name"
               onChangeText={setFirstName}
               value={firstName}
             />
@@ -51,7 +60,7 @@ const MakeTransfer = () => {
             <Text style={styles.sectionTitle}>Last Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your last name"
+              placeholder="Enter creditor's last name"
               onChangeText={setLastName}
               value={lastName}
             />
@@ -61,7 +70,7 @@ const MakeTransfer = () => {
             <Text style={styles.sectionTitle}>Account Number</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your account number"
+              placeholder="Enter creditor's account number"
               onChangeText={setAccountNumber}
               value={accountNumber}
             />
@@ -71,7 +80,7 @@ const MakeTransfer = () => {
             <Text style={styles.sectionTitle}>Sort Code</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your sort code"
+              placeholder="Enter creditor's sort code"
               onChangeText={setSortCode}
               value={sortCode}
             />
@@ -97,30 +106,21 @@ const MakeTransfer = () => {
             />
           </View>
         </View>
-
-        <TouchableOpacity onPress={handleSubmit} style={styles.footer} activeOpacity={1}>
-          <Text style={styles.footerText}>Proceed To Pay</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <TouchableOpacity
+        onPress={handleSubmit}
+        style={styles.footer}
+        activeOpacity={1}>
+        <Text style={styles.footerText}>Proceed To Pay</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    flexGrow: 1,
-  },
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    width: width < 600 ? '100%' : '80%', 
-    padding: 20,
   },
   sectionContainer: {
     marginBottom: 20,
@@ -130,13 +130,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -150,9 +151,8 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: RFValue(18),
   },
 });
 
 export default MakeTransfer;
-  
