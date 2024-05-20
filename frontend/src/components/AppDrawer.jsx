@@ -13,6 +13,7 @@ import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
 import Landing from '../components/Landing';
 import BankList from '../screens/EcommScreens/BankList';
+import SecondCvrpCall from '../screens/EcommScreens/SecondCvrpCall';
 
 const Drawer = createDrawerNavigator();
 
@@ -47,6 +48,15 @@ const AppDrawer = () => {
       <Drawer.Screen
         name="Add Bank"
         component={SelectBank}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="bank-plus" color={color} size={28} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Second Cvrp Call"
+        component={SecondCvrpCall}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bank-plus" color={color} size={28} />

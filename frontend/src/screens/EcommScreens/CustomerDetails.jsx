@@ -33,7 +33,7 @@ const CustomerDetails = ({route}) => {
             setDebitorDetails(
               JSON.parse(latestObject.vrppayload).DebtorAccount,
             );
-          } else {
+          } else {  
             console.log(`No entry found for scope ${scope}.`);
           }
         })

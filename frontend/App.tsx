@@ -50,6 +50,7 @@ import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
 import BankList from './src/screens/EcommScreens/BankList';
 import AddressScreen from './src/screens/EcommScreens/AddressScreen';
 import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
+import SecondCvrpCall from './src/screens/EcommScreens/SecondCvrpCall';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -154,6 +155,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Add Your Details" component={AddressScreen} />
               <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
               <Stack.Screen name="Order Placed" component={OrderSuccessful} />
+              <Stack.Screen name="Second Cvrp Call" component={SecondCvrpCall} />
 
             </Stack.Navigator>
           </NavigationContainer>
