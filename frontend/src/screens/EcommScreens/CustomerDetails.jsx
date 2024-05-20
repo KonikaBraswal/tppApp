@@ -18,7 +18,7 @@ const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
 const CustomerDetails = ({route}) => {
-  const {customerDetails} = route.params;
+  const {customerDetails, totalAmount} = route.params;
   const navigation = useNavigation();
   const [debitorDetails, setDebitorDetails] = useState(null);
   const scope = 'vrp';
@@ -102,7 +102,8 @@ const CustomerDetails = ({route}) => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Confirm Details', {
+            navigation.navigate('Confirm Details',  {
+              totalAmount,
               email: customerDetails.data.contactDetails.email,
               fullName: customerDetails.data.name.full_name,
               billingAddress:
@@ -119,6 +120,7 @@ const CustomerDetails = ({route}) => {
                 customerDetails.data.contactDetails.mobile_phone_number,
               accountNumber: debitorDetails.Identification,
               sortCode: '',
+              dob: customerDetails.data.birthdate.substring(0,10)
             });
           }}
           style={styles.footer}

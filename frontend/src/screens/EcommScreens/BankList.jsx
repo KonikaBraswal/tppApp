@@ -54,7 +54,9 @@ const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
 // const checkputApiFactory=new ApiFactory();
 // const checkoutApiClient=checkputApiFactory.createApiClient('sandbox');
-const BankList = () => {
+const BankList = ({route}) => {
+  const totalAmount = route.params.totalAmount;
+
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [allPayments, setAllPayments] = useState('');
@@ -113,7 +115,7 @@ const BankList = () => {
       ReadRefundAccount: 'No',
       ControlParameters: {
         InitialPayment: {
-          Amount: '9.00',
+          Amount: String(totalAmount),
           Currency: 'GBP',
         },
         VRPType: ['UK.OBIE.VRPType.Other'],
@@ -182,8 +184,8 @@ const BankList = () => {
         const customerDetails = await sandboxApiClient.getDomesticConsent();
         console.log("lo",customerDetails);
         navigation.navigate('Customer Details', {
-            customerDetails
-        });
+            customerDetails, totalAmount
+        },);
     }
     const handleSubmit = async () => {
         try {
@@ -191,7 +193,7 @@ const BankList = () => {
             const customerDetails = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
             // const customerDetails = await sandboxApiClient.accessTokenCA();
             navigation.navigate('Customer Details', {
-                customerDetails
+                customerDetails, totalAmount
             });
         } catch (error) {
             console.error('Error:', error);
