@@ -3,11 +3,8 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
-<<<<<<< HEAD
-=======
 import {addDetails, addTransactions, updateDetailsForVrp} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
->>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
@@ -478,19 +475,17 @@ class SanboxApiFactory {
   
         console.log('Api access token', response.data.access_token);
   
-<<<<<<< HEAD
-=======
-        const updatedDetails2 = {
-          refreshedtoken: RefreshToken,
-          status: 'Authorised',
-          consentexpiry: consentExpiresIn,
-        };
-        const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-      await updateDetailsForVrp(
-        updatedDetails2,
-        consentData.Data.ConsentId,
-        columnsToUpdate2,
-      );
+        // const updatedDetails2 = {
+        //   refreshedtoken: RefreshToken,
+        //   status: 'Authorised',
+        //   consentexpiry: consentExpiresIn,
+        // };
+      //   const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+      // await updateDetailsForVrp(
+      //   updatedDetails2,
+      //   consentData.Data.ConsentId,
+      //   columnsToUpdate2,
+      // );
       
       this.getDomesticConsent(
         response.data.access_token,
@@ -498,7 +493,6 @@ class SanboxApiFactory {
       );
       // return response.data;
       return this.getDetailsCA(response.data.access_token);
->>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
         console.log("response",response.data);
         return response.data;
         //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
@@ -590,8 +584,6 @@ class SanboxApiFactory {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-<<<<<<< HEAD
-=======
       const payload=allVrpPaymentsResponse.data.Data;
       
       const details = {
@@ -602,7 +594,6 @@ class SanboxApiFactory {
         vrppayload: JSON.stringify(payload),
         status: allVrpPaymentsResponse.data.Data.Status
       };
->>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
       // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
       // vrpToStore.vrpPayload=JSON.stringify(payload);
       // vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
