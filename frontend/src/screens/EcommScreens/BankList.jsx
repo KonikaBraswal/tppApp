@@ -165,9 +165,9 @@ const BankList = () => {
               );
           
             if (way == 'web') {
-                const Vrpscope = 'openid payments';
+                
                 const consentUrl = await sandboxApiClient.manualUserConsent(
-                    Vrpscope,
+                    consentData.Data.ConsentId,
                 );
                 
                 showInputDialog();
