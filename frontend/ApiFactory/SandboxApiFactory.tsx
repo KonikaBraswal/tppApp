@@ -3,6 +3,11 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
+<<<<<<< HEAD
+=======
+import {addDetails, addTransactions, updateDetailsForVrp} from '../database/Database';
+import {updateDetails, fetchRefreshedToken} from '../database/Database';
+>>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
@@ -312,7 +317,7 @@ class SanboxApiFactory {
         console.log('details', details1);
         // addDetails(details1);
         console.log('hhh');
-        return response.data.Data?.ConsentId || '';
+        return response.data;
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
       }
@@ -333,7 +338,7 @@ class SanboxApiFactory {
       consentUrlWithVariables = `${sandboxConfigPisp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfigPisp.redirectUri}&request=${consentId}`;
     }
     if(this.scopeForThisCall=='vrp'){
-      consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentIdVrp}`;
+      consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${consentID}`;
     }
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
@@ -356,7 +361,7 @@ class SanboxApiFactory {
     }
   }
 
-  async exchangeAccessToken(authTokenUrl: string,formData:any) {
+  async exchangeAccessToken(authTokenUrl: string,consentData:any) {
     if (this.scopeForThisCall == 'accounts') {
       try {
         const start = authTokenUrl.indexOf('=') + 1;
@@ -473,12 +478,77 @@ class SanboxApiFactory {
   
         console.log('Api access token', response.data.access_token);
   
+<<<<<<< HEAD
+=======
+        const updatedDetails2 = {
+          refreshedtoken: RefreshToken,
+          status: 'Authorised',
+          consentexpiry: consentExpiresIn,
+        };
+        const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+      await updateDetailsForVrp(
+        updatedDetails2,
+        consentData.Data.ConsentId,
+        columnsToUpdate2,
+      );
+      
+      this.getDomesticConsent(
+        response.data.access_token,
+        consentData.Links.Self,
+      );
+      // return response.data;
+      return this.getDetailsCA(response.data.access_token);
+>>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
         console.log("response",response.data);
         return response.data;
         //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
       } 
+    }
+  }
+  async getDomesticConsent(accessToken: any, url: string) {
+    try {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'x-fapi-financial-id': '0015800000jfwxXAAQ',
+      };
+      const allVrpResponse = await axios.get(url, {
+        headers: headers,
+      });
+      console.log('allVrpResponse of  call', allVrpResponse.data);
+      const payload = allVrpResponse.data.Data;
+      const id = allVrpResponse.data.Data.ConsentId;
+
+      const updateDetails4 = {
+        account_details: JSON.stringify(payload),
+      };
+      const columnsToUpdate5 = ['account_details'];
+
+      await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
+      return allVrpResponse.data;
+    } catch (error) {
+      console.log('error in getting in vrp calls', error);
+    }
+  }
+  async getDetailsCA(accessToken: any): Promise<any> {
+    try {
+      // const accessToken=this.accessTokenCA();
+      // console.log("accesstoken",this.apiAccessToken);
+      const headers = {
+        Authorization: 'Bearer ' + accessToken,
+      };
+      const url =
+        'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
+      const response: AxiosResponse<ResponseData> = await axios.get(
+        `${this.baseUrl}/${url}`,
+        {
+          headers: headers,
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch token: ${error}`);
     }
   }
 
@@ -520,6 +590,19 @@ class SanboxApiFactory {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
+<<<<<<< HEAD
+=======
+      const payload=allVrpPaymentsResponse.data.Data;
+      
+      const details = {
+        bankname: 'Natwest',
+        consentid: allVrpPaymentsResponse.data.Data.ConsentId,
+        scope: 'vrp_transactions',
+        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
+        vrppayload: JSON.stringify(payload),
+        status: allVrpPaymentsResponse.data.Data.Status
+      };
+>>>>>>> c28090bcdfcceb477aa143515b67e9b2eee92fbd
       // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
       // vrpToStore.vrpPayload=JSON.stringify(payload);
       // vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
@@ -527,7 +610,7 @@ class SanboxApiFactory {
       // console.log("^^^^^^^");
       // console.log(vrpToStore);
       console.log("$$$$$$$$$$");
-      // addTransactions(details);
+      addTransactions(details);
 
       return allVrpPaymentsResponse.data;
     } catch (error) {
@@ -714,7 +797,7 @@ class SanboxApiFactory {
       //print aispToSTore
       console.log("***************");
       console.log(aispToStore);
-      await androidClientAisp.initDatabaseAndroidAisp();
+      await androidClientAisp.initDatabaseAndroidAisp();//create the table
       await androidClientAisp.insertDataAisp(aispToStore);
       console.log("^^^^^^^^^^^^");
       await androidClientAisp.displayData();

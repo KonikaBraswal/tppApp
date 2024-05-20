@@ -39,7 +39,7 @@ import CreditorDetailsforVRP from './src/screens/VRP/CreditorDetailsforVRP';
 import GrantedForm from './src/screens/VRP/GrantedForm';
 import VRPConsent from './src/screens/VRP/VRPConsent';
 import VRPDetails from './src/screens/VRP/VRPDetails';
-import { initDatabaseApi } from './database/DatabaseLogs';
+import {initDatabaseApi} from './database/DatabaseLogs';
 import ApiLogsList from './src/screens/ApiLogsList';
 import ApiLogDetails from './src/screens/ApiLogDetails';
 import VrpTransactions from './src/screens/VRP/VrpTransactions';
@@ -51,7 +51,12 @@ import CartScreen from './src/screens/EcommScreens/CartScreen';
 import './global';
 
 import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
-import { GlobalEnvProvider } from './GlobalEnvContext';
+import {GlobalEnvProvider} from './GlobalEnvContext';
+import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
+import BankList from './src/screens/EcommScreens/BankList';
+import AddressScreen from './src/screens/EcommScreens/AddressScreen';
+import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
+import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
 function App(): React.JSX.Element {
   // useEffect(() => {
   //   initDatabaseApi();
@@ -68,99 +73,126 @@ function App(): React.JSX.Element {
   useEffect(() => Appearance.setColorScheme('light'), []);
   return (
     <GlobalEnvProvider>
-    <PaperProvider>
-      <SafeAreaProvider>
-        <SafeAreaView style={backgroundStyle}>
-          <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            backgroundColor={backgroundStyle.backgroundColor}
-          />
-          <View></View>
-          <NavigationContainer>
-            {/* <Landing/> */}
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor: '#5a287d',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 21,
-                },
-                headerTitleAlign: 'center',
-              }}>
-              <Stack.Screen
-                name="Home"
-                component={AppDrawer}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen name="Natwest Cart" component={ProductListing} />
+      <PaperProvider>
+        <SafeAreaProvider>
+          <SafeAreaView style={backgroundStyle}>
+            <StatusBar
+              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              backgroundColor={backgroundStyle.backgroundColor}
+            />
+            <View></View>
+            <NavigationContainer>
+              {/* <Landing/> */}
+              <Stack.Navigator
+                screenOptions={{
+                  headerStyle: {
+                    backgroundColor: '#5a287d',
+                  },
+                  headerTintColor: '#fff',
+                  headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 21,
+                  },
+                  headerTitleAlign: 'center',
+                }}>
+                <Stack.Screen
+                  name="Home"
+                  component={AppDrawer}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen name="Natwest Cart" component={ProductListing} />
 
-              <Stack.Screen name="ONEBank" component={Landing} />
+                <Stack.Screen name="ONEBank" component={Landing} />
 
-              <Stack.Screen name="Consent" component={ConsentScreen} />
-              <Stack.Screen name="Select Your Bank" component={SelectBank} />
-              {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
-              <Stack.Screen name="Transactions" component={TransactionList} />
-              <Stack.Screen name="Details" component={MainScreen} />
-              <Stack.Screen name="Your Accounts" component={AllAccounts} />
-              <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
-              <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
-              <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
-              <Stack.Screen
-                name="Added Bank Accounts"
-                component={AccountListWithRefreshToken}
-              />
-              <Stack.Screen
-                name="View Details"
-                component={ViewAllLocalDetails}
-              />
-              <Stack.Screen
-                name="View Added Bank Details"
-                component={ViewDetailsWithRefreshToken}
-              />
-              <Stack.Screen
-                name="Your Natwest Accounts"
-                component={ViewNatwestAccounts}
-              />
-              <Stack.Screen
-                name="Your Barclays Accounts"
-                component={ViewBarclaysAccounts}
-              />
-              <Stack.Screen
-                name="Transaction Successful"
-                component={SuccessfulTransaction}
-              />
-              <Stack.Screen
-                name="Added Accounts"
-                component={ViewAccountsForTransactions}
-              />
-
-              <Stack.Screen name="Transfer Money" component={MakeTransfer} />
-              <Stack.Screen name="PISP" component={PaymentConsentScreen} />
-              <Stack.Screen name="ConsentsforVRP" component={ConsentsforVRP} />
-              <Stack.Screen
-                name="CreditorDetails"
-                component={CreditorDetailsforVRP}
-              />
-              <Stack.Screen name="GrantedForm" component={GrantedForm} />
-              <Stack.Screen
-                name="Vrp Transactions"
-                component={VrpTransactions}
-              />
-              <Stack.Screen name="Review Creditor" component={VRPConsent} />
-              <Stack.Screen name="VRP Details" component={VRPDetails} />
-              <Stack.Screen name="Consent Info" component={ConsentInfo} />
-              <Stack.Screen name="Product Details" component={ProductDetails} />
-              <Stack.Screen name="Cart" component={CartScreen} />
-              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </PaperProvider>
-</GlobalEnvProvider>
+                <Stack.Screen name="Consent" component={ConsentScreen} />
+                <Stack.Screen name="Select Your Bank" component={SelectBank} />
+                {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
+                <Stack.Screen name="Transactions" component={TransactionList} />
+                <Stack.Screen name="Details" component={MainScreen} />
+                <Stack.Screen name="Your Accounts" component={AllAccounts} />
+                <Stack.Screen
+                  name="Bank Accounts"
+                  component={ViewAllAccounts}
+                />
+                <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
+                <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
+                <Stack.Screen
+                  name="Added Bank Accounts"
+                  component={AccountListWithRefreshToken}
+                />
+                <Stack.Screen
+                  name="View Details"
+                  component={ViewAllLocalDetails}
+                />
+                <Stack.Screen
+                  name="View Added Bank Details"
+                  component={ViewDetailsWithRefreshToken}
+                />
+                <Stack.Screen
+                  name="Your Natwest Accounts"
+                  component={ViewNatwestAccounts}
+                />
+                <Stack.Screen
+                  name="Your Barclays Accounts"
+                  component={ViewBarclaysAccounts}
+                />
+                <Stack.Screen
+                  name="Transaction Successful"
+                  component={SuccessfulTransaction}
+                />
+                <Stack.Screen
+                  name="Added Accounts"
+                  component={ViewAccountsForTransactions}
+                />
+                
+                <Stack.Screen name="Transfer Money" component={MakeTransfer} />
+                <Stack.Screen name="PISP" component={PaymentConsentScreen} />
+                <Stack.Screen
+                  name="ConsentsforVRP"
+                  component={ConsentsforVRP}
+                />
+                <Stack.Screen
+                  name="CreditorDetails"
+                  component={CreditorDetailsforVRP}
+                />
+                <Stack.Screen name="GrantedForm" component={GrantedForm} />
+                <Stack.Screen
+                  name="Vrp Transactions"
+                  component={VrpTransactions}
+                />
+                <Stack.Screen name="Review Creditor" component={VRPConsent} />
+                <Stack.Screen name="VRP Details" component={VRPDetails} />
+                <Stack.Screen name="Consent Info" component={ConsentInfo} />
+                <Stack.Screen
+                  name="Product Details"
+                  component={ProductDetails}
+                />
+                
+                <Stack.Screen
+                  name="Local Transactions"
+                  component={TransactionsforLocal}
+                />
+                <Stack.Screen
+                  name="Customer Details"
+                  component={CustomerDetails}
+                />
+                <Stack.Screen name="Banklist" component={BankList} />
+                <Stack.Screen name="Cart" component={CartScreen} />
+                <Stack.Screen
+                  name="Add Your Details"
+                  component={AddressScreen}
+                />
+                <Stack.Screen
+                  name="Confirm Details"
+                  component={ConfirmDetails}
+                />
+                <Stack.Screen name="Order Placed" component={OrderSuccessful} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </PaperProvider>
+    </GlobalEnvProvider>
     // <MyComponent/>
   );
 }

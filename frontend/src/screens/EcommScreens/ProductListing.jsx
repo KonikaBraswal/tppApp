@@ -189,7 +189,7 @@ const ProductListing = () => {
           <Text style={styles.name}>{item.title}</Text>
           {/* <Text style={styles.description}>{item.specs}</Text> */}
 
-          <Text style={styles.price}>${item.price}</Text>
+          <Text style={styles.price}>£{item.price}</Text>
           {/* </View > */}
           {/* ))} */}
         </View>
