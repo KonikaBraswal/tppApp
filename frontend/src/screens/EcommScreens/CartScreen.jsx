@@ -114,27 +114,11 @@ const CartScreen = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    navigation.navigate('Add Your Details');
-    const formData = {
-      firstName: 'Natwest Cart',
-      sortCode: '',
-      accountNumber: '50499910000996',
-      reference: 'Tools',
-      amount: '9.00',
-    };
-    try {
-      const selectconsentData = await getConsentData();
-      // const response = await sandboxApiClient.refreshToken(
-      //   selectconsentData,
-      //   formData,
-      // );
-      console.log('response', response);
-      console.log('Form submitted:', formData);
-      //navigation.navigate('VRP Details', {data: formData});
-    } catch (error) {
-      console.log('error in fetching refresh', error);
-    }
+  const handleCheckout = async (SubTotal, ShippingCost, Tax) => {
+    const totalAmount =  SubTotal +
+      Number(ShippingCost.substring(1)) +
+      Number(Tax.substring(1));
+    navigation.navigate('Add Your Details', {totalAmount});
   };
 
   return (
@@ -189,7 +173,7 @@ const CartScreen = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={handleCheckout}
+        onPress={() => handleCheckout(totalPrice, "€5.00" , "€0.00" )}
         style={styles.footer}
         activeOpacity={1}>
         <Text style={styles.footerText}>Checkout</Text>
