@@ -53,11 +53,11 @@ import './global';
 import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
 import { GlobalEnvProvider } from './GlobalEnvContext';
 function App(): React.JSX.Element {
-  useEffect(() => {
-    initDatabaseApi();
-    initDatabase();
-    initDatabaseTransaction();
-  }, []);
+  // useEffect(() => {
+  //   initDatabaseApi();
+  //   initDatabase();
+  //   initDatabaseTransaction();
+  // }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {

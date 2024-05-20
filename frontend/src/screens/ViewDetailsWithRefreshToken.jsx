@@ -21,40 +21,65 @@ import SortDropdown from '../components/SortDropdown';
 import LocalTransactionList from '../components/LocalTransactionList';
 import {fetchRefreshedToken, RetrieveData} from '../../database/Database';
 import ApiFactory from '../../ApiFactory/ApiFactory';
-const mode = 'sandbox';
-const way = 'web';
+import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
+let refresh_token='';
+let env="";
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+// const sandboxApiClient = apiFactory.createApiClient(global.env,"accounts");
 const ViewDetailsWithRefreshToken = ({route}) => {
+  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
   const [searchQuery, setSearchQuery] = useState('');
   const AccountId = route.params.AccountId;
+  console.log(AccountId);
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [accountDetails, setAccountDetails] = useState(null);
   const [balanceDetails, setBalanceDetails] = useState(null);
   const [retrievedData, setRetrievedData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const filterDataByScope = data => {
-    return data.filter(obj => obj.scope === 'accounts');
-  };
-
+  async function useRefresh(userId) {
+    try {
+      refresh_token = await androidClientAisp.fetchRefreshedToken(userId);
+      if (refresh_token) {
+        console.log("Retrieved refreshToken here:", refresh_token);
+       
+      } else {
+        console.log("No refreshToken found for the given userId.");
+      }
+    } catch (error) {
+      console.error("Failed to retrieve refreshToken:", error);
+    }
+  }
+  const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"accounts");
+    return apiClient;
+    // Use the new apiClient as needed
+   };
+   useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+    env=newApiClient;    
+    return () => {
+    };
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const refresh_token = await fetchRefreshedToken(1001);
-        //  console.log(refresh_token);
-        const access_token = await sandboxApiClient.refreshToken(refresh_token);
-
-        const databaseResponse = await RetrieveData();
-        const filteredData = filterDataByScope(databaseResponse);
+        await useRefresh("999934356");
+        console.log("tryingggggggggggg");
+        console.log("here is the ",refresh_token);
+        console.log("hello",refresh_token);
+        console.log(typeof refresh_token);
+        const access_token = await env.refreshToken(refresh_token);
+        console.log("accessss",access_token);
+        const data = await androidClientAisp.displayData();
+        const filteredData = data.filter(entry => entry.scope === "accounts");
+        const jsonData = JSON.parse(filteredData[0].consentPayload);
+        const permissions=jsonData.Data.Permissions
+        console.log("miniiiiii",permissions);
         setRetrievedData(filteredData);
-        const permissions =
-          filteredData && filteredData[0] && filteredData[0].consentpayload
-            ? JSON.parse(filteredData[0].consentpayload).Permissions
-            : null;
-        console.log(permissions);
-
         const accountResponse =
-          await sandboxApiClient.fetchAccountsWithRefreshToken(access_token);
+          await env.fetchAccountsWithRefreshToken(access_token);
         setAccountDetails(accountResponse);
 
         if (
@@ -62,8 +87,9 @@ const ViewDetailsWithRefreshToken = ({route}) => {
           (permissions.includes('ReadTransactionsCredits') ||
             permissions.includes('ReadTransactionsDebits'))
         ) {
+          console.log("hii");
           const transactionResponse =
-            await sandboxApiClient.allCallsWithRefreshToken(
+            await env.allCallsWithRefreshToken(
               `${AccountId}/transactions`,
               access_token,
             );
@@ -72,7 +98,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
 
         if (permissions.includes('ReadBalances')) {
           const balanceResponse =
-            await sandboxApiClient.allCallsWithRefreshToken(
+            await env.allCallsWithRefreshToken(
               `${AccountId}/balances`,
               access_token,
             );

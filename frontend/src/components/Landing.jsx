@@ -56,20 +56,7 @@ const Landing = () => {
       return () => clearInterval(intervalId); // Cleanup on unmount
     }, [env])
   )
-  // const renderCard = ({ item }) => (
-  //   <TouchableOpacity
-  //     onPress={() =>
-  //       // navigation.navigate('Your Accounts', {
-  //       //   selectedIcon: item.icon,
-  //       //   selectedBank: item.name,
-  //       // })
-  //       navigation.navigate('Consent')
-  //     }>
-  //     <Surface elevation={6} category="medium" style={styles.surface}>
-  //       <Image source={item.icon} style={styles.icon} />
-  //     </Surface>
-  //   </TouchableOpacity>
-  // );
+
   const renderCard = ({item}) => (
     <TouchableOpacity
       onPress={() =>

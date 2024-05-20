@@ -1,33 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, StyleSheet} from 'react-native';
+import {ScrollView, View, StyleSheet,FlatList} from 'react-native';
 import {Card, Title, Paragraph, Text, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {RetrieveData} from '../../database/Database';
+import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 
 const ViewAll = () => {
+  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
   const navigation = useNavigation();
   const [retrievedData, setRetrievedData] = useState([]);
-  const filterDataByScope = data => {
-    return data.filter(obj => obj.scope === 'accounts');
-  };
-  function findAccountRefreshToken(array, accountId) {
-    return array
-
-      .filter(obj =>
-        obj.account_customer_consented.split(',').includes(accountId),
-      )
-
-      .sort(
-        (a, b) => new Date(a.CreationDateTime) - new Date(b.CreationDateTime),
-      );
-  }
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await RetrieveData();
-        const filteredData = filterDataByScope(data);
+        console.log("heloooooooooooooooooooooooooo");
+        const data = await androidClientAisp.displayData();
+        // if (!Array.isArray(data)) {
+        //   console.error('Expected data to be an array, received:', typeof data);
+        //   data = []; // Fallback to an empty array
+        // }
+        console.log("hiiiiiiiiiiiiiiiiiii",data);
+        console.log("Daaataaaa",data);
+        const filteredData = data.filter(entry => entry.scope === "accounts");
+        console.log("accountssssssss",filteredData); 
         setRetrievedData(filteredData);
+        console.log("minaaaaallll",retrievedData.length);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -35,77 +32,118 @@ const ViewAll = () => {
 
     fetchData();
   }, []);
-
   
+   // Helper function to determine the image source based on AccountId
+   const getImageSource = (subtype) => {
+    if (!subtype) {
+      console.error('Invalid subtype:', subtype);
+      return require('../assets/images/bank.png'); // Default image
+    }
+    switch (subtype) {
+      case 'CurrentAccount':
+        return require('../assets/images/card2.png');
+      default:
+        return require('../assets/images/card1.jpg');
+    }
+  };
+  
+
   return (
-    <View style={{flex: 1, marginTop: 5}}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{padding: 8}}>
-        {retrievedData &&
-          retrievedData[0] &&
-          retrievedData[0].account_details &&
-          JSON.parse(retrievedData[0].account_details).map(card => (
-            <Card
-              key={card.AccountId}
-              style={styles.card}
-              onPress={() => {
-                navigation.navigate('View Added Bank Details', {
-                  AccountId: card.AccountId,
-                });
-              }}>
-              {card.AccountSubType === 'CurrentAccount' ? (
-                <Card.Cover
-                  source={require('../assets/images/card2.png')}
-                  style={styles.coverImage}
-                />
-              ) : (
-                <Card.Cover
-                  source={require('../assets/images/card1.jpg')}
-                  style={styles.coverImage}
-                />
-              )}
-              <Card.Content style={styles.cardContent}>
-                <Title style={styles.title}>{card.AccountSubType}</Title>
+<View style={{flex: 1, marginTop: 5}}>
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{padding: 8}}
+  >
+    {retrievedData.map((item, index) => {
+      const accounts = (() => {
+        if (!item.accountsList) {
+          console.error('accountsListString is null or undefined');
+          return [];
+        }
+        try {
+          const parsedAccounts = JSON.parse(item.accountsList);
+          return parsedAccounts.Account || [];
+        } catch (error) {
+          console.error('Error parsing accountsList:', error);
+          return [];
+        }
+      })();
 
-                <Paragraph style={styles.additionalInfo}>
-                  {card.Account[0].Identification}
-                </Paragraph>
-                <Paragraph style={styles.additionalInfo}>
-                  {card.Nickname}
-                </Paragraph>
-              </Card.Content>
-            </Card>
-          ))}
-        <Card style={{elevation: 3}}>
-          <Card.Content>
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 40,
-                fontWeight: 'bold',
-                fontSize: RFValue(18),
-                color: '#5a287d',
-              }}>
-              View All
-            </Text>
-
-            <IconButton
-              mode="contained-tonal"
-              icon="chevron-right"
-              color="#5a287d"
-              containerColor="rgba(90, 40, 125, 0.3)"
-              size={26}
-              style={{
-                marginLeft: 15,
-              }}
-              onPress={() => navigation.navigate('Added Bank Accounts')}
-            />
+      return accounts.map((account, idx) => (
+        <Card
+          key={`${index}-${idx}`} // Ensures each card has a unique key
+          style={styles.card}
+          onPress={() => {
+            navigation.navigate('View Added Bank Details', {
+              AccountId: account.AccountId,
+            });
+          }}
+        >
+          {/* Conditionally select the cover image based on AccountSubType */}
+          <Card.Cover
+            source={getImageSource(account.AccountSubType)}
+            style={styles.coverImage}
+          />
+          <Card.Content style={styles.cardContent}>
+            <Title style={styles.title}>{account.AccountSubType}</Title>
+            {/* Display Identification and Nickname from the first account in the accounts array */}
+            <Paragraph style={styles.additionalInfo}>
+              {account.Account[0]?.Identification}
+            </Paragraph>
+            <Paragraph style={styles.additionalInfo}>
+              {account.Nickname}
+            </Paragraph>
           </Card.Content>
         </Card>
-      </ScrollView>
-    </View>
+      ));
+    })}
+    {/* "View All" Card */}
+    <Card style={{elevation: 3, backgroundColor: 'transparent'}}>
+      <Card.Content>
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: 40,
+            fontWeight: 'bold',
+            fontSize: RFValue(18),
+            color: '#5a287d',
+          }}
+        >
+          View All
+        </Text>
+        <IconButton
+          mode="contained-tonal"
+          icon="chevron-right"
+          color="#5a287d"
+          containerColor="rgba(90, 40, 125, 0.3)"
+          size={26}
+          style={{
+            marginLeft: 15,
+          }}
+          onPress={() => navigation.navigate('Added Bank Accounts')}
+        />
+      </Card.Content>
+    </Card>
+  </ScrollView>
+</View>
+    // //hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii refer this
+
+  //   <View style={styles.container}>
+  //   <FlatList
+  //     data={retrievedData}
+  //     keyExtractor={(item, index) => index.toString()}
+  //     renderItem={({item}) => {
+  //       const accounts = parseAccountsList(item.accountsList);
+  //       return accounts.map((account, idx) => (
+  //         <View key={idx} style={styles.accountContainer}>
+  //           <Text style={styles.text}>Account ID: {account.AccountId}</Text>
+  //           <Text style={styles.text}>Account SubType: {account.AccountSubType}</Text>
+  //         </View>
+  //       ));
+  //     }}
+  //   />
+  // </View>
   );
 };
 

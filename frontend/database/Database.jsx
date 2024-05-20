@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
-
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 const db = SQLite.openDatabase({ name: 'dbSandbox.db', location: 'default' });
-
+const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
 export const initDatabase = () => {
   db.transaction(tx => {
     tx.executeSql(
@@ -549,7 +549,7 @@ const Database = () => {
       {/* <Button title="Add Dummy Entry" onPress={addDummyEntry} /> */}
       {/* <Button title="Display Results" onPress={()=>fetch('VRP-a1f47094-7064-4c02-af8e-ed5f6515226c')} /> */}
       <Button title="Display Results" onPress={displayResults} />
-      <Button title="Delete All Entries" onPress={deleteAllEntries} />
+      <Button title="Delete All Entries" onPress={() => androidClientAisp.deleteAllData()} />
 
       <Button title="Delete Database" onPress={deleteDatabase} />
     </View>

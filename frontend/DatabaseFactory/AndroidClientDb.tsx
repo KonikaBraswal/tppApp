@@ -129,7 +129,7 @@ class AndroidClientDb {
   // Method to initialize the SQLite database for Android AISP
   async initDatabaseAndroidAisp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
+    console.log("hi using aisp me");
     await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
@@ -208,6 +208,63 @@ class AndroidClientDb {
       });
     });
   }
+  // async fetchRefreshedToken(userId: any): Promise<any> {
+  //   console.log(userId);// Local variable to hold the fetched token
+  //   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  //   console.log(tableName);
+  //   await new Promise<any>((resolve, reject) => {
+  //     this.androidDb.transaction(tx => {
+  //       tx.executeSql(
+  //         `SELECT refreshToken FROM ${tableName} WHERE userId =?;`,
+  //         [userId],
+  //         (_, results) => {
+  //           console.log('Query results:', results.rows); // Log the results for debugging
+  //           const rows = results.rows;
+  //           if (rows.length > 0) {
+  //             const row = rows.item(0);
+  //             const refreshedtoken = row.refreshToken;
+  //             console.log('Refreshed Token from database:', refreshedtoken); // Log the refreshedtoken for debugging
+  //             resolve(userId);
+  //           } else {
+  //             console.log('No entry found for userId:', userId); // Log for debugging
+  //             resolve(null);
+  //           }
+  //         },
+  //         (_, error) => {
+  //           console.error('Error fetching refreshedtoken: ', error);
+  //           reject(error);
+  //         },
+  //       );
+  //     });
+  //   });
+  // }
+
+  async fetchRefreshedToken(userId: any): Promise<any[]> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        // Adjusted SQL query to include WHERE clause filtering by userId
+        tx.executeSql(
+          `SELECT refreshToken FROM ${tableName} WHERE userId =?;`,
+          [userId], // Pass userId as a parameter to prevent SQL injection
+          (_, {rows}) => {
+            if (rows.length > 0) {
+              console.log("refreshToken",rows.item(0).refreshToken)
+              // Assuming refreshToken is stored directly in the row, adjust if structure is different
+              resolve(rows.item(0).refreshToken); // Return the refreshToken of the first matching row
+            } else {
+              resolve([]); // No matching userId found
+            }
+          },
+          (_, error) => {
+            console.error('Error retrieving data:', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+
 
   //VRP
   async initDatabaseAndroidVrp(): Promise<void> {
@@ -401,6 +458,7 @@ class AndroidClientDb {
   //COMMON
   // Method to delete all data entries from the database
   async deleteAllData(): Promise<void> {
+    console.log("clicked");
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
     await new Promise<void>((resolve, reject) => {
@@ -421,21 +479,19 @@ class AndroidClientDb {
     });
   }
 
-  // Method to display data from the database
-  async displayData(): Promise<void> {
+  async displayData(): Promise<any[]> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
-    await new Promise<void>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
           `SELECT * FROM ${tableName};`,
           [],
           (_, {rows}) => {
-            console.log('Rows:');
+            const rowData = [];
             for (let i = 0; i < rows.length; i++) {
-              console.log(rows.item(i));
+              rowData.push(rows.item(i));
             }
-            resolve();
+            resolve(rowData); // Resolve the promise with the fetched data
           },
           (_, error) => {
             console.error('Error retrieving data:', error);
@@ -445,6 +501,7 @@ class AndroidClientDb {
       });
     });
   }
+  
 }
 
 export default AndroidClientDb;

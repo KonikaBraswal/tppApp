@@ -3,10 +3,7 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
-import {addDetails, updateDetailsForVrp} from '../database/Database';
-import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
-//import {insertLog} from '../database/DatabaseLogs';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
@@ -26,12 +23,6 @@ const {generateVrpAccountRequestHeaders,
 
 const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
 const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
-interface BodyData {
-  Data: {
-    Permissions: string[];
-  };
-  Risk: {};
-}
 var consentID = '';
 interface ResponseData {
   refresh_token: string;
@@ -68,10 +59,6 @@ let aispToStore = {
 };
 interface CommonHeaders {
   [key: string]: string;
-}
-interface UserCredentials {
-  username: string;
-  password: string;
 }
 class SanboxApiFactory {
   private baseUrl: string;
@@ -143,12 +130,6 @@ class SanboxApiFactory {
   async retrieveAccessToken() {
     if (this.scopeForThisCall == 'accounts') {
       try {
-        // const body: Record<string, string> = {
-        //   grant_type: sandboxConfig.grant_type,
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   scope: sandboxConfig.scope,
-        // };
         const body = this.generateBody(sandboxConfig.tokenEndpoint, {});
 
         const headers = {...this.commonHeaders};
@@ -271,43 +252,6 @@ class SanboxApiFactory {
         var accountRequestEndpoint =
           sandboxConfigPisp.accountRequestEndpointPisp;
         const id = uuid.v4();
-        // const body = {
-        //   Data: {
-        //     Initiation: {
-        //       InstructionIdentification: 'instr-identification',
-        //       EndToEndIdentification: 'e2e-identification',
-        //       InstructedAmount: {
-        //         Amount: '1.00',
-        //         Currency: 'GBP',
-        //       },
-        //       DebtorAccount: this.DebtorAccount,
-        //       CreditorAccount: {
-        //         SchemeName: 'IBAN',
-        //         Identification: 'BE56456394728288',
-        //         Name: 'ACME DIY',
-        //         SecondaryIdentification: 'secondary-identif',
-        //       },
-        //       RemittanceInformation: {
-        //         Unstructured: 'Tools',
-        //         Reference: 'Tools',
-        //       },
-        //     },
-        //   },
-        //   Risk: {
-        //     PaymentContextCode: 'EcommerceGoods',
-        //     MerchantCategoryCode: null,
-        //     MerchantCustomerIdentification: null,
-        //     DeliveryAddress: null,
-        //   },
-        // };
-
-        // const headers = {
-        //   'Content-Type': 'application/json',
-        //   Authorization: 'Bearer ' + accessToken,
-        //   'x-fapi-financial-id': sandboxConfigPisp.financialId,
-        //   'x-jws-signature': sandboxConfigPisp.signatureJws,
-        //   'x-idempotency-key': `${id}`,
-        // };
        const body = generateBodyForPaymentRequest(this.DebtorAccount, true, '');
        const headers = generateHeadersForPisp(accessToken, id, sandboxConfig.financialId, sandboxConfig.signatureJws);
         const response: AxiosResponse<ResponseData> = await axios.post(
@@ -366,7 +310,7 @@ class SanboxApiFactory {
         // vrpToStore.status=Status;
         
         console.log('details', details1);
-        addDetails(details1);
+        // addDetails(details1);
         console.log('hhh');
         return response.data.Data?.ConsentId || '';
       } catch (error) {
@@ -528,15 +472,7 @@ class SanboxApiFactory {
         );
   
         console.log('Api access token', response.data.access_token);
-        const RefreshToken = response.data.refresh_token;
-        const consentExpiresIn = response.data.expires_in;
-        const Scope = response.data.scope;
   
-        const updatedDetails2 = {
-          refreshedtoken: RefreshToken,
-          status: 'Authorised',
-          consentexpiry: consentExpiresIn,
-        };
         console.log("response",response.data);
         return response.data;
         //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
@@ -552,51 +488,6 @@ class SanboxApiFactory {
       const headers = generateAccountRequestHeaders(apiAccessToken);
 
       const body = generateVrpPaymentBody(formData, consentid);
-      // const headers = {
-      //   ...configvrp.vrpHeaders,
-      //   Authorization: 'Bearer '+ apiAccessToken,
-      //   'x-idempotency-key': `${id}`,
-      // };
-      // const Identification=formData.accountNumber+formData.sortCode;
-      // console.log("identification-->",Identification);
-      // const body = {
-      //   Data: {
-      //     ConsentId: `${this.consentIdVrp}`,
-      //     PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
-      //     Initiation: {
-      //       CreditorAccount: {
-      //         SchemeName: 'SortCodeAccountNumber',
-      //         Identification: Identification,
-      //         Name: formData.firstName,
-      //         SecondaryIdentification: 'secondary-identif',
-      //       },
-      //       RemittanceInformation: {
-      //         Unstructured: 'Tools',
-      //         Reference: formData.reference,
-      //       },
-      //     },
-      //     Instruction: {
-      //       InstructionIdentification: 'instr-identification',
-      //       EndToEndIdentification: 'e2e-identification',
-      //       InstructedAmount: {
-      //         Amount: '7.00', //must be called with pay now button
-      //         // Amount: formData.amount,
-      //         Currency: 'GBP',
-      //       },
-      //       CreditorAccount: {
-      //         SchemeName: 'SortCodeAccountNumber',
-      //         Identification: Identification,
-      //         Name: formData.firstName,
-      //         SecondaryIdentification: 'secondary-identif',
-      //       },
-      //       RemittanceInformation: {
-      //         Unstructured: 'Tools',
-      //         Reference: formData.reference,
-      //       },
-      //     },
-      //   },
-      //   Risk: {},
-      // };
       console.log("(99");
       console.log(headers);
       console.log(body);
@@ -618,10 +509,6 @@ class SanboxApiFactory {
 
   async getAllVrpPayments(url: string): Promise<any> {
     try {
-      // const headers = {
-      //   Authorization: `Bearer ${this.apiAccess}`,
-      //   'x-fapi-financial-id': '0015800000jfwxXAAQ',
-      // };
       const headers = generateVrpAccountRequestHeaders(
         this.apiAccess,
         '0015800000jfwxXAAQ',
@@ -633,18 +520,6 @@ class SanboxApiFactory {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload=allVrpPaymentsResponse.data.Data;
-      const updatedDetails3 = {
-        
-      };
-      const details = {
-        bankname: 'Natwest',
-        consentid: allVrpPaymentsResponse.data.Data.ConsentId,
-        scope: 'vrp_transactions',
-        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
-        vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status
-      };
       // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
       // vrpToStore.vrpPayload=JSON.stringify(payload);
       // vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
@@ -661,18 +536,10 @@ class SanboxApiFactory {
   }
 
   async refreshToken(refreshToken: string): Promise<any> {
-    if (this.scopeForThisCall == 'accounts') {
+    console.log("heeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyy");
+    if (this.scopeForThisCall === 'accounts') {
       try {
-        // const body: Record<string, string> = {
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   //redirect_uri: sandboxConfig.redirectUri,
-        //   grant_type: 'refresh_token',
-        //   refresh_token: refreshToken,
-        // };
-        // const headers = {
-        //   'Content-Type': 'application/x-www-form-urlencoded',
-        // };
+       
         const body = generateBodyForRefresh(
           this.clientId,
           this.clientSecret,
@@ -728,11 +595,11 @@ class SanboxApiFactory {
       };
 
       const columnsToUpdate3 = ['refreshedtoken'];
-      await updateDetailsForVrp(
-        updatedDetails3,
-        refreshToken.consentid,
-        columnsToUpdate3,
-      );
+      // await updateDetailsForVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
       console.log("000000000");
       return this.vrpPayments(
         responseRefresh.data.access_token,
@@ -748,41 +615,6 @@ class SanboxApiFactory {
     try {
       const idd = uuid.v4();
       console.log('m here');
-      // const headers = {
-      //   'Content-Type': 'application/json',
-      //   Authorization: 'Bearer ' + apiAccess,
-      //   'x-fapi-financial-id': sandboxConfigPisp.financialId,
-      //   'x-jws-signature': sandboxConfigPisp.signatureJws,
-      //   'x-idempotency-key': `${idd}`,
-      // };
-      // console.log(consentID);
-      // const requestBody = {
-      //   Data: {
-      //     ConsentId: consentID,
-      //     Initiation: {
-      //       InstructionIdentification: 'instr-identification',
-      //       EndToEndIdentification: 'e2e-identification',
-      //       InstructedAmount: {
-      //         Amount: '1.00',
-      //         Currency: 'GBP',
-      //       },
-      //       DebtorAccount: this.DebtorAccount,
-      //       CreditorAccount: {
-      //         SchemeName: 'IBAN',
-      //         Identification: 'BE56456394728288',
-      //         Name: 'ACME DIY',
-      //         SecondaryIdentification: 'secondary-identif',
-      //       },
-      //       RemittanceInformation: {
-      //         Unstructured: 'Tools',
-      //         Reference: 'Tools',
-      //       },
-      //     },
-      //   },
-      //   Risk: {
-      //     PaymentContextCode: 'EcommerceGoods',
-      //   },
-      // };
       const headers = generateHeadersForPisp(apiAccess, idd, sandboxConfig.financialId, sandboxConfig.signatureJws);
       const requestBody = generateDomesticPaymentRequestBody(
         consentID,
@@ -834,7 +666,6 @@ class SanboxApiFactory {
       pispToStore.response = JSON.stringify(payResponse);
       pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
       console.log(pispToStore);
-      //stroing all data in db
       await androidClientPisp.initDatabaseAndroidPisp();
       await androidClientPisp.insertDataPisp(pispToStore);
       console.log("Storing this to the table");
@@ -875,7 +706,7 @@ class SanboxApiFactory {
         'account_details',
       ];
 
-      await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
+      // await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
@@ -1008,6 +839,7 @@ class SanboxApiFactory {
         //   ...this.commonHeaders,
         //   Authorization: `Bearer ${this.apiAccess}`,
         // };
+        console.log(endPoint);
         const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
 
         const accountResponse: AxiosResponse<any> = await axios.get(
