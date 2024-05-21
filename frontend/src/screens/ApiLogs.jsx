@@ -1,16 +1,16 @@
 //final draft
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {Button} from 'react-native-paper';
 import {
   insertLog,
   displayResults,
   deleteAllLogs,
   deleteApiLogsTable,
-  alterApiLogsTable
+  alterApiLogsTable,
 } from '../../database/DatabaseLogs';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const ApiLogs = () => {
   const navigation = useNavigation();
@@ -18,13 +18,32 @@ const ApiLogs = () => {
   const [retrievedData, setRetrievedData] = useState([]);
 
   const handleInsertData = () => {
+    const now = new Date();
     const details1 = {
-      date: '2024-03-25',
-      time: '10:00:00',
-      api_name: 'API 1',
-      scope: "Dummy Entry",
-      status: 'Success',
-      response: 'Response 1'
+      date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        '0',
+      )}-${String(now.getDate()).padStart(2, '0')}`,
+
+      time: `${String(now.getHours()).padStart(2, '0')}:${String(
+        now.getMinutes(),
+      ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+
+      api_name: 'AISP',
+      scope: 'Payments',
+      status: '200 Success',
+      response: `{
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Request-ID": "req-001"
+        },
+        "body": {
+          "id": "1234",
+          "username": "khushiujjawal",
+          "email": "khushiujjawal@yahoo.com",
+          "created_at": "2024-05-20T12:00:00Z"
+        }
+      }`,
     };
 
     insertLog(details1);
@@ -35,7 +54,7 @@ const ApiLogs = () => {
     try {
       const data = await displayResults();
       setRetrievedData(data);
-      navigation.navigate('ApiLogsList', { logs: data });
+      navigation.navigate('ApiLogsList', {logs: data});
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -88,13 +107,16 @@ const ApiLogs = () => {
         Delete Logs
       </Button>
 
-      <Button mode="contained" onPress={handleDeleteTable} style={styles.button}>
+      <Button
+        mode="contained"
+        onPress={handleDeleteTable}
+        style={styles.button}>
         Delete Table
       </Button>
 
       {isDataInserted && <Text>Data inserted successfully!</Text>}
 
-      {retrievedData.length > 0 && (
+      {/* {retrievedData.length > 0 && (
         <View style={styles.retrievedDataContainer}>
           <Text style={styles.retrievedDataTitle}>Retrieved Data:</Text>
           {retrievedData.map((item, index) => (
@@ -103,7 +125,7 @@ const ApiLogs = () => {
             </Text>
           ))}
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -138,6 +160,3 @@ const styles = StyleSheet.create({
 });
 
 export default ApiLogs;
-
-
-
