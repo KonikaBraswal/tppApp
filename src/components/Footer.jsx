@@ -9,7 +9,7 @@ const Footer = () => {
       <View style={styles.iconContainer}>
         <View style={styles.iconWrapper}>
           <Icon style={styles.icon}  source="home-outline" color={'#551a8b'} size={40} />
-          <Text style={styles.iconText}>Home</Text>
+          <Text style={styles.iconText}>HOME</Text>
         </View>
         <View style={styles.iconWrapper}>
           <Icon style={styles.icon} source="account-outline" color={'#551a8b'} size={40} />
