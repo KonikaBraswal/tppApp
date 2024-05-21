@@ -6,6 +6,7 @@ import BottomTab from './BottomTab';
 import SelectBank from './SelectBank';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
+//import BankList from '../screens/EcommScreens/BankList';
 
 const Drawer = createDrawerNavigator();
 
@@ -46,6 +47,17 @@ const AppDrawer = () => {
           ),
         }}
       />
+
+{/* <Drawer.Screen
+        name="Banklist"
+        component={BankList}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="bell" color={color} size={28} />
+          ),
+        }}
+      /> */}
+
       <Drawer.Screen
         name="Notifications"
         component={Dummy}
@@ -55,6 +67,8 @@ const AppDrawer = () => {
           ),
         }}
       />
+
+      
       <Drawer.Screen
         name="Messages"
         component={Dummy}
@@ -98,6 +112,16 @@ const AppDrawer = () => {
           drawerIcon: ({color}) => (
             // <MaterialCommunityIcons name="settings" color={color} size={28} />
             <Icon source="database-cog" color={color} size={28} />
+          ),
+        }}
+      />
+
+<Drawer.Screen
+        name="Add On"
+        component={Dummy}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="bell" color={color} size={28} />
           ),
         }}
       />
