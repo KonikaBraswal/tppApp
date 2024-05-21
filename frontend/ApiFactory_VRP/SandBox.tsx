@@ -86,32 +86,7 @@ class SandBox {
     }
   }
 
-  async accessTokenCA(): Promise<string> {
-    try {
-      const body = {
-        grant_type: sandboxConfig.grant_type,
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-      const response: AxiosResponse<ResponseData> = await axios.post(
-        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
-        body,
-        {
-          headers: headers,
-        },
-      );
-      // console.log("accesstoken",response.data.access_token);
-      // this.apiAccessToken=response.data.access_token;
-      return this.getDetailsCA(response.data.access_token);
-    } catch (error) {
-      throw new Error(`Failed to fetch token: ${error}`);
-    }
-  }
-
-  async getDetailsCA(accessToken: any): Promise<any> {
+    async getDetailsCA(accessToken: any): Promise<any> {
     try {
       // const accessToken=this.accessTokenCA();
       // console.log("accesstoken",this.apiAccessToken);
@@ -241,12 +216,20 @@ class SandBox {
         columnsToUpdate2,
       );
       refreshTokenExists = true;
-      this.getDomesticConsent(
+      const debitorDetails=this.getDomesticConsent(
         response.data.access_token,
         consentData.Links.Self,
       );
       // return response.data;
-      return this.getDetailsCA(response.data.access_token);
+      const detailsCa=this.getDetailsCA(response.data.access_token);
+      const result = {
+        responseData: response.data,
+        customerDetails: detailsCa,
+        debitorDetails:debitorDetails
+      };
+      
+      return result;
+      
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }

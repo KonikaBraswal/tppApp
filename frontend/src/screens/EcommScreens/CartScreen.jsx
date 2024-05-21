@@ -18,7 +18,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import CartItem from '../../components/EcommComponents/CartItem';
 import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
-import {fetchAllDataforScope} from '../../../database/Database';
+import {fetchAllDataforScope, fetchAllDataforScopeCA} from '../../../database/Database';
 import {useNavigation} from '@react-navigation/native';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -113,12 +113,36 @@ const CartScreen = () => {
       console.error('Error retrieving EcommConsentData:', error);
     }
   };
-
+  const scopeCA='customer_checkout'
+  const [caData,setCAData]=useState([]);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      fetchAllDataforScopeCA(scopeCA)
+        .then(data => {
+          if (data !== null) {
+            setConsentData(data);
+            // console.log("======",JSON.parse (data[0].vrppayload).DebtorAccount.Identification);
+          } else {
+            setCAData([]);
+            console.log(`No entry found for scope ${scope}.`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching Consent data:', error);
+        });
+    }
+  }, [isFocused, scopeCA]);
   const handleCheckout = async (SubTotal, ShippingCost, Tax) => {
     const totalAmount =  SubTotal +
       Number(ShippingCost.substring(1)) +
       Number(Tax.substring(1));
-    navigation.navigate('Add Your Details', {totalAmount});
+      if(caData!==null){
+        navigation.navigate('Second Cvrp Call', {totalAmount,caData});
+      }
+      else{
+        navigation.navigate('Add Your Details', {totalAmount});
+      }
   };
 
   return (
@@ -154,15 +178,17 @@ const CartScreen = () => {
               {uniqueProducts.map((item, index) => (
                 <CartItem key={index} item={item} />
               ))}
-              <AddressCard
-                full_name="mr Ron Savage"
-                line1="Flat 20"
-                line2="24 Acacia Avenue"
-                line3="Beanotown"
-                line4="Beanoshire"
-                postcode="B34 4NO"
-                country="JEY"
-              />
+              {caData&&(
+                <AddressCard
+                  full_name="mr Ron Savage"
+                  line1="Flat 20"
+                  line2="24 Acacia Avenue"
+                  line3="Beanotown"
+                  line4="Beanoshire"
+                  postcode="B34 4NO"
+                  country="JEY"
+                />
+              )}
               <TotalCost
                 SubTotal={totalPrice}
                 ShippingCost="€5.00"

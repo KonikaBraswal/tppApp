@@ -33,6 +33,34 @@ export const initDatabase = () => {
     );
   });
 };
+export const initDatabaseCA = () => {
+  db.transaction(tx => {
+    tx.executeSql(
+      `CREATE TABLE IF NOT EXISTS CA_sandbox (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT,
+        scope TEXT,
+        bankname TEXT,
+        refreshedtoken TEXT,
+        consentid TEXT,
+        consentexpiry TEXT,
+        consentpayload TEXT,
+        status TEXT,
+        customer_details TEXT,
+        account_details TEXT,
+        last_updated_date TEXT,
+        last_updated_time TEXT
+      );`,
+      [],
+      (tx, results) => {
+        console.log('CA_sandbox table created successfully');
+      },
+      error => {
+        console.error('Error creating CA_sandbox table: ', error);
+      },
+    );
+  });
+};
 export const initDatabaseTransaction = () => {
   db.transaction(tx => {
     tx.executeSql(
@@ -91,6 +119,49 @@ export const addDetails = details => {
         details.consentpayload,
         details.status,
         details.account_customer_consented,
+        details.account_details,
+        currentDate,
+        currentTime,
+      ],
+      (_, results) => {
+        console.log('Details added successfully', results);
+      },
+      (_, error) => {
+        console.error('Error adding details: ', error);
+      },
+    );
+  });
+};
+export const addDetailsCA = details => {
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString();
+
+  db.transaction(tx => {
+    tx.executeSql(
+      `INSERT INTO CA_sandbox (
+        userId,
+        scope,
+        bankname,
+        refreshedtoken,
+        consentid,
+        consentexpiry,
+        consentpayload,
+        status,
+        customer_details,
+        account_details,
+        last_updated_date,
+        last_updated_time
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        details.userId,
+        details.scope,
+        details.bankname,
+        details.refreshedtoken,
+        details.consentid,
+        details.consentexpiry,
+        details.consentpayload,
+        details.status,
+        details.customer_details,
         details.account_details,
         currentDate,
         currentTime,
@@ -175,7 +246,6 @@ export const updateDetails = (details, userId, columnsToUpdate) => {
         currentTime,
         userId,
       ];
-
       tx.executeSql(
         query,
         parameters,
@@ -381,6 +451,36 @@ export const fetchAllDataforScope = scope => {
         (_, error) => {
           //-----------------------------------------
           console.error('Error fetching consent Id: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
+export const fetchAllDataforScopeCA = scope => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM CA_sandbox WHERE scope = ?;',
+        [scope],
+        (_, results) => {
+          // console.log('Query results:', results.rows); // Log the results for debugging
+          const rows = results.rows;
+          const data = [];
+          if (rows.length > 0) {
+            for (let i = 0; i < rows.length; i++) {
+              const row = rows.item(i);
+              data.push(row);
+            }
+            if (data.length > 0) resolve(data);
+          } else {
+            console.log('No entry found for this scope in CA table:', scope); // Log for debugging
+            resolve(null);
+          }
+        },
+        (_, error) => {
+          //-----------------------------------------
+          console.error('Error fetching data in CA table: ', error);
           reject(error);
         },
       );

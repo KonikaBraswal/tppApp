@@ -30,7 +30,7 @@ import SuccessfulTransaction from './src/screens/SuccessfulTransaction';
 import ViewAccountsForTransactions from './src/screens/ViewAccountsForTransaction';
 
 import MakeTransfer from './src/screens/MakeTransfer';
-import {initDatabase, initDatabaseTransaction} from './database/Database';
+import {initDatabase, initDatabaseCA, initDatabaseTransaction} from './database/Database';
 import AccountListWithRefreshToken from './src/screens/AccountListWithRefreshToken';
 import ViewDetailsWithRefreshToken from './src/screens/ViewDetailsWithRefreshToken';
 import PaymentConsentScreen from './src/screens/PaymentConsentScreen';
@@ -56,6 +56,7 @@ function App(): React.JSX.Element {
   useEffect(() => {
     initDatabase();
     initDatabaseTransaction();
+    initDatabaseCA();
   }, []);
   const isDarkMode = useColorScheme() === 'dark';
 
