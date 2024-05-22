@@ -6,7 +6,7 @@ import BottomTab from './BottomTab';
 import SelectBank from './SelectBank';
 import {Icon} from 'react-native-paper';
 import Dummy from '../screens/Dummy';
-//import BankList from '../screens/EcommScreens/BankList';
+import BankList from '../screens/EcommScreens/BankList';
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +48,7 @@ const AppDrawer = () => {
         }}
       />
 
-{/* <Drawer.Screen
+<Drawer.Screen
         name="Banklist"
         component={BankList}
         options={{
@@ -56,7 +56,7 @@ const AppDrawer = () => {
             <MaterialCommunityIcons name="bell" color={color} size={28} />
           ),
         }}
-      /> */}
+      />
 
       <Drawer.Screen
         name="Notifications"
