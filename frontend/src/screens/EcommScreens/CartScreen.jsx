@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import {useIsFocused} from '@react-navigation/native';
+
 import {
   View,
   Text,
@@ -114,17 +116,18 @@ const CartScreen = () => {
     }
   };
   const scopeCA='customer_checkout'
-  const [caData,setCAData]=useState([]);
+  const [caData,setCAData]=useState(null);
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
       fetchAllDataforScopeCA(scopeCA)
         .then(data => {
           if (data !== null) {
-            setConsentData(data);
+            // console.log(data);
+            setCAData(data[0]);
             // console.log("======",JSON.parse (data[0].vrppayload).DebtorAccount.Identification);
           } else {
-            setCAData([]);
+            setCAData(null); 
             console.log(`No entry found for scope ${scope}.`);
           }
         })
@@ -133,12 +136,14 @@ const CartScreen = () => {
         });
     }
   }, [isFocused, scopeCA]);
+  // console.log("log",caData);
   const handleCheckout = async (SubTotal, ShippingCost, Tax) => {
     const totalAmount =  SubTotal +
       Number(ShippingCost.substring(1)) +
       Number(Tax.substring(1));
       if(caData!==null){
-        navigation.navigate('Second Cvrp Call', {totalAmount,caData});
+        // console.log("det2",caData);
+        navigation.navigate('Second Cvrp Call', {totalAmount:totalAmount,data:caData});
       }
       else{
         navigation.navigate('Add Your Details', {totalAmount});
@@ -178,7 +183,7 @@ const CartScreen = () => {
               {uniqueProducts.map((item, index) => (
                 <CartItem key={index} item={item} />
               ))}
-              {caData&&(
+              {caData && (
                 <AddressCard
                   full_name="mr Ron Savage"
                   line1="Flat 20"

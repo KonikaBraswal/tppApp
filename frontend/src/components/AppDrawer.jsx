@@ -55,16 +55,6 @@ const AppDrawer = () => {
         }}
       />
       <Drawer.Screen
-        name="Second Cvrp Call"
-        component={SecondCvrpCall}
-        options={{
-          drawerIcon: ({color}) => (
-            <MaterialCommunityIcons name="bank-plus" color={color} size={28} />
-          ),
-        }}
-      />
-      
-      <Drawer.Screen
         name="Banklist"
         component={BankList}
         options={{

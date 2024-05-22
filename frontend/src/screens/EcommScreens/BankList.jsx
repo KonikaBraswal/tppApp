@@ -193,10 +193,10 @@ const BankList = ({ route }) => {
 
       const { responseData, customerDetails, debitorDetails } = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
       // const customerDetails = await sandboxApiClient.accessTokenCA();
-      navigation.navigate('Customer Details', {
-        customerDetails, totalAmount
-      });
-
+      console.log("details2-->",customerDetails);
+      console.log("details3-->",responseData);
+      console.log("details4-->",debitorDetails);
+      
       const details = {
         bankname: 'Natwest',
         consentid: consentData.Data.ConsentId,
@@ -205,11 +205,14 @@ const BankList = ({ route }) => {
         refreshedtoken: responseData.refresh_token,
         status: 'Authorised',
         consentexpiry: responseData.expires_in,
-        customer_details: customerDetails,
+        customer_details:JSON.stringify(customerDetails),
         account_details: JSON.stringify(debitorDetails.Data)
       };
-
+      console.log("details-->",details);
       addDetailsCA(details);
+      navigation.navigate('Customer Details', {
+        customerDetails, totalAmount
+      });
 
     } catch (error) {
       console.error('Error:', error);

@@ -167,10 +167,10 @@ export const addDetailsCA = details => {
         currentTime,
       ],
       (_, results) => {
-        console.log('Details added successfully', results);
+        console.log('Details added successfully in CA table', results);
       },
       (_, error) => {
-        console.error('Error adding details: ', error);
+        console.error('Error adding details in CA table: ', error);
       },
     );
   });
@@ -379,6 +379,54 @@ export const updateDetailsForVrp = (details, consentid, columnsToUpdate) => {
     });
   });
 };
+export const updateDetailsForCVrp = (details, consentid, columnsToUpdate) => {
+  console.log('Updating details for consentid:', consentid);
+  console.log('Details to update:', details);
+
+  // Ensure there are columns to update
+  if (!columnsToUpdate || columnsToUpdate.length === 0) {
+    console.error('No columns specified for update.');
+    return Promise.reject('No columns specified for update.');
+  }
+
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      // Construct SET clause dynamically based on columnsToUpdate
+      const setClause = columnsToUpdate
+        .map(column => `${column} = ?`)
+        .join(', ');
+
+      // Add last_updated_date and last_updated_time to SET clause
+      const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
+        
+        const query = `UPDATE CA_sandbox SET ${updatedSetClause} WHERE consentid = ?;`;
+      // Construct SQL query
+
+      // Construct parameters array
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const parameters = [
+        ...columnsToUpdate.map(column => details[column].toString()),
+        currentDate,
+        currentTime,
+        consentid,
+      ];
+
+      tx.executeSql(
+        query,
+        parameters,
+        (_, results) => {
+          console.log('Details updated successfully in CA table', results);
+          resolve(results);
+        },
+        (_, error) => {
+          console.error('Error updating details in CA Table---: ', error);
+          reject(error);
+        },
+      );
+    });
+  });
+};
 
 
 
@@ -501,7 +549,7 @@ export const displayResults = () => {
 const deleteAllEntries = () => {
   db.transaction(tx => {
     tx.executeSql(
-      'DELETE FROM userconsent_sandbox;',
+      'DELETE FROM CA_sandbox;',
       [],
       (_, results) => {
         console.log('All entries deleted successfully');

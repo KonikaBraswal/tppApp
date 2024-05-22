@@ -6,6 +6,7 @@ import uuid from 'react-native-uuid';
 import {
   addDetails,
   addTransactions,
+  updateDetailsForCVrp,
   updateDetailsForVrp,
 } from '../database/Database';
 // interface BodyData {
@@ -216,18 +217,20 @@ class SandBox {
         columnsToUpdate2,
       );
       refreshTokenExists = true;
-      const debitorDetails=this.getDomesticConsent(
+      const debitordetails=await this.getDomesticConsent(
         response.data.access_token,
         consentData.Links.Self,
       );
+      console.log("debitor-->",debitordetails);
       // return response.data;
-      const detailsCa=this.getDetailsCA(response.data.access_token);
+      const detailsCa=await this.getDetailsCA(response.data.access_token);
+      console.log("debitor2-->",detailsCa);
       const result = {
         responseData: response.data,
         customerDetails: detailsCa,
-        debitorDetails:debitorDetails
+        debitorDetails:debitordetails
       };
-      
+      console.log("result",result);
       return result;
       
     } catch (error) {
@@ -268,6 +271,11 @@ class SandBox {
         refreshToken.consentid,
         columnsToUpdate3,
       );
+      await updateDetailsForCVrp(
+        updatedDetails3,
+        refreshToken.consentid,
+        columnsToUpdate3,
+      );
 
       return this.vrpPayments(
         responseRefresh.data.access_token,
@@ -292,6 +300,7 @@ class SandBox {
         'x-idempotency-key': `${id}`,
       };
       const Identification = formData.accountNumber + formData.sortCode;
+      console.log(Identification);
       const body = {
         Data: {
           ConsentId: `${consentid}`,
@@ -329,7 +338,7 @@ class SandBox {
         },
         Risk: {},
       };
-
+      console.log("body",body.Data.Instruction.InstructedAmount.Amount);
       const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`,
         body,
@@ -338,6 +347,7 @@ class SandBox {
         },
       );
       this.apiAccess = apiAccessToken;
+      console.log("vrp payments",vrpPaymentResponse.data);
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
     } catch (error) {
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
@@ -357,17 +367,19 @@ class SandBox {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload = allVrpPaymentsResponse.data.Data;
-      const id = allVrpPaymentsResponse.data.Data.ConsentId;
-      const details = {
-        bankname: 'Natwest',
-        consentid: id,
-        scope: 'vrp_transactions',
-        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
-        vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status,
-      };
-      addTransactions(details);
+      if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted'){
+        const payload = allVrpPaymentsResponse.data.Data;
+        const id = allVrpPaymentsResponse.data.Data.ConsentId;
+        const details = {
+          bankname: 'Natwest',
+          consentid: id,
+          scope: 'vrp_transactions',
+          vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
+          vrppayload: JSON.stringify(payload),
+          status: allVrpPaymentsResponse.data.Data.Status,
+        };
+        addTransactions(details);
+      }
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
