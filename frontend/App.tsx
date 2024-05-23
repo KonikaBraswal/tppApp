@@ -156,7 +156,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Add Your Details" component={AddressScreen} />
               <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
               <Stack.Screen name="Order Placed" component={OrderSuccessful} />
-              <Stack.Screen name="Second Cvrp Call" component={SecondCvrpCall} />
+              <Stack.Screen name="Make Payment" component={SecondCvrpCall} />
 
             </Stack.Navigator>
           </NavigationContainer>

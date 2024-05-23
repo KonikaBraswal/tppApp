@@ -65,9 +65,9 @@ const SecondCvrpCall = ({ route }) => {
       <ScrollView style={{ backgroundColor: '#A6E4FD', flex: 1 }}>
         <View style={styles.container}>
           {/* to add multiple styles */}
-          <Text style={[styles.title, { color: '#00B0FF' }]}>Make A Payment</Text>
+          {/* <Text style={[styles.title, { color: '#00B0FF' }]}>Make A Payment</Text> */}
           <View style={{ height: wp('5%') }} />
-          <Text style={{ fontSize: wp('5%') }}>Selected Account</Text>
+          <Text style={{ fontSize: wp('5%'),fontWeight:'bold' }}>Selected Account</Text>
           <Card style={styles.card}>
             <View style={styles.cardTitleContainer}>
               <Card.Content>
@@ -103,13 +103,13 @@ const SecondCvrpCall = ({ route }) => {
           </Card>
 
           <View style={{ height: wp('5%') }} />
-          <Text style={{ fontSize: wp('5%') }}>Payment Details</Text>
+          <Text style={{ fontSize: wp('5%'),fontWeight:'bold' }}>Payment Details</Text>
           <Card style={styles.card}>
             <Card.Content>
               <Text style={styles.title}>Payment</Text>
               <Divider style={styles.divider} />
             <View style={{ height: wp('1%') }} />
-              <Text>Amount</Text>
+              <Text Text style={{ fontSize: wp('5%') }}>Amount</Text>
               <Text>£{totalAmount}</Text>
             </Card.Content>
           </Card>

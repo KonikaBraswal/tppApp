@@ -143,7 +143,7 @@ const CartScreen = () => {
       Number(Tax.substring(1));
       if(caData!==null){
         // console.log("det2",caData);
-        navigation.navigate('Second Cvrp Call', {totalAmount:totalAmount,data:caData});
+        navigation.navigate('Make Payment', {totalAmount:totalAmount,data:caData});
       }
       else{
         navigation.navigate('Add Your Details', {totalAmount});
