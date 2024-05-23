@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {IconButton, Button} from 'react-native-paper';
 import {
@@ -10,6 +11,19 @@ import {useNavigation} from '@react-navigation/native';
 
 const OrderSuccessful = props => {
   const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <IconButton
+          icon="arrow-left"
+          // color='white'
+          // style={{color: '#fff'}} // Set color to white through style
+          onPress={() => navigation.navigate('Natwest Cart')}
+        />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>

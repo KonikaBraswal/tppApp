@@ -94,7 +94,7 @@ function App(): React.JSX.Element {
                 component={AppDrawer}
                 options={{headerShown: false}}
               />
-              <Stack.Screen name="Natwest Cart" component={ProductListing} />
+              <Stack.Screen name="Online Store" component={ProductListing} />
 
               <Stack.Screen name="ONEBank" component={Landing} />
 

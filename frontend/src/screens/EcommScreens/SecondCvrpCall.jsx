@@ -1,7 +1,9 @@
 import { ScrollView, StyleSheet, View, Alert } from "react-native";
-import { Card, Divider, IconButton, Text } from "react-native-paper";
+import { Card, Divider, Icon, IconButton, Text } from "react-native-paper";
 import { useNavigation } from '@react-navigation/native';
 import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {
   Keyboard,
   Pressable,
@@ -25,6 +27,7 @@ const SecondCvrpCall = ({ route }) => {
   const debitorDetails = JSON.parse(data.account_details);
   const payload = JSON.parse(data.consentpayload);
   const customer = JSON.parse(data.customer_details);
+  console.log(customer);
   const handleSubmit = async () => {
     console.log(data);
     const formData = {
@@ -39,7 +42,7 @@ const SecondCvrpCall = ({ route }) => {
         consentid: debitorDetails.ConsentId,
         refreshtoken: data.refreshedtoken
       };
-      console.log("details", selectconsentData);
+      
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
@@ -48,7 +51,7 @@ const SecondCvrpCall = ({ route }) => {
       if (response.Data.Status === 'AcceptedSettlementCompleted') {
         navigation.navigate('Order Placed');
       } else {
-        Alert.alert('Payment Failed ', 'Amount Balance is insufficient', [
+        Alert.alert('Payment Failed ', 'Account Balance is insufficient', [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ]);
         console.log("error");
@@ -59,12 +62,16 @@ const SecondCvrpCall = ({ route }) => {
   }
   return (
     <>
-      <ScrollView style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
+      <ScrollView style={{ backgroundColor: '#A6E4FD', flex: 1 }}>
         <View style={styles.container}>
+          {/* to add multiple styles */}
+          <Text style={[styles.title, { color: '#00B0FF' }]}>Make A Payment</Text>
+          <View style={{ height: wp('5%') }} />
+          <Text style={{ fontSize: wp('5%') }}>Selected Account</Text>
           <Card style={styles.card}>
             <View style={styles.cardTitleContainer}>
               <Card.Content>
-                <Text style={styles.title}>Current Account</Text>
+                <Text style={styles.title}>{customer.data.name.given_name} {customer.data.name.family_name}</Text>
               </Card.Content>
               <Card.Actions>
                 <IconButton
@@ -77,41 +84,31 @@ const SecondCvrpCall = ({ route }) => {
                 />
               </Card.Actions>
             </View>
+            <Divider style={styles.divider} />
             <Card.Content>
-              <Text>Identification</Text>
+              <Text style={{fontSize:wp('5%')}}>Current Account</Text>
               <Text>{debitorDetails.DebtorAccount.Identification}</Text>
             </Card.Content>
+            <View style={{ height: wp('1%') }} />
             <Card style={styles.selectedCard}>
-              <Card.Content>
-                <Text>Account Selected</Text>
+              <View style={styles.cardTitleContainer}>
+                <Card.Content>
+                  <Text>Account Selected</Text>
+                </Card.Content>
                 <Card.Actions>
-                <IconButton
-                  icon="tick"
-                  mode="outlined"
-                  iconColor={'black'}
-                  size={wp('7%')}
-                  style={{ marginTop: hp('1.5%'), marginLeft: wp('1.5%') }}
-                  onPress={() => navigation.navigate('Order Placed')}
-                />
-              </Card.Actions>
-              </Card.Content>
+                  <MaterialCommunityIcons name="check-circle" color='white' size={35} />
+                </Card.Actions>
+              </View>
             </Card>
           </Card>
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text style={styles.title}>Account</Text>
-              <Divider style={styles.divider} />
-              <Text>To</Text>
-              <Text>{payload.Initiation.CreditorAccount.Name}</Text>
-              <Divider style={styles.divider} />
-              <Text>From</Text>
-              <Text>{customer.data.name.full_name}</Text>
-            </Card.Content>
-          </Card>
+
+          <View style={{ height: wp('5%') }} />
+          <Text style={{ fontSize: wp('5%') }}>Payment Details</Text>
           <Card style={styles.card}>
             <Card.Content>
               <Text style={styles.title}>Payment</Text>
               <Divider style={styles.divider} />
+            <View style={{ height: wp('1%') }} />
               <Text>Amount</Text>
               <Text>£{totalAmount}</Text>
             </Card.Content>
@@ -120,18 +117,19 @@ const SecondCvrpCall = ({ route }) => {
       </ScrollView>
       <View style={styles.bottom}>
         <TouchableOpacity
-          style={styles.footer}
-          activeOpacity={1}>
-          <Text style={styles.footerText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={() => handleSubmit()}
           style={styles.footer}
           activeOpacity={1}>
-          <Text style={styles.footerText}>Confirm</Text>
+          <Text style={styles.footerText}>Make Payment</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+        onPress={() => {navigation.navigate('Online Store')}}
+          style={styles.footer}
+          activeOpacity={1}>
+          <Text style={styles.footerText}>Cancel Payment</Text>
         </TouchableOpacity>
       </View>
-    
+
     </>
 
   );
@@ -142,21 +140,32 @@ const styles = StyleSheet.create({
   card: {
     alignContent: 'center',
     margin: 8,
-    padding: 10
+    padding: 10,
+    elevation: 5,
+    borderColor: '#00B0FF',
+    borderRadius: 5,
+    borderWidth: 2,
+    flex: 1
   },
   selectedCard: {
-    backgroundColor: '#FFFFF',
-    borderColor: 'grey',
-    borderRadius: 8,
+    backgroundColor: '#70CDF5',
+    borderColor: '#00B0FF',
+    borderRadius: 5,
     margin: 8,
-    borderWidth:3
+    borderWidth: 3,
+    flex: 1
   },
   bottom: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor:'white',
-    
+    backgroundColor: 'white',
+    borderColor: '#A6E0F7',
+    borderRadius: 5,
+    // margin: 8,
+    padding:wp('3%'),
+    borderWidth: 3,
+
   },
   container: {
     flex: 1,
@@ -173,21 +182,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingBottom:0
   },
   chevron: {
     marginRight: 10,
+    paddingLeft:0
   },
   divider: {
     marginVertical: 10,
+    height: 2, // Increase height to make it more visible
+    backgroundColor: '#B0FDF6',
   },
   footer: {
-    paddingVertical: 10, // Vertical padding
-    paddingHorizontal: 20,
+    paddingVertical: wp('1.6%'), // Vertical padding
     margin: 10,// Add space between the buttons
     alignItems: 'center', // Center text horizontally
     borderRadius: 20,
-    borderColor:'#EDDDF3',
-    borderWidth:3
+    borderColor: '#00B0FF',
+    borderWidth: 3,
+    width: wp('80%'),
   },
   footerText: {
     color: 'black',
