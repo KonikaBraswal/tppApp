@@ -15,7 +15,7 @@ const ResponseToggler = ({keyText, valueText}) => {
         backgroundColor: '#FFF',
         borderRadius: 10,
         elevation: 4,
-        marginHorizontal: 10,
+        marginHorizontal: hp('1.5%'),
         marginBottom: hp('2%'),
       }}>
       <View

@@ -53,7 +53,7 @@ const ApiLogs = () => {
 
     insertLog(details1);
     setIsDataInserted(true);
-    Alert.alert('Successfully', 'Data Inserted', [
+    Alert.alert('Data Inserted', 'Successfully', [
       {text: 'OK', onPress: () => console.log('Data Inserted')},
     ]);
   };
