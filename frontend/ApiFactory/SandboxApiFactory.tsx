@@ -3,13 +3,19 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
-import {addDetails, addTransactions, updateDetailsForVrp} from '../database/Database';
+import {
+  addDetails,
+  addTransactions,
+  updateDetailsForVrp,
+} from '../database/Database';
 import {updateDetails, fetchRefreshedToken} from '../database/Database';
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb';
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
-const {generateVrpAccountRequestHeaders,
+import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
+const {
+  generateVrpAccountRequestHeaders,
   generateVrpPaymentBody,
   generateDomesticConsentHeaders,
   generateAccessTokenBody,
@@ -21,11 +27,15 @@ const {generateVrpAccountRequestHeaders,
   generateBodyForPaymentRequest,
   generateHeadersForPisp,
   generateDomesticPaymentRequestBody,
-  generatePaymentStatusHeaders, } = require('./ConfigFiles/apiUtils.tsx');
+  generatePaymentStatusHeaders,
+} = require('./ConfigFiles/apiUtils.tsx');
 
-const companyName = "NWG"; // Replace "YourCompanyName" with the actual company name
-const apiClient = "Sandbox"; // Replace "YourApiClient" with the actual API client
+const companyName = 'NWG'; // Replace "YourCompanyName" with the actual company name
+const apiClient = 'Sandbox'; // Replace "YourApiClient" with the actual API client
+const logClient = new ApiLogsDb('NWG', 'Sandbox', 'logs');
+
 var consentID = '';
+
 interface ResponseData {
   refresh_token: string;
   access_token: string;
@@ -36,6 +46,24 @@ interface ResponseData {
     Status: string;
   };
 }
+let apiDb = {
+  date: '',
+  time: '',
+  api_name: '',
+  scope: '',
+  status: '',
+  response: '',
+  userId: '',
+  payload: '',
+  consentId: '',
+  refreshtoken: '',
+  paymentId: '',
+  bankName: '',
+  accountsList: '',
+  vrpId: '',
+  vrpPayload: '',
+};
+
 let pispToStore = {
   consentId: '',
   scope: '',
@@ -45,11 +73,11 @@ let pispToStore = {
   response: '',
   userId: '999999999',
 };
-let pispToUpdate={
-  userId:"7777777",
-}
+let pispToUpdate = {
+  userId: '7777777',
+};
 let androidClientAisp: AndroidClient;
-let androidClientPisp:AndroidClient;
+let androidClientPisp: AndroidClient;
 let aispToStore = {
   userId: '999934356',
   scope: '',
@@ -57,8 +85,18 @@ let aispToStore = {
   consentId: '',
   consentPayload: '',
   refreshToken: '',
-  accountsList: ''
+  accountsList: '',
 };
+const now = new Date();
+let logData = {
+  date: '',
+  time: '',
+  api_name: '',
+  scope: '',
+  status: '',
+  response: '',
+};
+
 interface CommonHeaders {
   [key: string]: string;
 }
@@ -71,43 +109,54 @@ class SanboxApiFactory {
   private apiAccess: string = '';
   private scopeForThisCall: string = '';
   private DebtorAccount: any;
-  private consentIdVrp:string ='';
-  constructor(apiscope:string) {
-    this.scopeForThisCall=apiscope;
+  private consentIdVrp: string = '';
+  constructor(apiscope: string) {
+    this.scopeForThisCall = apiscope;
     this.baseUrl = config.baseUrl;
     this.clientId = config.clientId;
     this.clientSecret = config.clientSecret;
     this.commonHeaders = config.contentType;
   }
-  private generateHeaders(endpoint: string,accessToken: string | null = null): CommonHeaders {
-    return generateHeaders(endpoint,accessToken, this.commonHeaders);
- }
+  private generateHeaders(
+    endpoint: string,
+    accessToken: string | null = null,
+  ): CommonHeaders {
+    return generateHeaders(endpoint, accessToken, this.commonHeaders);
+  }
 
- private generateBody(endpoint: string, data: Record<string, any>): Record<string, any> {
+  private generateBody(
+    endpoint: string,
+    data: Record<string, any>,
+  ): Record<string, any> {
     return generateBody(endpoint, data, this.permissions);
- }
+  }
 
- private generateBodyForExchange(authToken: string): Record<string, string> {
+  private generateBodyForExchange(authToken: string): Record<string, string> {
     return generateBodyForExchange(authToken, this.clientId, this.clientSecret);
- }
+  }
 
- private generateBodyForRefresh(refreshToken: string): Record<string, string> {
-    return generateBodyForRefresh(refreshToken, this.clientId, this.clientSecret);
- }
+  private generateBodyForRefresh(refreshToken: string): Record<string, string> {
+    return generateBodyForRefresh(
+      refreshToken,
+      this.clientId,
+      this.clientSecret,
+    );
+  }
+
   async callApiFactory(
     apiScope: string,
     permission: string[],
     DebtorAccount: any,
   ) {
-    
     this.permissions = permission;
     this.scopeForThisCall = apiScope;
     this.DebtorAccount = DebtorAccount;
+    await logClient.initDatabaseApi();
     switch (apiScope) {
       case 'accounts':
         androidClientAisp = new AndroidClient(companyName, apiClient, apiScope);
         console.log('******NWB SANDBOX ACCOUNTS CALL********');
-        this.scopeForThisCall = "accounts";
+        this.scopeForThisCall = 'accounts';
         let returnthisAisp = this.retrieveAccessToken();
         return returnthisAisp;
       case 'payments':
@@ -116,13 +165,11 @@ class SanboxApiFactory {
         this.scopeForThisCall = 'payments';
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
-        //break;
       case 'vrp':
         console.log('******NWB VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
         return returnthisVrp;
-        //break;
       default:
         console.log(
           'Wrong Scope: Sandbox has only three scopes, accounts, payments and vrp',
@@ -143,7 +190,23 @@ class SanboxApiFactory {
             params: body,
           },
         );
-        aispToStore.scope=response.data.scope;
+        aispToStore.scope = response.data.scope;
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Retreive Access Token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return this.accountRequest(response.data.access_token);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -164,10 +227,10 @@ class SanboxApiFactory {
           sandboxConfig.grant_type,
           this.clientId,
           this.clientSecret,
-          this.scopeForThisCall
+          this.scopeForThisCall,
         );
         const header = generateHeaders(sandboxConfig.tokenEndpoint);
-      
+
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -177,6 +240,22 @@ class SanboxApiFactory {
           },
         );
         pispToStore.scope = response.data.scope;
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Retreive Access Token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return this.accountRequest(response.data.access_token);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -209,7 +288,22 @@ class SanboxApiFactory {
             params: body,
           },
         );
-        console.log()
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Retreive Access Token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return this.accountRequest(response.data.access_token);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -219,7 +313,6 @@ class SanboxApiFactory {
 
   async accountRequest(accessToken: string) {
     if (this.scopeForThisCall == 'accounts') {
-     
       try {
         // const body: BodyData = {
         //   Data: {
@@ -231,9 +324,15 @@ class SanboxApiFactory {
         //   ...this.commonHeaders,
         //   Authorization: 'Bearer ' + accessToken,
         // };
-        const body = this.generateBody(sandboxConfig.accountRequestEndpoint, {});
+        const body = this.generateBody(
+          sandboxConfig.accountRequestEndpoint,
+          {},
+        );
 
-        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,accessToken);
+        const headers = this.generateHeaders(
+          sandboxConfig.accountsEndpoint,
+          accessToken,
+        );
 
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.accountRequestEndpoint}`,
@@ -242,8 +341,24 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        aispToStore.consentId=response.data.Data?.ConsentId||'';
-      aispToStore.consentPayload=JSON.stringify(body);
+        aispToStore.consentId = response.data.Data?.ConsentId || '';
+        aispToStore.consentPayload = JSON.stringify(body);
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Account Request',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return this.manualUserConsent(response.data.Data?.ConsentId || '');
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -254,8 +369,17 @@ class SanboxApiFactory {
         var accountRequestEndpoint =
           sandboxConfigPisp.accountRequestEndpointPisp;
         const id = uuid.v4();
-       const body = generateBodyForPaymentRequest(this.DebtorAccount, true, '');
-       const headers = generateHeadersForPisp(accessToken, id, sandboxConfig.financialId, sandboxConfig.signatureJws);
+        const body = generateBodyForPaymentRequest(
+          this.DebtorAccount,
+          true,
+          '',
+        );
+        const headers = generateHeadersForPisp(
+          accessToken,
+          id,
+          sandboxConfig.financialId,
+          sandboxConfig.signatureJws,
+        );
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${accountRequestEndpoint}`,
           body,
@@ -268,14 +392,29 @@ class SanboxApiFactory {
         const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
         pispToStore.consentId = consentId; // Storing consent ID in toStore object
         pispToStore.payload = JSON.stringify(body);
-  
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Account Request',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return response.data.Data?.ConsentId || '';
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'vrp') {
-      console.log("VRP acc")
+      console.log('VRP acc');
       try {
         const body = this.permissions;
         const id = uuid.v4();
@@ -297,7 +436,7 @@ class SanboxApiFactory {
         const Status = response.data.Data?.Status;
         const Payload = response.data.Data;
         this.consentIdVrp = response.data.Data?.ConsentId || '';
-        
+
         //const consentIdVrp = response.data.Data?.ConsentId || '';
         const details1 = {
           bankname: 'Natwest',
@@ -310,21 +449,31 @@ class SanboxApiFactory {
         // vrpToStore.consentId=consentIdVrp;
         // vrpToStore.consentPayload=JSON.stringify(Payload);
         // vrpToStore.status=Status;
-        
-        console.log('details', details1);
-        // addDetails(details1);
-        console.log('hhh');
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Account Request',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return response.data;
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
       }
     }
-
   }
 
   async manualUserConsent(consentId: string) {
     let consentUrlWithVariables = '';
-    console.log("iiir")
 
     console.log('manual consent');
     if (this.scopeForThisCall == 'accounts') {
@@ -334,7 +483,7 @@ class SanboxApiFactory {
       consentID = consentId;
       consentUrlWithVariables = `${sandboxConfigPisp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfigPisp.redirectUri}&request=${consentId}`;
     }
-    if(this.scopeForThisCall=='vrp'){
+    if (this.scopeForThisCall == 'vrp') {
       consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${consentID}`;
     }
     Linking.openURL(consentUrlWithVariables);
@@ -347,7 +496,7 @@ class SanboxApiFactory {
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
         );
-        return this.exchangeAccessToken(accountResponse.data.redirectUri,null);
+        return this.exchangeAccessToken(accountResponse.data.redirectUri, null);
       } catch (error) {
         throw new Error(`Failed to fetch data for accounts: ${error}`);
       }
@@ -358,7 +507,7 @@ class SanboxApiFactory {
     }
   }
 
-  async exchangeAccessToken(authTokenUrl: string,consentData:any) {
+  async exchangeAccessToken(authTokenUrl: string, consentData: any) {
     if (this.scopeForThisCall == 'accounts') {
       try {
         const start = authTokenUrl.indexOf('=') + 1;
@@ -376,11 +525,11 @@ class SanboxApiFactory {
         //   'Content-Type': 'application/x-www-form-urlencoded',
         // };
         const body = generateBodyForExchange(
-          this.clientId, 
+          this.clientId,
           this.clientSecret,
           sandboxConfig.redirectUri,
           'authorization_code',
-          authToken
+          authToken,
         );
         const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
         const response: AxiosResponse<ResponseData> = await axios.post(
@@ -392,6 +541,22 @@ class SanboxApiFactory {
           },
         );
         aispToStore.refreshToken = response.data.refresh_token;
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Exchange Code for access token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return this.fetchAccounts(response.data.access_token);
         //console.log('Api access token', response.data.access_token);
       } catch (error) {
@@ -416,12 +581,12 @@ class SanboxApiFactory {
         // };
         const body = generateBodyForExchange(
           this.clientId,
-          this.clientSecret, 
+          this.clientSecret,
           sandboxConfig.redirectUri,
           'authorization_code',
-          authToken
+          authToken,
         );
-  const headers = generateHeaders(sandboxConfig.tokenEndpoint);
+        const headers = generateHeaders(sandboxConfig.tokenEndpoint);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -432,6 +597,23 @@ class SanboxApiFactory {
         );
         console.log('Api access token', response.data.access_token);
         pispToStore.refreshtoken = response.data.refresh_token;
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Exchange Code for access token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
+
         return this.domesticPayments(response.data.access_token);
 
         //return this.refreshToken(response.data.refresh_token);
@@ -444,7 +626,7 @@ class SanboxApiFactory {
         const start = authTokenUrl.indexOf('=') + 1;
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
-       
+
         console.log('AuthToken', authToken);
         // const body: Record<string, string> = {
         //   client_id: this.clientId,
@@ -472,33 +654,49 @@ class SanboxApiFactory {
             params: body,
           },
         );
-  
+
         console.log('Api access token', response.data.access_token);
-  
+
         // const updatedDetails2 = {
         //   refreshedtoken: RefreshToken,
         //   status: 'Authorised',
         //   consentexpiry: consentExpiresIn,
         // };
-      //   const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-      // await updateDetailsForVrp(
-      //   updatedDetails2,
-      //   consentData.Data.ConsentId,
-      //   columnsToUpdate2,
-      // );
-      
-      this.getDomesticConsent(
-        response.data.access_token,
-        consentData.Links.Self,
-      );
-      // return response.data;
-      return this.getDetailsCA(response.data.access_token);
-        console.log("response",response.data);
-        return response.data;
+        //   const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+        // await updateDetailsForVrp(
+        //   updatedDetails2,
+        //   consentData.Data.ConsentId,
+        //   columnsToUpdate2,
+        // );
+
+        this.getDomesticConsent(
+          response.data.access_token,
+          consentData.Links.Self,
+        );
+        // return response.data;
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Exchange Code for access token',
+          scope: this.scopeForThisCall,
+          status: response.status.toString(),
+          response: JSON.stringify(response),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
+        return this.getDetailsCA(response.data.access_token);
+        // console.log('response', response.data);
+        // return response.data;
         //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
-      } 
+      }
     }
   }
   async getDomesticConsent(accessToken: any, url: string) {
@@ -520,6 +718,22 @@ class SanboxApiFactory {
       const columnsToUpdate5 = ['account_details'];
 
       await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Get Domestic Consent',
+        scope: 'VRP',
+        status: allVrpResponse.status.toString(),
+        response: JSON.stringify(allVrpResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return allVrpResponse.data;
     } catch (error) {
       console.log('error in getting in vrp calls', error);
@@ -540,23 +754,42 @@ class SanboxApiFactory {
           headers: headers,
         },
       );
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Get CA Details',
+        scope: 'CVRP',
+        status: response.status.toString(),
+        response: JSON.stringify(response),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
     }
   }
 
-  async vrpPayments(apiAccessToken: string,consentid: string,formData: any,): Promise<any> {
+  async vrpPayments(
+    apiAccessToken: string,
+    consentid: string,
+    formData: any,
+  ): Promise<any> {
     try {
-  
       const headers = generateAccountRequestHeaders(apiAccessToken);
 
       const body = generateVrpPaymentBody(formData, consentid);
-      console.log("(99");
+      console.log('(99');
       console.log(headers);
       console.log(body);
 
-          const vrpPaymentResponse: AxiosResponse = await axios.post(
+      const vrpPaymentResponse: AxiosResponse = await axios.post(
         `${this.baseUrl}/${sandboxConfigvrp.domesticVrpPayments}`,
         body,
         {
@@ -565,6 +798,23 @@ class SanboxApiFactory {
       );
       this.apiAccess = apiAccessToken;
       console.log('payments-->', vrpPaymentResponse.data.Links.Self);
+
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'VRP Payments',
+        scope: 'VRP',
+        status: vrpPaymentResponse.status.toString(),
+        response: JSON.stringify(vrpPaymentResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
     } catch (error) {
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
@@ -584,15 +834,15 @@ class SanboxApiFactory {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload=allVrpPaymentsResponse.data.Data;
-      
+      const payload = allVrpPaymentsResponse.data.Data;
+
       const details = {
         bankname: 'Natwest',
         consentid: allVrpPaymentsResponse.data.Data.ConsentId,
         scope: 'vrp_transactions',
         vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
         vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status
+        status: allVrpPaymentsResponse.data.Data.Status,
       };
       // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
       // vrpToStore.vrpPayload=JSON.stringify(payload);
@@ -600,9 +850,24 @@ class SanboxApiFactory {
       // vrpToStore.responseVrp=JSON.stringify(allVrpPaymentsResponse.data.Data);
       // console.log("^^^^^^^");
       // console.log(vrpToStore);
-      console.log("$$$$$$$$$$");
+      console.log('$$$$$$$$$$');
       addTransactions(details);
-
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Get All VRP Payments',
+        scope: 'CVRP',
+        status: allVrpPaymentsResponse.status.toString(),
+        response: JSON.stringify(allVrpPaymentsResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
@@ -610,15 +875,13 @@ class SanboxApiFactory {
   }
 
   async refreshToken(refreshToken: string): Promise<any> {
-    console.log("heeeeeeeyyyyyyyyyyyyyyyyyyyyyyyyy");
     if (this.scopeForThisCall === 'accounts') {
       try {
-       
         const body = generateBodyForRefresh(
           this.clientId,
           this.clientSecret,
           'refresh_token',
-          refreshToken
+          refreshToken,
         );
         const headers = this.generateHeaders(sandboxConfig.tokenEndpoint);
         const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
@@ -629,6 +892,23 @@ class SanboxApiFactory {
             params: body,
           },
         );
+
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Refresh Token',
+          scope: 'accounts',
+          status: responseRefresh.status.toString(),
+          response: JSON.stringify(responseRefresh),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return responseRefresh.data.access_token;
       } catch (error) {
         throw new Error(`Failed to fetch data: ${error}`);
@@ -638,10 +918,12 @@ class SanboxApiFactory {
     }
 
     if (this.scopeForThisCall == 'vrp') {
-      
     }
   }
-  async refreshTokenForVRP(refreshToken: any, grantedformData: any): Promise<any> {
+  async refreshTokenForVRP(
+    refreshToken: any,
+    grantedformData: any,
+  ): Promise<any> {
     try {
       const body: Record<string, string> = {
         client_id: this.clientId,
@@ -674,7 +956,22 @@ class SanboxApiFactory {
       //   refreshToken.consentid,
       //   columnsToUpdate3,
       // );
-      console.log("000000000");
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Refresh Token',
+        scope: 'VRP',
+        status: responseRefresh.status.toString(),
+        response: JSON.stringify(responseRefresh),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentid,
@@ -689,7 +986,12 @@ class SanboxApiFactory {
     try {
       const idd = uuid.v4();
       console.log('m here');
-      const headers = generateHeadersForPisp(apiAccess, idd, sandboxConfig.financialId, sandboxConfig.signatureJws);
+      const headers = generateHeadersForPisp(
+        apiAccess,
+        idd,
+        sandboxConfig.financialId,
+        sandboxConfig.signatureJws,
+      );
       const requestBody = generateDomesticPaymentRequestBody(
         consentID,
         this.DebtorAccount,
@@ -699,7 +1001,7 @@ class SanboxApiFactory {
           Name: 'ACME DIY',
           SecondaryIdentification: 'secondary-identif',
         },
-        'EcommerceGoods'
+        'EcommerceGoods',
       );
       const paymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfigPisp.domesticPaymentsEndpoint}`,
@@ -708,8 +1010,24 @@ class SanboxApiFactory {
           headers: headers,
         },
       );
-      console.log('success 777');
+
       console.log(paymentResponse.data);
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Domestic Payments',
+        scope: 'payments',
+        status: paymentResponse.status.toString(),
+        response: JSON.stringify(paymentResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return this.getPaymentSatus(
         apiAccess,
         paymentResponse.data.Data.DomesticPaymentId,
@@ -742,8 +1060,24 @@ class SanboxApiFactory {
       console.log(pispToStore);
       await androidClientPisp.initDatabaseAndroidPisp();
       await androidClientPisp.insertDataPisp(pispToStore);
-      console.log("Storing this to the table");
+      console.log('Storing this to the table');
       await androidClientPisp.displayData();
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Payment Status',
+        scope: 'payments',
+        status: payResponse.status.toString(),
+        response: JSON.stringify(payResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return payResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
@@ -755,7 +1089,10 @@ class SanboxApiFactory {
       //   ...this.commonHeaders,
       //   Authorization: `Bearer ${apiAccessToken}`,
       // };
-      const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
+      const headers = this.generateHeaders(
+        sandboxConfig.accountsEndpoint,
+        apiAccessToken,
+      );
 
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
@@ -784,32 +1121,39 @@ class SanboxApiFactory {
       //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
-      aispToStore.accountsList=JSON.stringify(accountResponse.data.Data);
+      aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
       //print aispToSTore
-      console.log("***************");
       console.log(aispToStore);
-      await androidClientAisp.initDatabaseAndroidAisp();//create the table
+      await androidClientAisp.initDatabaseAndroidAisp(); //create the table
       await androidClientAisp.insertDataAisp(aispToStore);
-      console.log("^^^^^^^^^^^^");
+    
       await androidClientAisp.displayData();
-      console.log("###########");
-      //await androidClientAispDb.initDatabaseAndroidAisp();
-
-      //await androidClientAispDb.displayData();
       console.log('ACCOUNT ADDED SUCCESSFULLY');
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Fetch Accounts',
+        scope: 'accounts',
+        status: accountResponse.status.toString(),
+        response: JSON.stringify(accountResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
       return accountResponse.data.Data;
     } catch (error) {
       throw new Error(`Failed to fetch data for accounts: ${error}`);
     }
   }
   async allCalls(endPoint: string): Promise<any> {
-    console.log(this.scopeForThisCall);
-    console.log("I AM IN ALL CALLSsssssssssssssss",this.scopeForThisCall);
     if (this.scopeForThisCall == 'accounts') {
-      console.log("m fine")
       const access_token = await this.getAccessToken();
 
-      console.log("HHHHHHHHHH")
       if (access_token !== null) {
         this.apiAccess = access_token;
         //console.log(access_token);
@@ -821,8 +1165,10 @@ class SanboxApiFactory {
         //   ...this.commonHeaders,
         //   Authorization: `Bearer ${this.apiAccess}`,
         // };
-        console.log("HHH66666HHHHHH")
-        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
+        const headers = this.generateHeaders(
+          sandboxConfig.accountsEndpoint,
+          this.apiAccess,
+        );
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
@@ -830,20 +1176,32 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        console.log("77777777777",accountResponse.data.Data)
+      //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: endPoint,
+        scope: this.scopeForThisCall,
+        status: accountResponse.status.toString(),
+        response: JSON.stringify(accountResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
         return accountResponse.data.Data;
       } catch (error) {
         throw new Error(`Failed to fetch data for accounts: ${error}`);
       }
-    }
-    else if (this.scopeForThisCall == 'payments') {
-      return "7777"
-    }
-    else if (this.scopeForThisCall == 'vrp') {
-      return "999"
-    }
-    else{
-      return "74584";
+    } else if (this.scopeForThisCall == 'payments') {
+      return '7777';
+    } else if (this.scopeForThisCall == 'vrp') {
+      return '999';
+    } else {
+      return '74584';
     }
   }
 
@@ -883,15 +1241,32 @@ class SanboxApiFactory {
         //   ...this.commonHeaders,
         //   Authorization: `Bearer ${apiAccessToken}`,
         // };
-        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,apiAccessToken);
+        const headers = this.generateHeaders(
+          sandboxConfig.accountsEndpoint,
+          apiAccessToken,
+        );
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
           {
             headers: headers,
           },
-        );
-
+        );//Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: "Fetch Account with Refresh Token",
+          scope: this.scopeForThisCall,
+          status: accountResponse.status.toString(),
+          response: JSON.stringify(accountResponse),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return accountResponse.data.Data;
       } catch (error) {
         throw new Error(`Failed to fetch data for accounts: ${error}`);
@@ -914,7 +1289,10 @@ class SanboxApiFactory {
         //   Authorization: `Bearer ${this.apiAccess}`,
         // };
         console.log(endPoint);
-        const headers = this.generateHeaders(sandboxConfig.accountsEndpoint,this.apiAccess);
+        const headers = this.generateHeaders(
+          sandboxConfig.accountsEndpoint,
+          this.apiAccess,
+        );
 
         const accountResponse: AxiosResponse<any> = await axios.get(
           `${this.baseUrl}/${sandboxConfig.accountsEndpoint}/${endPoint}`,
@@ -923,6 +1301,22 @@ class SanboxApiFactory {
           },
         );
 
+        //Storing APILOGS
+      logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(
+          now.getMinutes(),
+        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: endPoint+" with refresh token",
+        scope: this.scopeForThisCall,
+        status: accountResponse.status.toString(),
+        response: JSON.stringify(accountResponse),
+      };
+      await logClient.insertLog(logData);
+      //Storing APILOGS
         return accountResponse.data.Data;
       } catch (error) {
         throw new Error(`Failed to fetch data for accounts: ${error}`);

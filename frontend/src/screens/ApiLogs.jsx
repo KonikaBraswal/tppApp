@@ -1,54 +1,64 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Button} from 'react-native';
-import {
-  insertLog,
-  displayResults,
-  deleteAllLogs,
-  deleteApiLogsTable,
-  alterApiLogsTable
-} from '../../database/DatabaseLogs';
-import { useNavigation } from '@react-navigation/native';
+//final draft
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {Button} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import ApiLogsDb from '../../DatabaseFactory/ApiLogsDb';
+const logClient=new ApiLogsDb('NWG','Sandbox','logs');
 
 const ApiLogs = () => {
-  const navigation =useNavigation();
+  const navigation = useNavigation();
   const [isDataInserted, setIsDataInserted] = useState(false);
   const [retrievedData, setRetrievedData] = useState([]);
-
-  // Function to insert dummy data
-  const handleInsertData = () => {
+  
+  const handleInsertData = async () => {
+    await logClient.initDatabaseApi();
+    const now = new Date();
     const details1 = {
-      date: '2024-03-25',
-      time: '10:00:00',
-      api_name: 'API 1',
-      scope:"Dummy Entry",
-      status: 'Success',
-      response: 'Response 1'
+      date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        '0',
+      )}-${String(now.getDate()).padStart(2, '0')}`,
+
+      time: `${String(now.getHours()).padStart(2, '0')}:${String(
+        now.getMinutes(),
+      ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+
+      api_name: 'AISP',
+      scope: 'Payments',
+      status: '200 Success',
+      response: `{
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Request-ID": "req-001"
+        },
+        "body": {
+          "id": "1234",
+          "username": "khushiujjawal",
+          "email": "khushiujjawal@yahoo.com",
+          "created_at": "2024-05-20T12:00:00Z"
+        }
+      }`,
     };
 
-    insertLog(details1);
-
-    // Setting state to indicate that data has been inserted
+    await logClient.insertLog(details1);
     setIsDataInserted(true);
   };
 
-  // Function to print data
   const handlePrintData = async () => {
     try {
-      const data = await displayResults();
-      console.log('Retrieved data:', data);
-      navigation.navigate('ApiLogsList',{logs:data});
+      const data = await logClient.displayResults();
       setRetrievedData(data);
+      navigation.navigate('ApiLogsList', {logs: data});
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  // Function to delete all logs
   const handleDeleteLogs = async () => {
     try {
-      await deleteAllLogs();
-      console.log('All logs deleted successfully');
-      setRetrievedData([]); // Clear retrieved data
+      await logClient.deleteAllLogs();
+      setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting logs:', error);
     }
@@ -56,52 +66,82 @@ const ApiLogs = () => {
 
   const handleDeleteTable = async () => {
     try {
-      await deleteApiLogsTable();
-      console.log('apiLogs table deleted successfully');
+      await logClient.deleteApiLogsTable();
       setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting table:', error);
     }
   };
+
   const handleAlterTable = async () => {
     try {
-      await alterApiLogsTable();
+      await logClient.alterApiLogsTable();
       console.log('apiLogs table altered successfully');
     } catch (error) {
       console.error('Error altering table:', error);
     }
   };
+
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text style={{fontSize: 30, fontWeight: 'bold', marginBottom: 20}}>
-        Api Logs Page
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Api Logs Page</Text>
 
-      {/* Button to insert dummy data */}
+      <Button mode="contained" onPress={handleInsertData} style={styles.button}>
+        Insert Dummy Data
+      </Button>
+
+      <Button mode="contained" onPress={handlePrintData} style={styles.button}>
+        Print Data
+      </Button>
+
+      <Button mode="contained" onPress={handleAlterTable} style={styles.button}>
+        Alter Table
+      </Button>
+
+      <Button mode="contained" onPress={handleDeleteLogs} style={styles.button}>
+        Delete Logs
+      </Button>
+
       <Button
-        title="Insert Data"
-        onPress={handleInsertData}
-      />
+        mode="contained"
+        onPress={handleDeleteTable}
+        style={styles.button}>
+        Delete Table
+      </Button>
 
-      {/* Button to print data */}
-      <Button title="Print Data" onPress={handlePrintData} />
-      <Button title="Alter Table" onPress={handleAlterTable}/>
-      {/* Button to delete logs */}
-      <Button title="Delete Logs" onPress={handleDeleteLogs} />
-
-      <Button title="Delete Table" onPress={handleDeleteTable} />
-
-      {/* Display message if data is inserted */}
       {isDataInserted && <Text>Data inserted successfully!</Text>}
-
-      {/* Display retrieved data
-      {retrievedData.map((item, index) => (
-        <Text key={index}>
-          {`Date: ${item.date}, Time: ${item.time}, API Name: ${item.api_name},Scope: ${item.scope}, Status: ${item.status}, Response: ${item.response}`}
-        </Text>
-      ))} */}
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  button: {
+    marginVertical: 10,
+    width: '100%',
+  },
+  retrievedDataContainer: {
+    marginTop: 20,
+    alignItems: 'flex-start',
+  },
+  retrievedDataTitle: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  retrievedDataItem: {
+    fontSize: 16,
+  },
+});
+
 export default ApiLogs;
+
