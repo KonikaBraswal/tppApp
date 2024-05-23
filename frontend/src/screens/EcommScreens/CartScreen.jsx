@@ -214,7 +214,7 @@ const CartScreen = () => {
 };
 const styles = StyleSheet.create({
   footer: {
-    backgroundColor: 'rgba(176, 130, 255, 0.5)',
+    backgroundColor: '#00B0FF',
     padding: wp('4%'),
     alignItems: 'center',
     width: '100%',

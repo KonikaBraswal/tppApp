@@ -16,9 +16,9 @@ const OrderSuccessful = props => {
       headerLeft: () => (
         <IconButton
           icon="arrow-left"
-          // color='white'
-          // style={{color: '#fff'}} // Set color to white through style
-          onPress={() => navigation.navigate('Natwest Cart')}
+          color='white'
+          style={{color: '#fff'}} // Set color to white through style
+          onPress={() => navigation.navigate('Online Store')}
         />
       ),
     });
