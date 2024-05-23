@@ -46,24 +46,6 @@ interface ResponseData {
     Status: string;
   };
 }
-let apiDb = {
-  date: '',
-  time: '',
-  api_name: '',
-  scope: '',
-  status: '',
-  response: '',
-  userId: '',
-  payload: '',
-  consentId: '',
-  refreshtoken: '',
-  paymentId: '',
-  bankName: '',
-  accountsList: '',
-  vrpId: '',
-  vrpPayload: '',
-};
-
 let pispToStore = {
   consentId: '',
   scope: '',
@@ -95,7 +77,7 @@ let logData = {
   scope: '',
   status: '',
   response: '',
-};
+};//variable used for logging api responses in api db
 
 interface CommonHeaders {
   [key: string]: string;
@@ -142,7 +124,7 @@ class SanboxApiFactory {
       this.clientSecret,
     );
   }
-
+//starting function to call api factory which will decide the flow of code based on scope passed
   async callApiFactory(
     apiScope: string,
     permission: string[],
@@ -176,6 +158,9 @@ class SanboxApiFactory {
         );
     }
   }
+
+
+  // call to retrieve access token for various scope
   async retrieveAccessToken() {
     if (this.scopeForThisCall == 'accounts') {
       try {
@@ -208,21 +193,46 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return this.accountRequest(response.data.access_token);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Retreive Access Token accounts: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
       try {
-        // const body = {
-        //   grant_type: sandboxConfig.grant_type,
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   scope: 'payments',
-        // };
-        // const header = {
-        //   'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
-        // };
+        
         const body = generateAccessTokenBody(
           sandboxConfig.grant_type,
           this.clientId,
@@ -257,27 +267,52 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return this.accountRequest(response.data.access_token);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Retreive Access Token payments: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'vrp') {
       try {
-        // const body = {
-        //   grant_type: sandboxConfig.grant_type,
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   scope: 'payments',
-        // };
         const body = generateAccessTokenBody(
           sandboxConfig.grant_type,
           this.clientId,
           this.clientSecret,
           'payments',
         );
-        // const header = {
-        //   'Content-Type': 'application/x-www-form-urlencoded', // Corrected content type
-        // };
+
         const header = generateHeaders(sandboxConfig.tokenEndpoint);
 
         const response: AxiosResponse<ResponseData> = await axios.post(
@@ -305,25 +340,50 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return this.accountRequest(response.data.access_token);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Retreive Access Token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Retreive Access Token vrp: ${error}`);
       }
     }
   }
 
+
+  // call to request for consent id 
   async accountRequest(accessToken: string) {
     if (this.scopeForThisCall == 'accounts') {
       try {
-        // const body: BodyData = {
-        //   Data: {
-        //     Permissions: this.permissions,
-        //   },
-        //   Risk: {},
-        // };
-        // const headers = {
-        //   ...this.commonHeaders,
-        //   Authorization: 'Bearer ' + accessToken,
-        // };
         const body = this.generateBody(
           sandboxConfig.accountRequestEndpoint,
           {},
@@ -360,8 +420,41 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return this.manualUserConsent(response.data.Data?.ConsentId || '');
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Account Request accounts: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -387,7 +480,6 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        console.log('GGGG');
         console.log(response.data);
         const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
         pispToStore.consentId = consentId; // Storing consent ID in toStore object
@@ -409,12 +501,44 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return response.data.Data?.ConsentId || '';
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Account Request payments: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'vrp') {
-      console.log('VRP acc');
       try {
         const body = this.permissions;
         const id = uuid.v4();
@@ -466,11 +590,47 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return response.data;
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Account Request',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Account Request vrp: ${error}`);
       }
     }
   }
+
+
+  // redirect url to ask user for their consent
 
   async manualUserConsent(consentId: string) {
     let consentUrlWithVariables = '';
@@ -489,6 +649,9 @@ class SanboxApiFactory {
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
+
+
+  //alternative approach to get consent programmatically
   async userConsentProgammatically(consentId: string) {
     if (this.scopeForThisCall == 'accounts') {
       try {
@@ -506,6 +669,8 @@ class SanboxApiFactory {
     if (this.scopeForThisCall == 'vrp') {
     }
   }
+
+  // exchange token with user consent approved or denied code
 
   async exchangeAccessToken(authTokenUrl: string, consentData: any) {
     if (this.scopeForThisCall == 'accounts') {
@@ -559,8 +724,41 @@ class SanboxApiFactory {
         //Storing APILOGS
         return this.fetchAccounts(response.data.access_token);
         //console.log('Api access token', response.data.access_token);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Exchange Code for access token aisp: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -617,8 +815,39 @@ class SanboxApiFactory {
         return this.domesticPayments(response.data.access_token);
 
         //return this.refreshToken(response.data.refresh_token);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(error.response?.data || 'No response data'),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+  
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Exchange Code for access token payments: ${error}`)
       }
     }
     if (this.scopeForThisCall == 'vrp') {
@@ -694,8 +923,39 @@ class SanboxApiFactory {
         // console.log('response', response.data);
         // return response.data;
         //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(error.response?.data || 'No response data'),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Exchange Code for access token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+  
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data Exchange Code for access token vrp: ${error}`)
       }
     }
   }
@@ -735,8 +995,39 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return allVrpResponse.data;
-    } catch (error) {
-      console.log('error in getting in vrp calls', error);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get Domestic Consent',
+          scope: 'VRP',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get Domestic Consent',
+          scope: 'VRP',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      throw new Error(`Failed to fetch data for get domestic consent: ${error}`)
     }
   }
   async getDetailsCA(accessToken: any): Promise<any> {
@@ -771,8 +1062,40 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return response.data;
-    } catch (error) {
-      throw new Error(`Failed to fetch token: ${error}`);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get CA Details',
+          scope: 'CVRP',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get CA Details',
+          scope: 'CVRP',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      console.log('error in getting in vrp payments', error);
+      throw new Error(`Failed to fetch data for get CA Details cvrp: ${error}`);
     }
   }
 
@@ -816,9 +1139,42 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
-    } catch (error) {
+    } catch (error:any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'VRP Payments',
+            scope: 'VRP',
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(error.response?.data || 'No response data'),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'VRP Payments',
+            scope: 'VRP',
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+  
+        await logClient.insertLog(logData);
+        
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
     }
+  
   }
 
   async getAllVrpPayments(url: string): Promise<any> {
@@ -869,7 +1225,38 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return allVrpPaymentsResponse.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get All VRP Payments',
+          scope: 'CVRP',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Get All VRP Payments',
+          scope: 'CVRP',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
       console.log('error in getting in vrp payments', error);
     }
   }
@@ -910,8 +1297,41 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return responseRefresh.data.access_token;
-      } catch (error) {
-        throw new Error(`Failed to fetch data: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Refresh Token',
+            scope: 'accounts',
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Refresh Token',
+            scope: 'accounts',
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data refresh token accounts: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -977,8 +1397,39 @@ class SanboxApiFactory {
         refreshToken.consentid,
         grantedformData,
       );
-    } catch (error) {
-      throw new Error(`Failed to fetch data: ${error}`);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Refresh Token',
+          scope: 'VRP',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Refresh Token',
+          scope: 'VRP',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      throw new Error(`Failed to fetch data refresh token vrp: ${error}`);
     }
   }
 
@@ -1032,8 +1483,39 @@ class SanboxApiFactory {
         apiAccess,
         paymentResponse.data.Data.DomesticPaymentId,
       );
-    } catch (error) {
-      throw new Error(`Failed to fetch data for accounts: ${error}`);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Domestic Payments',
+          scope: 'payments',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Domestic Payments',
+          scope: 'payments',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      throw new Error(`Failed to fetch data for accounts domestic payments pisp: ${error}`);
     }
   }
   async getPaymentSatus(
@@ -1079,8 +1561,39 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return payResponse.data.Data;
-    } catch (error) {
-      throw new Error(`Failed to fetch data for accounts: ${error}`);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Payment Status',
+          scope: 'payments',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Payment Status',
+          scope: 'payments',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      throw new Error(`Failed to fetch data for accounts payment status pisp: ${error}`);
     }
   }
   async fetchAccounts(apiAccessToken: string) {
@@ -1126,7 +1639,7 @@ class SanboxApiFactory {
       console.log(aispToStore);
       await androidClientAisp.initDatabaseAndroidAisp(); //create the table
       await androidClientAisp.insertDataAisp(aispToStore);
-    
+
       await androidClientAisp.displayData();
       console.log('ACCOUNT ADDED SUCCESSFULLY');
       //Storing APILOGS
@@ -1146,8 +1659,39 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return accountResponse.data.Data;
-    } catch (error) {
-      throw new Error(`Failed to fetch data for accounts: ${error}`);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Fetch Accounts',
+          scope: this.scopeForThisCall,
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Fetch Accounts',
+          scope: this.scopeForThisCall,
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+      throw new Error(`Failed to fetch data for accounts aisp: ${error}`);
     }
   }
   async allCalls(endPoint: string): Promise<any> {
@@ -1176,25 +1720,58 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-      //Storing APILOGS
-      logData = {
-        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-          2,
-          '0',
-        )}-${String(now.getDate()).padStart(2, '0')}`,
-        time: `${String(now.getHours()).padStart(2, '0')}:${String(
-          now.getMinutes(),
-        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-        api_name: endPoint,
-        scope: this.scopeForThisCall,
-        status: accountResponse.status.toString(),
-        response: JSON.stringify(accountResponse),
-      };
-      await logClient.insertLog(logData);
-      //Storing APILOGS
+        //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: endPoint,
+          scope: this.scopeForThisCall,
+          status: accountResponse.status.toString(),
+          response: JSON.stringify(accountResponse),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return accountResponse.data.Data;
-      } catch (error) {
-        throw new Error(`Failed to fetch data for accounts: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: endPoint,
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: endPoint,
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data for all calls: ${error}`);
       }
     } else if (this.scopeForThisCall == 'payments') {
       return '7777';
@@ -1251,7 +1828,7 @@ class SanboxApiFactory {
           {
             headers: headers,
           },
-        );//Storing APILOGS
+        ); //Storing APILOGS
         logData = {
           date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
             2,
@@ -1260,7 +1837,7 @@ class SanboxApiFactory {
           time: `${String(now.getHours()).padStart(2, '0')}:${String(
             now.getMinutes(),
           ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-          api_name: "Fetch Account with Refresh Token",
+          api_name: 'Fetch Account with Refresh Token',
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
@@ -1268,8 +1845,41 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return accountResponse.data.Data;
-      } catch (error) {
-        throw new Error(`Failed to fetch data for accounts: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Fetch Account with Refresh Token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: 'Fetch Account with Refresh Token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+        throw new Error(`Failed to fetch data for fetch with refresh token : ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -1302,24 +1912,58 @@ class SanboxApiFactory {
         );
 
         //Storing APILOGS
-      logData = {
-        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-          2,
-          '0',
-        )}-${String(now.getDate()).padStart(2, '0')}`,
-        time: `${String(now.getHours()).padStart(2, '0')}:${String(
-          now.getMinutes(),
-        ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-        api_name: endPoint+" with refresh token",
-        scope: this.scopeForThisCall,
-        status: accountResponse.status.toString(),
-        response: JSON.stringify(accountResponse),
-      };
-      await logClient.insertLog(logData);
-      //Storing APILOGS
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: endPoint + ' with refresh token',
+          scope: this.scopeForThisCall,
+          status: accountResponse.status.toString(),
+          response: JSON.stringify(accountResponse),
+        };
+        await logClient.insertLog(logData);
+        //Storing APILOGS
         return accountResponse.data.Data;
-      } catch (error) {
-        throw new Error(`Failed to fetch data for accounts: ${error}`);
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: endPoint + ' with refresh token',
+            scope: this.scopeForThisCall,
+            status: error.response?.status.toString() || 'unknown',
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+          };
+        } else {
+          logData = {
+            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+              2,
+              '0',
+            )}-${String(now.getDate()).padStart(2, '0')}`,
+            time: `${String(now.getHours()).padStart(2, '0')}:${String(
+              now.getMinutes(),
+            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+            api_name: endPoint + ' with refresh token',
+            scope: this.scopeForThisCall,
+            status: 'unknown',
+            response: JSON.stringify(error.message || 'Unknown error'),
+          };
+        }
+
+        await logClient.insertLog(logData);
+
+        throw new Error(`Failed to fetch data with refresh token: ${error}`);
       }
     }
     if (this.scopeForThisCall == 'payments') {
