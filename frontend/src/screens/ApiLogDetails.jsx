@@ -2,6 +2,11 @@ import React from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import {Divider} from 'react-native-paper';
 import ResponseToggler from '../components/ResponseToggler';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const ApiLogDetails = ({route}) => {
   const {log} = route.params; // Get log data from navigation route
@@ -11,8 +16,8 @@ const ApiLogDetails = ({route}) => {
     <ScrollView>
       <View
         style={{
-          padding: 10,
-          marginVertical: 15,
+          padding: wp('2.5%'),
+          marginVertical: hp('3%'),
           justifyContent: 'center',
           alignItems: 'center',
           flex: 1,
@@ -46,10 +51,10 @@ const ApiLogDetails = ({route}) => {
       </View>
       <Text
         style={{
-          fontSize: 20,
+          fontSize: RFValue(20),
           color: '#5a287d',
           fontWeight: 'bold',
-          marginLeft: 20,
+          marginLeft: hp('2%'),
           marginBottom: 10,
         }}>
         Response
@@ -71,32 +76,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(220, 190, 190, 0.6)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 10,
+    paddingVertical: hp('2.5%'),
+    paddingHorizontal: wp('5%'),
+    marginTop: hp('1%'),
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
   },
 
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    marginVertical: hp('0.5%'),
   },
   label: {
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'left',
-    fontSize: 18,
+    fontSize: RFValue(16),
     color: '#5a287d',
   },
   value: {
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'right',
-    fontSize: 18,
+    fontSize: RFValue(16),
     color: 'brown',
   },
 });

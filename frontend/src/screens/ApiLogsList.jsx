@@ -1,18 +1,23 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { DataTable, Text } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import {View, StyleSheet, ScrollView} from 'react-native';
+import {DataTable, Text} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 
-const ApiLogsList = ({ route }) => {
-  const { logs } = route.params; // Get logs data from navigation route
+const ApiLogsList = ({route}) => {
+  const {logs} = route.params; // Get logs data from navigation route
   const navigation = useNavigation(); // Hook for navigation
-  const handleLogPress = (log) => {
-    navigation.navigate('ApiLogDetails', { log }); // Navigate to LogDetailsPage with log data
+  const handleLogPress = log => {
+    navigation.navigate('ApiLogDetails', {log}); // Navigate to LogDetailsPage with log data
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView style={{marginTop: hp('2%')}}>
         <DataTable>
           <DataTable.Header style={styles.header}>
             <DataTable.Title style={[styles.headerCell, styles.expandedCell]}>
@@ -33,19 +38,20 @@ const ApiLogsList = ({ route }) => {
             <DataTable.Row
               key={index}
               onPress={() => handleLogPress(log)}
-              style={index % 2 === 0 ? styles.evenRow : styles.oddRow}
-            >
+              style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
               <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-                <Text style={{ fontSize: 15 }}>{log.date}</Text>
+                <Text style={{fontSize: RFValue(14)}}>{log.date}</Text>
               </DataTable.Cell>
               <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-                <Text style={{ fontSize: 15 }}>{log.time}</Text>
+                <Text style={{fontSize: RFValue(14)}}>{log.time}</Text>
               </DataTable.Cell>
               <DataTable.Cell style={styles.cell}>
-                <Text style={{ fontSize: 15 }}>{log.api_name}</Text>
+                <Text style={{fontSize: RFValue(14)}}>{log.api_name}</Text>
               </DataTable.Cell>
               <DataTable.Cell style={styles.cell}>
-                <Text style={{ fontSize: 15 }}>{log.status.substring(0, 3)}</Text>
+                <Text style={{fontSize: RFValue(14)}}>
+                  {log.status.substring(0, 3)}
+                </Text>
               </DataTable.Cell>
             </DataTable.Row>
           ))}
@@ -58,24 +64,24 @@ const ApiLogsList = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: wp('3%'),
   },
   header: {
     backgroundColor: 'rgba(220, 190, 190, 0.6)',
   },
   headerCell: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: RFValue(17),
   },
   headerText: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: RFValue(16),
   },
   expandedCell: {
     flex: 2,
   },
   cell: {
-    paddingVertical: 10,
+    paddingVertical: hp('2%'),
   },
   evenRow: {
     backgroundColor: '#ffffff',
@@ -86,10 +92,6 @@ const styles = StyleSheet.create({
 });
 
 export default ApiLogsList;
-
-
-
-
 
 // import React from 'react';
 // import {View, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
@@ -128,16 +130,16 @@ export default ApiLogsList;
 //             onPress={() => handleLogPress(log)}
 //             style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
 //             <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-//               <Text style={{fontSize: 15}}>{log.date}</Text>
+//               <Text style={{ fontSize: RFValue(15)}}>{log.date}</Text>
 //             </DataTable.Cell>
 //             <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-//               <Text style={{fontSize: 15}}>{log.time}</Text>
+//               <Text style={{ fontSize: RFValue(15)}}>{log.time}</Text>
 //             </DataTable.Cell>
 //             <DataTable.Cell style={styles.cell}>
-//               <Text style={{fontSize: 15}}>{log.api_name}</Text>
+//               <Text style={{ fontSize: RFValue(15)}}>{log.api_name}</Text>
 //             </DataTable.Cell>
 //             <DataTable.Cell style={styles.cell}>
-//               <Text style={{fontSize: 15}}> {log.status.substring(0, 3)}</Text>
+//               <Text style={{ fontSize: RFValue(15)}}> {log.status.substring(0, 3)}</Text>
 //             </DataTable.Cell>
 //           </DataTable.Row>
 //         ))}

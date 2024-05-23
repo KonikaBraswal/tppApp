@@ -1,18 +1,28 @@
 //final draft
+
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, Alert, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {
+  insertLog,
+  displayResults,
+  deleteAllLogs,
+  deleteApiLogsTable,
+  alterApiLogsTable,
+} from '../../database/DatabaseLogs';
 import {useNavigation} from '@react-navigation/native';
-import ApiLogsDb from '../../DatabaseFactory/ApiLogsDb';
-const logClient=new ApiLogsDb('NWG','Sandbox','logs');
 
 const ApiLogs = () => {
   const navigation = useNavigation();
   const [isDataInserted, setIsDataInserted] = useState(false);
   const [retrievedData, setRetrievedData] = useState([]);
-  
-  const handleInsertData = async () => {
-    await logClient.initDatabaseApi();
+
+  const handleInsertData = () => {
     const now = new Date();
     const details1 = {
       date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -41,13 +51,16 @@ const ApiLogs = () => {
       }`,
     };
 
-    await logClient.insertLog(details1);
+    insertLog(details1);
     setIsDataInserted(true);
+    Alert.alert('Successfully', 'Data Inserted', [
+      {text: 'OK', onPress: () => console.log('Data Inserted')},
+    ]);
   };
 
   const handlePrintData = async () => {
     try {
-      const data = await logClient.displayResults();
+      const data = await displayResults();
       setRetrievedData(data);
       navigation.navigate('ApiLogsList', {logs: data});
     } catch (error) {
@@ -57,7 +70,7 @@ const ApiLogs = () => {
 
   const handleDeleteLogs = async () => {
     try {
-      await logClient.deleteAllLogs();
+      await deleteAllLogs();
       setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting logs:', error);
@@ -66,7 +79,7 @@ const ApiLogs = () => {
 
   const handleDeleteTable = async () => {
     try {
-      await logClient.deleteApiLogsTable();
+      await deleteApiLogsTable();
       setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting table:', error);
@@ -75,7 +88,7 @@ const ApiLogs = () => {
 
   const handleAlterTable = async () => {
     try {
-      await logClient.alterApiLogsTable();
+      await alterApiLogsTable();
       console.log('apiLogs table altered successfully');
     } catch (error) {
       console.error('Error altering table:', error);
@@ -84,32 +97,85 @@ const ApiLogs = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Api Logs Page</Text>
+      <Text style={styles.title}>APILOG DASHBOARD</Text>
 
-      <Button mode="contained" onPress={handleInsertData} style={styles.button}>
-        Insert Dummy Data
+      <Button
+        icon="basket-fill"
+        mode="contained"
+        onPress={handleInsertData}
+        style={styles.button}
+        labelStyle={{
+          fontSize: RFValue(16),
+          fontWeight: 'bold',
+          color: 'brown',
+        }}>
+        Insert Data
       </Button>
 
-      <Button mode="contained" onPress={handlePrintData} style={styles.button}>
+      <Button
+        icon="printer"
+        mode="contained"
+        onPress={handlePrintData}
+        style={styles.button}
+        labelStyle={{
+          fontSize: RFValue(16),
+          fontWeight: 'bold',
+          color: 'brown',
+        }}>
         Print Data
       </Button>
 
-      <Button mode="contained" onPress={handleAlterTable} style={styles.button}>
+      <Button
+        icon="update"
+        mode="contained"
+        onPress={handleAlterTable}
+        style={styles.button}
+        labelStyle={{
+          fontSize: RFValue(16),
+          fontWeight: 'bold',
+          color: 'brown',
+        }}>
         Alter Table
       </Button>
 
-      <Button mode="contained" onPress={handleDeleteLogs} style={styles.button}>
+      <Button
+        icon="delete"
+        mode="contained"
+        onPress={handleDeleteLogs}
+        style={styles.button}
+        labelStyle={{
+          fontSize: RFValue(16),
+          fontWeight: 'bold',
+          color: 'brown',
+        }}>
         Delete Logs
       </Button>
 
       <Button
+        icon="delete-sweep"
         mode="contained"
         onPress={handleDeleteTable}
-        style={styles.button}>
+        style={styles.button}
+        labelStyle={{
+          fontSize: RFValue(16),
+          fontWeight: 'bold',
+          color: 'brown',
+        }}>
         Delete Table
       </Button>
 
-      {isDataInserted && <Text>Data inserted successfully!</Text>}
+      {/* {isDataInserted && <Text>Data inserted successfully!</Text>} */}
+
+      {/* {retrievedData.length > 0 && (
+        <View style={styles.retrievedDataContainer}>
+          <Text style={styles.retrievedDataTitle}>Retrieved Data:</Text>
+          {retrievedData.map((item, index) => (
+            <Text key={index} style={styles.retrievedDataItem}>
+              {`Date: ${item.date}, Time: ${item.time}, API Name: ${item.api_name}, Scope: ${item.scope}, Status: ${item.status}, Response: ${item.response}`}
+            </Text>
+          ))}
+        </View>
+      )} */}
     </View>
   );
 };
@@ -117,31 +183,33 @@ const ApiLogs = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: hp('2%'),
   },
   title: {
-    fontSize: 30,
+    fontSize: RFValue(22),
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginVertical: hp('2%'),
+    color: 'green',
   },
   button: {
-    marginVertical: 10,
+    marginVertical: hp('1.2%'),
+    padding: wp('2.5%'),
     width: '100%',
+    backgroundColor: 'rgba(220, 190, 190, 0.8)',
+    borderRadius: 4,
   },
   retrievedDataContainer: {
-    marginTop: 20,
+    marginTop: hp('1%'),
     alignItems: 'flex-start',
   },
   retrievedDataTitle: {
-    fontSize: 20,
-    marginBottom: 10,
+    fontSize: RFValue(18),
+    marginBottom: hp('1%'),
   },
   retrievedDataItem: {
-    fontSize: 16,
+    fontSize: RFValue(15),
   },
 });
 
 export default ApiLogs;
-
