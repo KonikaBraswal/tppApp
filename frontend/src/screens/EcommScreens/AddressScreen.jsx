@@ -93,7 +93,7 @@ const AddressScreen = ({route}) => {
         }}
         activeOpacity={1}
       >
-        <Text style={styles.buttonText}>Get my personal and banking data</Text>
+        <Text style={styles.buttonText}>Take me to my bank</Text>
       </TouchableOpacity>
 
       <View style={styles.line} />

@@ -256,7 +256,7 @@ const BankList = ({ route }) => {
           icon={() => <Icon source="magnify" color="black" size={20} />}
           style={{
             borderRadius: 5,
-            backgroundColor: '#f4ebfe',
+            backgroundColor: '#E0FCFD',
           }}
         />
         {/* <Button onPress={submit} title="Press">Press</Button> */}

@@ -8,7 +8,15 @@ import {StyleSheet} from 'react-native';
 
 const VrpDebitor = props => {
   const debitordetails = props.account;
-  console.log('det', debitordetails);
+  let name;
+  console.log('det', debitordetails.Initiation.CreditorAccount.Name);
+  if(debitordetails.Initiation.CreditorAccount.Name=='Natwest Cart'){
+    name='Ron Savage';
+  }
+  else{
+    name=debitordetails.DebtorAccount.Name;
+  }
+
   return (
     <Card style={styles.card}>
       <Card.Content style={{flexDirection: 'column'}}>
@@ -16,7 +24,7 @@ const VrpDebitor = props => {
           Debitor Account Number: {debitordetails.DebtorAccount.Identification}
         </Text>
         <Text style={styles.balanceText}>
-          Debitor Account Name: {debitordetails.DebtorAccount.Name}
+          Debitor Account Name: {name}
         </Text>
       </Card.Content>
     </Card>

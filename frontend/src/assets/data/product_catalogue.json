@@ -166,7 +166,7 @@
           "RAM": "2 GB",
           "title": "Redmi 9A (Nature Green, 2GB RAM, 32GB Storage)",
           "category": "Mobiles",
-          "price": 6999,
+          "price": 1199,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/redmi9A1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/redmi9A2.jpg"
@@ -208,7 +208,7 @@
           "RAM": "6 GB",
           "title": "Samsung Galaxy M31 (Ocean Blue, 6GB RAM, 128GB Storage)",
           "category": "Mobiles",
-          "price": 14999,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/SamsungM311.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/SamsungM312.jpg"
@@ -250,7 +250,7 @@
           "RAM": "6 GB",
           "title": "Apple iPhone 12 Pro Max (128GB)",
           "category": "Mobiles",
-          "price": 119999,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/iphone12M1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/iphone12M2.jpg"
@@ -291,7 +291,7 @@
           "RAM": "8 GB",
           "title": "OnePlus Nord CE 5G (Charcoal Ink, 8GB RAM, 128GB Storage)",
           "category": "Mobiles",
-          "price": 24999,
+          "price": 1299,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/oneplusN1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/oneplusN2.jpg"
@@ -373,7 +373,7 @@
           "RAM": "6 GB",
           "title": "realme narzo 30 (Racing Blue, 6GB RAM, 128GB Storage)",
           "category": "Mobiles",
-          "price": 14999,
+          "price": 999,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/realmeNazro1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/realmeNazro2.jpg"
@@ -409,7 +409,7 @@
           "RAM": "4 GB",
           "title": "OPPO A54 (Starry Blue, 4GB RAM, 128GB Storage)",
           "category": "Mobiles",
-          "price": 15490,
+          "price": 999,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/oppophone1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/oppophone2.jpg"
@@ -445,7 +445,7 @@
           "RAM": "8 GB",
           "title": "Vivo S1 Pro (Jazzy Blue, 8GB RAM, 128GB Storage)",
           "category": "Mobiles",
-          "price": 29999,
+          "price": 999,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/vivo1.jpg"
           ],
@@ -474,7 +474,7 @@
           "RAM": "8 GB",
           "title": "Mi 11X 5G Cosmic Black 8GB RAM 128GB ROM",
           "category": "Mobiles",
-          "price": 31999,
+          "price": 1199,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/miphone1.jpg"
           ],
@@ -503,7 +503,7 @@
           "RAM": "6 GB",
           "title": "Apple iPhone XR (64GB) - White",
           "category": "Mobiles",
-          "price": 41999,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/iphonXR1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/iphonXR2.jpg"
@@ -541,7 +541,7 @@
           "Genre": "Fiction",
           "title": "The Monk Who Sold His Ferrari",
           "category": "Books",
-          "price": 159,
+          "price": 699,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/monksoldhisferrari.jpg"
           ],
@@ -576,7 +576,7 @@
           "Genre": "Historical",
           "title": "The Immortals of Meluha (Shiva Trilogy)",
           "category": "Books",
-          "price": 299,
+          "price": 699,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/meluha.jpg"
           ],
@@ -611,7 +611,7 @@
           "Genre": "Romance",
           "title": "Wuthering Heights (Emily Brontë)",
           "category": "Books",
-          "price": 69,
+          "price": 699,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/Wuthering.jpg"
           ],
@@ -646,7 +646,7 @@
           "Genre": "Mystery",
           "title": "Byomkesh Bakshi ki Rahasyamayi Kahaniyan",
           "category": "Books",
-          "price": 139,
+          "price": 739,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/bumkeshbakshi.jpg"
           ],
@@ -681,7 +681,7 @@
           "Genre": "Historical",
           "title": "Pride and Prejudice",
           "category": "Books",
-          "price": 79,
+          "price": 799,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/prideandprejudice.jpg"
           ],
@@ -716,7 +716,7 @@
           "Genre": "Humour",
           "title": "The Ultimate Hitchhiker's Guide to the Galaxy: The Complete Trilogy in Five Parts",
           "category": "Books",
-          "price": 507,
+          "price": 707,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/guidetogalaxy.jpg"
           ],
@@ -745,7 +745,7 @@
           "Genre": "Humour",
           "title": "Green Humour for a Greying Planet",
           "category": "Books",
-          "price": 258,
+          "price": 758,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/greyhumour.jpg"
           ],
@@ -775,7 +775,7 @@
           "Genre": "Historical",
           "title": "Sunderkand (Hindi) - Goswami Tulsidas",
           "category": "Books",
-          "price": 99,
+          "price": 799,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/sunderkand.jpg"
           ],
@@ -804,7 +804,7 @@
           "Genre": "Poetry",
           "title": "Phir Meri Yaad - Hindi - Kumar Vishwas",
           "category": "Books",
-          "price": 159,
+          "price": 759,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/phirmeriyaad.jpg"
           ],
@@ -833,7 +833,7 @@
           "Genre": "Historical",
           "title": "Kabir: The life and work of the early modern poet",
           "category": "Books",
-          "price": 431,
+          "price": 831,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kabirkabir.jpg"
           ],
@@ -862,7 +862,7 @@
           "For": "Men",
           "title": "AEROPOSTALE Men's Casual Shirt",
           "category": "Clothings",
-          "price": 549,
+          "price": 749,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/shirt.jpg"
           ],
@@ -902,7 +902,7 @@
           "For": "Women",
           "title": "ANNI DESIGNER Khadi Silk with Blouse Piece Saree",
           "category": "Clothings",
-          "price": 299,
+          "price": 999,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/saaree.jpg"
           ],
@@ -940,7 +940,7 @@
           "For": "Women",
           "title": "Women's Stylish Plain Up and Down Cotton Tshirt",
           "category": "Clothings",
-          "price": 449,
+          "price": 849,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/womentop.jpg"
           ],
@@ -980,7 +980,7 @@
           "For": "Kids",
           "title": "Unisex-Baby Regular Vest (100% Cotton)",
           "category": "Clothings",
-          "price": 499,
+          "price": 799,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kidvest1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kidvest2.jpg"
@@ -1018,7 +1018,7 @@
           "For": "Men",
           "title": "Ben Martin Men's Regular Fit Denim Jeans",
           "category": "Clothings",
-          "price": 698,
+          "price": 1098,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/mensjeans.jpg"
           ],
@@ -1137,7 +1137,7 @@
           "For": "Kids",
           "title": "Festive & Party Kurta Pyjama Set for Baby Boys (WKP)",
           "category": "Clothings",
-          "price": 449,
+          "price": 949,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kidkurtha.jpg"
           ],
@@ -1230,7 +1230,7 @@
           "Type": "Bath and Body",
           "title": "Dove Deeply Nourishing Body Wash",
           "category": "Beauty",
-          "price": 324,
+          "price": 624,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/dovebodylotion.jpg"
           ],
@@ -1269,7 +1269,7 @@
           "Type": "Fragrance",
           "title": "Park Avenue Good Morning Perfume Intense Body Spray, 150ml",
           "category": "Beauty",
-          "price": 159,
+          "price": 759,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/parkavenueperfume.jpg"
           ],
@@ -1308,7 +1308,7 @@
           "Type": "Fragrance",
           "title": "NIVEA Men Deodorant Fresh Active Original, 150ml",
           "category": "Beauty",
-          "price": 299,
+          "price": 899,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/fragrancedeonevia.jpg"
           ],
@@ -1348,7 +1348,7 @@
           "Type": "Skin Care",
           "title": "WOW Skin Science Apple Cider Vinegar Foaming Face Wash, 150ml",
           "category": "Beauty",
-          "price": 359,
+          "price": 859,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/wowskincare.jpg"
           ],
@@ -1388,7 +1388,7 @@
           "Type": "Hair Care",
           "title": "Parachute jumbo pack 100% pure coconut oil, 600ml",
           "category": "Beauty",
-          "price": 227,
+          "price": 827,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/coconutoil.jpg"
           ],
@@ -1430,7 +1430,7 @@
           "Type": "Skin Care",
           "title": "The Body Shop British Rose Shower Gel, 250ml",
           "category": "Beauty",
-          "price": 345,
+          "price": 945,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/roseShowerGel.jpg"
           ],
@@ -1464,7 +1464,7 @@
           "Type": "Skin Care",
           "title": "Vaseline Intensive Care Deep Moisture Body Lotion, 400ml",
           "category": "Beauty",
-          "price": 276,
+          "price": 776,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/vaslinebodylotion.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/vaslinebodylotion2.jpg"
@@ -1500,7 +1500,7 @@
           "Type": "Hair Care",
           "title": "L'Oréal Professionnel Steampod 3.0 Steam Hair Straightener & Styling Tool",
           "category": "Beauty",
-          "price": 24800,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/Straightener1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/Straightener2.jpg"
@@ -1529,7 +1529,7 @@
           "Type": "Makeup",
           "title": "Lakmé Eyeconic Kajal Twin Pack, Smudge Proof, Water Proof",
           "category": "Beauty",
-          "price": 268,
+          "price": 1068,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kajal1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/kajal2.jpg"
@@ -1605,7 +1605,7 @@
           "Type": "Office Chair",
           "title": "Umbrella Base Office Chair (Standard, Black)",
           "category": "Furniture",
-          "price": 3199,
+          "price": 1199,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/officechairumbrella.jpg"
           ],
@@ -1647,7 +1647,7 @@
           "Type": "Desk",
           "title": "Wood Study Desk(Wenge Finish,Wenge)",
           "category": "Furniture",
-          "price": 3775,
+          "price": 1775,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/desk.jpg"
           ],
@@ -1687,7 +1687,7 @@
           "Type": "Beds",
           "title": "King Size Sliding Door Bed with Box Storage",
           "category": "Furniture",
-          "price": 21950,
+          "price": 1950,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/bedwithstorage.jpg"
           ],
@@ -1726,7 +1726,7 @@
           "Type": "Sofas",
           "title": "Home Centre Emily Fabric 5 Seater Sectional Sofa Set (Beige)",
           "category": "Furniture",
-          "price": 32899,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/sofa1.jpg"
           ],
@@ -1766,7 +1766,7 @@
           "Type": "Wardrobes",
           "title": "Solimo Pyxis Engineered Wood Wardrobe Mahogany, 2 Doors",
           "category": "Furniture",
-          "price": 9089,
+          "price": 1089,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/wardrobe1.jpg"
           ],
@@ -1811,7 +1811,7 @@
           "HasSSD": "No",
           "title": "HP 15 (2021) Thin & Light Ryzen 3-3250 Laptop, 8 GB RAM, 1TB HDD, 39.62 cms (15.6`) FHD Screen, Windows 10, MS Office (15s-gr0011AU)",
           "category": "Laptops",
-          "price": 37590,
+          "price": 1490,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/studentLaptophp1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/studentLaptophp2.jpg"
@@ -1859,7 +1859,7 @@
           "HasSSD": "Yes",
           "title": "Dell Inspiron 3501 15.6` FHD Display Laptop (i3-1115G4 / 4GB / 256GB SSD / Integrated Graphics / Win10 + MSO / Accent Black)",
           "category": "Laptops",
-          "price": 38890,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/travelLaptop1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/travelLaptop2.jpg"
@@ -1900,7 +1900,7 @@
           "HasSSD": "Yes",
           "title": "Lenovo IdeaPad Slim 3 10th Gen Intel Core i5 15.6` (39.62cms) Full HD IPS Thin and Light Laptop (8GB/512GB SSD/Windows 10/MS Office 2019/Fingerprint Reader/Platinum Grey/1.85Kg)",
           "category": "Laptops",
-          "price": 57200,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/codingLaptop1.jpg"
           ],
@@ -1942,7 +1942,7 @@
           "HasSSD": "Yes",
           "title": "ASUS ROG Zephyrus G14, 14` (35.56 cms) QHD, Ryzen 9 4900HS, GTX 1660Ti Max-Q 6GB GDDR6 Graphics, Gaming Laptop (16GB/1TB SSD/MS Office 2019/Windows 10/ White/Anime Matrix/1.7 Kg)",
           "category": "Laptops",
-          "price": 111990,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/gamingLaptop1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/gamingLaptop2.jpg"
@@ -1985,7 +1985,7 @@
           "HasSSD": "No",
           "title": "Apple MacBook Pro 2019 (16-inch/40.65 cm, 16GB RAM, 1TB Storage, 2.3GHz 9th Gen Intel Core i9) - Space Grey",
           "category": "Laptops",
-          "price": 215490,
+          "price": 1499,
           "imgs": [
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/appleLaptop1.jpg",
               "https://raw.githubusercontent.com/seebham/ecommerce-dummy-data/main/images/appleLaptop2.jpg"

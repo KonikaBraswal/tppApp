@@ -65,7 +65,6 @@ const SecondCvrpCall = ({ route }) => {
       <ScrollView style={{ backgroundColor: '#A6E4FD', flex: 1 }}>
         <View style={styles.container}>
           {/* to add multiple styles */}
-          {/* <Text style={[styles.title, { color: '#00B0FF' }]}>Make A Payment</Text> */}
           <View style={{ height: wp('5%') }} />
           <Text style={{ fontSize: wp('5%'),fontWeight:'bold' }}>Selected Account</Text>
           <Card style={styles.card}>

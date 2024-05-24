@@ -196,15 +196,15 @@ const CartScreen = () => {
               )}
               <TotalCost
                 SubTotal={totalPrice}
-                ShippingCost="€5.00"
-                Tax="€0.00"
+                ShippingCost="£5.00"
+                Tax="£0.00"
               />
             </>
           )}
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={() => handleCheckout(totalPrice, "€5.00" , "€0.00" )}
+        onPress={() => handleCheckout(totalPrice, "£5.00" , "£0.00" )}
         style={styles.footer}
         activeOpacity={1}>
         <Text style={styles.footerText}>Checkout</Text>
