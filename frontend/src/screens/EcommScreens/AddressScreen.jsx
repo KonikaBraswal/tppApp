@@ -75,7 +75,7 @@ const AddressScreen = ({route}) => {
       <Text style={styles.heading}><Text style={styles.icon}>&#9997;</Text>Your details</Text>
 
       <Text style={styles.text}>
-        We just need a few details to set up your account and confirm your affordability
+        We just need a few details to set up your account
       </Text>
 
       <Text style={styles.title}>
@@ -93,7 +93,7 @@ const AddressScreen = ({route}) => {
         }}
         activeOpacity={1}
       >
-        <Text style={styles.buttonText}>Take me to my bank</Text>
+        <Text style={styles.buttonText}>Take me to my Bank</Text>
       </TouchableOpacity>
 
       <View style={styles.line} />
