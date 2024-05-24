@@ -19,7 +19,7 @@ const TotalCost = props => {
           marginVertical: hp('0.8%'),
         }}>
         <Text style={styles.total}>Subtotal </Text>
-        <Text style={styles.total}>€{SubTotal} </Text>
+        <Text style={styles.total}>£{SubTotal} </Text>
       </View>
       <View
         style={{
@@ -50,7 +50,7 @@ const TotalCost = props => {
         }}>
         <Text style={styles.total}>Total </Text>
         <Text style={styles.total}>
-          €
+        £
           {SubTotal +
             Number(ShippingCost.substring(1)) +
             Number(Tax.substring(1))}

@@ -96,7 +96,7 @@ const CartItem = props => {
         <View style={styles.detailsContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{product.title}</Text>
-            <Text style={styles.price}>€ {product.price}</Text>
+            <Text style={styles.price}>£ {product.price}</Text>
           </View>
           <View style={styles.infoContainer}>
             {product.category === 'Mobiles' ? (
