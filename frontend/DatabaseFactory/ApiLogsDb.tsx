@@ -114,7 +114,7 @@ class ApiLogsDb {
   async displayResults() {
     try {
       const data = await this.retrieveData();
-      console.log('Retrieved data:', data);
+      //console.log('Retrieved data:', data);
       return data;
     } catch (error) {
       console.error('Error:', error);

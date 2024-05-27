@@ -8,13 +8,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {
-  insertLog,
-  displayResults,
-  deleteAllLogs,
-  deleteApiLogsTable,
-  alterApiLogsTable,
-} from '../../database/DatabaseLogs';
+import ApiLogsDb from '../../DatabaseFactory/ApiLogsDb';
+const logClient=new ApiLogsDb('NWG','Sandbox','logs');
 import {useNavigation} from '@react-navigation/native';
 
 const ApiLogs = () => {
@@ -22,7 +17,8 @@ const ApiLogs = () => {
   const [isDataInserted, setIsDataInserted] = useState(false);
   const [retrievedData, setRetrievedData] = useState([]);
 
-  const handleInsertData = () => {
+  const handleInsertData = async () => {
+    await logClient.initDatabaseApi();
     const now = new Date();
     const details1 = {
       date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -51,7 +47,7 @@ const ApiLogs = () => {
       }`,
     };
 
-    insertLog(details1);
+    await logClient.initDatabaseApi();
     setIsDataInserted(true);
     Alert.alert('Data Inserted', 'Successfully', [
       {text: 'OK', onPress: () => console.log('Data Inserted')},
@@ -60,7 +56,7 @@ const ApiLogs = () => {
 
   const handlePrintData = async () => {
     try {
-      const data = await displayResults();
+      const data = await logClient.displayResults();
       setRetrievedData(data);
       navigation.navigate('ApiLogsList', {logs: data});
     } catch (error) {
@@ -70,7 +66,7 @@ const ApiLogs = () => {
 
   const handleDeleteLogs = async () => {
     try {
-      await deleteAllLogs();
+      await logClient.deleteAllLogs();
       setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting logs:', error);
@@ -79,7 +75,7 @@ const ApiLogs = () => {
 
   const handleDeleteTable = async () => {
     try {
-      await deleteApiLogsTable();
+      await logClient.deleteApiLogsTable();
       setRetrievedData([]);
     } catch (error) {
       console.error('Error deleting table:', error);
@@ -88,7 +84,7 @@ const ApiLogs = () => {
 
   const handleAlterTable = async () => {
     try {
-      await alterApiLogsTable();
+      await logClient.alterApiLogsTable();
       console.log('apiLogs table altered successfully');
     } catch (error) {
       console.error('Error altering table:', error);
