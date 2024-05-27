@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "expo-cli": "^6.3.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.6",
+    "@babel/preset-env": "^7.24.6",
+    "@babel/preset-react": "^7.24.6",
+    "metro-core": "^0.80.9"
+  }
+}

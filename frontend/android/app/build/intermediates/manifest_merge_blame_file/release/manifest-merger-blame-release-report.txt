@@ -1,0 +1,105 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.frontend"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:3:5-67
+11-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:3:22-64
+12    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+12-->[:react-native-keychain] C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\node_modules\react-native-keychain\android\build\intermediates\merged_manifest\release\AndroidManifest.xml:7:5-72
+12-->[:react-native-keychain] C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\node_modules\react-native-keychain\android\build\intermediates\merged_manifest\release\AndroidManifest.xml:7:22-69
+13    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+13-->[:react-native-keychain] C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\node_modules\react-native-keychain\android\build\intermediates\merged_manifest\release\AndroidManifest.xml:8:5-74
+13-->[:react-native-keychain] C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\node_modules\react-native-keychain\android\build\intermediates\merged_manifest\release\AndroidManifest.xml:8:22-71
+14
+15    <permission
+15-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+16        android:name="com.frontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+16-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+17        android:protectionLevel="signature" />
+17-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+18
+19    <uses-permission android:name="com.frontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+19-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+19-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+20
+21    <application
+21-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:5:5-24:19
+22        android:name="com.frontend.MainApplication"
+22-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:6:7-38
+23        android:allowBackup="false"
+23-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:10:7-34
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.9.0] C:\Users\HP\.gradle\caches\transforms-3\13659b94c66de92d98d7f8af61234b95\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+25        android:extractNativeLibs="true"
+26        android:icon="@mipmap/ic_launcher"
+26-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:8:7-41
+27        android:label="@string/app_name"
+27-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:7:7-39
+28        android:roundIcon="@mipmap/ic_launcher_round"
+28-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:9:7-52
+29        android:theme="@style/AppTheme" >
+29-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:11:7-38
+30        <activity
+30-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:12:7-23:18
+31            android:name="com.frontend.MainActivity"
+31-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:13:9-37
+32            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+32-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:15:9-118
+33            android:exported="true"
+33-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:18:9-32
+34            android:label="@string/app_name"
+34-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:14:9-41
+35            android:launchMode="singleTask"
+35-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:16:9-40
+36            android:windowSoftInputMode="adjustPan" >
+36-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:17:9-48
+37            <intent-filter>
+37-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:19:9-22:25
+38                <action android:name="android.intent.action.MAIN" />
+38-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:20:13-65
+38-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:20:21-62
+39
+40                <category android:name="android.intent.category.LAUNCHER" />
+40-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:21:13-73
+40-->C:\Users\HP\Desktop\REACTCLI\tppApp\frontend\android\app\src\main\AndroidManifest.xml:21:23-70
+41            </intent-filter>
+42        </activity>
+43
+44        <provider
+44-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+45            android:name="androidx.startup.InitializationProvider"
+45-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+46            android:authorities="com.frontend.androidx-startup"
+46-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+47            android:exported="false" >
+47-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+48            <meta-data
+48-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+49                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+49-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+50                android:value="androidx.startup" />
+50-->[androidx.emoji2:emoji2:1.2.0] C:\Users\HP\.gradle\caches\transforms-3\faa3592d2fc203d6c74b9a5f601058a1\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+51            <meta-data
+51-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\HP\.gradle\caches\transforms-3\71b91ea8216105cda74b0317da307340\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+52                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+52-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\HP\.gradle\caches\transforms-3\71b91ea8216105cda74b0317da307340\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+53                android:value="androidx.startup" />
+53-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\HP\.gradle\caches\transforms-3\71b91ea8216105cda74b0317da307340\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+54        </provider>
+55
+56        <meta-data
+56-->[com.facebook.soloader:soloader:0.10.5] C:\Users\HP\.gradle\caches\transforms-3\03d018e18e7118763cc731de8f689ba0\transformed\jetified-soloader-0.10.5\AndroidManifest.xml:12:9-14:37
+57            android:name="com.facebook.soloader.enabled"
+57-->[com.facebook.soloader:soloader:0.10.5] C:\Users\HP\.gradle\caches\transforms-3\03d018e18e7118763cc731de8f689ba0\transformed\jetified-soloader-0.10.5\AndroidManifest.xml:13:13-57
+58            android:value="false" />
+58-->[com.facebook.soloader:soloader:0.10.5] C:\Users\HP\.gradle\caches\transforms-3\03d018e18e7118763cc731de8f689ba0\transformed\jetified-soloader-0.10.5\AndroidManifest.xml:14:13-34
+59    </application>
+60
+61</manifest>
