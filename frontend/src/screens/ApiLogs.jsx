@@ -2,14 +2,14 @@
 
 import React, {useState} from 'react';
 import {View, Text, Alert, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, Icon} from 'react-native-paper';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ApiLogsDb from '../../DatabaseFactory/ApiLogsDb';
-const logClient=new ApiLogsDb('NWG','Sandbox','logs');
+const logClient = new ApiLogsDb('NWG', 'Sandbox', 'logs');
 import {useNavigation} from '@react-navigation/native';
 
 const ApiLogs = () => {
@@ -40,8 +40,8 @@ const ApiLogs = () => {
         },
         "body": {
           "id": "1234",
-          "username": "khushiujjawal",
-          "email": "khushiujjawal@yahoo.com",
+          "username": "xyz",
+          "email": "xyz@yahoo.com",
           "created_at": "2024-05-20T12:00:00Z"
         }
       }`,
@@ -93,85 +93,80 @@ const ApiLogs = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>APILOG DASHBOARD</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <Icon source="chart-bar" color="brown" size={28} />
+        <Text style={styles.title}>APILOG DASHBOARD</Text>
+      </View>
 
       <Button
         icon="basket-fill"
-        mode="contained"
+        mode="contained-tonal"
         onPress={handleInsertData}
         style={styles.button}
         labelStyle={{
           fontSize: RFValue(16),
           fontWeight: 'bold',
-          color: 'brown',
+          color: '#5a287d',
         }}>
         Insert Data
       </Button>
 
       <Button
         icon="printer"
-        mode="contained"
+        mode="contained-tonal"
         onPress={handlePrintData}
         style={styles.button}
         labelStyle={{
           fontSize: RFValue(16),
           fontWeight: 'bold',
-          color: 'brown',
+          color: '#5a287d',
         }}>
         Print Data
       </Button>
 
       <Button
         icon="update"
-        mode="contained"
+        mode="contained-tonal"
         onPress={handleAlterTable}
         style={styles.button}
         labelStyle={{
           fontSize: RFValue(16),
           fontWeight: 'bold',
-          color: 'brown',
+          color: '#5a287d',
         }}>
         Alter Table
       </Button>
 
       <Button
         icon="delete"
-        mode="contained"
+        mode="contained-tonal"
         onPress={handleDeleteLogs}
         style={styles.button}
         labelStyle={{
           fontSize: RFValue(16),
           fontWeight: 'bold',
-          color: 'brown',
+          color: '#5a287d',
         }}>
         Delete Logs
       </Button>
 
       <Button
         icon="delete-sweep"
-        mode="contained"
+        mode="contained-tonal"
         onPress={handleDeleteTable}
         style={styles.button}
         labelStyle={{
           fontSize: RFValue(16),
           fontWeight: 'bold',
-          color: 'brown',
+          color: '#5a287d',
         }}>
         Delete Table
       </Button>
-
-      {/* {isDataInserted && <Text>Data inserted successfully!</Text>} */}
-
-      {/* {retrievedData.length > 0 && (
-        <View style={styles.retrievedDataContainer}>
-          <Text style={styles.retrievedDataTitle}>Retrieved Data:</Text>
-          {retrievedData.map((item, index) => (
-            <Text key={index} style={styles.retrievedDataItem}>
-              {`Date: ${item.date}, Time: ${item.time}, API Name: ${item.api_name}, Scope: ${item.scope}, Status: ${item.status}, Response: ${item.response}`}
-            </Text>
-          ))}
-        </View>
-      )} */}
     </View>
   );
 };
@@ -186,6 +181,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(22),
     fontWeight: 'bold',
     marginVertical: hp('2%'),
+    marginHorizontal: hp('1%'),
     color: 'green',
   },
   button: {
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
     padding: wp('2.5%'),
     width: '100%',
     backgroundColor: 'rgba(220, 190, 190, 0.8)',
-    borderRadius: 4,
+    borderRadius: 5,
   },
   retrievedDataContainer: {
     marginTop: hp('1%'),

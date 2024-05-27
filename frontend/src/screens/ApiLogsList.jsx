@@ -23,10 +23,12 @@ const ApiLogsList = ({route}) => {
             <DataTable.Title style={[styles.headerCell, styles.expandedCell]}>
               <Text style={styles.headerText}>Date</Text>
             </DataTable.Title>
-            <DataTable.Title style={[styles.headerCell, styles.expandedCell]}>
-              <Text style={styles.headerText}>Time</Text>
-            </DataTable.Title>
-            <DataTable.Title style={styles.headerCell}>
+            <DataTable.Title
+              style={[
+                styles.headerCell,
+                styles.expandedCell,
+                {marginLeft: hp('8%')},
+              ]}>
               <Text style={styles.headerText}>API</Text>
             </DataTable.Title>
             <DataTable.Title style={styles.headerCell}>
@@ -40,15 +42,22 @@ const ApiLogsList = ({route}) => {
               onPress={() => handleLogPress(log)}
               style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
               <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-                <Text style={{fontSize: RFValue(14)}}>{log.date}</Text>
+                <View style={{flexDirection: 'column'}}>
+                  <Text style={{fontSize: RFValue(14)}}>{log.date}</Text>
+                  <Text style={{fontSize: RFValue(14)}}>{log.time}</Text>
+                </View>
               </DataTable.Cell>
+
               <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
-                <Text style={{fontSize: RFValue(14)}}>{log.time}</Text>
+                <Text style={{fontSize: RFValue(14), textAlign: 'center'}}>
+                  {log.api_name}
+                </Text>
               </DataTable.Cell>
-              <DataTable.Cell style={styles.cell}>
-                <Text style={{fontSize: RFValue(14)}}>{log.api_name}</Text>
-              </DataTable.Cell>
-              <DataTable.Cell style={styles.cell}>
+              <DataTable.Cell
+                style={{
+                  justifyContent: 'center',
+                  paddingVertical: hp('2%'),
+                }}>
                 <Text style={{fontSize: RFValue(14)}}>
                   {log.status.substring(0, 3)}
                 </Text>
