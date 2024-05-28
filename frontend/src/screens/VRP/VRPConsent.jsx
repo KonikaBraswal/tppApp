@@ -40,7 +40,6 @@ const switchEnvironment = (newEnv) => {
 const VRPConsent = ({ route }) => {
     useEffect(() => {
         const newApiClient = switchEnvironment(global.env);
-    
         setEnvApiClient(newApiClient);
         return () => {
         };
@@ -107,27 +106,14 @@ const VRPConsent = ({ route }) => {
     const handleConfirmButtonClick = async () => {
         console.log("calling mode in VRP",global.env);
             try {
-                const permissions = jsondata;
-
                 setLoading(true);
                 setError(null);
-                const accessTokenParams = {
-                    scope: 'payments',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        // other headers here
-                    },
-                    body: permissions,
-                    consentUrl: sandboxConfig.paymentRequestEndPoint
-                };
                 const consentdata = await EnvApiClient.callApiFactory('vrp',jsondata,null) //here is data
                 setConsentData(consentdata);
                 if (way == 'web') {
-                    const Vrpscope = 'openid payments';
-                    const consentUrl = await EnvApiClient.manualUserConsent(
-                        Vrpscope,
+                    await EnvApiClient.manualUserConsent(
+                        consentData.Data.ConsentId,
                     );
-                    
                     showInputDialog();
                 }
             } catch (error) {
@@ -154,7 +140,7 @@ const VRPConsent = ({ route }) => {
         else{
         try {
             
-            const response=await EnvApiClient.exchangeAccessToken(inputValue, formData,consentData);
+            const response=await EnvApiClient.exchangeAccessToken(inputValue,consentData);
             console.log("data",response);
             console.log("data2",consentData);
             const updatedResponse = {

@@ -5,7 +5,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 
 
-const AddressScreen = () => {
+const AddressScreen = ({route}) => {
+
+  const totalAmount = route.params.totalAmount;
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
@@ -14,11 +16,13 @@ const AddressScreen = () => {
   const [contactNumber, setContactNumber] = useState('');
   const [accountNumber, setaccountNumber] = useState('');
   const [sortCode, setsortCode] = useState('');
+  const [dob, setDob] = useState('');
+
 
   const [formComplete, setFormComplete] = useState(false);
 
   const checkFormCompletion = () => {
-    if (email && fullName && billingAddress && contactNumber && accountNumber && sortCode) {
+    if (email && fullName && billingAddress && contactNumber && accountNumber && sortCode && dob) {
       setFormComplete(true);
     } else {
       setFormComplete(false);
@@ -28,7 +32,7 @@ const AddressScreen = () => {
 
   useEffect(() => {
     checkFormCompletion();
-  }, [email, fullName, billingAddress, contactNumber, accountNumber, sortCode]);
+  }, [email, fullName, billingAddress, contactNumber, accountNumber, sortCode, dob]);
   
   
   
@@ -40,12 +44,14 @@ const AddressScreen = () => {
     console.log('Contact Number:', contactNumber);
   
     navigation.navigate('Confirm Details', {
+      totalAmount,
       email: email,
       fullName: fullName,
       billingAddress: billingAddress,
       contactNumber: contactNumber,
       accountNumber: accountNumber,
       sortCode: sortCode,
+      dob: dob,
 
     });
   
@@ -55,6 +61,8 @@ const AddressScreen = () => {
     setContactNumber('');
     setaccountNumber('');
     setsortCode('');
+    setDob('');
+
   };
 
   
@@ -67,7 +75,7 @@ const AddressScreen = () => {
       <Text style={styles.heading}><Text style={styles.icon}>&#9997;</Text>Your details</Text>
 
       <Text style={styles.text}>
-        We just need a few details to set up your account and confirm your affordability
+        We just need a few details to set up your account
       </Text>
 
       <Text style={styles.title}>
@@ -81,11 +89,11 @@ const AddressScreen = () => {
       <TouchableOpacity 
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Banklist');
+          navigation.navigate('Banklist', {totalAmount});
         }}
         activeOpacity={1}
       >
-        <Text style={styles.buttonText}>Get my personal and banking data</Text>
+        <Text style={styles.buttonText}>Take me to my Bank</Text>
       </TouchableOpacity>
 
       <View style={styles.line} />
@@ -141,6 +149,14 @@ const AddressScreen = () => {
         style={styles.input}
         value={sortCode}
         onChangeText={setsortCode}
+        keyboardType="phone-pad"
+      />
+
+      <Text style={styles.label}>Date of Birth:</Text>
+      <TextInput
+        style={styles.input}
+        value={dob}
+        onChangeText={setDob}
         keyboardType="phone-pad"
       />
 

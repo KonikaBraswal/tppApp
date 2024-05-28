@@ -38,7 +38,6 @@ const switchEnvironment = (newEnv) => {
 const ConsentScreen = () => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-
     setEnvApiClient(newApiClient);
     return () => {
     };

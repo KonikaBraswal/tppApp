@@ -17,7 +17,6 @@ import SortDropdown from '../../components/SortDropdown';
 import {Searchbar} from 'react-native-paper';
 import {Surface} from '@react-native-material/core';
 import VrpDebitor from '../../components/VrpDebitor';
-import {fetchTransactionsForUserConsent} from '../../../database/Database';
 import VrpTransactionList from '../../components/VrpTransactionList';
 var transactions;
 const VrpTransactions = ({route}) => {
@@ -25,7 +24,6 @@ const VrpTransactions = ({route}) => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [transactionDetails, setTransactionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactionText, setTransactionText] = useState('');
   useEffect(() => {
@@ -33,7 +31,6 @@ const VrpTransactions = ({route}) => {
       setTransactionText('No Transaction found');
     } else {
       console.log('tr', transactiondetails);
-      setTransactionDetails(transactiondetails);
       transactiondetails?.map(element => {
         transactions = JSON.parse(element.vrppayload);
       });

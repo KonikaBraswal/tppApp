@@ -20,21 +20,18 @@ import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
 import {RFValue} from 'react-native-responsive-fontsize';
-import VRPConsent from '../VRP/VRPConsent';
 import {Surface, Stack} from '@react-native-material/core';
 import readNatwestAccount from '../../../DatabaseFactory/MockData/accounts.json';
 import readNatwestBalance from '../../../DatabaseFactory/MockData/balances.json';
 import readBarclaysAccount from '../../../DatabaseFactory/MockData/barclaysAccounts.json';
 import readBarclaysBalance from '../../../DatabaseFactory/MockData/barclaysBalances.json';
-import {fetchAllDataforScope} from '../../../database/Database';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import ConsentInfo from './ConsentInfo';
-import {fetchTransactionsForUserConsent} from '../../../database/Database';
 import { fetchVRPData } from '../../../database/LocalDatabase';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
 const Drawer = createDrawerNavigator();
@@ -50,48 +47,44 @@ const ConsentsforVRP = () => {
   const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
   const [localdata, setLocalData] = useState([]);
 
-  const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
-  const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
-
+  
   const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
 
   const isFocused = useIsFocused();
-
-  useEffect(() => {
+  let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+  useEffect( () => {
+    const fetchData = async () => {
     if(global.env==='local')
     {
-
       fetchVRPData().then(results => {
         setLocalData(results);
       });
     }
     else{
     if (isFocused) {
-      fetchAllDataforScope(scope)
-        .then(data => {
-          if (data !== null) {
-            console.log("databaseeeeeeeeeeeeeeeeeeee",data);
-            setConsentData(data);
-          } else {
-            console.log(`No entry found for scope ${scope}.`);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching Consent data:', error);
-        });
+      try {
+        const data = await androidClientVrp.fetchDataUsingScope(scope);
+        // const data = await androidClientVrp.displayData();
+        console.log("data in consents for vrp",data);
+        setConsentData(data);
+      } catch (error) {
+        console.error('Error fetching data for consents:', error);
+      }
     }}
+  };
+  fetchData();
   }, [isFocused, scope]);
   const mode = 'sandbox';
-  const [transactionDetails, setTransactionDetails] = useState(null);
+  
   var tra;
   const handleConsent = async (index, destination) => {
     const id = consentData[index].consentid;
     console.log('id', index);
     try {
-      const result = await fetchTransactionsForUserConsent(id);
+      const result = await androidClientVrp.fetchDataUsingConsentId(id);
       tra = result;
-      setTransactionDetails(result);
+      
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }

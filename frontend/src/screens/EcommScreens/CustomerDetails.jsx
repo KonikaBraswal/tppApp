@@ -1,59 +1,23 @@
-import React, {useState, useEffect} from 'react';
-import {Image} from 'react-native-elements';
-import {Button, Icon} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image } from 'react-native-elements';
+import { Button, Icon } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
 import DataTable from 'react-native-paper';
-import {Text} from 'react-native-paper';
-import {Surface} from '@react-native-material/core';
+import { Text } from 'react-native-paper';
+import { Surface } from '@react-native-material/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native';
-import {fetchAllDataforScope} from '../../../database/Database';
-import ApiFactory from '../../../ApiFactory/ApiFactory';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 
-const CustomerDetails = ({route}) => {
-  const {customerDetails} = route.params;
+const CustomerDetails = ({ route }) => {
+  const { customerDetails, totalAmount, debitorDetails,responseData } = route.params;
   const navigation = useNavigation();
-  const [debitorDetails, setDebitorDetails] = useState(null);
-  const scope = 'vrp';
 
-  useEffect(() => {
-    const fetchData = async () => {
-      fetchAllDataforScope(scope)
-        .then(data => {
-          if (data !== null) {
-            // console.log(data);
-            const latestObject = getObjectWithLatestCreationTime(data);
-            setDebitorDetails(
-              JSON.parse(latestObject.vrppayload).DebtorAccount,
-            );
-          } else {
-            console.log(`No entry found for scope ${scope}.`);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching Consent data:', error);
-        });
-    };
-    fetchData();
-  }, [scope]);
-
-  function getObjectWithLatestCreationTime(objects) {
-    const sortedArray = objects.sort(
-      (a, b) =>
-        new Date(JSON.parse(b.consentpayload).CreationDateTime) -
-        new Date(JSON.parse(a.consentpayload).CreationDateTime),
-    );
-    return sortedArray[0];
-  }
-
-  console.log(debitorDetails);
+  // console.log(debitorDetails.DebtorAccount.Identification);
 
   return (
     <View style={styles.container}>
@@ -103,6 +67,7 @@ const CustomerDetails = ({route}) => {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Confirm Details', {
+              totalAmount,
               email: customerDetails.data.contactDetails.email,
               fullName: customerDetails.data.name.full_name,
               billingAddress:
@@ -117,8 +82,10 @@ const CustomerDetails = ({route}) => {
                 customerDetails.data.address.residence.postcode,
               contactNumber:
                 customerDetails.data.contactDetails.mobile_phone_number,
-              accountNumber: debitorDetails.Identification,
+              accountNumber: debitorDetails.DebtorAccount.Identification,
               sortCode: '',
+              dob: customerDetails.data.birthdate.substring(0, 10),
+              
             });
           }}
           style={styles.footer}

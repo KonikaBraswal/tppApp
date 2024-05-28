@@ -206,7 +206,7 @@ const ProductListing = () => {
         <View style={{flex: 1}}>
           <View
             style={{
-              backgroundColor: '#5a287d',
+              // backgroundColor: 'white',
               padding: 10,
             }}>
             <Searchbar
@@ -216,7 +216,7 @@ const ProductListing = () => {
               icon={() => <Icon source="magnify" color="black" size={20} />}
               style={{
                 borderRadius: 5,
-                backgroundColor: '#f4ebfe',
+                backgroundColor: '#E0FCFD',
               }}
             />
           </View>
@@ -229,9 +229,10 @@ const ProductListing = () => {
                 onValueChange={() => {
                   showProducts();
                 }}
+                color='#00B0FF'
               />
             </View>
-            <Button icon="chevron-down" mode="contained" onPress={showMenu}>
+            <Button icon="chevron-down" mode="contained" style={{ backgroundColor: '#00B0FF' }} onPress={showMenu}>
               Filter
             </Button>
             <Portal>
@@ -247,6 +248,7 @@ const ProductListing = () => {
                       selectedItems.includes(item) ? 'checked' : 'unchecked'
                     }
                     onPress={() => handleCheckboxToggle(item)}
+                    color='#00B0FF'
                   />
                 ))}
               </Modal>

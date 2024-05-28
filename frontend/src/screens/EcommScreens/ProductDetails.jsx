@@ -98,7 +98,7 @@ const ProductDetails = ({route}) => {
                   color: 'black',
                   fontWeight: 'bold',
                 }}>
-                Price: € {product.price.toFixed(2)}
+                Price: £ {product.price.toFixed(2)}
               </Text>
               <Text
                 style={{

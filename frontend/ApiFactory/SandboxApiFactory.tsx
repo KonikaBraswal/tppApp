@@ -1,5 +1,5 @@
-import axios, {AxiosResponse} from 'axios';
-import {Linking, Alert} from 'react-native';
+import axios, { AxiosResponse } from 'axios';
+import { Linking, Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
@@ -8,9 +8,9 @@ import {
   addTransactions,
   updateDetailsForVrp,
 } from '../database/Database';
-import {updateDetails, fetchRefreshedToken} from '../database/Database';
+import { updateDetails, fetchRefreshedToken } from '../database/Database';
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
-import AndroidClient from '../DatabaseFactory/AndroidClientDb';
+import AndroidClient from '../DatabaseFactory/AndroidClientDb';//importing database
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
@@ -46,6 +46,15 @@ interface ResponseData {
     Status: string;
   };
 }
+let vrpTransactToStore = {
+  userId: '',
+  scope: 'vrp_transactions',
+  bankName: 'Natwest',
+  consentId: '',
+  vrpId: '',
+  vrpPayload: '',
+  status: '',
+};
 let pispToStore = {
   consentId: '',
   scope: '',
@@ -55,11 +64,38 @@ let pispToStore = {
   response: '',
   userId: '999999999',
 };
+let caToStore={
+  userId:'',
+  scope:'customer_checkout',
+  bankName:'Natwest',
+  refreshToken:'',
+  consentId:'',
+  consentExpiry:8,
+  consentPayload:'',
+  status:'',
+  customer_details:'',
+  account_details:'',
+};
+let vrpToStore = {
+  consentId: '',
+  scope: 'vrp',
+  refreshToken: '',
+  consentPayload: '',
+  consentExpiry: '',
+  userId: '999999999',
+  bankName: 'NatWest',
+  status: '',
+  account_details: '',
+  account_customer_consented: '',
+};
 let pispToUpdate = {
   userId: '7777777',
 };
 let androidClientAisp: AndroidClient;
 let androidClientPisp: AndroidClient;
+let androidClientVrp: AndroidClient;
+let androidClientCA: AndroidClient;
+let androidClientVrpTransact:AndroidClient;
 let aispToStore = {
   userId: '999934356',
   scope: '',
@@ -124,7 +160,7 @@ class SanboxApiFactory {
       this.clientSecret,
     );
   }
-//starting function to call api factory which will decide the flow of code based on scope passed
+  //starting function to call api factory which will decide the flow of code based on scope passed
   async callApiFactory(
     apiScope: string,
     permission: string[],
@@ -148,6 +184,12 @@ class SanboxApiFactory {
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
       case 'vrp':
+        androidClientVrp = new AndroidClient(companyName, apiClient, apiScope);
+        androidClientCA=new AndroidClient(companyName,apiClient,'customer_checkout');
+        androidClientVrpTransact=new AndroidClient(companyName,apiClient,'vrp_transactions');
+        // await androidClientVrp.deleteAllData();
+        // await androidClientVrpTransact.deleteAllData();
+        // await androidClientCA.deleteAllData();
         console.log('******NWB VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
@@ -166,7 +208,7 @@ class SanboxApiFactory {
       try {
         const body = this.generateBody(sandboxConfig.tokenEndpoint, {});
 
-        const headers = {...this.commonHeaders};
+        const headers = { ...this.commonHeaders };
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -232,7 +274,7 @@ class SanboxApiFactory {
     }
     if (this.scopeForThisCall == 'payments') {
       try {
-        
+
         const body = generateAccessTokenBody(
           sandboxConfig.grant_type,
           this.clientId,
@@ -557,22 +599,17 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        const Status = response.data.Data?.Status;
         const Payload = response.data.Data;
         this.consentIdVrp = response.data.Data?.ConsentId || '';
-
-        //const consentIdVrp = response.data.Data?.ConsentId || '';
-        const details1 = {
-          bankname: 'Natwest',
-          consentid: this.consentIdVrp,
-          status: Status,
-          consentpayload: JSON.stringify(Payload),
-          scope: 'vrp',
-        };
-        // vrpToStore.scope="vrp";
-        // vrpToStore.consentId=consentIdVrp;
-        // vrpToStore.consentPayload=JSON.stringify(Payload);
-        // vrpToStore.status=Status;
+        //storing details in vrp table
+        
+        // vrpToStore.status=response.data.Data?.Status;
+        vrpToStore.consentId = this.consentIdVrp;
+        vrpToStore.consentPayload = JSON.stringify(Payload);
+        vrpToStore.account_details = JSON.stringify(Payload);
+        
+        await androidClientVrp.insertDataVrp(vrpToStore);
+        console.log('Storing this to the table', vrpToStore);
         //Storing APILOGS
         logData = {
           date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -590,6 +627,7 @@ class SanboxApiFactory {
         await logClient.insertLog(logData);
         //Storing APILOGS
         return response.data;
+
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           logData = {
@@ -644,9 +682,13 @@ class SanboxApiFactory {
       consentUrlWithVariables = `${sandboxConfigPisp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfigPisp.redirectUri}&request=${consentId}`;
     }
     if (this.scopeForThisCall == 'vrp') {
-      consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${consentID}`;
+      console.log("manuallu",consentId);
+      
+      consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
+      
     }
     Linking.openURL(consentUrlWithVariables);
+    console.log(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
 
@@ -845,7 +887,7 @@ class SanboxApiFactory {
             response: JSON.stringify(error.message || 'Unknown error'),
           };
         }
-  
+
         await logClient.insertLog(logData);
         throw new Error(`Failed to fetch data Exchange Code for access token payments: ${error}`)
       }
@@ -857,16 +899,7 @@ class SanboxApiFactory {
         const authToken = authTokenUrl.slice(start, end);
 
         console.log('AuthToken', authToken);
-        // const body: Record<string, string> = {
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   redirect_uri: sandboxConfig.redirectUri,
-        //   grant_type: 'authorization_code',
-        //   code: authToken,
-        // };
-        // const headers = {
-        //   'Content-Type': 'application/x-www-form-urlencoded',
-        // };
+        
         const body = generateBodyForExchange(
           this.clientId,
           this.clientSecret,
@@ -885,24 +918,45 @@ class SanboxApiFactory {
         );
 
         console.log('Api access token', response.data.access_token);
+        const RefreshToken = response.data.refresh_token;
+        const consentExpiresIn = response.data.expires_in;
 
-        // const updatedDetails2 = {
-        //   refreshedtoken: RefreshToken,
-        //   status: 'Authorised',
-        //   consentexpiry: consentExpiresIn,
-        // };
-        //   const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
-        // await updateDetailsForVrp(
-        //   updatedDetails2,
-        //   consentData.Data.ConsentId,
-        //   columnsToUpdate2,
-        // );
+        const Details = {
+          refreshToken: RefreshToken,
+          status: 'Authorised',
+          consentExpiry: consentExpiresIn,
+        };
+        const columnsToUpdate = ['refreshToken','status','consentExpiry'];
 
-        this.getDomesticConsent(
+        const debitordetails = await this.getDomesticConsent(
           response.data.access_token,
           consentData.Links.Self,
         );
+        console.log("debitor-->", debitordetails);
         // return response.data;
+        const detailsCa = await this.getDetailsCA(response.data.access_token);
+        console.log("debitor2-->", detailsCa);
+        const result = {
+          responseData:response.data,
+          customerDetails: detailsCa,
+          debitorDetails:debitordetails.Data
+        };
+        console.log("result", result);
+        caToStore.consentId=consentData.Data.ConsentId;
+        caToStore.consentPayload=JSON.stringify(consentData.Data);
+        caToStore.refreshToken=RefreshToken;
+        caToStore.status='Authorised';
+        caToStore.consentExpiry=consentExpiresIn;
+        caToStore.customer_details=JSON.stringify(detailsCa);
+        caToStore.account_details=JSON.stringify(debitordetails.Data);
+
+        console.log(caToStore);
+        await androidClientCA.insertDatCA(caToStore);
+        await androidClientVrp.updateDataByConsentId(
+          consentData.Data.ConsentId,
+          Details,
+          columnsToUpdate
+        );
         //Storing APILOGS
         logData = {
           date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -918,11 +972,8 @@ class SanboxApiFactory {
           response: JSON.stringify(response),
         };
         await logClient.insertLog(logData);
-        //Storing APILOGS
-        return this.getDetailsCA(response.data.access_token);
-        // console.log('response', response.data);
-        // return response.data;
-        //return this.vrpPayments(response.data.access_token,this.consentIdVrp,formData);
+        return result;
+
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           logData = {
@@ -953,7 +1004,7 @@ class SanboxApiFactory {
             response: JSON.stringify(error.message || 'Unknown error'),
           };
         }
-  
+
         await logClient.insertLog(logData);
         throw new Error(`Failed to fetch data Exchange Code for access token vrp: ${error}`)
       }
@@ -972,12 +1023,13 @@ class SanboxApiFactory {
       const payload = allVrpResponse.data.Data;
       const id = allVrpResponse.data.Data.ConsentId;
 
-      const updateDetails4 = {
+      const details = {
         account_details: JSON.stringify(payload),
       };
-      const columnsToUpdate5 = ['account_details'];
+      const columnsToUpdate=['account_details'];
 
-      await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
+      await androidClientVrp.updateDataByConsentId(id,details,columnsToUpdate);
+
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1139,42 +1191,42 @@ class SanboxApiFactory {
       await logClient.insertLog(logData);
       //Storing APILOGS
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
-    } catch (error:any) {
-        if (axios.isAxiosError(error)) {
-          logData = {
-            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-              2,
-              '0',
-            )}-${String(now.getDate()).padStart(2, '0')}`,
-            time: `${String(now.getHours()).padStart(2, '0')}:${String(
-              now.getMinutes(),
-            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-            api_name: 'VRP Payments',
-            scope: 'VRP',
-            status: error.response?.status.toString() || 'unknown',
-            response: JSON.stringify(error.response?.data || 'No response data'),
-          };
-        } else {
-          logData = {
-            date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-              2,
-              '0',
-            )}-${String(now.getDate()).padStart(2, '0')}`,
-            time: `${String(now.getHours()).padStart(2, '0')}:${String(
-              now.getMinutes(),
-            ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-            api_name: 'VRP Payments',
-            scope: 'VRP',
-            status: 'unknown',
-            response: JSON.stringify(error.message || 'Unknown error'),
-          };
-        }
-  
-        await logClient.insertLog(logData);
-        
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'VRP Payments',
+          scope: 'VRP',
+          status: error.response?.status.toString() || 'unknown',
+          response: JSON.stringify(error.response?.data || 'No response data'),
+        };
+      } else {
+        logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+            2,
+            '0',
+          )}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(
+            now.getMinutes(),
+          ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'VRP Payments',
+          scope: 'VRP',
+          status: 'unknown',
+          response: JSON.stringify(error.message || 'Unknown error'),
+        };
+      }
+
+      await logClient.insertLog(logData);
+
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
     }
-  
+
   }
 
   async getAllVrpPayments(url: string): Promise<any> {
@@ -1190,24 +1242,16 @@ class SanboxApiFactory {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload = allVrpPaymentsResponse.data.Data;
 
-      const details = {
-        bankname: 'Natwest',
-        consentid: allVrpPaymentsResponse.data.Data.ConsentId,
-        scope: 'vrp_transactions',
-        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
-        vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status,
-      };
-      // vrpToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
-      // vrpToStore.vrpPayload=JSON.stringify(payload);
-      // vrpToStore.status=allVrpPaymentsResponse.data.Data.Status;
-      // vrpToStore.responseVrp=JSON.stringify(allVrpPaymentsResponse.data.Data);
-      // console.log("^^^^^^^");
-      // console.log(vrpToStore);
-      console.log('$$$$$$$$$$');
-      addTransactions(details);
+      if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted') {
+        const payload = allVrpPaymentsResponse.data.Data;
+        const id = allVrpPaymentsResponse.data.Data.ConsentId;
+        vrpTransactToStore.consentId=id;
+        vrpTransactToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
+        vrpTransactToStore.vrpPayload= JSON.stringify(payload);
+        vrpTransactToStore.status=allVrpPaymentsResponse.data.Data.Status;
+        await androidClientVrpTransact.insertDatVrpTransact(vrpTransactToStore);
+      }
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1349,12 +1393,12 @@ class SanboxApiFactory {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         grant_type: 'refresh_token',
-        refresh_token: refreshToken.refreshtoken,
+        refresh_token: refreshToken.refreshToken,
       };
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
       };
-
+      console.log(body);
       const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         null,
@@ -1364,18 +1408,16 @@ class SanboxApiFactory {
         },
       );
 
-      console.log('Refresh call response', responseRefresh.data);
       const RefreshToken = responseRefresh.data.refresh_token;
-      const updatedDetails3 = {
-        refreshedtoken: RefreshToken,
+      const details = {
+        refreshToken: RefreshToken,
       };
-
-      const columnsToUpdate3 = ['refreshedtoken'];
-      // await updateDetailsForVrp(
-      //   updatedDetails3,
-      //   refreshToken.consentid,
-      //   columnsToUpdate3,
-      // );
+      const columnsToUpdate=['refreshToken'];
+      
+      const id=refreshToken.consentId;
+      await androidClientVrp.updateDataByConsentId(id, details,columnsToUpdate);
+      await androidClientCA.updateDataByConsentId(id, details,columnsToUpdate);
+      console.log('Refresh call response', responseRefresh.data);
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1394,7 +1436,7 @@ class SanboxApiFactory {
       //Storing APILOGS
       return this.vrpPayments(
         responseRefresh.data.access_token,
-        refreshToken.consentid,
+        refreshToken.consentId,
         grantedformData,
       );
     } catch (error: any) {

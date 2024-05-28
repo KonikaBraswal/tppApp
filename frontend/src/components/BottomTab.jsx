@@ -39,7 +39,7 @@ const BottomTab = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Natwest Cart');
+            navigation.navigate('Online Store');
           }}>
           <MaterialCommunityIcons name="cart" color='black' size={35} />
         </TouchableOpacity>

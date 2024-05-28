@@ -13,7 +13,6 @@ import {RFValue} from 'react-native-responsive-fontsize';
 
 const VRPDetails = ({route}) => {
   //   const { Data } = route.params || {};
-  const [loading, setLoading] = useState(true);
   const status = route.params?.data ;
   console.log("VRPPPPPPPP DETAILSSSSSSSSSSSSSSS",status);
   const navigation = useNavigation();

@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+
 import {
   View,
   Text,
@@ -7,21 +9,19 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {Button, IconButton} from 'react-native-paper';
-import ApiFactory from '../../../ApiFactory/ApiFactory';
+import { Button, IconButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { RFValue } from 'react-native-responsive-fontsize';
 import CartItem from '../../components/EcommComponents/CartItem';
 import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
-import {fetchAllDataforScope} from '../../../database/Database';
-import {useNavigation} from '@react-navigation/native';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+import { useNavigation } from '@react-navigation/native';
 
 const CART_STORAGE_KEY = '@OneBank:cart';
 
@@ -29,6 +29,7 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  let androidClientVrp = new AndroidClient("NWG", "Sandbox", "customer_checkout");
 
   useEffect(() => {
     const loadCart = async () => {
@@ -47,26 +48,7 @@ const CartScreen = () => {
     calculateTotalPrice();
   }, [cart]);
 
-  const scope = 'vrp';
-  const [consentData, setConsentData] = useState([]);
 
-  useEffect(() => {
-    fetchAllDataforScope(scope)
-      .then(data => {
-        if (data !== null) {
-          setConsentData(data);
-        } else {
-          console.log(`No entry found for scope ${scope}.`);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching Consent data:', error);
-      });
-  }, [scope]);
-
-  const findDataByConsentId = consentId => {
-    return consentData.find(consent => consent.consentid === consentId);
-  };
 
   const loadCartFromStore = async () => {
     try {
@@ -99,48 +81,43 @@ const CartScreen = () => {
   cart.forEach(item => uniqueProductsMap.set(item.id, item));
   const uniqueProducts = Array.from(uniqueProductsMap.values());
 
-  const getConsentData = async () => {
-    try {
-      const EcommConsentId = await AsyncStorage.getItem('EcommConsentId');
-      if (EcommConsentId !== null) {
-        EcommConsentData = findDataByConsentId(EcommConsentId);
-        console.log('EcommConsentData', EcommConsentData);
-        return EcommConsentData;
-      } else {
-        console.log('EcommConsentData not found');
-      }
-    } catch (error) {
-      console.error('Error retrieving EcommConsentData:', error);
-    }
-  };
 
-  const handleCheckout = async () => {
-    navigation.navigate('Add Your Details');
-    const formData = {
-      firstName: 'Natwest Cart',
-      sortCode: '',
-      accountNumber: '50499910000996',
-      reference: 'Tools',
-      amount: '9.00',
+  const scopeCA = 'customer_checkout'
+  const [caData, setCAData] = useState(null);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isFocused) {
+        try {
+          const data = await androidClientVrp.fetchDataUsingScope(scopeCA);
+          // const data = await androidClientVrp.displayData();
+          console.log("data in cart screen", data);
+          setCAData(data[0]);
+        } catch (error) {
+          console.error('Error fetching data in cart screen:', error);
+        }
+      }
     };
-    try {
-      const selectconsentData = await getConsentData();
-      // const response = await sandboxApiClient.refreshToken(
-      //   selectconsentData,
-      //   formData,
-      // );
-      console.log('response', response);
-      console.log('Form submitted:', formData);
-      //navigation.navigate('VRP Details', {data: formData});
-    } catch (error) {
-      console.log('error in fetching refresh', error);
+    fetchData();
+  }, [isFocused, scopeCA]);
+  // console.log("log",caData);
+  const handleCheckout = async (SubTotal, ShippingCost, Tax) => {
+    const totalAmount = SubTotal +
+      Number(ShippingCost.substring(1)) +
+      Number(Tax.substring(1));
+    if (caData !== null) {
+      console.log("det2",caData);
+      navigation.navigate('Make Payment', { totalAmount: totalAmount, data: caData });
+    }
+    else {
+      navigation.navigate('Add Your Details', { totalAmount });
     }
   };
 
   return (
     <>
-      <ScrollView style={{backgroundColor: '#fff', flex: 1}}>
-        <View style={{padding: 10}}>
+      <ScrollView style={{ backgroundColor: '#fff', flex: 1 }}>
+        <View style={{ padding: 10 }}>
           {cart.length === 0 ? (
             <Text
               style={{
@@ -170,26 +147,28 @@ const CartScreen = () => {
               {uniqueProducts.map((item, index) => (
                 <CartItem key={index} item={item} />
               ))}
-              <AddressCard
-                full_name="mr Ron Savage"
-                line1="Flat 20"
-                line2="24 Acacia Avenue"
-                line3="Beanotown"
-                line4="Beanoshire"
-                postcode="B34 4NO"
-                country="JEY"
-              />
+              {caData && (
+                <AddressCard
+                  full_name="mr Ron Savage"
+                  line1="Flat 20"
+                  line2="24 Acacia Avenue"
+                  line3="Beanotown"
+                  line4="Beanoshire"
+                  postcode="B34 4NO"
+                  country="JEY"
+                />
+              )}
               <TotalCost
                 SubTotal={totalPrice}
-                ShippingCost="€5.00"
-                Tax="€0.00"
+                ShippingCost="£5.00"
+                Tax="£0.00"
               />
             </>
           )}
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={handleCheckout}
+        onPress={() => handleCheckout(totalPrice, "£5.00", "£0.00")}
         style={styles.footer}
         activeOpacity={1}>
         <Text style={styles.footerText}>Checkout</Text>
@@ -199,7 +178,7 @@ const CartScreen = () => {
 };
 const styles = StyleSheet.create({
   footer: {
-    backgroundColor: 'rgba(176, 130, 255, 0.5)',
+    backgroundColor: '#00B0FF',
     padding: wp('4%'),
     alignItems: 'center',
     width: '100%',
