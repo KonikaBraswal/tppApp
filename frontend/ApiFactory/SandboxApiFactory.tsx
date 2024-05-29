@@ -49,7 +49,7 @@ interface ResponseData {
 let vrpTransactToStore = {
   userId: '',
   scope: 'vrp_transactions',
-  bankName: 'Natwest',
+ 
   consentId: '',
   vrpId: '',
   vrpPayload: '',
@@ -67,7 +67,7 @@ let pispToStore = {
 let caToStore={
   userId:'',
   scope:'customer_checkout',
-  bankName:'Natwest',
+ 
   refreshToken:'',
   consentId:'',
   consentExpiry:8,
@@ -83,10 +83,8 @@ let vrpToStore = {
   consentPayload: '',
   consentExpiry: '',
   userId: '999999999',
-  bankName: 'NatWest',
+ 
   status: '',
-  account_details: '',
-  account_customer_consented: '',
 };
 let pispToUpdate = {
   userId: '7777777',
@@ -606,7 +604,7 @@ class SanboxApiFactory {
         // vrpToStore.status=response.data.Data?.Status;
         vrpToStore.consentId = this.consentIdVrp;
         vrpToStore.consentPayload = JSON.stringify(Payload);
-        vrpToStore.account_details = JSON.stringify(Payload);
+        
         
         await androidClientVrp.insertDataVrp(vrpToStore);
         console.log('Storing this to the table', vrpToStore);
@@ -1022,13 +1020,6 @@ class SanboxApiFactory {
       console.log('allVrpResponse of  call', allVrpResponse.data);
       const payload = allVrpResponse.data.Data;
       const id = allVrpResponse.data.Data.ConsentId;
-
-      const details = {
-        account_details: JSON.stringify(payload),
-      };
-      const columnsToUpdate=['account_details'];
-
-      await androidClientVrp.updateDataByConsentId(id,details,columnsToUpdate);
 
       //Storing APILOGS
       logData = {
