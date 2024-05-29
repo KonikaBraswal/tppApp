@@ -93,42 +93,25 @@ class AndroidClientDb {
       });
     });
   }
+  //update details via consentId PISP
 
-  // Method to update data based on consentId PISP
-  async updateDataByConsentId(
+  async updateDataByConsentIdPisp(
     consentId: string,
-    details:any,
-    columnsToUpdate:any,
+    newData: { [key: string]: any },
   ): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-    if (!columnsToUpdate || columnsToUpdate.length === 0) {
-      console.error('No columns specified for update.');
-      return Promise.reject('No columns specified for update.');
-    }
-    
-    return new Promise<void>((resolve, reject) => {
+
+    const updateSet = Object.keys(newData)
+      .map(key => `${key} = ?`)
+      .join(', ');
+    const values = Object.values(newData);
+    values.push(consentId);
+
+    await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
-        const setClause = columnsToUpdate
-        .map((column: any) => `${column} = ?`)
-        .join(', ');
-        const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
-        
-        const query = `UPDATE ${tableName} SET ${updatedSetClause} WHERE consentid = ?;`;
-      // Construct SQL query
-
-      // Construct parameters array
-      const currentDate = new Date().toLocaleDateString();
-      const currentTime = new Date().toLocaleTimeString();
-      const parameters = [
-        ...columnsToUpdate.map((column: string | number) => details[column].toString()),
-        currentDate,
-        currentTime,
-        consentId,
-      ];
-
         tx.executeSql(
-          query,
-          parameters,
+          `UPDATE ${tableName} SET ${updateSet} WHERE consentId = ?;`,
+          values,
           (_, result) => {
             console.log('Data updated successfully', result);
             resolve();
@@ -142,6 +125,7 @@ class AndroidClientDb {
     });
   }
 
+ 
   //AISP
   // Method to initialize the SQLite database for Android AISP
   async initDatabaseAndroidAisp(): Promise<void> {
@@ -263,14 +247,11 @@ class AndroidClientDb {
           `CREATE TABLE IF NOT EXISTS ${tableName} (
           userId TEXT,
           scope TEXT,
-          bankName TEXT,
           refreshToken TEXT,
           consentId TEXT,
           consentPayload TEXT,
           consentExpiry TEXT,
           status TEXT,
-          account_customer_consented TEXT,
-        account_details TEXT,
         last_updated_date TEXT,
         last_updated_time TEXT
         );`,
@@ -291,28 +272,22 @@ class AndroidClientDb {
   async insertDataVrp(vrpToStore: {
     userId: any;
     scope: string;
-    bankName: string;
     refreshToken: string;
     consentId: string;
     consentPayload: string;
     consentExpiry: string;
     status: string;
-    account_customer_consented: string;
-    account_details: string;
     last_updated_date?: string;
     last_updated_time?: string;
   }): Promise<void> {
     const {
       userId,
       scope,
-      bankName,
       refreshToken,
       consentId,
       consentPayload,
       consentExpiry,
       status,
-      account_customer_consented,
-      account_details,
       last_updated_date,
       last_updated_time
     } = vrpToStore;
@@ -326,28 +301,22 @@ class AndroidClientDb {
         tx.executeSql(
           `INSERT INTO ${tableName} (userId,
             scope,
-            bankName,
             refreshToken,
             consentId,
             consentPayload,
             consentExpiry,
             status,
-            account_customer_consented,
-            account_details,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
           [
             userId,
             scope,
-            bankName,
             refreshToken,
             consentId,
             consentPayload,
             consentExpiry,
             status,
-            account_customer_consented,
-            account_details,
             last_updated_date || currentDate,
             last_updated_time || currentTime
           ],
@@ -368,37 +337,7 @@ class AndroidClientDb {
       });
     });
   }
-  //update details via consentId
-
-  async updateDataByConsentIdPisp(
-    consentId: string,
-    newData: { [key: string]: any },
-  ): Promise<void> {
-    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
-    const updateSet = Object.keys(newData)
-      .map(key => `${key} = ?`)
-      .join(', ');
-    const values = Object.values(newData);
-    values.push(consentId);
-
-    await new Promise<void>((resolve, reject) => {
-      this.androidDb.transaction(tx => {
-        tx.executeSql(
-          `UPDATE ${tableName} SET ${updateSet} WHERE consentId = ?;`,
-          values,
-          (_, result) => {
-            console.log('Data updated successfully', result);
-            resolve();
-          },
-          (_, error) => {
-            console.error('Error updating data:', error);
-            reject(error);
-          },
-        );
-      });
-    });
-  }
+  
 
   //create table for vrp transactions
   async initDatabaseAndroidVrpTransactions(): Promise < void> {
@@ -410,7 +349,6 @@ class AndroidClientDb {
         `CREATE TABLE IF NOT EXISTS ${tableName} (
         userId TEXT,
         scope TEXT,
-        bankName TEXT,
         consentId TEXT,
         vrpId TEXT,
         vrpPayload TEXT,
@@ -435,7 +373,6 @@ class AndroidClientDb {
   async insertDatVrpTransact(vrpTransactToStore: {
   userId: any;
   scope: string;
-  bankName: string;
   consentId: string;
   vrpId: string;
   vrpPayload: string;
@@ -446,7 +383,6 @@ class AndroidClientDb {
   const {
     userId,
     scope,
-    bankName,
     consentId,
     vrpId,
     vrpPayload,
@@ -464,18 +400,16 @@ class AndroidClientDb {
       tx.executeSql(
         `INSERT INTO ${tableName} (userId,
             scope,
-            bankName,
             consentId,
             vrpId,
             vrpPayload,
             status,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
         [
           userId,
           scope,
-          bankName,
           consentId,
           vrpId,
           vrpPayload,
@@ -512,7 +446,6 @@ class AndroidClientDb {
         `CREATE TABLE IF NOT EXISTS ${tableName} (
             userId TEXT,
             scope TEXT,
-            bankName TEXT,
             refreshToken TEXT,
             consentId TEXT,
             consentExpiry TEXT,
@@ -540,7 +473,6 @@ class AndroidClientDb {
   async insertDatCA(caToStore: {
   userId: any;
   scope: string;
-  bankName: string;
   refreshToken: string;
   consentId: string;
   consentExpiry: number;
@@ -554,7 +486,6 @@ class AndroidClientDb {
   const {
     userId,
     scope,
-    bankName,
     refreshToken,
     consentId,
     consentExpiry,
@@ -574,7 +505,6 @@ class AndroidClientDb {
       tx.executeSql(
         `INSERT INTO ${tableName} (userId,
             scope,
-            bankName,
             refreshToken,
             consentId,
             consentExpiry,
@@ -584,11 +514,10 @@ class AndroidClientDb {
             account_details,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);`,
         [
           userId,
           scope,
-          bankName,
           refreshToken,
           consentId,
           consentExpiry,
@@ -698,6 +627,54 @@ class AndroidClientDb {
     });
   });
 }
+   // Method to update data based on consentId 
+  async updateDataByConsentId(
+    consentId: string,
+    details:any,
+    columnsToUpdate:any,
+  ): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    if (!columnsToUpdate || columnsToUpdate.length === 0) {
+      console.error('No columns specified for update.');
+      return Promise.reject('No columns specified for update.');
+    }
+    
+    return new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        const setClause = columnsToUpdate
+        .map((column: any) => `${column} = ?`)
+        .join(', ');
+        const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
+        
+        const query = `UPDATE ${tableName} SET ${updatedSetClause} WHERE consentid = ?;`;
+      // Construct SQL query
+
+      // Construct parameters array
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const parameters = [
+        ...columnsToUpdate.map((column: string | number) => details[column].toString()),
+        currentDate,
+        currentTime,
+        consentId,
+      ];
+
+        tx.executeSql(
+          query,
+          parameters,
+          (_, result) => {
+            console.log('Data updated successfully', result);
+            resolve();
+          },
+          (_, error) => {
+            console.error('Error updating data:', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+
 
   //COMMON
   // Method to delete all data entries from the database
