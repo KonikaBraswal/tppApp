@@ -107,7 +107,7 @@ const CartScreen = () => {
       Number(Tax.substring(1));
     if (caData !== null) {
       console.log("det2",caData);
-      navigation.navigate('Make Payment', { totalAmount: totalAmount, data: caData });
+      navigation.navigate('Make Payment', { totalAmount: totalAmount, debitorDetails:JSON.parse (caData.account_details),customerDetails:JSON.parse (caData.customer_details),consentId:caData.consentId });
     }
     else {
       navigation.navigate('Add Your Details', { totalAmount });
@@ -178,7 +178,7 @@ const CartScreen = () => {
 };
 const styles = StyleSheet.create({
   footer: {
-    backgroundColor: '#00B0FF',
+    backgroundColor: '#114188',
     padding: wp('4%'),
     alignItems: 'center',
     width: '100%',

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   VirtualizedList,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 import {
   widthPercentageToDP as wp,
@@ -24,18 +25,30 @@ const switchEnvironment = (newEnv) => {
  };
 
 const SecondCvrpCall = ({ route }) => {
-  const { totalAmount, data } = route.params;
+  const { totalAmount, debitorDetails,customerDetails,consentId } = route.params;
+  const isFocused = useIsFocused();
+  const [vrpData, setVrpData] = useState(null);
+  
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
-    return () => {
+    const fetchData = async () => {
+      if (isFocused) {
+        try {
+          const data = await androidClientVrp.fetchDataUsingConsentId(consentId);
+          // const data = await androidClientVrp.displayData();
+          console.log("data in second vrp call", data);
+          setVrpData(data);
+        } catch (error) {
+          console.error('Error fetching data in cart screen:', error);
+        }
+      }
     };
- }, []);
+    fetchData();
+ }, [isFocused, consentId]);
  const [EnvApiClient, setEnvApiClient] = useState(null);
   
   const navigation = useNavigation();
-  const debitorDetails =JSON.parse (data.account_details);
-  const customer =JSON.parse (data.customer_details);
   // console.log((customer));
   // console.log(debitorDetails.DebtorAccount);
   const handleSubmit = async () => {
@@ -49,8 +62,8 @@ const SecondCvrpCall = ({ route }) => {
     };
     try {
       const selectconsentData = {
-        consentid: debitorDetails.ConsentId,
-        refreshToken: data.refreshToken
+        consentid: consentId,
+        refreshToken: vrpData.refreshToken
       };
       console.log(selectconsentData);
       const response = await EnvApiClient.refreshTokenForVRP(
@@ -80,7 +93,7 @@ const SecondCvrpCall = ({ route }) => {
           <Card style={styles.card}>
             <View style={styles.cardTitleContainer}>
               <Card.Content>
-                <Text style={styles.title}>{customer.data.name.given_name} {customer.data.name.family_name}</Text>
+                <Text style={styles.title}>{customerDetails.data.name.given_name} {customerDetails.data.name.family_name}</Text>
               </Card.Content>
               <Card.Actions>
                 <IconButton
@@ -151,7 +164,7 @@ const styles = StyleSheet.create({
     margin: 8,
     padding: 10,
     elevation: 5,
-    borderColor: '#00B0FF',
+    borderColor: '#114188',
     borderRadius: 5,
     borderWidth: 2,
     flex: 1
@@ -207,7 +220,7 @@ const styles = StyleSheet.create({
     margin: 10,// Add space between the buttons
     alignItems: 'center', // Center text horizontally
     borderRadius: 20,
-    borderColor: '#00B0FF',
+    borderColor: '#114188',
     borderWidth: 3,
     width: wp('80%'),
   },

@@ -140,13 +140,12 @@ const VRPConsent = ({ route }) => {
         else{
         try {
             
-            const response=await EnvApiClient.exchangeAccessToken(inputValue,consentData);
+            const  {customerDetails,debitorDetails,response }=await EnvApiClient.exchangeAccessToken(inputValue,consentData);
             console.log("data",response);
             console.log("data2",consentData);
             const updatedResponse = {
-                ...response,
-                refreshtoken: response.refresh_token,
-                consentid: consentData,
+                refreshToken: response.refresh_token,
+                consentId: consentData,
               };
               
             navigation.navigate('GrantedForm', {

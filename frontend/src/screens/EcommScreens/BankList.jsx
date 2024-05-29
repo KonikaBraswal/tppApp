@@ -177,12 +177,12 @@ const BankList = ({ route }) => {
   const handleSubmit = async () => {
     try {
 
-      const {responseData, customerDetails,debitorDetails } = await EnvApiClient.exchangeAccessToken(inputValue, consentData);
+      const {customerDetails,debitorDetails,response } = await EnvApiClient.exchangeAccessToken(inputValue, consentData);
       console.log("details1-->",customerDetails);
       console.log("details2-->",debitorDetails);
-      
+      const consentId=consentData.Data.ConsentId;
       navigation.navigate('Customer Details', {
-        customerDetails, totalAmount,debitorDetails,responseData
+        customerDetails, totalAmount,debitorDetails,consentId
       });
 
     } catch (error) {

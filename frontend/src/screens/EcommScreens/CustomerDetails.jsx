@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 
 const CustomerDetails = ({ route }) => {
-  const { customerDetails, totalAmount, debitorDetails,responseData } = route.params;
+  const { customerDetails, totalAmount, debitorDetails,consentId } = route.params;
   const navigation = useNavigation();
 
   // console.log(debitorDetails.DebtorAccount.Identification);
@@ -66,26 +66,11 @@ const CustomerDetails = ({ route }) => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Confirm Details', {
-              totalAmount,
-              email: customerDetails.data.contactDetails.email,
-              fullName: customerDetails.data.name.full_name,
-              billingAddress:
-                customerDetails.data.address.residence.line1 +
-                ' , ' +
-                customerDetails.data.address.residence.line2 +
-                ' , ' +
-                customerDetails.data.address.residence.line3 +
-                ',' +
-                customerDetails.data.address.residence.line4 +
-                ',' +
-                customerDetails.data.address.residence.postcode,
-              contactNumber:
-                customerDetails.data.contactDetails.mobile_phone_number,
-              accountNumber: debitorDetails.DebtorAccount.Identification,
-              sortCode: '',
-              dob: customerDetails.data.birthdate.substring(0, 10),
-              
+            navigation.navigate('Make Payment', {
+              totalAmount: totalAmount,
+              customerDetails:customerDetails,
+              debitorDetails:debitorDetails,
+              consentId:consentId
             });
           }}
           style={styles.footer}
@@ -154,7 +139,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     // backgroundColor: '#D0B1E6',
-    borderColor: '#EDDDF3',
+    borderColor: '#114188',
     padding: wp('2%'),
     alignItems: 'center',
     width: '100%',

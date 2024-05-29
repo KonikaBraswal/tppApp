@@ -88,7 +88,7 @@ function App(): React.JSX.Element {
             <Stack.Navigator
               screenOptions={{
                 headerStyle: {
-                  backgroundColor: '#00B0FF',
+                  backgroundColor: '#114188',
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {

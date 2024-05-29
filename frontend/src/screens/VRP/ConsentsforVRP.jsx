@@ -79,7 +79,7 @@ const ConsentsforVRP = () => {
   
   var tra;
   const handleConsent = async (index, destination) => {
-    const id = consentData[index].consentid;
+    const id = consentData[index].consentId;
     console.log('id', index);
     try {
       const result = await androidClientVrp.fetchDataUsingConsentId(id);
@@ -96,8 +96,8 @@ const ConsentsforVRP = () => {
         break;
       case 'ConsentInfo':
         navigation.navigate('Consent Info', {
-          consentpayload: consentData[index].consentpayload,
-          debitorDetails: JSON.parse(consentData[index].vrppayload),
+          consentpayload: consentData[index].consentPayload,
+          debitorDetails: JSON.parse(consentData[index].accountDetails),
         });
         break;
       default:

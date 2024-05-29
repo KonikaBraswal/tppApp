@@ -252,6 +252,7 @@ class AndroidClientDb {
           consentPayload TEXT,
           consentExpiry TEXT,
           status TEXT,
+          accountDetails TEXT,
         last_updated_date TEXT,
         last_updated_time TEXT
         );`,
@@ -277,6 +278,7 @@ class AndroidClientDb {
     consentPayload: string;
     consentExpiry: string;
     status: string;
+    accountDetails:string,
     last_updated_date?: string;
     last_updated_time?: string;
   }): Promise<void> {
@@ -288,6 +290,7 @@ class AndroidClientDb {
       consentPayload,
       consentExpiry,
       status,
+      accountDetails,
       last_updated_date,
       last_updated_time
     } = vrpToStore;
@@ -306,6 +309,7 @@ class AndroidClientDb {
             consentPayload,
             consentExpiry,
             status,
+            accountDetails,
             last_updated_date,
             last_updated_time) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
@@ -317,6 +321,7 @@ class AndroidClientDb {
             consentPayload,
             consentExpiry,
             status,
+            accountDetails,
             last_updated_date || currentDate,
             last_updated_time || currentTime
           ],
@@ -446,13 +451,9 @@ class AndroidClientDb {
         `CREATE TABLE IF NOT EXISTS ${tableName} (
             userId TEXT,
             scope TEXT,
-            refreshToken TEXT,
             consentId TEXT,
-            consentExpiry TEXT,
-            consentPayload TEXT,
-            status TEXT,
-            customer_details TEXT,
-            account_details TEXT,
+            customerDetails TEXT,
+            accountDetails TEXT,
             last_updated_date TEXT,
             last_updated_time TEXT
         );`,
@@ -473,26 +474,18 @@ class AndroidClientDb {
   async insertDatCA(caToStore: {
   userId: any;
   scope: string;
-  refreshToken: string;
-  consentId: string;
-  consentExpiry: number;
-  consentPayload: string;
-  status: string;
-  customer_details: string;
-  account_details: string;
+  consentId:string,
+  customerDetails: string;
+  accountDetails: string;
   last_updated_date?: string;
   last_updated_time?: string;
 }): Promise < void> {
   const {
     userId,
     scope,
-    refreshToken,
     consentId,
-    consentExpiry,
-    consentPayload,
-    status,
-    customer_details,
-    account_details,
+    customerDetails,
+    accountDetails,
     last_updated_date,
     last_updated_time
   } = caToStore;
@@ -505,26 +498,18 @@ class AndroidClientDb {
       tx.executeSql(
         `INSERT INTO ${tableName} (userId,
             scope,
-            refreshToken,
             consentId,
-            consentExpiry,
-            consentPayload,
-            status,
-            customer_details,
-            account_details,
+            customerDetails,
+            accountDetails,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);`,
+        VALUES (?, ?, ?, ?, ?, ?,?);`,
         [
           userId,
           scope,
-          refreshToken,
           consentId,
-          consentExpiry,
-          consentPayload,
-          status,
-          customer_details,
-          account_details,
+          customerDetails,
+          accountDetails,
           last_updated_date || currentDate,
           last_updated_time || currentTime
         ],
@@ -550,19 +535,7 @@ class AndroidClientDb {
   //fetch data according to scope or consentId
   async fetchDataUsingScope(scope: string): Promise < any > {
   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  let whereClause = '';
-  const queryParams: any[] = [];
-  console.log(tableName);
-  // if (consentId) {
-  //   whereClause = 'WHERE consentId = ?';
-  //   queryParams.push(consentId);
-  // } else if (scope) {
-  //   whereClause = 'WHERE scope = ?';
-  //   queryParams.push(scope);
-  // } else {
-  //   return Promise.reject('Either consentId or scope must be provided.');
-  // }
-
+  
   return new Promise((resolve, reject) => {
     this.androidDb.transaction(tx => {
       tx.executeSql(

@@ -47,9 +47,8 @@ interface ResponseData {
   };
 }
 let vrpTransactToStore = {
-  userId: '',
+  userId: '999999999',
   scope: 'vrp_transactions',
- 
   consentId: '',
   vrpId: '',
   vrpPayload: '',
@@ -65,25 +64,20 @@ let pispToStore = {
   userId: '999999999',
 };
 let caToStore={
-  userId:'',
-  scope:'customer_checkout',
- 
-  refreshToken:'',
+  userId: '999999999',
   consentId:'',
-  consentExpiry:8,
-  consentPayload:'',
-  status:'',
-  customer_details:'',
-  account_details:'',
+  scope:'customer_checkout',
+  customerDetails:'',
+  accountDetails:'',
 };
 let vrpToStore = {
+  userId: '999999999',
   consentId: '',
   scope: 'vrp',
   refreshToken: '',
   consentPayload: '',
   consentExpiry: '',
-  userId: '999999999',
- 
+  accountDetails:'',
   status: '',
 };
 let pispToUpdate = {
@@ -581,12 +575,6 @@ class SanboxApiFactory {
     if (this.scopeForThisCall == 'vrp') {
       try {
         const body = this.permissions;
-        const id = uuid.v4();
-        // const headers = {
-        //   ...configvrp.vrpHeaders,
-        //   Authorization: 'Bearer ' + accessToken,
-        //   'x-idempotency-key': `${id}`,
-        // };
         const headers = generateAccountRequestHeaders(accessToken);
 
         console.log(body);
@@ -597,17 +585,6 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        const Payload = response.data.Data;
-        this.consentIdVrp = response.data.Data?.ConsentId || '';
-        //storing details in vrp table
-        
-        // vrpToStore.status=response.data.Data?.Status;
-        vrpToStore.consentId = this.consentIdVrp;
-        vrpToStore.consentPayload = JSON.stringify(Payload);
-        
-        
-        await androidClientVrp.insertDataVrp(vrpToStore);
-        console.log('Storing this to the table', vrpToStore);
         //Storing APILOGS
         logData = {
           date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -807,16 +784,6 @@ class SanboxApiFactory {
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
         console.log('AuthToken', authToken);
-        // const body: Record<string, string> = {
-        //   client_id: this.clientId,
-        //   client_secret: this.clientSecret,
-        //   redirect_uri: sandboxConfig.redirectUri,
-        //   grant_type: 'authorization_code',
-        //   code: authToken,
-        // };
-        // const headers = {
-        //   'Content-Type': 'application/x-www-form-urlencoded',
-        // };
         const body = generateBodyForExchange(
           this.clientId,
           this.clientSecret,
@@ -919,42 +886,31 @@ class SanboxApiFactory {
         const RefreshToken = response.data.refresh_token;
         const consentExpiresIn = response.data.expires_in;
 
-        const Details = {
-          refreshToken: RefreshToken,
-          status: 'Authorised',
-          consentExpiry: consentExpiresIn,
-        };
-        const columnsToUpdate = ['refreshToken','status','consentExpiry'];
-
         const debitordetails = await this.getDomesticConsent(
           response.data.access_token,
           consentData.Links.Self,
         );
-        console.log("debitor-->", debitordetails);
-        // return response.data;
         const detailsCa = await this.getDetailsCA(response.data.access_token);
-        console.log("debitor2-->", detailsCa);
+        //sending result to caller
         const result = {
-          responseData:response.data,
+          response:response.data,
           customerDetails: detailsCa,
           debitorDetails:debitordetails.Data
         };
-        console.log("result", result);
+        //inserting data in CA table
         caToStore.consentId=consentData.Data.ConsentId;
-        caToStore.consentPayload=JSON.stringify(consentData.Data);
-        caToStore.refreshToken=RefreshToken;
-        caToStore.status='Authorised';
-        caToStore.consentExpiry=consentExpiresIn;
-        caToStore.customer_details=JSON.stringify(detailsCa);
-        caToStore.account_details=JSON.stringify(debitordetails.Data);
-
+        caToStore.customerDetails=JSON.stringify(detailsCa);
+        caToStore.accountDetails=JSON.stringify(debitordetails.Data);
         console.log(caToStore);
         await androidClientCA.insertDatCA(caToStore);
-        await androidClientVrp.updateDataByConsentId(
-          consentData.Data.ConsentId,
-          Details,
-          columnsToUpdate
-        );
+        //inserting data in VRP table
+        vrpToStore.consentId=consentData.Data.ConsentId;
+        vrpToStore.accountDetails=JSON.stringify(debitordetails.Data);
+        vrpToStore.consentPayload=JSON.stringify(consentData);
+        vrpToStore.consentExpiry=String(consentExpiresIn);
+        vrpToStore.refreshToken=RefreshToken;
+        vrpToStore.scope='Authorised';
+        await androidClientVrp.insertDataVrp(vrpToStore);
         //Storing APILOGS
         logData = {
           date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1018,9 +974,7 @@ class SanboxApiFactory {
         headers: headers,
       });
       console.log('allVrpResponse of  call', allVrpResponse.data);
-      const payload = allVrpResponse.data.Data;
-      const id = allVrpResponse.data.Data.ConsentId;
-
+      
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1237,6 +1191,7 @@ class SanboxApiFactory {
       if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted') {
         const payload = allVrpPaymentsResponse.data.Data;
         const id = allVrpPaymentsResponse.data.Data.ConsentId;
+        //inserting data in VRP TRansactions Table
         vrpTransactToStore.consentId=id;
         vrpTransactToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
         vrpTransactToStore.vrpPayload= JSON.stringify(payload);
@@ -1400,6 +1355,7 @@ class SanboxApiFactory {
       );
 
       const RefreshToken = responseRefresh.data.refresh_token;
+      //updating refresh token in VRP table
       const details = {
         refreshToken: RefreshToken,
       };
@@ -1407,7 +1363,6 @@ class SanboxApiFactory {
       
       const id=refreshToken.consentId;
       await androidClientVrp.updateDataByConsentId(id, details,columnsToUpdate);
-      await androidClientCA.updateDataByConsentId(id, details,columnsToUpdate);
       console.log('Refresh call response', responseRefresh.data);
       //Storing APILOGS
       logData = {
@@ -1653,18 +1608,6 @@ class SanboxApiFactory {
       );
       const allAccountDetails = acDetails.Account;
 
-      const updatedDetails3 = {
-        account_customer_consented: accountIds,
-        account_details: JSON.stringify(allAccountDetails),
-      };
-
-      const columnsToUpdate3 = [
-        'account_customer_consented',
-        'account_details',
-      ];
-
-      // await updateDetails(updatedDetails3, 1001, columnsToUpdate3);
-      //store
       this.apiAccess = apiAccessToken;
       await this.storeAccessToken(apiAccessToken);
       aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
