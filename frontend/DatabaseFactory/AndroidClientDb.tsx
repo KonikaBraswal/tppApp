@@ -533,13 +533,13 @@ class AndroidClientDb {
 
 
   //fetch data according to scope or consentId
-  async fetchDataUsingScope(scope: string): Promise < any > {
+  async fetchDataUsingScope(scope: string): Promise < any[] > {
   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
   
   return new Promise((resolve, reject) => {
     this.androidDb.transaction(tx => {
       tx.executeSql(
-        `SELECT * FROM ${tableName} where scope = ? ;`,
+        `SELECT * FROM ${tableName} WHERE scope = ? ;`,
         [scope],
         (_, results) => {
           console.log(results);
@@ -554,8 +554,8 @@ class AndroidClientDb {
               resolve(data);
             }
           } else {
-            // console.log(`No entry found for ${consentId ? 'consentId:' + consentId : 'scope:' + scope}`);
-            resolve(null);
+            // console.log(`No entry found for ${ 'scope:' + scope}`);
+            resolve([]);
           }
         },
         (_, error) => {
@@ -567,13 +567,13 @@ class AndroidClientDb {
   });
 }
   
-  async fetchDataUsingConsentId(consentId: string): Promise < any > {
+  async fetchDataUsingConsentId(consentId: string): Promise < any[] > {
   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
   return new Promise((resolve, reject) => {
     this.androidDb.transaction(tx => {
       tx.executeSql(
-        `SELECT * FROM ${tableName} where consentId = ?ORDER BY date DESC,time DESC ;`,
+        `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY last_updated_date DESC,last_updated_time DESC ;`,
         [consentId],
         (_, results) => {
           console.log(results);
@@ -588,8 +588,8 @@ class AndroidClientDb {
               resolve(data);
             }
           } else {
-            // console.log(`No entry found for ${consentId ? 'consentId:' + consentId : 'scope:' + scope}`);
-            resolve(null);
+            // console.log(`No entry found for ${consentId ? 'consentId:' + consentId }`);
+            resolve([]);
           }
         },
         (_, error) => {
