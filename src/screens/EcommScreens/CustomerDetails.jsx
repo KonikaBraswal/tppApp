@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { fetchAllDataforScope } from '../../../database/Database';
+import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
@@ -16,20 +18,26 @@ const CustomerDetails = ({ route }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      fetchAllDataforScope(scope)
-        .then(data => {
-          if (data !== null) {
-            const latestObject = getObjectWithLatestCreationTime(data);
-            setDebitorDetails(
-              JSON.parse(latestObject.vrppayload).DebtorAccount,
-            );
-          } else {  
-            console.log(`No entry found for scope ${scope}.`);
+      try {
+        const data = await fetchAllDataforScope(scope);
+        if (data && data.length > 0) {
+          const latestObject = getObjectWithLatestCreationTime(data);
+          if (latestObject && latestObject.vrppayload) {
+            const parsedPayload = JSON.parse(latestObject.vrppayload);
+            if (parsedPayload && parsedPayload.DebtorAccount) {
+              setDebitorDetails(parsedPayload.DebtorAccount);
+            } else {
+              console.log('No DebtorAccount found in vrppayload.');
+            }
+          } else {
+            console.log('No valid latest object or vrppayload.');
           }
-        })
-        .catch(error => {
-          console.error('Error fetching Consent data:', error);
-        });
+        } else {
+          console.log(`No entry found for scope ${scope}.`);
+        }
+      } catch (error) {
+        console.error('Error fetching Consent data:', error);
+      }
     };
     fetchData();
   }, [scope]);
@@ -46,10 +54,12 @@ const CustomerDetails = ({ route }) => {
   console.log(debitorDetails);
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Image
         source={require('../../assets/images/ecomm-images/customer.png')}
         style={styles.image}
+        resizeMethod="resize"
       />
       <View>
         <Text style={styles.title}>Your data has been shared</Text>
@@ -91,7 +101,7 @@ const CustomerDetails = ({ route }) => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Confirm Details',  {
+            navigation.navigate('Confirm Details', {
               totalAmount,
               email: customerDetails.data.contactDetails.email,
               fullName: customerDetails.data.name.full_name,
@@ -107,9 +117,9 @@ const CustomerDetails = ({ route }) => {
                 customerDetails.data.address.residence.postcode,
               contactNumber:
                 customerDetails.data.contactDetails.mobile_phone_number,
-              accountNumber: debitorDetails.Identification,
+              accountNumber: debitorDetails ? debitorDetails.Identification : '',
               sortCode: '',
-              dob: customerDetails.data.birthdate.substring(0,10)
+              dob: customerDetails.data.birthdate.substring(0, 10)
             });
           }}
           style={styles.footer}
@@ -118,6 +128,7 @@ const CustomerDetails = ({ route }) => {
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
@@ -135,8 +146,6 @@ const styles = StyleSheet.create({
   addressText: {
     textAlign: 'center',
     color: 'black',
-    fontSize: 16,
-    marginBottom: 5,
   },
   addressContainer: {
     marginLeft: 10,
@@ -181,7 +190,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 20,
   },
 });
 

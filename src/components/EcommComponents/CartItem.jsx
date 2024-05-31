@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { IconButton, Surface } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWindowDimensions } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { RFValue } from 'react-native-responsive-fontsize';
 import imgArray from '../../assets/data/images';
 import { useNavigation } from '@react-navigation/native';
@@ -14,10 +14,6 @@ const CartItem = (props) => {
   const [productCount, setProductCount] = useState(0);
   const product = props.item;
   const productImage = imgArray.find((object) => object.id === product.id);
-  const { width, height } = useWindowDimensions();
-
-  const wp = (percentage) => (percentage * width) / 100;
-  const hp = (percentage) => (percentage * height) / 100;
 
   useEffect(() => {
     const getProductCountById = async () => {
@@ -73,15 +69,15 @@ const CartItem = (props) => {
   };
 
   return (
-    <TouchableOpacity style={styles.container(wp, hp)} activeOpacity={1}>
+    <TouchableOpacity style={styles.container} activeOpacity={1}>
       <View style={styles.productContainer}>
-        <Surface style={styles.surface(wp, hp)}>
-          <Image source={productImage.images[0]} style={styles.icon(wp, hp)} />
+        <Surface style={styles.imageContainer}>
+          <Image source={productImage.images[0]} style={styles.icon} />
         </Surface>
-        <View style={styles.detailsContainer(wp, hp)}>
+        <View style={styles.detailsContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{product.title}</Text>
-            <Text style={styles.price}>€ {product.price}</Text>
+            <Text style={styles.price}>£ {product.price}</Text>
           </View>
           <View style={styles.infoContainer}>
             {product.category === 'Mobiles' ? (
@@ -97,27 +93,23 @@ const CartItem = (props) => {
             ) : product.category === 'Laptops' ? (
               <Text style={styles.info}>{product.RAM} RAM</Text>
             ) : (
-              <></>
+              <Text></Text>
             )}
           </View>
           <View style={styles.buttonContainer}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={styles.info}>No. of products: {productCount} </Text>
             </View>
-            <View style={styles.buttons}>
+            <View style={{ flexDirection: 'row' }}>
               <IconButton
                 icon="plus"
                 mode="contained"
                 size={15}
-                containerColor="#fff"
-                iconColor="black"
                 onPress={incrementProductCount}
               />
               <IconButton
                 icon="minus"
                 mode="contained"
-                containerColor="#fff"
-                iconColor="black"
                 size={15}
                 onPress={decrementProductCount}
               />
@@ -130,39 +122,39 @@ const CartItem = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: (wp, hp) => ({
-    marginTop: hp(1),
-    marginBottom: hp(1),
+  container: {
+    marginTop: hp('1%'),
+    marginBottom: hp('1%'),
     borderRadius: 10,
     backgroundColor: '#8263E4',
-  }),
+  },
   productContainer: {
     flexDirection: 'row',
   },
-  surface: (wp, hp) => ({
+  imageContainer: {
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
-    marginRight: hp(1),
-    paddingRight: wp(2),
-    paddingLeft: wp(2),
-    paddingVertical: hp(1),
-  }),
-  icon: (wp, hp) => ({
-    width: wp(25),
-    height: hp(12),
+    marginRight: hp('1%'),
+    paddingRight: wp('2%'),
+    paddingLeft: wp('2%'),
+    paddingVertical: hp('1%'),
+  },
+  icon: {
+    width: wp('25%'),
+    height: hp('12%'),
     resizeMode: 'contain',
     borderRadius: 10,
-  }),
-  detailsContainer: (wp, hp) => ({
+  },
+  detailsContainer: {
     flexDirection: 'column',
     flex: 1,
-    paddingVertical: hp(1),
-    paddingHorizontal: wp(1),
-  }),
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('1%'),
+  },
   titleContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -176,15 +168,11 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15),
     fontWeight: 'bold',
     color: '#fff',
-    marginVertical: wp(1),
+    marginVertical: hp('1%'),
   },
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  buttons: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   infoContainer: {

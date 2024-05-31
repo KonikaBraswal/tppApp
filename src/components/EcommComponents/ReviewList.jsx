@@ -1,30 +1,63 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { Rating } from 'react-native-ratings';
-import { IconButton } from 'react-native-paper';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {Rating} from 'react-native-ratings';
+import {IconButton} from 'react-native-paper';
 
-const ReviewList = ({ name, rating, content, title }) => {
-  const [expanded, setExpanded] = useState(false);
+const ReviewList = ({name, rating, content, title}) => {
+  const [expanded, setExpanded] = React.useState(false);
 
   const toggleAccordion = () => {
     setExpanded(!expanded);
   };
-
   return (
-    <View style={styles.container}>
+    <View style={{marginBottom: hp('2%')}}>
       <TouchableOpacity
         onPress={toggleAccordion}
-        style={styles.touchableContainer}
-      >
-        <View style={styles.header}>
-          <View style={styles.nameContainer}>
-            <IconButton icon="check-decagram-outline" iconColor="green" size={24} />
-            <Text style={styles.name}>{name}</Text>
+        style={{backgroundColor: '#FFF', borderRadius: 10, elevation: 4}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <IconButton
+              icon="check-decagram-outline"
+              iconColor="green"
+              size={24}
+            />
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: RFValue(14),
+                color: '#000',
+              }}>
+              {name}
+            </Text>
           </View>
 
-          <View style={styles.ratingContainer}>
-            <Rating type="custom" ratingCount={5} startingValue={rating} imageSize={20} readonly />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: hp('0.5%'),
+            }}>
+            <Rating
+              type="custom"
+              ratingCount={5}
+              startingValue={rating}
+              imageSize={20}
+              readonly
+            />
             <IconButton
               icon={expanded ? 'chevron-up' : 'chevron-down'}
               size={20}
@@ -32,11 +65,27 @@ const ReviewList = ({ name, rating, content, title }) => {
             />
           </View>
         </View>
-
         {expanded && (
-          <View style={styles.contentContainer}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.content}>{content}</Text>
+          <View
+            style={{paddingHorizontal: wp('5%'), paddingVertical: hp('2%')}}>
+            <Text
+              style={{
+                fontSize: RFValue(15),
+                fontWeight: 'bold',
+                color: '#000',
+              }}>
+              {title}
+            </Text>
+            <Text
+              style={{
+                fontSize: RFValue(13),
+                fontWeight: '400',
+                marginTop: hp('1%'),
+                color: '#000',
+                textAlign: 'justify',
+              }}>
+              {content}
+            </Text>
           </View>
         )}
       </TouchableOpacity>
@@ -46,49 +95,26 @@ const ReviewList = ({ name, rating, content, title }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
-  },
-  touchableContainer: {
-    backgroundColor: '#FFF',
-    borderRadius: 10,
-    elevation: 4,
+    backgroundColor: '#fff',
+    borderRadius: wp('2%'),
+    padding: wp('4%'),
+    marginBottom: hp('2%'),
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginBottom: hp('1%'),
   },
   name: {
     fontWeight: 'bold',
-    fontSize: 14,
-    color: '#000',
-    marginLeft: 8,
+    fontSize: wp('4.5%'),
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#000',
-    marginTop: 12,
-  },
-  contentContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
+  rating: {
+    fontSize: wp('3.5%'),
+    color: 'gray',
   },
   content: {
-    fontSize: 13,
-    fontWeight: '400',
-    marginTop: 8,
-    color: '#000',
-    textAlign: 'justify',
+    fontSize: wp('4%'),
   },
 });
 

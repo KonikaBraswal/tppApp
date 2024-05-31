@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const AddressScreen = ({ route }) => {
+// const AddressScreen = () => {
+
+  const AddressScreen = ({ route }) => {
   const totalAmount = route.params.totalAmount;
   const navigation = useNavigation();
 
@@ -10,10 +13,9 @@ const AddressScreen = ({ route }) => {
   const [fullName, setFullName] = useState('');
   const [billingAddress, setBillingAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [sortCode, setSortCode] = useState('');
+  const [accountNumber, setaccountNumber] = useState('');
+  const [sortCode, setsortCode] = useState('');
   const [dob, setDob] = useState('');
-
   const [formComplete, setFormComplete] = useState(false);
 
   const checkFormCompletion = () => {
@@ -36,48 +38,56 @@ const AddressScreen = ({ route }) => {
 
     navigation.navigate('Confirm Details', {
       totalAmount,
-      email,
-      fullName,
-      billingAddress,
-      contactNumber,
-      accountNumber,
-      sortCode,
-      dob,
+      email: email,
+      fullName: fullName,
+      billingAddress: billingAddress,
+      contactNumber: contactNumber,
+      accountNumber: accountNumber,
+      sortCode: sortCode,
+      dob: dob,
     });
 
     setEmail('');
     setFullName('');
     setBillingAddress('');
     setContactNumber('');
-    setAccountNumber('');
-    setSortCode('');
+    setaccountNumber('');
+    setsortCode('');
     setDob('');
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.heading}>
-          <Text style={styles.icon}>&#9997;</Text>Your details
-        </Text>
+        <Text style={styles.heading}><Text style={styles.icon}>&#9997;</Text>Your details</Text>
+
         <Text style={styles.text}>
-          We just need a few details to set up your account and confirm your affordability
+          We just need a few details to set up your account
         </Text>
+
         <Text style={styles.title}>
           Get my personal details from my bank
         </Text>
+
         <Text style={styles.subtitle}>
           Add your account details directly from the banking data
         </Text>
+
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('BankList', { totalAmount })}
+          onPress={() => {
+            navigation.navigate('Banklist', { totalAmount });
+            // navigation.navigate('Banklist');
+          }}
           activeOpacity={1}
         >
-          <Text style={styles.buttonText}>Get my personal and banking data</Text>
+          <Text style={styles.buttonText}>Take me to my bank</Text>
         </TouchableOpacity>
+
         <View style={styles.line} />
+
         <Text style={styles.heading}>Enter manually</Text>
+
         <Text style={styles.label}>Email:</Text>
         <TextInput
           style={styles.input}
@@ -86,13 +96,15 @@ const AddressScreen = ({ route }) => {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        <Text style={styles.text}>We'll use this to send you updates on your order</Text>
+        <Text style={styles.text}> We'll use this to send you updates on your order</Text>
+
         <Text style={styles.label}>Full Name:</Text>
         <TextInput
           style={styles.input}
           value={fullName}
           onChangeText={setFullName}
         />
+
         <Text style={styles.label}>Billing Address:</Text>
         <TextInput
           style={styles.input}
@@ -100,6 +112,7 @@ const AddressScreen = ({ route }) => {
           onChangeText={setBillingAddress}
           multiline
         />
+
         <Text style={styles.label}>Contact Number:</Text>
         <TextInput
           style={styles.input}
@@ -107,20 +120,23 @@ const AddressScreen = ({ route }) => {
           onChangeText={setContactNumber}
           keyboardType="phone-pad"
         />
+
         <Text style={styles.label}>Account Number:</Text>
         <TextInput
           style={styles.input}
           value={accountNumber}
-          onChangeText={setAccountNumber}
+          onChangeText={setaccountNumber}
           keyboardType="phone-pad"
         />
+
         <Text style={styles.label}>Sort Code:</Text>
         <TextInput
           style={styles.input}
           value={sortCode}
-          onChangeText={setSortCode}
+          onChangeText={setsortCode}
           keyboardType="phone-pad"
         />
+
         <Text style={styles.label}>Date of Birth:</Text>
         <TextInput
           style={styles.input}
@@ -128,7 +144,9 @@ const AddressScreen = ({ route }) => {
           onChangeText={setDob}
           keyboardType="phone-pad"
         />
+
         <View style={styles.line} />
+
         <TouchableOpacity
           style={[styles.button, formComplete ? styles.buttonEnabled : styles.buttonDisabled]}
           onPress={handleSubmit}
@@ -148,55 +166,57 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: '5%',
+    padding: wp('5%'),
   },
   heading: {
     fontSize: 30,
     fontWeight: '600',
     color: '#114188',
-    marginBottom: '1.5%',
+    marginBottom: hp('1.5%')
   },
   text: {
-    fontSize: '4%',
+    fontSize: wp('4%'),
     fontWeight: '500',
     color: '#114188',
-    marginBottom: '2%',
-    textAlign: 'center',
+    marginBottom: hp('2%'),
+    textAlign: 'center'
   },
   title: {
-    fontSize: '6%',
+    fontSize: wp('6%'),
     fontWeight: 'bold',
     color: '#114188',
-    marginBottom: '1.5%',
+    marginBottom: hp('1.5%'),
     textAlign: 'center',
-    width: '70%',
+    width: wp('70%')
   },
   subtitle: {
-    fontSize: '5%',
+    fontSize: wp('5%'),
     fontWeight: '600',
     color: '#114188',
-    marginBottom: '3%',
-    textAlign: 'center',
+    marginBottom: hp('3%'),
+    textAlign: 'center'
   },
   button: {
     backgroundColor: '#114188',
-    borderRadius: '10%',
-    width: '90%',
-    height: '6%',
+    borderRadius: wp('10%'),
+    width: wp('90%'),
+    height: hp('6%'),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: '2%',
+    marginBottom: hp('2%'),
   },
   buttonText: {
-    fontSize: '4.4%',
+    fontSize: wp('4.4%'),
     fontWeight: 'bold',
     color: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   line: {
-    width: '100%',
+    width: wp('100%'),
     height: 1,
     backgroundColor: '#114188',
-    marginBottom: '3%',
+    marginBottom: hp('3%'),
   },
   label: {
     fontSize: 16,
@@ -211,8 +231,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     fontSize: 16,
-    width: '85%',
-    fontWeight: '500',
+    width: wp('85%'),
+    fontWeight: '500'
   },
   icon: {
     fontSize: 40,
@@ -220,21 +240,21 @@ const styles = StyleSheet.create({
   },
   buttonEnabled: {
     backgroundColor: '#114188',
-    borderRadius: '10%',
-    width: '90%',
-    height: '6%',
+    borderRadius: wp('10%'),
+    width: wp('90%'),
+    height: hp('6%'),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: '2%',
+    marginBottom: hp('2%'),
   },
   buttonDisabled: {
-    backgroundColor: '#C0C0C0',
-    borderRadius: '10%',
-    width: '90%',
-    height: '6%',
+    backgroundColor: '#C0C0C0', // Gray color
+    borderRadius: wp('10%'),
+    width: wp('90%'),
+    height: hp('6%'),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: '2%',
+    marginBottom: hp('2%'),
   },
 });
 

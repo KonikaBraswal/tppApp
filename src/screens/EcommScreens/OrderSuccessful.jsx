@@ -1,14 +1,31 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { IconButton, Button } from 'react-native-paper';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 
-const OrderSuccessful = () => {
+const OrderSuccessful = (props) => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <IconButton
+          icon="arrow-left"
+          color="white"
+          onPress={() => navigation.navigate('Online Store')}
+        />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Image
           style={styles.image}
           source={require('../../assets/images/ecomm-images/order-confirm.jpg')}
@@ -37,22 +54,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
   image: {
-    width: '100%',
-    height: '50%',
-    marginTop: '3%',
+    width: wp('100%'),
+    height: hp('50%'),
+    marginTop: hp('3%'),
   },
   footer: {
     backgroundColor: '#35324F',
-    paddingHorizontal: '5%',
-    paddingVertical: '5.5%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingHorizontal: wp('5%'),
+    paddingVertical: hp('5.5%'),
+    borderTopLeftRadius: hp('3%'),
+    borderTopRightRadius: hp('3%'),
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -60,29 +72,30 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
-    marginBottom: '1%',
-    fontSize: 16,
+    marginBottom: hp('1%'),
+    fontSize: RFValue(16),
     color: '#87878A',
   },
   footerTitle: {
     textAlign: 'center',
-    marginBottom: '1%',
+    marginBottom: hp('1%'),
     fontWeight: 'bold',
-    fontSize: 22,
+    fontSize: RFValue(22),
     color: '#fff',
   },
   button: {
     borderRadius: 20,
-    paddingVertical: '1%',
-    paddingHorizontal: '4%',
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('4%'),
     backgroundColor: '#3559AA',
-    marginTop: '2%',
+    marginTop: hp('2%'),
   },
   buttonLabel: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: 'white',
   },
 });
 
 export default OrderSuccessful;
+

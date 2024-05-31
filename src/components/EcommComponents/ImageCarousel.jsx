@@ -1,27 +1,29 @@
 import React from 'react';
-import { View, FlatList, Image, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, FlatList, Image, StyleSheet, Dimensions } from 'react-native';
 import { IconButton } from 'react-native-paper';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const ImageCarousel = (props) => {
-  const { width: screenWidth } = useWindowDimensions();
-  const itemWidth = screenWidth * 0.9;
+const screenWidth = Dimensions.get('window').width;
+const itemWidth = screenWidth * 0.9;
 
+const ImageCarousel = (props) => {
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.item(itemWidth)}>
+      <View style={styles.item}>
         <Image source={item} style={styles.image} />
         {props.data.images.length > 1 && (
           <IconButton
             icon="chevron-right"
-            mode="contained-tonal"
             size={20}
-            iconColor="#000"
-            containerColor="#D3D3D3"
+            color="#000"
             style={styles.chevron}
+            onPress={() => {
+              // Handle button press
+            }}
           />
         )}
       </View>
@@ -49,23 +51,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  item: (width) => ({
-    width: width,
+  item: {
+    width: itemWidth,
     height: 250,
-    marginHorizontal: wp('1.2%'),
-    paddingVertical: hp('0.2%'),
+    margin: hp('1.2%'),
+    padding: hp('0.2%'),
     borderRadius: 8,
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: '#fff',
     elevation: 6,
-  }),
+  },
   image: {
     width: '100%',
     height: '100%',
     borderRadius: 8,
     resizeMode: 'contain',
   },
+
   chevron: {
     position: 'absolute',
     right: 10,
@@ -75,3 +78,4 @@ const styles = StyleSheet.create({
 });
 
 export default ImageCarousel;
+

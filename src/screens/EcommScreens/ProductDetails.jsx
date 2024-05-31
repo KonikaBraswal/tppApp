@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 import { IconButton, Button, Modal, Portal } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { RFValue } from 'react-native-responsive-fontsize';
 import ImageCarousel from '../../components/EcommComponents/ImageCarousel';
 import imgArray from '../../assets/data/images';
 import ReviewList from '../../components/EcommComponents/ReviewList';
@@ -23,8 +28,8 @@ const ProductDetails = ({ route }) => {
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  
-  const addItemToCart = async (productToAdd) => {
+
+  const addItemToCart = async productToAdd => {
     try {
       const existingCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
       let updatedCart = [];
@@ -41,7 +46,7 @@ const ProductDetails = ({ route }) => {
     }
   };
 
-  const handleButton1Press = (product) => {
+  const handleButton1Press = product => {
     showModal();
     addItemToCart(product);
     console.log(product, 'Added To Cart');
@@ -53,17 +58,25 @@ const ProductDetails = ({ route }) => {
   };
 
   const product = route.params.product;
-  const productImages = imgArray.find((object) => object.id === product.id);
-  
+  const productImages = imgArray.find(object => object.id === product.id);
+
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.content}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ backgroundColor: '#fff' }}>
+        <View style={{ padding: hp('1%'), marginTop: hp('1.5%') }}>
           <ImageCarousel data={productImages} />
 
-          <View style={styles.productInfo}>
-            <Text style={styles.productTitle}>{product.title}</Text>
-            <View style={styles.ratingContainer}>
+          <View style={{ padding: 6, marginVertical: hp('1.5%') }}>
+            <Text
+              style={{
+                fontSize: RFValue(17),
+                marginBottom: 5,
+                color: 'black',
+                fontWeight: 'bold',
+              }}>
+              {product.title}
+            </Text>
+            <View style={{ alignItems: 'flex-start', marginVertical: hp('1.5%') }}>
               <Rating
                 type="custom"
                 ratingCount={5}
@@ -72,16 +85,68 @@ const ProductDetails = ({ route }) => {
                 readonly
               />
             </View>
-            <View style={styles.priceStockContainer}>
-              <Text style={styles.priceText}>Price: € {product.price.toFixed(2)}</Text>
-              <Text style={styles.stockText}>In Stock: {product.inStock}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignContent: 'center',
+                justifyContent: 'space-between',
+                marginTop: hp('1.5%'),
+              }}>
+              <Text
+                style={{
+                  fontSize: RFValue(18),
+                  color: 'black',
+                  fontWeight: 'bold',
+                }}>
+                Price: £ {product.price.toFixed(2)}
+              </Text>
+              <Text
+                style={{
+                  fontSize: RFValue(15),
+                  padding: 5,
+                  color: '#000',
+                  fontWeight: 'bold',
+                  backgroundColor: '#FFF',
+                  borderColor: '#000',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                }}>
+                In Stock: {product.inStock}
+              </Text>
             </View>
-            <Text style={styles.specsTitle}>Specifications:</Text>
-            <Text style={styles.specsText}>{product.specs}</Text>
+            <Text
+              style={{
+                fontSize: RFValue(17),
+                marginVertical: hp('1.5%'),
+                color: 'black',
+                fontWeight: 'bold',
+              }}>
+              Specifications:
+            </Text>
+            <View>
+              <Text
+                style={{
+                  color: 'black',
+                  flexWrap: 'wrap',
+                  marginBottom: hp('0.7%'),
+                  fontSize: RFValue(14),
+                  fontWeight: '400',
+                }}>
+                {product.specs}
+              </Text>
+            </View>
             {product.reviews.length > 0 && (
               <View>
-                <Text style={styles.reviewsTitle}>Reviews:</Text>
-                <View style={styles.reviewsContainer}>
+                <Text
+                  style={{
+                    fontSize: RFValue(17),
+                    marginVertical: 10,
+                    color: 'black',
+                    fontWeight: 'bold',
+                  }}>
+                  Reviews:
+                </Text>
+                <View style={{ marginBottom: 55 }}>
                   {product.reviews.map((review, id) => (
                     <ReviewList
                       key={id}
@@ -101,15 +166,24 @@ const ProductDetails = ({ route }) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => handleButton1Press(product)}
-          activeOpacity={1}
-        >
-          <View style={styles.buttonContent}>
+          activeOpacity={1}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <IconButton icon="cart" iconColor="#fff" size={24} />
             <Text style={styles.buttonText}>Add To Cart</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleButton2Press}>
-          <View style={styles.buttonContent}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <IconButton icon="gesture-tap" iconColor="#fff" size={24} />
             <Text style={styles.buttonText}>Go To Bag</Text>
           </View>
@@ -118,8 +192,7 @@ const ProductDetails = ({ route }) => {
           <Modal
             visible={visible}
             onDismiss={hideModal}
-            contentContainerStyle={styles.modalContainer}
-          >
+            contentContainerStyle={styles.modalContainer}>
             <View style={styles.modalContent}>
               <IconButton icon="check-circle" size={45} iconColor="green" />
               <Text style={styles.modalText}>{product.title}</Text>
@@ -139,74 +212,6 @@ const ProductDetails = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollView: {
-    backgroundColor: '#fff',
-  },
-  content: {
-    padding: 16,
-    marginTop: 16,
-  },
-  productInfo: {
-    padding: 6,
-    marginVertical: 16,
-  },
-  productTitle: {
-    fontSize: 17,
-    marginBottom: 5,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  ratingContainer: {
-    alignItems: 'flex-start',
-    marginVertical: 16,
-  },
-  priceStockContainer: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-  priceText: {
-    fontSize: 18,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  stockText: {
-    fontSize: 15,
-    padding: 5,
-    color: '#000',
-    fontWeight: 'bold',
-    backgroundColor: '#FFF',
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  specsTitle: {
-    fontSize: 17,
-    marginVertical: 16,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  specsText: {
-    color: 'black',
-    flexWrap: 'wrap',
-    marginBottom: 7,
-    fontSize: 14,
-    fontWeight: '400',
-  },
-  reviewsTitle: {
-    fontSize: 17,
-    marginVertical: 10,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  reviewsContainer: {
-    marginBottom: 55,
-  },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -216,25 +221,20 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: 'rgba(192, 192, 192, 0.9)',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: hp('2.2%'),
+    paddingHorizontal: wp('3%'),
   },
   button: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     borderRadius: 8,
     backgroundColor: '#3559AA',
-    marginHorizontal: 8,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginHorizontal: wp('1%'),
   },
   buttonText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: RFValue(15),
     fontWeight: '600',
   },
   modalContainer: {
@@ -243,12 +243,12 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 16,
+    padding: hp('4%'),
     borderRadius: 10,
     alignItems: 'center',
   },
   modalText: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
@@ -262,3 +262,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProductDetails;
+
