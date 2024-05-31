@@ -1528,7 +1528,7 @@ class SanboxApiFactory {
       pispToStore.response = JSON.stringify(payResponse);
       pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
       console.log(pispToStore);
-      await androidClientPisp.initDatabaseAndroidPisp();
+      
       await androidClientPisp.insertDataPisp(pispToStore);
       console.log('Storing this to the table');
       await androidClientPisp.displayData();
@@ -1613,7 +1613,7 @@ class SanboxApiFactory {
       aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
       //print aispToSTore
       console.log(aispToStore);
-      await androidClientAisp.initDatabaseAndroidAisp(); //create the table
+     
       await androidClientAisp.insertDataAisp(aispToStore);
 
       await androidClientAisp.displayData();
