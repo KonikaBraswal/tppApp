@@ -54,6 +54,8 @@ import AndroidClient from './DatabaseFactory/AndroidClientDb';
 
 function App(): React.JSX.Element {
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+  let androidClientAisp=new AndroidClient("NWG", "Sandbox", "accounts");
+  let androidClientPisp=new AndroidClient("NWG", "Sandbox", "payments");
   let androidClientVrpTransact=new AndroidClient("NWG", "Sandbox", "vrp_transactions");
   let androidClientCA=new AndroidClient("NWG", "Sandbox", "customer_checkout");
   
@@ -62,6 +64,8 @@ function App(): React.JSX.Element {
       androidClientVrp.initDatabaseAndroidVrp();
       androidClientCA.initDatabaseAndroidCa();
       androidClientVrpTransact.initDatabaseAndroidVrpTransactions();
+      await androidClientAisp.initDatabaseAndroidAisp();
+      await androidClientPisp.initDatabaseAndroidPisp();
     } catch (error) {
       console.error('Error fetching data for consents:', error);
     }
