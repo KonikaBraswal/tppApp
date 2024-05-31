@@ -567,33 +567,60 @@ class AndroidClientDb {
   });
 }
   
-  async fetchDataUsingConsentId(consentId: string): Promise < any > {
+//   async fetchDataUsingConsentId(consentId: string): Promise < any > {
+//   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+//     console.log("table name",tableName);
+//   return new Promise((resolve, reject) => {
+//     this.androidDb.transaction(tx => {
+//       tx.executeSql(
+//         `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY date DESC,time DESC ;`,
+//         [consentId],
+//         (_, results) => {
+//           console.log(results);
+//           const rows = results.rows;
+//           const data = [];
+//           if (rows.length > 0) {
+//             for (let i = 0; i < rows.length; i++) {
+//               const row = rows.item(i);
+//               data.push(row);
+//             }
+//             if (data.length > 0) {
+//               resolve(data);
+//             }
+//           } else {
+//             // console.log(`No entry found for ${consentId ? 'consentId:' + consentId : 'scope:' + scope}`);
+//             resolve(null);
+//           }
+//         },
+//         (_, error) => {
+//           console.error('Error fetching data in database:', error);
+//           reject(error);
+//         },
+//       );
+//     });
+//   });
+// }
+async fetchDataUsingConsentId(consentId:string): Promise < any > {
   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
   return new Promise((resolve, reject) => {
     this.androidDb.transaction(tx => {
       tx.executeSql(
-        `SELECT * FROM ${tableName} where consentId = ?ORDER BY date DESC,time DESC ;`,
+        `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY date DESC,time DESC ;`,
         [consentId],
-        (_, results) => {
-          console.log(results);
-          const rows = results.rows;
-          const data = [];
-          if (rows.length > 0) {
+        (_, { rows }) => {
+          if(rows.length>0){
+            const rowData = [];
             for (let i = 0; i < rows.length; i++) {
-              const row = rows.item(i);
-              data.push(row);
+              rowData.push(rows.item(i));
             }
-            if (data.length > 0) {
-              resolve(data);
-            }
-          } else {
-            // console.log(`No entry found for ${consentId ? 'consentId:' + consentId : 'scope:' + scope}`);
+            resolve(rowData); // Resolve the promise with the fetched data
+
+          }else{
             resolve(null);
           }
         },
         (_, error) => {
-          console.error('Error fetching data in database:', error);
+          console.error('Error retrieving data:', error);
           reject(error);
         },
       );

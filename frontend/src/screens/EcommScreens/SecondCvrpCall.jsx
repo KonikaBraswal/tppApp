@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   VirtualizedList,
 } from 'react-native';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
+
 import { useIsFocused } from '@react-navigation/native';
 
 import {
@@ -28,6 +30,7 @@ const SecondCvrpCall = ({ route }) => {
   const { totalAmount, debitorDetails,customerDetails,consentId } = route.params;
   const isFocused = useIsFocused();
   const [vrpData, setVrpData] = useState(null);
+  let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
   
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
@@ -35,12 +38,14 @@ const SecondCvrpCall = ({ route }) => {
     const fetchData = async () => {
       if (isFocused) {
         try {
+          console.log(consentId);
+          // VRP-a883310d-3233-4872-b790-3d060b5ce516
           const data = await androidClientVrp.fetchDataUsingConsentId(consentId);
           // const data = await androidClientVrp.displayData();
           console.log("data in second vrp call", data);
           setVrpData(data);
         } catch (error) {
-          console.error('Error fetching data in cart screen:', error);
+          console.error('Error fetching data in second vrp call screen:', error);
         }
       }
     };
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
   },
   selectedCard: {
     backgroundColor: '#70CDF5',
-    borderColor: '#00B0FF',
+    borderColor: '#3559AA',
     borderRadius: 5,
     margin: 8,
     borderWidth: 3,
@@ -182,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    borderColor: '#A6E0F7',
+    borderColor: '#3559AA',
     borderRadius: 5,
     // margin: 8,
     padding:wp('3%'),
@@ -213,7 +218,7 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 10,
     height: 2, // Increase height to make it more visible
-    backgroundColor: '#B0FDF6',
+    backgroundColor: '#3559AA',
   },
   footer: {
     paddingVertical: wp('1.6%'), // Vertical padding

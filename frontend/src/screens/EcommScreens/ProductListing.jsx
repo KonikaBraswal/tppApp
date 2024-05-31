@@ -229,10 +229,10 @@ const ProductListing = () => {
                 onValueChange={() => {
                   showProducts();
                 }}
-                color='#00B0FF'
+                color='#3559AA'
               />
             </View>
-            <Button icon="chevron-down" mode="contained" style={{ backgroundColor: '#00B0FF' }} onPress={showMenu}>
+            <Button icon="chevron-down" mode="contained" style={{ backgroundColor: '#3559AA' }} onPress={showMenu}>
               Filter
             </Button>
             <Portal>

@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   footerText: {
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: wp('5%'),
   },
