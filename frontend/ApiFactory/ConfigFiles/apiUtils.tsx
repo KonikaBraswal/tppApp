@@ -273,9 +273,7 @@ export function generateDomesticConsentHeaders(
 
 export function generateVrpPaymentBody(formData: any, consentId: string) {
   const Identification = formData.accountNumber + formData.sortCode;
-  console.log("1",formData);
-  console.log("2",consentId);
-  console.log("3",Identification);
+  // console.log("id",body.Data.Instruction.InstructedAmount.Amount);
   return {
     Data: {
       ConsentId: consentId,

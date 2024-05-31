@@ -28,9 +28,10 @@ const ConsentInfo = ({ route }) => {
     const {
         debitorDetails,
         consentpayload
-    }=route.params;
-    const payload = JSON.parse(consentpayload);
-    
+    } = route.params;
+    const payload = (consentpayload);
+    console.log(payload);
+
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.container}>
@@ -39,41 +40,49 @@ const ConsentInfo = ({ route }) => {
                     Permissions given to setup a Variable Recurring Payment (VRP),to make
                     transfers between your accounts, within the payment rules below:
                 </Text>
-                
+
                 <View style={{ backgroundColor: '#D6CFC7', width: '100%', flex: 1 }}>
-                    <Surface
-                        elevation={0}
 
-                        style={{ flex: 1, alignItems: 'center', backgroundColor: '#D6CFC7' }}>
-                        <DataTable>
-                            <View style={{ backgroundColor: '#D6CFC7' }}>
-                                <DataTable.Header>
-                                    <DataTable.Title textStyle={{ color: '#5a287d', fontSize: 20, fontWeight: 'bold' }}>Payment Terms</DataTable.Title>
-                                </DataTable.Header>
-                                <DataTable.Header>
-                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Reference</DataTable.Title>
-                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{payload.Initiation.RemittanceInformation.Reference}</DataTable.Title>
-                                </DataTable.Header>
-                                <DataTable.Header>
-                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Period Type</DataTable.Title>
-                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{payload.ControlParameters.PeriodicLimits[0].PeriodType}</DataTable.Title>
-                                </DataTable.Header>
-                                <DataTable.Header>
-                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Max per {payload.ControlParameters.PeriodicLimits[0].PeriodType}</DataTable.Title>
-                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>£{payload.ControlParameters.PeriodicLimits[0].Amount}</DataTable.Title>
-                                </DataTable.Header>
-                                <DataTable.Header>
-                                    <DataTable.Title textStyle={{ color: 'black', fontSize: 15 }}>Max per Payment</DataTable.Title>
-                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>£{payload.ControlParameters.MaximumIndividualAmount.Amount}</DataTable.Title>
-                                </DataTable.Header>
-                                <DataTable.Header>
-                                    <DataTable.Title textStyle={{ color: 'black', fontSize: 15 }}>Expiry Date</DataTable.Title>
-                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{new Date(payload.ControlParameters.ValidToDateTime).toLocaleDateString()}</DataTable.Title>
-                                </DataTable.Header>
-                            </View>
-                        </DataTable>
+                        <Surface
+                            elevation={0}
+                            
+                            style={{ flex: 1, alignItems: 'center', backgroundColor: '#D6CFC7' }}>
+                            <DataTable>
+                                <View style={{ backgroundColor: '#D6CFC7' }}>
+                                    <DataTable.Header>
+                                        <DataTable.Title textStyle={{ color: '#5a287d', fontSize: 20, fontWeight: 'bold' }}>Payment Terms</DataTable.Title>
+                                    </DataTable.Header>
 
-                    </Surface>
+                                    <DataTable.Header>
+                                        <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Reference</DataTable.Title>
+                                        <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{payload.Initiation.RemittanceInformation.Reference}</DataTable.Title>
+                                    </DataTable.Header>
+
+                            {payload.ControlParameters.PeriodicLimits && payload.ControlParameters.MaximumIndividualAmount && payload.ControlParameters.ValidToDateTime &&
+                                <View>
+                                    <DataTable.Header>
+                                        <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Period Type</DataTable.Title>
+                                        <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{payload.ControlParameters.PeriodicLimits[0].PeriodType}</DataTable.Title>
+                                    </DataTable.Header>
+                                    <DataTable.Header>
+                                        <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Max per {payload.ControlParameters.PeriodicLimits[0].PeriodType}</DataTable.Title>
+                                        <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>£{payload.ControlParameters.PeriodicLimits[0].Amount}</DataTable.Title>
+                                    </DataTable.Header>
+                                    <DataTable.Header>
+                                        <DataTable.Title textStyle={{ color: 'black', fontSize: 15 }}>Max per Payment</DataTable.Title>
+                                        <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>£{payload.ControlParameters.MaximumIndividualAmount.Amount}</DataTable.Title>
+                                    </DataTable.Header>
+                                    <DataTable.Header>
+                                        <DataTable.Title textStyle={{ color: 'black', fontSize: 15 }}>Expiry Date</DataTable.Title>
+                                        <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{new Date(payload.ControlParameters.ValidToDateTime).toLocaleDateString()}</DataTable.Title>
+                                    </DataTable.Header>
+                                </View>
+}
+
+                                </View>
+                            </DataTable>
+
+                        </Surface>
                     <Surface
                         elevation={2}
                         category="medium"
@@ -102,37 +111,37 @@ const ConsentInfo = ({ route }) => {
 
 
                     </Surface>
-                    {debitorDetails&&
-                    <Surface
-                        elevation={2}
-                        category="medium"
-                        style={{ width: '100%', height: 200 }}>
-                            
-                        <DataTable>
+                    {debitorDetails &&
+                        <Surface
+                            elevation={2}
+                            category="medium"
+                            style={{ width: '100%', height: 200 }}>
 
-                            <DataTable.Header>
-                                <DataTable.Title textStyle={{ color: '#5a287d', fontSize: 20, fontWeight: 'bold' }}>From</DataTable.Title>
-                            </DataTable.Header>
+                            <DataTable>
 
-                            <DataTable.Header>
-                                <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Debitor Name</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Name}</DataTable.Title>
-                            </DataTable.Header>
+                                <DataTable.Header>
+                                    <DataTable.Title textStyle={{ color: '#5a287d', fontSize: 20, fontWeight: 'bold' }}>From</DataTable.Title>
+                                </DataTable.Header>
 
-                            <DataTable.Header>
-                                <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Account Number</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(0, 8)}</DataTable.Title>
-                            </DataTable.Header>
-                            <DataTable.Header>
-                                <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Sort Code</DataTable.Title>
-                                <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(8)}</DataTable.Title>
-                            </DataTable.Header>
-                        </DataTable>
-                    </Surface>
+                                <DataTable.Header>
+                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Debitor Name</DataTable.Title>
+                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Name}</DataTable.Title>
+                                </DataTable.Header>
+
+                                <DataTable.Header>
+                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Account Number</DataTable.Title>
+                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(0, 8)}</DataTable.Title>
+                                </DataTable.Header>
+                                <DataTable.Header>
+                                    <DataTable.Title style={{ maxWidth: 200 }} textStyle={{ color: 'black', fontSize: 15 }} numberOfLines={2}>Sort Code</DataTable.Title>
+                                    <DataTable.Title numeric textStyle={{ color: 'black', fontSize: 15 }}>{debitorDetails.DebtorAccount.Identification.substring(8)}</DataTable.Title>
+                                </DataTable.Header>
+                            </DataTable>
+                        </Surface>
                     }
 
                 </View>
-                
+
             </View>
         </ScrollView>
     );

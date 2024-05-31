@@ -14,6 +14,7 @@ import {
     TextInput,
     DataTable
 } from 'react-native-paper';
+
 import {
     StyleSheet,
     View,
@@ -38,6 +39,7 @@ const switchEnvironment = (newEnv) => {
     // Use the new apiClient as needed
    };
 const VRPConsent = ({ route }) => {
+    
     useEffect(() => {
         const newApiClient = switchEnvironment(global.env);
         setEnvApiClient(newApiClient);
@@ -112,7 +114,7 @@ const VRPConsent = ({ route }) => {
                 setConsentData(consentdata);
                 if (way == 'web') {
                     await EnvApiClient.manualUserConsent(
-                        consentData.Data.ConsentId,
+                        consentdata.Data.ConsentId,
                     );
                     showInputDialog();
                 }
@@ -141,11 +143,11 @@ const VRPConsent = ({ route }) => {
         try {
             
             const  {customerDetails,debitorDetails,response }=await EnvApiClient.exchangeAccessToken(inputValue,consentData);
-            console.log("data",response);
             console.log("data2",consentData);
+            const id=consentData.Data.ConsentId;
             const updatedResponse = {
                 refreshToken: response.refresh_token,
-                consentId: consentData,
+                consentId: id,
               };
               
             navigation.navigate('GrantedForm', {
@@ -245,7 +247,7 @@ const VRPConsent = ({ route }) => {
                         <Button
                             icon="close"
                             mode="contained"
-                            style={{ marginRight: 10 }}
+                            style={{ marginRight: 10,backgroundColor:'#3559AA' }}
                             onPress={() => navigation.goBack()}>
                             Deny
                         </Button>
@@ -257,17 +259,18 @@ const VRPConsent = ({ route }) => {
                                 handleConfirmButtonClick();
                             }}
 
-                            style={{ marginLeft: 10 }}>
+                            style={{ marginLeft: 10,backgroundColor:'#3559AA' }}>
                             I Allow
                         </Button>
                     </View>
                     <Portal>
-                        <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+                        <Dialog visible={isInputDialogVisible} style={{backgroundColor:'#E0FCFD'}} onDismiss={hideInputDialog}>
                             <Dialog.Title>Redirect Input</Dialog.Title>
                             <Dialog.Content>
                                 <TextInput
                                     label=" Paste URL from the browser"
                                     value={inputValue}
+                                    style={{backgroundColor:'#E0FCFD',color:'black'}}
                                     onChangeText={text => setInputValue(text)}
                                 />
                             </Dialog.Content>

@@ -176,12 +176,6 @@ class SanboxApiFactory {
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
       case 'vrp':
-        androidClientVrp = new AndroidClient(companyName, apiClient, apiScope);
-        androidClientCA=new AndroidClient(companyName,apiClient,'customer_checkout');
-        androidClientVrpTransact=new AndroidClient(companyName,apiClient,'vrp_transactions');
-        // await androidClientVrp.deleteAllData();
-        // await androidClientVrpTransact.deleteAllData();
-        // await androidClientCA.deleteAllData();
         console.log('******NWB VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
@@ -862,9 +856,8 @@ class SanboxApiFactory {
         const start = authTokenUrl.indexOf('=') + 1;
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
-
-        console.log('AuthToken', authToken);
         
+
         const body = generateBodyForExchange(
           this.clientId,
           this.clientSecret,
@@ -882,7 +875,7 @@ class SanboxApiFactory {
           },
         );
 
-        console.log('Api access token', response.data.access_token);
+        // console.log('Api access token', response.data.access_token);
         const RefreshToken = response.data.refresh_token;
         const consentExpiresIn = response.data.expires_in;
 
@@ -897,19 +890,22 @@ class SanboxApiFactory {
           customerDetails: detailsCa,
           debitorDetails:debitordetails.Data
         };
+        androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
+        androidClientCA=new AndroidClient(companyName,apiClient,'customer_checkout');
+        
         //inserting data in CA table
         caToStore.consentId=consentData.Data.ConsentId;
         caToStore.customerDetails=JSON.stringify(detailsCa);
         caToStore.accountDetails=JSON.stringify(debitordetails.Data);
         console.log(caToStore);
-        await androidClientCA.insertDatCA(caToStore);
+        await androidClientCA.insertDataCA(caToStore);
         //inserting data in VRP table
         vrpToStore.consentId=consentData.Data.ConsentId;
         vrpToStore.accountDetails=JSON.stringify(debitordetails.Data);
         vrpToStore.consentPayload=JSON.stringify(consentData);
         vrpToStore.consentExpiry=String(consentExpiresIn);
         vrpToStore.refreshToken=RefreshToken;
-        vrpToStore.scope='Authorised';
+        vrpToStore.status='Authorised';
         await androidClientVrp.insertDataVrp(vrpToStore);
         //Storing APILOGS
         logData = {
@@ -1105,10 +1101,9 @@ class SanboxApiFactory {
       const headers = generateAccountRequestHeaders(apiAccessToken);
 
       const body = generateVrpPaymentBody(formData, consentid);
-      console.log('(99');
-      console.log(headers);
-      console.log(body);
-
+      console.log("body",headers);
+      
+  console.log("id",body.Data.Instruction.InstructedAmount.Amount);
       const vrpPaymentResponse: AxiosResponse = await axios.post(
         `${this.baseUrl}/${sandboxConfigvrp.domesticVrpPayments}`,
         body,
@@ -1191,12 +1186,14 @@ class SanboxApiFactory {
       if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted') {
         const payload = allVrpPaymentsResponse.data.Data;
         const id = allVrpPaymentsResponse.data.Data.ConsentId;
+
         //inserting data in VRP TRansactions Table
         vrpTransactToStore.consentId=id;
         vrpTransactToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
         vrpTransactToStore.vrpPayload= JSON.stringify(payload);
         vrpTransactToStore.status=allVrpPaymentsResponse.data.Data.Status;
-        await androidClientVrpTransact.insertDatVrpTransact(vrpTransactToStore);
+        androidClientVrpTransact=new AndroidClient(companyName,apiClient,'vrp_transactions');
+        await androidClientVrpTransact.insertDataVrpTransact(vrpTransactToStore);
       }
       //Storing APILOGS
       logData = {
@@ -1344,7 +1341,7 @@ class SanboxApiFactory {
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
       };
-      console.log(body);
+      // console.log(body);
       const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
         null,
@@ -1362,7 +1359,12 @@ class SanboxApiFactory {
       const columnsToUpdate=['refreshToken'];
       
       const id=refreshToken.consentId;
+      console.log("id",id);
+      console.log("details-->",details);
+      // console.log(id);
+      androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
       await androidClientVrp.updateDataByConsentId(id, details,columnsToUpdate);
+          
       console.log('Refresh call response', responseRefresh.data);
       //Storing APILOGS
       logData = {

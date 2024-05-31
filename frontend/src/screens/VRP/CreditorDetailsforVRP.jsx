@@ -90,7 +90,7 @@ const CreditorDetailsforVRP = () => {
 
     console.log('Form submitted:', formData);
 
-    navigation.navigate('Review Creditor', {formData});
+    navigation.navigate('Review Payee', {formData});
   };
 
   return (
@@ -111,7 +111,7 @@ const CreditorDetailsforVRP = () => {
           label="Account Number"
           style={{
             borderBottomWidth: 2,
-            borderBottomColor: '#ccc',
+            borderBottomColor: '#3559AA',
             marginBottom: 10,
             paddingVertical: 12,
             paddingHorizontal: 16,
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   line: {
     borderBottomWidth: 2,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#3559AA',
     marginBottom: 10,
   },
   title: {
@@ -235,14 +235,14 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 2,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#3559AA',
     marginBottom: 10,
     paddingVertical: 12,
     paddingHorizontal: 16,
     fontSize: RFValue(16),
   },
   button: {
-    backgroundColor: '#5a287d',
+    backgroundColor: '#3559AA',
     borderRadius: 8,
     padding: 15,
     width: '100%',

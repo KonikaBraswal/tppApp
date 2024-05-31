@@ -29,7 +29,7 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  let androidClientVrp = new AndroidClient("NWG", "Sandbox", "customer_checkout");
+  let androidClient = new AndroidClient("NWG", "Sandbox", "customer_checkout");
 
   useEffect(() => {
     const loadCart = async () => {
@@ -89,10 +89,11 @@ const CartScreen = () => {
     const fetchData = async () => {
       if (isFocused) {
         try {
-          const data = await androidClientVrp.fetchDataUsingScope(scopeCA);
-          // const data = await androidClientVrp.displayData();
+          const data = await androidClient.fetchDataUsingScope(scopeCA);
+          // const data = await androidClient.displayData();
           console.log("data in cart screen", data);
-          setCAData(data[0]);
+          if(data!==null)
+            setCAData(data[0]);
         } catch (error) {
           console.error('Error fetching data in cart screen:', error);
         }
@@ -106,8 +107,8 @@ const CartScreen = () => {
       Number(ShippingCost.substring(1)) +
       Number(Tax.substring(1));
     if (caData !== null) {
-      console.log("det2",caData);
-      navigation.navigate('Make Payment', { totalAmount: totalAmount, debitorDetails:JSON.parse (caData.account_details),customerDetails:JSON.parse (caData.customer_details),consentId:caData.consentId });
+      console.log("det2",caData.consentId);
+      navigation.navigate('Make Payment', { totalAmount: totalAmount, debitordetails:(caData.accountDetails),customerdetails: (caData.customerDetails),consentId:caData.consentId });
     }
     else {
       navigation.navigate('Add Your Details', { totalAmount });

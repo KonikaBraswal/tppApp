@@ -14,7 +14,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 const VRPDetails = ({route}) => {
   //   const { Data } = route.params || {};
   const status = route.params?.data ;
-  console.log("VRPPPPPPPP DETAILSSSSSSSSSSSSSSS",status);
+  console.log("VRp",status);
   const navigation = useNavigation();
   if (!status) {
     return (

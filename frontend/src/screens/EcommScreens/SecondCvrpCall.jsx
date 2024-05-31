@@ -27,11 +27,13 @@ const switchEnvironment = (newEnv) => {
  };
 
 const SecondCvrpCall = ({ route }) => {
-  const { totalAmount, debitorDetails,customerDetails,consentId } = route.params;
+  const { totalAmount, debitordetails,customerdetails,consentId } = route.params;
   const isFocused = useIsFocused();
   const [vrpData, setVrpData] = useState(null);
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
-  
+  const debitorDetails=JSON.parse(debitordetails);
+  const customerDetails=JSON.parse(customerdetails);
+  // console.log(customerdetails);
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
@@ -42,8 +44,8 @@ const SecondCvrpCall = ({ route }) => {
           // VRP-a883310d-3233-4872-b790-3d060b5ce516
           const data = await androidClientVrp.fetchDataUsingConsentId(consentId);
           // const data = await androidClientVrp.displayData();
-          console.log("data in second vrp call", data);
-          setVrpData(data);
+          console.log("data in second vrp call", data[0].refreshToken);
+          setVrpData(data[0]);
         } catch (error) {
           console.error('Error fetching data in second vrp call screen:', error);
         }
@@ -57,7 +59,7 @@ const SecondCvrpCall = ({ route }) => {
   // console.log((customer));
   // console.log(debitorDetails.DebtorAccount);
   const handleSubmit = async () => {
-    console.log(data);
+    // console.log(data);
     const formData = {
       firstName: 'Natwest Cart',
       sortCode: '000996',
@@ -67,10 +69,11 @@ const SecondCvrpCall = ({ route }) => {
     };
     try {
       const selectconsentData = {
-        consentid: consentId,
+        consentId: consentId,
         refreshToken: vrpData.refreshToken
       };
       console.log(selectconsentData);
+      // console.log( "data2",JSON.parse(vrpData.refreshToken));
       const response = await EnvApiClient.refreshTokenForVRP(
         selectconsentData,
         formData,

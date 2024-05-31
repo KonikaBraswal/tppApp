@@ -29,7 +29,7 @@ const CustomerDetails = ({ route }) => {
         <Text style={styles.title}>Your data has been shared</Text>
       </View>
       <View style={styles.box}>
-        <MaterialCommunityIcons name="home" color="#D0B1E6" size={28} />
+        <MaterialCommunityIcons name="home" color="#114188" size={28} />
         <View style={styles.addressContainer}>
           <Text style={styles.addressText}>
             {customerDetails.data.address.residence.line1},
@@ -48,7 +48,7 @@ const CustomerDetails = ({ route }) => {
         </View>
       </View>
       <View style={styles.box}>
-        <MaterialCommunityIcons name="email" color="#D0B1E6" size={28} />
+        <MaterialCommunityIcons name="email" color="#114188" size={28} />
         <View style={styles.addressContainer}>
           <Text style={styles.addressText}>
             {customerDetails.data.contactDetails.email}
@@ -56,7 +56,7 @@ const CustomerDetails = ({ route }) => {
         </View>
       </View>
       <View style={styles.box}>
-        <MaterialCommunityIcons name="cellphone" color="#D0B1E6" size={28} />
+        <MaterialCommunityIcons name="cellphone" color="#114188" size={28} />
         <View style={styles.addressContainer}>
           <Text style={styles.addressText}>
             {customerDetails.data.contactDetails.mobile_phone_number}
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     // flex:1,
     alignItems: 'center',
     borderRadius: 4,
-    borderColor: '#EDDDF3',
+    borderColor: '#114188',
     padding: 10,
     margin: 8,
     borderWidth: 3,

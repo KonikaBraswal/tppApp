@@ -112,6 +112,12 @@ const CustomDrawerContent = ({ navigation }) => {
     left={props => <List.Icon {...props} icon="database-cog" />}
   />
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Demo')}>
+      <List.Item
+    title="Demo"
+    left={props => <List.Icon {...props} icon="database-cog" />}
+  />
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Updates')}>
       <List.Item
     title="Updates"

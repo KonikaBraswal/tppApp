@@ -32,7 +32,7 @@ const VrpTransactions = ({route}) => {
     } else {
       console.log('tr', transactiondetails);
       transactiondetails?.map(element => {
-        transactions = JSON.parse(element.vrppayload);
+        transactions = JSON.parse(element.vrpPayload);
       });
     }
     setLoading(false);

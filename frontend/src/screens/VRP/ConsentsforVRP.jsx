@@ -53,6 +53,7 @@ const ConsentsforVRP = () => {
 
   const isFocused = useIsFocused();
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+  let androidClientVrpTransact=new AndroidClient("NWG", "Sandbox", "vrp_transactions");
   useEffect( () => {
     const fetchData = async () => {
     if(global.env==='local')
@@ -66,7 +67,7 @@ const ConsentsforVRP = () => {
       try {
         const data = await androidClientVrp.fetchDataUsingScope(scope);
         // const data = await androidClientVrp.displayData();
-        console.log("data in consents for vrp",data);
+        // console.log("data in consents for vrp",JSON.parse(data[0].consentPayload).Data.Initiation.CreditorAccount.Name);
         setConsentData(data);
       } catch (error) {
         console.error('Error fetching data for consents:', error);
@@ -82,8 +83,9 @@ const ConsentsforVRP = () => {
     const id = consentData[index].consentId;
     console.log('id', index);
     try {
-      const result = await androidClientVrp.fetchDataUsingConsentId(id);
+      const result = await androidClientVrpTransact.fetchDataUsingConsentId(id);
       tra = result;
+      
       
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -95,8 +97,9 @@ const ConsentsforVRP = () => {
         });
         break;
       case 'ConsentInfo':
+        // console.log(JSON.parse (consentData[index].consentPayload).Data);
         navigation.navigate('Consent Info', {
-          consentpayload: consentData[index].consentPayload,
+          consentpayload:JSON.parse (consentData[index].consentPayload).Data,
           debitorDetails: JSON.parse(consentData[index].accountDetails),
         });
         break;
@@ -109,8 +112,15 @@ const ConsentsforVRP = () => {
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
-        const read = consentData[index].consentpayload;
-        const jsonObject = JSON.parse(read);
+        const result2 = await androidClientVrp.fetchDataUsingConsentId(consentData[index].consentId);
+        console.log("iii",result2[0].refreshToken);
+        console.log("iii2",consentData[index].consentId);
+        const refreshResponse={
+          refreshToken: result2[0].refreshToken,
+          consentId: result2[0].consentId,
+        }
+        const read = consentData[index].consentPayload;
+        const jsonObject = JSON.parse(read).Data;
         const acc =
           jsonObject.Initiation.CreditorAccount.Identification.substring(0, 8);
         const sort =
@@ -121,7 +131,7 @@ const ConsentsforVRP = () => {
           sortcode: sort,
           referencenumber:
             jsonObject.Initiation.RemittanceInformation.Reference,
-          selectconsentData: consentData[index],
+          selectconsentData: refreshResponse,
         });
       } catch (error) {
         console.log('error in fetching refresh', error);
@@ -137,7 +147,7 @@ const ConsentsforVRP = () => {
           style={{flex: 1}}>
           <View
             style={{
-              backgroundColor: '#5a287d',
+              // backgroundColor: '#fff',
               padding: 10,
             }}>
             <Searchbar
@@ -147,7 +157,7 @@ const ConsentsforVRP = () => {
               icon={() => <Icon source="magnify" color="black" size={20} />}
               style={{
                 borderRadius: 5,
-                backgroundColor: '#f4ebfe',
+                backgroundColor: '#E0FCFD',
               }}
             />
           </View>
@@ -292,7 +302,7 @@ const ConsentsforVRP = () => {
                           key={index}
                           style={{
                             marginBottom: hp('2%'),
-                            backgroundColor: '#c8e1cc',
+                            backgroundColor: '#6FC6F7',
                             borderRadius: 12,
                             elevation: 3,
                             paddingTop: hp('2.5%'),
@@ -324,14 +334,11 @@ const ConsentsforVRP = () => {
                                   fontWeight: 'bold',
                                   marginTop: hp('2.5%'),
                                 }}>
-                                {
-                                  JSON.parse(item.consentpayload).Initiation
-                                    .CreditorAccount.Name
-                                }
+                                {JSON.parse(item.consentPayload).Data.Initiation.CreditorAccount.Name}
                               </Text>
                             </View>
                             {item.vrppayload &&
-                              JSON.parse(item.vrppayload).DebtorAccount && (
+                              JSON.parse(item.vrpPayload).DebtorAccount && (
                                 <Text
                                   style={{
                                     fontSize: RFValue(15),
@@ -341,7 +348,7 @@ const ConsentsforVRP = () => {
                                   }}>
                                   Account Number:{' '}
                                   {JSON.parse(
-                                    item.vrppayload,
+                                    item.vrpPayload,
                                   ).DebtorAccount.Identification.replace(
                                     /\d(?=\d{4})/g,
                                     '*',
@@ -418,7 +425,7 @@ const ConsentsforVRP = () => {
       </ScrollView>
        <TouchableOpacity
         onPress={() => {
-          navigation.navigate('CreditorDetails');
+          navigation.navigate('Payee Details');
         }}
         style={styles.footer}
         activeOpacity={1}>
@@ -465,7 +472,7 @@ const styles = StyleSheet.create({
   },
 
   footer: {
-    backgroundColor: '#5a287d',
+    backgroundColor: '#3559AA',
     padding: wp('4.2%'),
     width: '100%',
     alignItems: 'center',

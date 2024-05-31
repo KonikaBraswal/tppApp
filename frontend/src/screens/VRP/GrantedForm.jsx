@@ -68,16 +68,17 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
-      console.log("after payyyyyyyyyyyyyyyyyyyyy",global.env);
+      console.log("after pay",selectconsentData);
       const response = await env.refreshTokenForVRP(
         selectconsentData,
         formData,
       );
-      console.log("hiiiiiiiiiiiiiii",response);
+      console.log("hi",response);
       console.log('response', response);
       console.log(response.Data.Status)
       console.log('Form submitted:', formData);
-      navigation.navigate('VRP Details', {data: response.Data.Status});
+      if(response.Data.Status=== 'AcceptedSettlementCompleted')
+        navigation.navigate('VRP Details', {data: response.Data.Status});
     } catch (error) {
       console.log('error in fetching refresh', error);
     }
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   footer: {
-    backgroundColor: '#5a287d',
+    backgroundColor: '#114188',
     padding: 15,
     width: '100%',
     alignItems: 'center',

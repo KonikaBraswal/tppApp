@@ -241,12 +241,13 @@ const BankList = ({ route }) => {
       </Stack>
       <View>
         <Portal>
-          <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+          <Dialog visible={isInputDialogVisible} style={{backgroundColor:'#E0FCFD'}} onDismiss={hideInputDialog}>
             <Dialog.Title>Redirect Input</Dialog.Title>
             <Dialog.Content>
               <TextInput
                 label="Paste URL from the browser"
                 value={inputValue}
+                style={{backgroundColor:'#E0FCFD',color:'black'}}
                 onChangeText={text => setInputValue(text)}
               />
             </Dialog.Content>

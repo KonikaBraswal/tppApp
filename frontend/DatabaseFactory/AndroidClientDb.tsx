@@ -125,7 +125,7 @@ class AndroidClientDb {
     });
   }
 
- 
+
   //AISP
   // Method to initialize the SQLite database for Android AISP
   async initDatabaseAndroidAisp(): Promise<void> {
@@ -237,7 +237,101 @@ class AndroidClientDb {
   }
 
 
-  //VRP
+
+  //create table for vrp transactions
+  async initDatabaseAndroidVrpTransactions(): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS ${tableName} (
+        userId TEXT,
+        scope TEXT,
+        consentId TEXT,
+        vrpId TEXT,
+        vrpPayload TEXT,
+        status TEXT,
+        last_updated_date TEXT,
+        last_updated_time TEXT
+      );`,
+          [],
+          (_, result) => {
+            console.log(`VRP Transactions Table ${tableName} created successfully.`);
+            resolve();
+          },
+          (_, error) => {
+            console.error(`Error creating table ${tableName}:`, error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+  //insert VRP transactions
+  async insertDataVrpTransact(vrpTransactToStore: {
+    userId: any;
+    scope: any;
+    consentId: any;
+    vrpId: any;
+    vrpPayload: any;
+    status: any;
+    last_updated_date?: any;
+    last_updated_time?: any;
+  }): Promise<void> {
+    const {
+      userId,
+      scope,
+      consentId,
+      vrpId,
+      vrpPayload,
+      status
+    } = vrpTransactToStore;
+
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO ${tableName} (userId,
+            scope,
+            consentId,
+            vrpId,
+            vrpPayload,
+            status,
+            last_updated_date,
+            last_updated_time) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+          [
+            userId,
+            scope,
+            consentId,
+            vrpId,
+            vrpPayload,
+            status,
+            currentDate,
+            currentTime
+          ],
+          (_, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Data inserted successfully in Vrp Transactions table', results);
+              resolve();
+            } else {
+              console.error('No rows affected during insertion');
+              reject(new Error('No rows affected'));
+            }
+          },
+          (_, error) => {
+            console.error('Error inserting data in Vrp transactions Table: ', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+  //create table for vrp 
   async initDatabaseAndroidVrp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
@@ -255,32 +349,32 @@ class AndroidClientDb {
           accountDetails TEXT,
         last_updated_date TEXT,
         last_updated_time TEXT
-        );`,
+      );`,
           [],
           (_, result) => {
             console.log(`VRP Table ${tableName} created successfully.`);
             resolve();
           },
           (_, error) => {
-            console.error(`Error creating VRP table ${tableName}:`, error);
+            console.error(`Error creating table ${tableName}:`, error);
             reject(error);
           },
         );
       });
     });
   }
-  //insert data in vrp table
+  //insert VRP 
   async insertDataVrp(vrpToStore: {
     userId: any;
-    scope: string;
-    refreshToken: string;
-    consentId: string;
-    consentPayload: string;
-    consentExpiry: string;
-    status: string;
-    accountDetails:string,
-    last_updated_date?: string;
-    last_updated_time?: string;
+    scope: any;
+    refreshToken: any;
+    consentId: any;
+    consentPayload: any;
+    consentExpiry: any;
+    status: any;
+    accountDetails: any;
+    last_updated_date?: any;
+    last_updated_time?: any;
   }): Promise<void> {
     const {
       userId,
@@ -290,9 +384,7 @@ class AndroidClientDb {
       consentPayload,
       consentExpiry,
       status,
-      accountDetails,
-      last_updated_date,
-      last_updated_time
+      accountDetails
     } = vrpToStore;
 
     const currentDate = new Date().toLocaleDateString();
@@ -312,7 +404,7 @@ class AndroidClientDb {
             accountDetails,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
           [
             userId,
             scope,
@@ -322,12 +414,12 @@ class AndroidClientDb {
             consentExpiry,
             status,
             accountDetails,
-            last_updated_date || currentDate,
-            last_updated_time || currentTime
+            currentDate,
+            currentTime
           ],
           (_, results) => {
             if (results.rowsAffected > 0) {
-              console.log('Data inserted successfully in VRP table');
+              console.log('Data inserted successfully in Vrp table',results);
               resolve();
             } else {
               console.error('No rows affected during insertion');
@@ -335,298 +427,198 @@ class AndroidClientDb {
             }
           },
           (_, error) => {
-            console.error('Error inserting data in VRP table: ', error);
+            console.error('Error inserting data in Vrp Table: ', error);
             reject(error);
           },
         );
       });
     });
   }
-  
+  //create table for CA
+  async initDatabaseAndroidCa(): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
-  //create table for vrp transactions
-  async initDatabaseAndroidVrpTransactions(): Promise < void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${tableName} (
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS ${tableName} (
         userId TEXT,
         scope TEXT,
         consentId TEXT,
-        vrpId TEXT,
-        vrpPayload TEXT,
-        status TEXT,
+        customerDetails TEXT,
+        accountDetails TEXT,
         last_updated_date TEXT,
         last_updated_time TEXT
       );`,
-        [],
-        (_, result) => {
-          console.log(`VRP Transactions Table ${tableName} created successfully.`);
-          resolve();
-        },
-        (_, error) => {
-          console.error(`Error creating table ${tableName}:`, error);
-          reject(error);
-        },
-      );
-    });
-  });
-}
-  //insert VRP transactions
-  async insertDatVrpTransact(vrpTransactToStore: {
-  userId: any;
-  scope: string;
-  consentId: string;
-  vrpId: string;
-  vrpPayload: string;
-  status: string;
-  last_updated_date?: string;
-  last_updated_time?: string;
-}): Promise < void> {
-  const {
-    userId,
-    scope,
-    consentId,
-    vrpId,
-    vrpPayload,
-    status,
-    last_updated_date,
-    last_updated_time
-  } = vrpTransactToStore;
-
-  const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString();
-
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO ${tableName} (userId,
-            scope,
-            consentId,
-            vrpId,
-            vrpPayload,
-            status,
-            last_updated_date,
-            last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
-        [
-          userId,
-          scope,
-          consentId,
-          vrpId,
-          vrpPayload,
-          status,
-          last_updated_date || currentDate,
-          last_updated_time || currentTime
-        ],
-        (_, results) => {
-          if (results.rowsAffected > 0) {
-            console.log('Data inserted successfully in Vrp Transactions table');
+          [],
+          (_, result) => {
+            console.log(`CA Table ${tableName} created successfully.`);
             resolve();
-          } else {
-            console.error('No rows affected during insertion');
-            reject(new Error('No rows affected'));
-          }
-        },
-        (_, error) => {
-          console.error('Error inserting data in Vrp transactions Table: ', error);
-          reject(error);
-        },
-      );
+          },
+          (_, error) => {
+            console.error(`Error creating table ${tableName}:`, error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
+  //insert CA
+  async insertDataCA(caToStore: {
+    userId: any;
+    scope: any;
+    consentId: any;
+    customerDetails: any;
+    accountDetails: any;
+    last_updated_date?: any;
+    last_updated_time?: any;
+  }): Promise<void> {
+    const {
+      userId,
+      scope,
+      consentId,
+      customerDetails,
+      accountDetails
+    } = caToStore;
 
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
 
-  //CA
-  async initDatabaseAndroidCa(): Promise < void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${tableName} (
-            userId TEXT,
-            scope TEXT,
-            consentId TEXT,
-            customerDetails TEXT,
-            accountDetails TEXT,
-            last_updated_date TEXT,
-            last_updated_time TEXT
-        );`,
-        [],
-        (_, result) => {
-          console.log(`CA Table ${tableName} created successfully.`);
-          resolve();
-        },
-        (_, error) => {
-          console.error(`Error creating table ${tableName}:`, error);
-          reject(error);
-        },
-      );
-    });
-  });
-}
-  // insert data in CA
-  async insertDatCA(caToStore: {
-  userId: any;
-  scope: string;
-  consentId:string,
-  customerDetails: string;
-  accountDetails: string;
-  last_updated_date?: string;
-  last_updated_time?: string;
-}): Promise < void> {
-  const {
-    userId,
-    scope,
-    consentId,
-    customerDetails,
-    accountDetails,
-    last_updated_date,
-    last_updated_time
-  } = caToStore;
-
-  const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString();
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO ${tableName} (userId,
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO ${tableName} (userId,
             scope,
             consentId,
             customerDetails,
             accountDetails,
             last_updated_date,
             last_updated_time) 
-        VALUES (?, ?, ?, ?, ?, ?,?);`,
-        [
-          userId,
-          scope,
-          consentId,
-          customerDetails,
-          accountDetails,
-          last_updated_date || currentDate,
-          last_updated_time || currentTime
-        ],
-        (_, results) => {
-          if (results.rowsAffected > 0) {
-            console.log('Data inserted successfully in CA table');
-            resolve();
-          } else {
-            console.error('No rows affected during insertion');
-            reject(new Error('No rows affected'));
-          }
-        },
-        (_, error) => {
-          console.error('Error inserting data in CA Table: ', error);
-          reject(error);
-        },
-      );
+        VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          [
+            userId,
+            scope,
+            consentId,
+            customerDetails,
+            accountDetails,
+            currentDate,
+            currentTime
+          ],
+          (_, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Data inserted successfully in CA table', results);
+              resolve();
+            } else {
+              console.error('No rows affected during insertion');
+              reject(new Error('No rows affected'));
+            }
+          },
+          (_, error) => {
+            console.error('Error inserting data in CA Table: ', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
 
   //fetch data according to scope or consentId
-  async fetchDataUsingScope(scope: string): Promise < any[] > {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  
-  return new Promise((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM ${tableName} WHERE scope = ? ;`,
-        [scope],
-        (_, results) => {
-          console.log(results);
-          const rows = results.rows;
-          const data = [];
-          if (rows.length > 0) {
-            for (let i = 0; i < rows.length; i++) {
-              const row = rows.item(i);
-              data.push(row);
+  async fetchDataUsingScope(scope: string): Promise<any> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `SELECT * FROM ${tableName} WHERE scope = ? ;`,
+          [scope],
+          (_, results) => {
+            console.log(results);
+            const rows = results.rows;
+            const data = [];
+            if (rows.length > 0) {
+              for (let i = 0; i < rows.length; i++) {
+                const row = rows.item(i);
+                data.push(row);
+              }
+              if (data.length > 0) {
+                resolve(data);
+              }
+            } else {
+              // console.log(`No entry found for ${ 'scope:' + scope}`);
+              resolve(null);
             }
-            if (data.length > 0) {
-              resolve(data);
-            }
-          } else {
-            // console.log(`No entry found for ${ 'scope:' + scope}`);
-            resolve([]);
-          }
-        },
-        (_, error) => {
-          console.error('Error fetching data in database:', error);
-          reject(error);
-        },
-      );
+          },
+          (_, error) => {
+            console.error('Error fetching data in database:', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
-  
-  async fetchDataUsingConsentId(consentId: string): Promise < any[] > {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  return new Promise((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY last_updated_date DESC,last_updated_time DESC ;`,
-        [consentId],
-        (_, { rows }) => {
-          if(rows.length>0){
-            const rowData = [];
-            for (let i = 0; i < rows.length; i++) {
-              rowData.push(rows.item(i));
+  }
+
+  async fetchDataUsingConsentId(consentId: string): Promise<any> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY last_updated_date DESC,last_updated_time DESC ;`,
+          [consentId],
+          (_, { rows }) => {
+            if (rows.length > 0) {
+              const rowData = [];
+              for (let i = 0; i < rows.length; i++) {
+                rowData.push(rows.item(i));
+              }
+              if (rowData.length > 0) {
+                resolve(rowData);
+              }
+            } else {
+              // console.log(`No entry found for ${consentId ? 'consentId:' + consentId }`);
+              resolve(null);
             }
-            if (data.length > 0) {
-              resolve(data);
-            }
-          } else {
-            // console.log(`No entry found for ${consentId ? 'consentId:' + consentId }`);
-            resolve([]);
-          }
-        },
-        (_, error) => {
-          console.error('Error retrieving data:', error);
-          reject(error);
-        },
-      );
+          },
+          (_, error) => {
+            console.error('Error retrieving data:', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
-   // Method to update data based on consentId 
+  }
+  // Method to update data based on consentId 
   async updateDataByConsentId(
     consentId: string,
-    details:any,
-    columnsToUpdate:any,
+    details: any,
+    columnsToUpdate: any,
   ): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     if (!columnsToUpdate || columnsToUpdate.length === 0) {
       console.error('No columns specified for update.');
       return Promise.reject('No columns specified for update.');
     }
-    
+
     return new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         const setClause = columnsToUpdate
-        .map((column: any) => `${column} = ?`)
-        .join(', ');
+          .map((column: any) => `${column} = ?`)
+          .join(', ');
         const updatedSetClause = `${setClause}, last_updated_date = ?, last_updated_time = ?`;
-        
-        const query = `UPDATE ${tableName} SET ${updatedSetClause} WHERE consentid = ?;`;
-      // Construct SQL query
 
-      // Construct parameters array
-      const currentDate = new Date().toLocaleDateString();
-      const currentTime = new Date().toLocaleTimeString();
-      const parameters = [
-        ...columnsToUpdate.map((column: string | number) => details[column].toString()),
-        currentDate,
-        currentTime,
-        consentId,
-      ];
+        const query = `UPDATE ${tableName} SET ${updatedSetClause} WHERE consentid = ?;`;
+        // Construct SQL query
+
+        // Construct parameters array
+        const currentDate = new Date().toLocaleDateString();
+        const currentTime = new Date().toLocaleTimeString();
+        const parameters = [
+          ...columnsToUpdate.map((column: string | number) => details[column].toString()),
+          currentDate,
+          currentTime,
+          consentId,
+        ];
 
         tx.executeSql(
           query,
@@ -647,72 +639,72 @@ class AndroidClientDb {
 
   //COMMON
   // Method to delete all data entries from the database
-  async deleteAllData(): Promise < void> {
-  console.log("clicked");
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  async deleteAllData(): Promise<void> {
+    console.log("clicked");
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `DELETE FROM ${tableName};`,
-        [],
-        (_, result) => {
-          console.log('All data entries deleted successfully', result);
-          resolve();
-        },
-        (_, error) => {
-          console.error('Error deleting data entries:', error);
-          reject(error);
-        },
-      );
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `DELETE FROM ${tableName};`,
+          [],
+          (_, result) => {
+            console.log('All data entries deleted successfully', result);
+            resolve();
+          },
+          (_, error) => {
+            console.error('Error deleting data entries:', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
   //method to delete entire table
-  async deleteTable(): Promise < void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  async deleteTable(): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `DROP TABLE IF EXISTS ${tableName};`,
-        [],
-        (_, result) => {
-          console.log(`${tableName} database deleted successfully`, result);
-          resolve();
-        },
-        (_, error) => {
-          console.error(`${tableName} Error deleting database:`, error);
-          reject(error);
-        },
-      );
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `DROP TABLE IF EXISTS ${tableName};`,
+          [],
+          (_, result) => {
+            console.log(`${tableName} database deleted successfully`, result);
+            resolve();
+          },
+          (_, error) => {
+            console.error(`${tableName} Error deleting database:`, error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
-  async displayData(): Promise < any[] > {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  return new Promise((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM ${tableName};`,
-        [],
-        (_, { rows }) => {
-          const rowData = [];
-          for (let i = 0; i < rows.length; i++) {
-            rowData.push(rows.item(i));
-          }
-          resolve(rowData); // Resolve the promise with the fetched data
-        },
-        (_, error) => {
-          console.error('Error retrieving data:', error);
-          reject(error);
-        },
-      );
+  async displayData(): Promise<any[]> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `SELECT * FROM ${tableName};`,
+          [],
+          (_, { rows }) => {
+            const rowData = [];
+            for (let i = 0; i < rows.length; i++) {
+              rowData.push(rows.item(i));
+            }
+            resolve(rowData); // Resolve the promise with the fetched data
+          },
+          (_, error) => {
+            console.error('Error retrieving data:', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
 
 }
 

@@ -51,6 +51,7 @@ import AddressScreen from './src/screens/EcommScreens/AddressScreen';
 import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
 import SecondCvrpCall from './src/screens/EcommScreens/SecondCvrpCall';
 import AndroidClient from './DatabaseFactory/AndroidClientDb';
+import Demo from './src/screens/Demo';
 
 function App(): React.JSX.Element {
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
@@ -64,8 +65,12 @@ function App(): React.JSX.Element {
       androidClientVrp.initDatabaseAndroidVrp();
       androidClientCA.initDatabaseAndroidCa();
       androidClientVrpTransact.initDatabaseAndroidVrpTransactions();
-      await androidClientAisp.initDatabaseAndroidAisp();
-      await androidClientPisp.initDatabaseAndroidPisp();
+       androidClientAisp.initDatabaseAndroidAisp();
+       androidClientPisp.initDatabaseAndroidPisp();
+        // androidClientVrp.deleteAllData();
+        //  androidClientVrpTransact.deleteAllData();
+        //  androidClientCA.deleteAllData();
+        
     } catch (error) {
       console.error('Error fetching data for consents:', error);
     }
@@ -109,6 +114,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="Online Store" component={ProductListing} />
 
               <Stack.Screen name="ONEBank" component={Landing} />
+              <Stack.Screen name="Demo" component={Demo} />
 
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
@@ -150,7 +156,7 @@ function App(): React.JSX.Element {
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />
               <Stack.Screen name="ConsentsforVRP" component={ConsentsforVRP} />
               <Stack.Screen
-                name="CreditorDetails"
+                name="Payee Details"
                 component={CreditorDetailsforVRP}
               />
               <Stack.Screen name="GrantedForm" component={GrantedForm} />
@@ -158,7 +164,7 @@ function App(): React.JSX.Element {
                 name="Vrp Transactions"
                 component={VrpTransactions}
               />
-              <Stack.Screen name="Review Creditor" component={VRPConsent} />
+              <Stack.Screen name="Review Payee" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
