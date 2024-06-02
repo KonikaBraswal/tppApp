@@ -12,7 +12,7 @@ const VrpTransactionList = props => {
       {transactions ? (
         transactions?.map(transaction => (
           <VrpTransactionCard
-            key={transaction.vrpid}
+            key={transaction.vrpId}
             transaction={transaction}
           />
         ))

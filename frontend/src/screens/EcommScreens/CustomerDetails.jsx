@@ -68,8 +68,8 @@ const CustomerDetails = ({ route }) => {
           onPress={() => {
             navigation.navigate('Make Payment', {
               totalAmount: totalAmount,
-              customerDetails:customerDetails,
-              debitorDetails:debitorDetails,
+              customerdetails:customerDetails,
+              debitordetails:debitorDetails,
               consentId:consentId
             });
           }}

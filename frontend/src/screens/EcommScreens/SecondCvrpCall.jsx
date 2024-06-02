@@ -31,9 +31,9 @@ const SecondCvrpCall = ({ route }) => {
   const isFocused = useIsFocused();
   const [vrpData, setVrpData] = useState(null);
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
-  const debitorDetails=JSON.parse(debitordetails);
-  const customerDetails=JSON.parse(customerdetails);
-  // console.log(customerdetails);
+  // const debitorDetails=(debitordetails);
+  // const customerDetails=(customerdetails);
+  // console.log(JSON.parse(customerdetails));
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
@@ -101,7 +101,7 @@ const SecondCvrpCall = ({ route }) => {
           <Card style={styles.card}>
             <View style={styles.cardTitleContainer}>
               <Card.Content>
-                <Text style={styles.title}>{customerDetails.data.name.given_name} {customerDetails.data.name.family_name}</Text>
+                <Text style={styles.title}>{(customerdetails).data.name.given_name} {(customerdetails).data.name.family_name}</Text>
               </Card.Content>
               <Card.Actions>
                 <IconButton
@@ -117,7 +117,7 @@ const SecondCvrpCall = ({ route }) => {
             <Divider style={styles.divider} />
             <Card.Content>
               <Text style={{fontSize:wp('5%')}}>Current Account</Text>
-              <Text>{debitorDetails.DebtorAccount.Identification}</Text>
+              <Text>{(debitordetails).DebtorAccount.Identification}</Text>
             </Card.Content>
             <View style={{ height: wp('1%') }} />
             <Card style={styles.selectedCard}>

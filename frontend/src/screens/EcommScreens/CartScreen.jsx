@@ -22,6 +22,7 @@ import CartItem from '../../components/EcommComponents/CartItem';
 import AddressCard from '../../components/EcommComponents/AddressCard';
 import TotalCost from '../../components/EcommComponents/TotalCost';
 import { useNavigation } from '@react-navigation/native';
+import CustomerDetails from './CustomerDetails';
 
 const CART_STORAGE_KEY = '@OneBank:cart';
 
@@ -107,8 +108,15 @@ const CartScreen = () => {
       Number(ShippingCost.substring(1)) +
       Number(Tax.substring(1));
     if (caData !== null) {
-      console.log("det2",caData.consentId);
-      navigation.navigate('Make Payment', { totalAmount: totalAmount, debitordetails:(caData.accountDetails),customerdetails: (caData.customerDetails),consentId:caData.consentId });
+      // console.log("det2",JSON.parse(caData.accountDetails));
+      // const jsonObject=JSON.parse(caData.customerDetails);
+      // const name=jsonObject.data.name.given_name+' '+jsonObject.data.name.family_name;
+      navigation.navigate('Make Payment', { 
+        totalAmount: totalAmount,
+        debitordetails:JSON.parse(caData.accountDetails),
+        customerdetails:JSON.parse(caData.customerDetails),
+         consentId:caData.consentId 
+        });
     }
     else {
       navigation.navigate('Add Your Details', { totalAmount });

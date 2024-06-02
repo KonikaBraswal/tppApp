@@ -14,6 +14,7 @@ import AndroidClient from '../DatabaseFactory/AndroidClientDb';//importing datab
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
+import configVrp from './ConfigFiles/configvrp.json';
 const {
   generateVrpAccountRequestHeaders,
   generateVrpPaymentBody,
@@ -856,8 +857,6 @@ class SanboxApiFactory {
         const start = authTokenUrl.indexOf('=') + 1;
         const end = authTokenUrl.indexOf('&');
         const authToken = authTokenUrl.slice(start, end);
-        
-
         const body = generateBodyForExchange(
           this.clientId,
           this.clientSecret,
@@ -1098,20 +1097,70 @@ class SanboxApiFactory {
     formData: any,
   ): Promise<any> {
     try {
-      const headers = generateAccountRequestHeaders(apiAccessToken);
+      // const headers = generateAccountRequestHeaders(apiAccessToken);
 
-      const body = generateVrpPaymentBody(formData, consentid);
-      console.log("body",headers);
+      // const body = generateVrpPaymentBody(formData, consentid);
+      const id = uuid.v4();
+      const headers = {
+        ...configVrp.vrpHeaders,
+        Authorization: `Bearer ${apiAccessToken}`,
+        'x-idempotency-key': `${id}`,
+      };
+      const Identification = formData.accountNumber + formData.sortCode;
+      console.log(Identification);
+      const body = {
+        Data: {
+          ConsentId: `${consentid}`,
+          PSUAuthenticationMethod: 'UK.OBIE.SCANotRequired',
+          Initiation: {
+            CreditorAccount: {
+              SchemeName: 'SortCodeAccountNumber',
+              Identification: Identification,
+              Name: formData.firstName,
+              SecondaryIdentification: 'secondary-identif',
+            },
+            RemittanceInformation: {
+              Unstructured: 'Tools',
+              Reference: formData.reference,
+            },
+          },
+          Instruction: {
+            InstructionIdentification: 'instr-identification',
+            EndToEndIdentification: 'e2e-identification',
+            InstructedAmount: {
+              Amount: formData.amount,
+              Currency: 'GBP',
+            },
+            CreditorAccount: {
+              SchemeName: 'SortCodeAccountNumber',
+              Identification: Identification,
+              Name: formData.firstName,
+              SecondaryIdentification: 'secondary-identif',
+            },
+            RemittanceInformation: {
+              Unstructured: 'Tools',
+              Reference: formData.reference,
+            },
+          },
+        },
+        Risk: {},
+      };
+      console.log("amount",body.Data.Instruction.InstructedAmount.Amount);
       
-  console.log("id",body.Data.Instruction.InstructedAmount.Amount);
+      
+      console.log("head",headers);
+      console.log("body",body);
+      
+  
       const vrpPaymentResponse: AxiosResponse = await axios.post(
-        `${this.baseUrl}/${sandboxConfigvrp.domesticVrpPayments}`,
+        'https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',
         body,
         {
           headers: headers,
         },
       );
       this.apiAccess = apiAccessToken;
+      console.log("api",apiAccessToken);
       console.log('payments-->', vrpPaymentResponse.data.Links.Self);
 
       //Storing APILOGS
@@ -1359,13 +1408,13 @@ class SanboxApiFactory {
       const columnsToUpdate=['refreshToken'];
       
       const id=refreshToken.consentId;
-      console.log("id",id);
-      console.log("details-->",details);
+      // console.log("id",id);
+      // console.log("details-->",details);
       // console.log(id);
       androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
       await androidClientVrp.updateDataByConsentId(id, details,columnsToUpdate);
           
-      console.log('Refresh call response', responseRefresh.data);
+      // console.log('Refresh call response', responseRefresh.data);
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(

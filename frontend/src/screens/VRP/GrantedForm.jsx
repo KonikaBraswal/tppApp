@@ -2,6 +2,10 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {TextInput} from '@react-native-material/core';
 import ApiFactory from '../../../ApiFactory/ApiFactory';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
+// import {RFValue} from 'react-native-responsive-fontsize';
+// import { ActivityIndicator} from 'react-native-paper';
+
 import {
   View,
   Text,
@@ -10,6 +14,8 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+
 import {RFValue} from 'react-native-responsive-fontsize';
 let env="";
 const switchEnvironment = (newEnv) => {
@@ -20,6 +26,8 @@ const switchEnvironment = (newEnv) => {
   // Use the new apiClient as needed
  };
 const GrantedForm = ({route}) => {
+  const isFocused = useIsFocused();
+  
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     env=newApiClient;
@@ -32,7 +40,7 @@ const GrantedForm = ({route}) => {
     accountnumber,
     sortcode,
     referencenumber,
-    selectconsentData,
+    consentId
   } = route.params;
   const [edit, setEdit] = useState(true);
   const [firstName, setFirstName] = useState('');
@@ -42,22 +50,34 @@ const GrantedForm = ({route}) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [reference, setReference] = useState('');
   const [amount, setAmount] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-
+  let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+  const [vrpData, setVrpData] = useState(null);
+  
   useEffect(() => {
     setFirstName(creditorName);
     setSortCode(sortcode);
     setAccountNumber(accountnumber);
     setReference(referencenumber);
-    // console.log("acc:",accountNumber);
-    // console.log("acc:",sortCode);
-    console.log('passed data' + selectconsentData);
     if (creditorName && accountNumber && sortcode && referencenumber) {
       setEdit(false);
     }
-  }, [creditorName, accountNumber, sortcode, referencenumber]);
+    const fetchData = async () => {
+      if (isFocused) {
+        try {
+          console.log("id in form",consentId);
+          const data = await androidClientVrp.fetchDataUsingConsentId(consentId);
+          console.log("data in granted form", data[0].refreshToken);
+          setVrpData(data[0]);
+        } catch (error) {
+          console.error('Error fetching data in second vrp call screen:', error);
+        }
+      }
+    };
+    fetchData();
+  }, [creditorName, accountNumber, sortcode, referencenumber,isFocused]);
 
   const handleSubmit = async () => {
     const formData = {
@@ -67,26 +87,46 @@ const GrantedForm = ({route}) => {
       reference,
       amount,
     };
-    try {
-      console.log("after pay",selectconsentData);
-      const response = await env.refreshTokenForVRP(
-        selectconsentData,
-        formData,
-      );
-      console.log("hi",response);
-      console.log('response', response);
-      console.log(response.Data.Status)
-      console.log('Form submitted:', formData);
-      if(response.Data.Status=== 'AcceptedSettlementCompleted')
-        navigation.navigate('VRP Details', {data: response.Data.Status});
-    } catch (error) {
-      console.log('error in fetching refresh', error);
-    }
+    
+    const selectconsentData = {
+      consentId: consentId,
+      refreshToken: vrpData.refreshToken
+    };
+    
+    setLoading(true);
+    setTimeout(async ()=>{
+      try{
+        const response = await env.refreshTokenForVRP(
+            selectconsentData,
+            formData,
+          );
+          // console.log("hi",response);
+          // console.log('response', response);
+          // console.log(response.Data.Status)
+          // console.log('Form submitted:', formData);
+          if(response.Data.Status=== 'AcceptedSettlementCompleted'){
+            navigation.navigate('VRP Details', {data: response.Data.Status});
+          }
+        }catch (error) {
+        console.error('Error in refreshing token for VRP:', error.message);
+      } finally {
+        // Set loader to false after the refresh token call is completed
+        setLoading(false);
+      }
+      },5000);
+      
+    
   };
 
   return (
     <>
-      <View style={styles.container}>
+      {loading && (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size={50} color="green" />
+          <Text style={{fontSize: RFValue(18)}}>Performing Transactions</Text>
+        </View>
+      )}
+          <View style={styles.container}>
         <Text style={{color: 'black', fontSize: RFValue(20)}}>
           Paying {firstName}
         </Text>
@@ -130,6 +170,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: RFValue(18),

@@ -41,10 +41,6 @@ const ConsentsforVRP = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const NatwestAccountData = readNatwestAccount?.Data?.Account;
-  const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
-  const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
-  const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
   const [localdata, setLocalData] = useState([]);
 
   
@@ -112,13 +108,7 @@ const ConsentsforVRP = () => {
   const handleSubmit = async index => {
     if (mode == 'sandbox') {
       try {
-        const result2 = await androidClientVrp.fetchDataUsingConsentId(consentData[index].consentId);
-        console.log("iii",result2[0].refreshToken);
-        console.log("iii2",consentData[index].consentId);
-        const refreshResponse={
-          refreshToken: result2[0].refreshToken,
-          consentId: result2[0].consentId,
-        }
+        console.log("id in conset",consentData[index].consentId);
         const read = consentData[index].consentPayload;
         const jsonObject = JSON.parse(read).Data;
         const acc =
@@ -131,7 +121,7 @@ const ConsentsforVRP = () => {
           sortcode: sort,
           referencenumber:
             jsonObject.Initiation.RemittanceInformation.Reference,
-          selectconsentData: refreshResponse,
+          consentId:consentData[index].consentId
         });
       } catch (error) {
         console.log('error in fetching refresh', error);
