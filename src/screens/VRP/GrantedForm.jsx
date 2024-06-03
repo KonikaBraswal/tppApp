@@ -39,7 +39,7 @@ const GrantedForm = ({route}) => {
     setReference(referencenumber);
     // console.log("acc:",accountNumber);
     // console.log("acc:",sortCode);
-    // console.log('passed data' + selectconsentData);
+    console.log('passed data' + selectconsentData);
     if (creditorName && accountNumber && sortcode && referencenumber) {
       setEdit(false);
     }

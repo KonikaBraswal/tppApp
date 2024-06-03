@@ -21,7 +21,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
 import {RFValue} from 'react-native-responsive-fontsize';
-import VRPConsent from '../VRP/VRPConsent';
+// import VRPConsent from '../VRP/VRPConsent';
 import {Surface, Stack} from '@react-native-material/core';
 import readNatwestAccount from '../../assets/data/accounts.json';
 import readNatwestBalance from '../../assets/data/balances.json';

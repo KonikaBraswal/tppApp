@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Surface, Stack} from '@react-native-material/core';
 // import LinearGradient from 'react-native-linear-gradient';
-import LinearGradient from 'expo-linear-gradient';
+import LinearGradient from 'react-native-web-linear-gradient';
 import {Button, Icon, ActivityIndicator} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {

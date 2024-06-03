@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Surface,Stack } from '@react-native-material/core';
 // import LinearGradient from 'react-native-linear-gradient';
 import LinearGradient from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const VRPDetails = ({ route }) => {
 //   const { Data } = route.params || {};
+const [loading, setloading] = useState(true);
+const navigation = useNavigation();
   const Data= route.params?.data;
   if (!Data) {
     return (
