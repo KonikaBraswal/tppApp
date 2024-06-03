@@ -1399,7 +1399,6 @@ class SanboxApiFactory {
           params: body,
         },
       );
-
       const RefreshToken = responseRefresh.data.refresh_token;
       //updating refresh token in VRP table
       const details = {
@@ -1430,7 +1429,7 @@ class SanboxApiFactory {
         response: JSON.stringify(responseRefresh),
       };
       await logClient.insertLog(logData);
-      //Storing APILOGS
+      
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentId,

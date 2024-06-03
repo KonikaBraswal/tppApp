@@ -52,6 +52,8 @@ import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
 import SecondCvrpCall from './src/screens/EcommScreens/SecondCvrpCall';
 import AndroidClient from './DatabaseFactory/AndroidClientDb';
 import Demo from './src/screens/Demo';
+import ApiLogsList from './src/screens/ApiLogsList';
+import ApiLogDetails from './src/screens/ApiLogDetails';
 
 function App(): React.JSX.Element {
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
@@ -166,6 +168,8 @@ function App(): React.JSX.Element {
               />
               <Stack.Screen name="Review Payee" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
+              <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
+              <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
               <Stack.Screen name="Customer Details" component={CustomerDetails} />
