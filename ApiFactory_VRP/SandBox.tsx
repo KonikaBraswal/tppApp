@@ -1,12 +1,14 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import config from '../configs_VRP/config.json';
 import sandboxConfig from '../configs_VRP/Sandbox.json';
-import { Linking, Alert } from 'react-native';
-import 'setimmediate';
-import 'react-native-get-random-values';
+import {Linking, Alert} from 'react-native';
 import uuid from 'react-native-uuid';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
+// import {
+//   addDetails,
+//   addTransactions,
+//   updateDetailsForCVrp,
+//   updateDetailsForVrp,
+// } from '../database/Database';
 // interface BodyData {
 //   Data: {
 //     Permissions: string;
@@ -38,10 +40,7 @@ interface AccessTokenRequestParams {
   body: string; // Adjust the type according to your actual body structure
   consentUrl: string;
 }
-interface VRPData{
-  [key:string]:any
-}
-let newVRPConsent:VRPData={};
+
 class SandBox {
   private baseUrl: string;
   private clientId: string;
@@ -88,6 +87,27 @@ class SandBox {
     }
   }
 
+    async getDetailsCA(accessToken: any): Promise<any> {
+    try {
+      // const accessToken=this.accessTokenCA();
+      // console.log("accesstoken",this.apiAccessToken);
+      const headers = {
+        Authorization: 'Bearer ' + accessToken,
+      };
+      const url =
+        'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
+      const response: AxiosResponse<ResponseData> = await axios.get(
+        `${this.baseUrl}/${url}`,
+        {
+          headers: headers,
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch token: ${error}`);
+    }
+  }
+
   async accountRequest(url: string): Promise<any> {
     try {
       const body = this.permissions;
@@ -107,11 +127,6 @@ class SandBox {
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
       this.consentId = response.data.Data?.ConsentId || '';
-      newVRPConsent.bankname="Natwest";
-      newVRPConsent.consentid=this.consentId,
-      newVRPConsent.status= Status,
-      newVRPConsent.consentpayload= JSON.stringify(Payload),
-      newVRPConsent.scope= 'vrp';
       const details1 = {
         bankname: 'Natwest',
         consentid: this.consentId,
@@ -136,16 +151,12 @@ class SandBox {
       const allVrpResponse = await axios.get(url, {
         headers: headers,
       });
-      console.log(
-        'allVrpResponse of  call',
-        allVrpResponse.data,
-      );
+      console.log('allVrpResponse of  call', allVrpResponse.data);
       const payload = allVrpResponse.data.Data;
       const id = allVrpResponse.data.Data.ConsentId;
 
       const updateDetails4 = {
         account_details: JSON.stringify(payload),
-
       };
       const columnsToUpdate5 = ['account_details'];
 
@@ -159,11 +170,12 @@ class SandBox {
     // console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
     Linking.openURL(consentUrlWithVariables);
+    console.log(consentUrlWithVariables);
+
     return consentUrlWithVariables;
   }
 
-
-  async exchangeAccessToken(authTokenUrl: string, formData: any, consentData: any) {
+  async exchangeAccessToken(authTokenUrl: string, consentData: any) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
@@ -192,7 +204,6 @@ class SandBox {
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
 
-
       const updatedDetails2 = {
         refreshedtoken: RefreshToken,
         status: 'Authorised',
@@ -204,13 +215,24 @@ class SandBox {
       //   updatedDetails2,
       //   this.consentId,
       //   columnsToUpdate2,
-
       // );
-      await this.handleStore()
       refreshTokenExists = true;
-      this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
-      return response.data;
-
+      const debitordetails=await this.getDomesticConsent(
+        response.data.access_token,
+        consentData.Links.Self,
+      );
+      console.log("debitor-->",debitordetails);
+      // return response.data;
+      const detailsCa=await this.getDetailsCA(response.data.access_token);
+      console.log("debitor2-->",detailsCa);
+      const result = {
+        responseData: response.data,
+        customerDetails: detailsCa,
+        debitorDetails:debitordetails
+      };
+      console.log("result",result);
+      return result;
+      
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -218,12 +240,11 @@ class SandBox {
 
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
     try {
-
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         grant_type: 'refresh_token',
-        refresh_token: refreshToken.refreshtoken,
+        refresh_token: refreshToken.refreshedtoken,
       };
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -244,8 +265,13 @@ class SandBox {
         refreshedtoken: RefreshToken,
       };
 
-      // const columnsToUpdate3 = ['refreshedtoken'];
+      const columnsToUpdate3 = ['refreshedtoken'];
       // await updateDetailsForVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
+      // await updateDetailsForCVrp(
       //   updatedDetails3,
       //   refreshToken.consentid,
       //   columnsToUpdate3,
@@ -274,6 +300,7 @@ class SandBox {
         'x-idempotency-key': `${id}`,
       };
       const Identification = formData.accountNumber + formData.sortCode;
+      console.log(Identification);
       const body = {
         Data: {
           ConsentId: `${consentid}`,
@@ -311,7 +338,7 @@ class SandBox {
         },
         Risk: {},
       };
-
+      console.log("body",body.Data.Instruction.InstructedAmount.Amount);
       const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`,
         body,
@@ -320,6 +347,7 @@ class SandBox {
         },
       );
       this.apiAccess = apiAccessToken;
+      console.log("vrp payments",vrpPaymentResponse.data);
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
     } catch (error) {
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
@@ -339,34 +367,24 @@ class SandBox {
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
       );
-      const payload = allVrpPaymentsResponse.data.Data;
-      const id = allVrpPaymentsResponse.data.Data.ConsentId;
-      const details = {
-        bankname: 'Natwest',
-        consentid: id,
-        scope: 'vrp_transactions',
-        vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
-        vrppayload: JSON.stringify(payload),
-        status: allVrpPaymentsResponse.data.Data.Status
-      };
-      // addTransactions(details);
+      if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted'){
+        const payload = allVrpPaymentsResponse.data.Data;
+        const id = allVrpPaymentsResponse.data.Data.ConsentId;
+        const details = {
+          bankname: 'Natwest',
+          consentid: id,
+          scope: 'vrp_transactions',
+          vrpid: allVrpPaymentsResponse.data.Data.DomesticVRPId,
+          vrppayload: JSON.stringify(payload),
+          status: allVrpPaymentsResponse.data.Data.Status,
+        };
+        // addTransactions(details);
+      }
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
     }
   }
-handleStore= async () =>{
-  try {
-    const storedVRPData = await AsyncStorage.getItem("VRP_Data");
-    let allVRPData = storedVRPData ? JSON.parse(storedVRPData) : [];
-    allVRPData.push(newVRPConsent);
-    await AsyncStorage.setItem("VRP_Data", JSON.stringify(allVRPData));
-    console.log("VRP data stored Successfully");
-  } catch (error){
-    console.log("Error storing VRP data:", error);
-  }
-};
-
 }
 
 export default SandBox;
