@@ -1,116 +1,111 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Surface,Stack } from '@react-native-material/core';
-// import LinearGradient from 'react-native-linear-gradient';
-import LinearGradient from 'expo-linear-gradient';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
+import {Surface, Stack} from '@react-native-material/core';
+import {Title, IconButton} from 'react-native-paper';
+import LinearGradient from 'react-native-linear-gradient';
+import {Button, Icon, ActivityIndicator} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {RFValue} from 'react-native-responsive-fontsize';
 
-const VRPDetails = ({ route }) => {
-//   const { Data } = route.params || {};
-  const Data= route.params?.data;
-  if (!Data) {
+const VRPDetails = ({route}) => {
+  //   const { Data } = route.params || {};
+  const status = route.params?.data ;
+  console.log("VRp",status);
+  const navigation = useNavigation();
+  if (!status) {
     return (
       <View>
         <Text>No data available</Text>
       </View>
     );
   }
-  const formattedAmount = new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-  }).format(parseFloat(Data.Data.Instruction.InstructedAmount.Amount));
-
+  const handlePress = () => {
+    if (status === 'AcceptedSettlementCompleted') {
+      navigation.navigate('ConsentsforVRP');
+    } else {
+      navigation.navigate('GrantedForm');
+    }
+  };
   return (
-    <Stack fill center spacing={4}>
-    <Surface elevation={2} category="medium" style={{ width: '95%', height: '50%' }}>
-      <Surface
-        elevation={20}
-        category="medium"
-        style={{ width: '100%', height: '25%' }}
-      >
-    
-        <LinearGradient
-          colors={['#5a287d', '#74429e']} 
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text style={{ marginLeft: 6, color: 'white', fontSize: 30}}>
-            {formattedAmount}
-          </Text>
-        
-        </LinearGradient>
-      </Surface>
-      <Surface
-        elevation={20}
-        category="medium"
-        style={{ width: '100%', height: '50%'}}
-      >
-        {/* Use LinearGradient for a fluid color effect */}
-        <LinearGradient
-          colors={['#5a287d', '#9d6dbb']} // Add more colors as needed
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
-  <View style={{ flex: 1 }}>
-    <Text style={{ marginLeft: 10, color: 'white', fontSize: 15 }}>
-      Name
-    </Text>
-  </View>
-  <Text style={{ flex: 2, marginLeft: 6, marginRight: -4, color: 'white', fontSize: 15 }}>
-    {Data.Data.Initiation.CreditorAccount.Name}
-  </Text>
-</View>
-<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
-  <View style={{ flex: 1 }}>
-    <Text style={{ marginLeft: 10, color: 'white', fontSize: 12 }}>
-      Consent ID
-    </Text>
-  </View>
-  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
-    {Data.Data.ConsentId}
-  </Text>
-</View>
-<View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10 }}>
-  <View style={{ flex: 1 }}>
-    <Text style={{ marginLeft: 10, color: 'white', fontSize: 12 }}>
-      Payment Status
-    </Text>
-  </View>
-  <Text style={{ flex: 2, marginLeft: 6, marginRight: 10, color: 'white', fontSize: 15 }}>
-    {Data.Data.Status}
-  </Text>
-</View>
+    <View style={styles.container}>
+      {status === 'AcceptedSettlementCompleted' ? (
+        <>
+          <Title style={{fontWeight: 'bold'}}>Successful Payment</Title>
+          <IconButton
+            icon="check-bold"
+            iconColor="#fff"
+            containerColor="green"
+            size={30}
+          />
+          <View>
+            <Text
+              style={{
+                marginTop: 10,
+                fontSize: RFValue(16),
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+              }}>
+              You have successfully transferred money from ONEBank App
+            </Text>
+          </View>
+        </>
+      ) : (
+        <>
+          <Title style={{fontWeight: 'bold'}}>Unsuccessful Payment</Title>
+          <IconButton
+            icon="close-circle-outline"
+            iconColor="red"
+            containerColor="rgba(255, 0, 0, 0.2)"
+            size={30}
+          />
+          <View>
+            <Text
+              style={{
+                marginTop: 10,
+                fontSize: RFValue(16),
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+              }}>
+              Your transaction could not be completed. Please try again.
+            </Text>
+          </View>
+        </>
+      )}
 
-        </LinearGradient>
-      </Surface>
-    </Surface>
-  </Stack>
+      <TouchableOpacity onPress={handlePress}>
+        <Text style={styles.linkText}>
+          {status === 'AcceptedSettlementCompleted'
+            ? 'VRP Consents'
+            : 'Retry Transaction'}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  section: {
-    marginBottom: 8,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-});
+
+  const styles = {
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 20,
+      marginTop: 40,
+    },
+  
+    linkText: {
+      backgroundColor: '#c8e1cc',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      marginTop: 30,
+      fontSize: RFValue(18),
+      borderRadius: 8,
+    },
+  };
 
 export default VRPDetails;
