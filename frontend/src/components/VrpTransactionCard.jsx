@@ -16,7 +16,6 @@ import {StyleSheet, View} from 'react-native';
 const VrpTransactionCard = ({transaction}) => {
   // console.log("list",transaction.vrppayload);
   const list=JSON.parse(transaction.vrpPayload);
-  // console.log("string::",list.Instruction.InstructedAmount.Currency);
   return (
     <Card style={styles.card}>
       <Card.Content>

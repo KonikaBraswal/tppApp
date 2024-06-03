@@ -32,6 +32,7 @@ import {
 } from 'react-native-responsive-screen';
 import { fetchVRPData } from '../../../database/LocalDatabase';
 import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
 const Drawer = createDrawerNavigator();
@@ -62,8 +63,6 @@ const ConsentsforVRP = () => {
     if (isFocused) {
       try {
         const data = await androidClientVrp.fetchDataUsingScope(scope);
-        // const data = await androidClientVrp.displayData();
-        // console.log("data in consents for vrp",JSON.parse(data[0].consentPayload).Data.Initiation.CreditorAccount.Name);
         setConsentData(data);
       } catch (error) {
         console.error('Error fetching data for consents:', error);
@@ -131,7 +130,7 @@ const ConsentsforVRP = () => {
 
   return (
       <>
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{flex: 1}}>
@@ -412,7 +411,7 @@ const ConsentsforVRP = () => {
                </View>
          </View>
         </KeyboardAvoidingView>
-      </ScrollView>
+      </KeyboardAwareScrollView>
        <TouchableOpacity
         onPress={() => {
           navigation.navigate('Payee Details');

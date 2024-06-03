@@ -28,7 +28,7 @@ const DropdownWithCheckboxes = () => {
 
   return (
     <View>
-      <Button icon="chevron-down" mode="contained" onPress={showMenu}>
+      <Button icon="chevron-down" style={{ backgroundColor: '#3559AA' }} mode="contained" onPress={showMenu}>
         More
       </Button>
       <Portal>
@@ -44,6 +44,7 @@ const DropdownWithCheckboxes = () => {
                 selectedItems.includes(item.value) ? 'checked' : 'unchecked'
               }
               onPress={() => handleCheckboxToggle(item.value)}
+              color='#3559AA'
             />
           ))}
         </Modal>

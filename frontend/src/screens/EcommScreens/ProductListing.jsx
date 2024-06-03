@@ -248,7 +248,7 @@ const ProductListing = () => {
                       selectedItems.includes(item) ? 'checked' : 'unchecked'
                     }
                     onPress={() => handleCheckboxToggle(item)}
-                    color='#00B0FF'
+                    color='#3559AA'
                   />
                 ))}
               </Modal>
