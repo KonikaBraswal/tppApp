@@ -31,6 +31,7 @@ const GrantedForm = ({route}) => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     env=newApiClient;
+    console.log(env);
     setEnvApiClient(newApiClient);
     return () => {
     };
@@ -76,7 +77,9 @@ const GrantedForm = ({route}) => {
         }
       }
     };
-    fetchData();
+    if(global.env=='sandbox'){
+      fetchData();
+    }
   }, [creditorName, accountNumber, sortcode, referencenumber,isFocused]);
 
   const handleSubmit = async () => {
@@ -88,25 +91,27 @@ const GrantedForm = ({route}) => {
       amount,
     };
     
-    const selectconsentData = {
-      consentId: consentId,
-      refreshToken: vrpData.refreshToken
-    };
-    
     setLoading(true);
     setTimeout(async ()=>{
       try{
-        const response = await env.refreshTokenForVRP(
-            selectconsentData,
-            formData,
-          );
-          // console.log("hi",response);
-          // console.log('response', response);
-          // console.log(response.Data.Status)
-          // console.log('Form submitted:', formData);
-          if(response.Data.Status=== 'AcceptedSettlementCompleted'){
-            navigation.navigate('VRP Details', {data: response.Data.Status});
-          }
+        if(global.env=='local'){
+          await env.refreshTokenForVRP();
+          navigation.navigate('VRP Details', {data: 'AcceptedSettlementCompleted'});
+        }
+        else{
+          const selectconsentData = {
+            consentId: consentId,
+            refreshToken: vrpData.refreshToken
+          };
+          const response = await env.refreshTokenForVRP(
+              selectconsentData,
+              formData,
+            );
+
+            if(response.Data.Status=== 'AcceptedSettlementCompleted'){
+              navigation.navigate('VRP Details', {data: response.Data.Status});
+            }
+        }
         }catch (error) {
         console.error('Error in refreshing token for VRP:', error.message);
       } finally {

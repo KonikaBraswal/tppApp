@@ -52,12 +52,7 @@ const CustomDrawerContent = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Your drawer content goes here */}
-      {/* <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
-        <Text>Toggle Drawer</Text>
-      </TouchableOpacity> */}
-      {/* Header */}
-   
+      
       {/* Drawer content */}
       <TouchableOpacity onPress={() => navigation.navigate('ONEBank')}>
       <List.Item
@@ -89,7 +84,7 @@ const CustomDrawerContent = ({ navigation }) => {
             <Checkbox.Item label="Sandbox" status={mode === 'sandbox' ? 'checked' : 'unchecked'} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleMenuItemClick('local')}>
-            <Checkbox.Item label="Local" status={mode === 'local' ? 'checked' : 'unchecked'} />
+            <Checkbox.Item label="Mock" status={mode === 'local' ? 'checked' : 'unchecked'} />
             </TouchableOpacity>
           </View>
         )}

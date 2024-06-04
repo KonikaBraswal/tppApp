@@ -21,10 +21,6 @@ import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {Surface, Stack} from '@react-native-material/core';
-import readNatwestAccount from '../../../DatabaseFactory/MockData/accounts.json';
-import readNatwestBalance from '../../../DatabaseFactory/MockData/balances.json';
-import readBarclaysAccount from '../../../DatabaseFactory/MockData/barclaysAccounts.json';
-import readBarclaysBalance from '../../../DatabaseFactory/MockData/barclaysBalances.json';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   widthPercentageToDP as wp,
@@ -41,10 +37,7 @@ const ConsentsforVRP = () => {
   // const formData = route.params?.formData;
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-
   const [localdata, setLocalData] = useState([]);
-
-  
   const scope = 'vrp';
   const [consentData, setConsentData] = useState([]);
 
@@ -56,6 +49,7 @@ const ConsentsforVRP = () => {
     if(global.env==='local')
     {
       fetchVRPData().then(results => {
+        console.log("results",results);
         setLocalData(results);
       });
     }
@@ -80,8 +74,6 @@ const ConsentsforVRP = () => {
     try {
       const result = await androidClientVrpTransact.fetchDataUsingConsentId(id);
       tra = result;
-      
-      
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }

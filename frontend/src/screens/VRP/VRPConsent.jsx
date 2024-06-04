@@ -42,6 +42,7 @@ const VRPConsent = ({ route }) => {
     
     useEffect(() => {
         const newApiClient = switchEnvironment(global.env);
+        console.log("client",newApiClient);
         setEnvApiClient(newApiClient);
         return () => {
         };
@@ -107,17 +108,18 @@ const VRPConsent = ({ route }) => {
 
     const handleConfirmButtonClick = async () => {
         console.log("calling mode in VRP",global.env);
+        console.log("calling mode in VRP",EnvApiClient);
             try {
                 setLoading(true);
                 setError(null);
                 const consentdata = await EnvApiClient.callApiFactory('vrp',jsondata,null) //here is data
                 setConsentData(consentdata);
-                if (way == 'web') {
+                if (global.env =='sandbox' && way == 'web') {
                     await EnvApiClient.manualUserConsent(
                         consentdata.Data.ConsentId,
                     );
-                    showInputDialog();
                 }
+                showInputDialog();
             } catch (error) {
                 console.error('Error:', error);
                 setError('Failed to retrieve access token.');
@@ -128,13 +130,13 @@ const VRPConsent = ({ route }) => {
 
     const handleSubmit = async () => {
         if(global.env=='local'){
-         
+            
             navigation.navigate('GrantedForm', {
                 creditorName: formData.firstName,
                 accountnumber: formData.accountNumber,
                 sortcode: formData.sortCode,
                 referencenumber:formData.reference,
-                selectconsentData: "updatedResponse",
+                consentId: "updatedResponse",
               });
               setInputValue('');
               hideInputDialog();

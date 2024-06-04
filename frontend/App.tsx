@@ -54,7 +54,8 @@ import AndroidClient from './DatabaseFactory/AndroidClientDb';
 import Demo from './src/screens/Demo';
 import ApiLogsList from './src/screens/ApiLogsList';
 import ApiLogDetails from './src/screens/ApiLogDetails';
-
+import { TransactionsforLocal } from './src/screens/TransactionsforLocal';
+import './global';
 function App(): React.JSX.Element {
   let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
   let androidClientAisp=new AndroidClient("NWG", "Sandbox", "accounts");
@@ -67,11 +68,8 @@ function App(): React.JSX.Element {
       androidClientVrp.initDatabaseAndroidVrp();
       androidClientCA.initDatabaseAndroidCa();
       androidClientVrpTransact.initDatabaseAndroidVrpTransactions();
-       androidClientAisp.initDatabaseAndroidAisp();
-       androidClientPisp.initDatabaseAndroidPisp();
-        // androidClientVrp.deleteAllData();
-        //  androidClientVrpTransact.deleteAllData();
-        //  androidClientCA.deleteAllData();
+      androidClientAisp.initDatabaseAndroidAisp();
+      androidClientPisp.initDatabaseAndroidPisp();
         
     } catch (error) {
       console.error('Error fetching data for consents:', error);
@@ -166,6 +164,7 @@ function App(): React.JSX.Element {
                 name="Vrp Transactions"
                 component={VrpTransactions}
               />
+              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
               <Stack.Screen name="Review Payee" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
               <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
