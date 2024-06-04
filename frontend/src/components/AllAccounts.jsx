@@ -15,7 +15,7 @@ import {
 import BarclaysComponent from './AccountLists/BarclaysAccounts';
 import NatwestAccounts from './AccountLists/NatwestAccounts';
 import BarclaysAccounts from './AccountLists/BarclaysAccounts';
-import LloydsAccounts from './AccountLists/LloydsAccounts';
+import AddingAccounts from './AccountLists/AddingAccounts';
 import MonzoAccounts from './AccountLists/MonzoAccounts';
 import SantanderAccounts from './AccountLists/SantanderAccounts';
 import StarlingAccounts from './AccountLists/StarlingAccounts';
@@ -27,6 +27,7 @@ const AllAccounts = ({route}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [checkedBanks, setCheckedBanks] = useState({
     natwest: false,
+    hsbc:false,
     barclays: false,
     lloyds: false,
     santander: false,
@@ -37,6 +38,7 @@ const AllAccounts = ({route}) => {
 
   const banks = [
     'Natwest',
+    'HSBC',
     'Barclays',
     'Lloyds',
     'Santander',
@@ -45,12 +47,11 @@ const AllAccounts = ({route}) => {
     'Monzo',
   ];
 
-  const selectedBank = route.params.selectedBank;
+  const bankName = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
   const permissions = route.params.permissions;
   const [searchQuery, setSearchQuery] = useState('');
-
   return (
     <>
       <KeyboardAvoidingView
@@ -67,9 +68,14 @@ const AllAccounts = ({route}) => {
         </View>
         <View style={styles.container}>
           <ScrollView style={styles.scrollContainer}>
-            <NatwestAccounts
+            {/* <NatwestAccounts
               accountsList={accounts}
               permissions={permissions}
+            /> */}
+            <AddingAccounts
+            accountsList={accounts}
+            permissions={permissions}
+            bankName={bankName}
             />
           </ScrollView>
           <TouchableOpacity

@@ -10,6 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const ApiLogsList = ({route}) => {
   const {logs} = route.params; // Get logs data from navigation route
+  console.log(logs,"LLLLLlll");
   const navigation = useNavigation(); // Hook for navigation
   const handleLogPress = log => {
     navigation.navigate('ApiLogDetails', {log}); // Navigate to LogDetailsPage with log data
@@ -27,7 +28,7 @@ const ApiLogsList = ({route}) => {
               <Text style={styles.headerText}>Time</Text>
             </DataTable.Title>
             <DataTable.Title style={styles.headerCell}>
-              <Text style={styles.headerText}>API</Text>
+              <Text style={styles.headerText}>Bank</Text>
             </DataTable.Title>
             <DataTable.Title style={styles.headerCell}>
               <Text style={styles.headerText}>Status</Text>
@@ -46,7 +47,7 @@ const ApiLogsList = ({route}) => {
                 <Text style={{fontSize: RFValue(14)}}>{log.time}</Text>
               </DataTable.Cell>
               <DataTable.Cell style={styles.cell}>
-                <Text style={{fontSize: RFValue(14)}}>{log.api_name}</Text>
+                <Text style={{fontSize: RFValue(14)}}>{log.bankName}</Text>
               </DataTable.Cell>
               <DataTable.Cell style={styles.cell}>
                 <Text style={{fontSize: RFValue(14)}}>

@@ -36,7 +36,7 @@ const CustomDrawerContent = ({ navigation }) => {
     }
  }, [mode]); 
 
-  console.log("hiiiiiiiiiiiiiiiiiiiiiii",global.env);
+  console.log("Environment:",global.env);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);

@@ -208,36 +208,7 @@ class AndroidClientDb {
       });
     });
   }
-  // async fetchRefreshedToken(userId: any): Promise<any> {
-  //   console.log(userId);// Local variable to hold the fetched token
-  //   const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  //   console.log(tableName);
-  //   await new Promise<any>((resolve, reject) => {
-  //     this.androidDb.transaction(tx => {
-  //       tx.executeSql(
-  //         `SELECT refreshToken FROM ${tableName} WHERE userId =?;`,
-  //         [userId],
-  //         (_, results) => {
-  //           console.log('Query results:', results.rows); // Log the results for debugging
-  //           const rows = results.rows;
-  //           if (rows.length > 0) {
-  //             const row = rows.item(0);
-  //             const refreshedtoken = row.refreshToken;
-  //             console.log('Refreshed Token from database:', refreshedtoken); // Log the refreshedtoken for debugging
-  //             resolve(userId);
-  //           } else {
-  //             console.log('No entry found for userId:', userId); // Log for debugging
-  //             resolve(null);
-  //           }
-  //         },
-  //         (_, error) => {
-  //           console.error('Error fetching refreshedtoken: ', error);
-  //           reject(error);
-  //         },
-  //       );
-  //     });
-  //   });
-  // }
+
 
   async fetchRefreshedToken(userId: any): Promise<any[]> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
@@ -266,6 +237,35 @@ class AndroidClientDb {
   }
 
 
+  
+
+  async fetchConsentId(userId: any): Promise<any[]> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        // Adjusted SQL query to include WHERE clause filtering by userId
+        tx.executeSql(
+          `SELECT consentId FROM ${tableName} WHERE userId =?;`,
+          [userId], // Pass userId as a parameter to prevent SQL injection
+          (_, {rows}) => {
+            if (rows.length > 0) {
+              console.log("consentId", rows.item(0).consentId);
+              // Assuming consentId is stored directly in the row, adjust if structure is different
+              resolve(rows.item(0).consentId); // Return the consentId of the first matching row
+            } else {
+              resolve([]); // No matching userId found
+            }
+          },
+          (_, error) => {
+            console.error('Error retrieving data:', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  }
+
+  
   //VRP
   async initDatabaseAndroidVrp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
@@ -298,7 +298,32 @@ class AndroidClientDb {
       });
     });
   }
-
+ // Method to update the refresh token for AISP based on userId
+ async updateRefreshTokenAisp(userId: string, newRefreshToken: string,consentId:string): Promise<void> {
+  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  
+  await new Promise<void>((resolve, reject) => {
+    this.androidDb.transaction(tx => {
+      tx.executeSql(
+        `UPDATE ${tableName} SET refreshToken = ? WHERE userId = ? AND consentId=?;`,
+        [newRefreshToken, userId,consentId],
+        (_, result) => {
+          if (result.rowsAffected > 0) {
+            console.log('Refresh token updated successfully');
+            resolve();
+          } else {
+            console.error('No rows affected during update');
+            reject(new Error('No rows affected'));
+          }
+        },
+        (_, error) => {
+          console.error('Error updating refresh token:', error);
+          reject(error);
+        },
+      );
+    });
+  });
+}
   async insertDataVrp(vrpToStore: {
     userId: any;
     scope: string;
@@ -484,23 +509,45 @@ class AndroidClientDb {
     return new Promise((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
-          `SELECT * FROM ${tableName};`,
-          [],
-          (_, {rows}) => {
-            const rowData = [];
-            for (let i = 0; i < rows.length; i++) {
-              rowData.push(rows.item(i));
+          `SELECT name FROM sqlite_master WHERE type='table' AND name=?;`,
+          [tableName],
+          (_, { rows: tableCheck }) => {
+            if (tableCheck.length === 0) {
+              console.log(`Table ${tableName} does not exist`);
+              resolve([]); // Resolve with an empty array if the table does not exist
+            } else {
+              tx.executeSql(
+                `SELECT * FROM ${tableName};`,
+                [],
+                (_, { rows }) => {
+                  if (rows.length === 0 || rows === null || rows === undefined) {
+                    console.log('Table is empty');
+                    resolve([]); // Resolve with an empty array if the table is empty
+                  } else {
+                    const rowData = [];
+                    for (let i = 0; i < rows.length; i++) {
+                      rowData.push(rows.item(i));
+                    }
+                    resolve(rowData); // Resolve the promise with the fetched data
+                  }
+                },
+                (_, error) => {
+                  console.error('Error retrieving data in display data:', error);
+                  resolve([]); // Resolve with an empty array if there's an error
+                }
+              );
             }
-            resolve(rowData); // Resolve the promise with the fetched data
           },
           (_, error) => {
-            console.error('Error retrieving data:', error);
-            reject(error);
-          },
+            console.error('Error checking table existence:', error);
+            resolve([]); // Resolve with an empty array if there's an error checking table existence
+          }
         );
       });
     });
   }
+  
+  
   
 }
 

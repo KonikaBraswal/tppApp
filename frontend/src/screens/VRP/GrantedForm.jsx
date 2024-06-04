@@ -15,7 +15,7 @@ let env="";
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"vrp");
+  const apiClient = apiFactory.createApiClient(global.env,"vrp","Natwest");
   return apiClient;
   // Use the new apiClient as needed
  };

@@ -15,7 +15,7 @@ import {TouchableOpacity} from 'react-native';
 import {fetchAllDataforScope} from '../../../database/Database';
 import ApiFactory from '../../../ApiFactory/ApiFactory';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient('sandbox',"vrp","Natwest");
 
 const CustomerDetails = ({route}) => {
   const {customerDetails} = route.params;

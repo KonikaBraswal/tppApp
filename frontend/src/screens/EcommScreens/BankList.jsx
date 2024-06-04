@@ -51,7 +51,7 @@ import OrderSuccessful from './OrderSuccessful';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox','vrp');
+const sandboxApiClient = apiFactory.createApiClient('sandbox','vrp',"Natwest");
 // const checkputApiFactory=new ApiFactory();
 // const checkoutApiClient=checkputApiFactory.createApiClient('sandbox');
 const BankList = () => {

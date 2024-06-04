@@ -24,7 +24,8 @@ class ApiLogsDb {
             api_name TEXT,
             scope TEXT,
             status TEXT,
-            response TEXT
+            response TEXT,
+            bankName TEXT
           );`,
           [],
           (_, results) => {
@@ -47,8 +48,9 @@ class ApiLogsDb {
     scope: string;
     status: string;
     response: string;
+    bankName: string;
   }): Promise<void> {
-    const { date, time, api_name, scope, status, response } = logData;
+    const { date, time, api_name, scope, status, response, bankName } = logData;
 
     return new Promise<void>((resolve, reject) => {
       if (!this.apiDb) {
@@ -65,9 +67,10 @@ class ApiLogsDb {
             api_name,
             scope,
             status,
-            response
-          ) VALUES (?, ?, ?, ?, ?, ?);`,
-          [date, time, api_name, scope, status, response],
+            response,
+            bankName
+          ) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          [date, time, api_name, scope, status, response, bankName],
           (_: Transaction, results: ResultSet) => {
             console.log('Log entry inserted successfully', results);
             resolve();
@@ -114,7 +117,7 @@ class ApiLogsDb {
   async displayResults() {
     try {
       const data = await this.retrieveData();
-      //console.log('Retrieved data:', data);
+      console.log('Retrieved data:', data);
       return data;
     } catch (error) {
       console.error('Error:', error);
@@ -164,25 +167,14 @@ class ApiLogsDb {
     return new Promise<void>((resolve, reject) => {
       this.apiDb.transaction(tx => {
         tx.executeSql(
-          `ALTER TABLE apiLogsData ADD COLUMN vrpId TEXT;`,
+          `ALTER TABLE apiLogsData ADD COLUMN bankName TEXT;`,
           [],
           (_, results) => {
-            console.log('Added vrpId column to apiLogsData table');
-          },
-          (_, error) => {
-            console.error('Error adding vrpId column:', error);
-            reject(error);
-          }
-        );
-        tx.executeSql(
-          `ALTER TABLE apiLogsData ADD COLUMN vrpPayload TEXT;`,
-          [],
-          (_, results) => {
-            console.log('Added vrpPayload column to apiLogsData table');
+            console.log('Added bankName column to apiLogsData table');
             resolve();
           },
           (_, error) => {
-            console.error('Error adding vrpPayload column:', error);
+            console.error('Error adding bankName column:', error);
             reject(error);
           }
         );
@@ -190,6 +182,5 @@ class ApiLogsDb {
     });
   }
 }
-
 
 export default ApiLogsDb;

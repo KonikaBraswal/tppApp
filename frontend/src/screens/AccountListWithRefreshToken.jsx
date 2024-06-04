@@ -28,8 +28,15 @@ import { fetchAISPData } from '../../database/LocalDatabase';
 import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
-const AccountListWithRefreshToken = () => {
-  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
+const AccountListWithRefreshToken = ({route}) => {
+  const { bankName } = route.params || {};
+  console.log("BankName",bankName);
+  const androidClientAispNWG = new AndroidClient('NWG', 'Sandbox', 'accounts');
+  const androidClientAispHSBC = new AndroidClient(
+    'HSBC',
+    'Sandbox',
+    'accounts',
+  );
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [retrievedData, setRetrievedData] = useState([]);
@@ -45,8 +52,32 @@ const AccountListWithRefreshToken = () => {
     else{
     const fetchData = async () => {
       try {
-        console.log("heloooooooooooooooooooooooooo");
-        const data = await androidClientAisp.displayData();
+        const dataNWG = await androidClientAispNWG.displayData();
+        const dataHSBC = await androidClientAispHSBC.displayData();
+
+        //const data= [...dataNWG, ...dataHSBC];
+
+        let data = [];
+        if(bankName=='all'){
+        // Check if dataNWG is not empty
+        if (dataNWG && dataNWG.length > 0) {
+          data = [...data, ...dataNWG];
+        }
+
+        // Check if dataHSBC is not empty
+        if (dataHSBC && dataHSBC.length > 0) {
+          data = [...data, ...dataHSBC];
+        }}
+        else if (bankName=='Natwest'){
+          data=dataNWG;
+        }
+        else if(bankName=="HSBC"){
+          data=dataHSBC;
+        }
+        else{
+          data=[];
+          console.log("Wrong bank")
+        }
         const filteredData = data.filter(entry => entry.scope === "accounts");
         console.log(filteredData, '------------------');
         setRetrievedData(filteredData);
@@ -101,7 +132,12 @@ const AccountListWithRefreshToken = () => {
           return [];
         }
       })();
-
+      const bankName=item.bankName;
+      if (bankName=="HSBC") {
+        imageSource = require('../assets/images/hsbc.png');
+      } else {
+        imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
+      }
       return accounts.map((account, idx) => (
         <Card key={account.AccountId} style={styles.card}>
         <Card.Content>
@@ -110,7 +146,7 @@ const AccountListWithRefreshToken = () => {
              {account.AccountSubType} Account
             </Title>
             <Image
-             source={require('../assets/images/natwest2.png')}
+             source={imageSource}
              style={styles.iconNatwest}
             />
           </View>
@@ -134,6 +170,7 @@ const AccountListWithRefreshToken = () => {
                     size={25}
                     iconColor="#482164"
                     style={{marginLeft: -wp('2%')}}
+                    
                     onPress={() =>
                       navigation.navigate('Transfer Money', {
                         DebtorAccount: {
@@ -171,6 +208,7 @@ const AccountListWithRefreshToken = () => {
                     onPress={() => {
                       navigation.navigate('View Added Bank Details', {
                         AccountId: account.AccountId,
+                        bankName:bankName,
                       });
                     }}
                     style={styles.iconButton}

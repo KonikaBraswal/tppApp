@@ -49,7 +49,7 @@ import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
 import CartScreen from './src/screens/EcommScreens/CartScreen';
 import './global';
-
+import HsbcDummy from './src/screens/hsbcDummy';
 import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
 import {GlobalEnvProvider} from './GlobalEnvContext';
 import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
@@ -186,6 +186,7 @@ function App(): React.JSX.Element {
                   name="Confirm Details"
                   component={ConfirmDetails}
                 />
+                <Stack.Screen name="Hsbc Dummy" component={HsbcDummy} />
                 <Stack.Screen name="Order Placed" component={OrderSuccessful} />
               </Stack.Navigator>
             </NavigationContainer>

@@ -9,14 +9,16 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 let env="";
-const switchEnvironment = (newEnv) => {
-  global.env = newEnv; // Update the global environment variable
-  const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"accounts");
-  return apiClient;
-  // Use the new apiClient as needed
- };
+
 const TransactionList = props => {
+  const bankName=props.bankName;
+  const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankName);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     env=newApiClient;  
@@ -32,7 +34,7 @@ const TransactionList = props => {
   );
   useEffect(() => {
     if(global.env==='local'){
-      console.log("inside local transactionListtttttttttt",transactionData.Data);
+      console.log("inside local transactionList",transactionData.Data);
       setTransactionDetails(transactionData.Data);
       setLoading(false);
 
@@ -48,7 +50,7 @@ const TransactionList = props => {
           const response = await env.allCalls(
             `${AccountId}/transactions`,
           );
-          console.log("inside transactionssssssssssssssssssssssss",response);
+          console.log("inside transactionsss",response);
           setTransactionDetails(response);
         } catch (error) {
           console.error('Error fetching transactions:', error);

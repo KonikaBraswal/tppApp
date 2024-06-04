@@ -21,7 +21,7 @@ import TotalCost from '../../components/EcommComponents/TotalCost';
 import {fetchAllDataforScope} from '../../../database/Database';
 import {useNavigation} from '@react-navigation/native';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient('sandbox',"vrp","Natwest");
 
 const CART_STORAGE_KEY = '@OneBank:cart';
 

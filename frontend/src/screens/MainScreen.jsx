@@ -21,8 +21,13 @@ import SortDropdown from '../components/SortDropdown';
 const MainScreen = ({route}) => {
   const accountDetails = route.params.accountDetails;
   const permissions = route.params.permissions;
+  const bankName=route.params.bankName;
   const {AccountId} = route.params.accountDetails;
   const [searchQuery, setSearchQuery] = useState('');
+  //console.log(bankName);
+  const iconSource = bankName === "HSBC" 
+  ? require('../assets/images/hsbc.png') 
+  : require('../assets/images/natwest2.png');
 
   return (
     <KeyboardAvoidingView
@@ -32,13 +37,15 @@ const MainScreen = ({route}) => {
         <View style={styles.rowContainer}>
           <Surface elevation={6} category="medium" style={styles.surface}>
             <Image
-              source={require('../assets/icons/natwest.png')}
+              //source={require('../assets/icons/natwest.png')}
+              source={iconSource}
               style={styles.icon}
             />
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails account={accountDetails} permissions={permissions} />
+        <AccountDetails account={accountDetails} permissions={permissions}
+        bankName={bankName} />
 
         <View style={styles.transactionsContainer}>
           <View style={styles.transactionsHeader}>
@@ -51,7 +58,8 @@ const MainScreen = ({route}) => {
             value={searchQuery}
             style={styles.searchbar}
           />
-          <TransactionList accountId={AccountId} permissions={permissions} />
+          <TransactionList accountId={AccountId} permissions={permissions}
+          bankName={bankName} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

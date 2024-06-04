@@ -16,7 +16,7 @@ import {
 import ApiFactory from '../../../ApiFactory/ApiFactory';
 import {fetchAllDataforScope} from '../../../database/Database';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const sandboxApiClient = apiFactory.createApiClient('sandbox',"vrp","Natwest");
 
 const ConfirmDetails = ({route}) => {
   const {

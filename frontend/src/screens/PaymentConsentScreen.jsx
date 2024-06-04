@@ -41,7 +41,7 @@ const CustomListItem = ({title, value}) => (
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"payments");
+  const apiClient = apiFactory.createApiClient(global.env,"payments","Natwest");
   console.log("PISPPPPPPPPPPPPPP",global.env);
   return apiClient;
   // Use the new apiClient as needed
