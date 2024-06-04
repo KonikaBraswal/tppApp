@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   Platform,
   Image,
   Dimensions,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import {
   Searchbar,
   Card,
@@ -18,20 +18,22 @@ import {
   Paragraph,
   IconButton,
   Icon,
-} from 'react-native-paper';
+} from "react-native-paper";
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import readNatwestAccount from '../assets/data/accounts.json';
-import readNatwestBalance from '../assets/data/balances.json';
-import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
-import readBarclaysBalance from '../assets/data/barclaysBalances.json';
-const {width} = Dimensions.get('window');
+} from "react-native-responsive-screen";
+import readNatwestAccount from "../assets/data/accounts.json";
+import readNatwestBalance from "../assets/data/balances.json";
+import readBarclaysAccount from "../assets/data/barclaysAccounts.json";
+import readBarclaysBalance from "../assets/data/barclaysBalances.json";
+
+const { width } = Dimensions.get("window");
 const cardWidth = width * 0.93;
+
 const ViewAllAccounts = () => {
   const navigation = useNavigation();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const NatwestAccountData = readNatwestAccount?.Data?.Account;
   const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
@@ -40,12 +42,13 @@ const ViewAllAccounts = () => {
   const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
   const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
 
-  const filteredAccounts = mergedAccounts.filter(account =>
-    account.AccountId.includes(searchQuery),
+  const filteredAccounts = mergedAccounts.filter((account) =>
+    account.AccountId.includes(searchQuery)
   );
-  const findAccountBalances = accountId => {
+
+  const findAccountBalances = (accountId) => {
     const foundBalances = mergedBalances.filter(
-      balance => balance.AccountId === accountId,
+      (balance) => balance.AccountId === accountId
     );
 
     if (foundBalances.length > 0) {
@@ -54,55 +57,61 @@ const ViewAllAccounts = () => {
       return null;
     }
   };
+
+  const way = Platform.OS === "web" ? "web" : "android";
+
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
       <View
         style={{
-          backgroundColor: '#5a287d',
-          padding: 10,
-        }}>
-        {/* //changed searchBar */}
+          backgroundColor: "#5a287d",
+          padding: wp("2%"),
+        }}
+      >
         <Searchbar
           placeholder="Search account by ID"
           onChangeText={setSearchQuery}
           value={searchQuery}
           icon={() => <Icon source="magnify" color="black" size={20} />}
-          style={{
-            borderRadius: 5,
-            backgroundColor: '#f4ebfe',
-          }}
+          style={styles.searchBar}
         />
       </View>
       <View style={styles.container}>
         <View style={styles.mainContent}>
-          <View style={styles.rowContainer}>
-            <View style={styles.searchBarContainer}></View>
-          </View>
           <ScrollView
             style={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}>
-            {filteredAccounts.map(account => (
+            showsVerticalScrollIndicator={false}
+          >
+            {filteredAccounts.map((account) => (
               <Card key={account.AccountId} style={styles.card}>
                 <Card.Content>
                   <View style={styles.cardHeader}>
-                    <Title style={[styles.title, {marginTop: -10}]}>
+                    <Title style={[styles.title, { marginTop: -hp("1%") }]}>
                       {account.AccountSubType} Account
                     </Title>
 
                     {BarclaysAccountData.find(
-                      barclaysAccount =>
-                        barclaysAccount.AccountId === account.AccountId,
+                      (barclaysAccount) =>
+                        barclaysAccount.AccountId === account.AccountId
                     ) ? (
                       <Image
-                        source={require('../assets/images/barclays2.png')}
-                        style={styles.iconBarclays}
+                        source={require("../assets/images/barclays2.png")}
+                        style={[
+                          styles.iconBarclays,
+                          way === "web" && styles.iconBarclaysWeb,
+                        ]}
                       />
                     ) : (
                       <Image
-                        source={require('../assets/images/natwest2.png')}
-                        style={styles.iconNatwest}
+                        source={require("../assets/images/natwest2.png")}
+                        style={[
+                          styles.iconNatwest,
+                          ,
+                          way === "web" && styles.iconNatwestWeb,
+                        ]}
                       />
                     )}
                   </View>
@@ -111,9 +120,9 @@ const ViewAllAccounts = () => {
                       <Paragraph>{account.AccountId}</Paragraph>
                       <Paragraph>{account.Account[0].Name}</Paragraph>
                       <Paragraph>
-                        Balance:{' '}
+                        Balance:{" "}
                         {findAccountBalances(account.AccountId)?.[0]?.Amount
-                          ?.Amount ?? 0}{' '}
+                          ?.Amount ?? 0}{" "}
                         GBP
                       </Paragraph>
                     </View>
@@ -123,7 +132,7 @@ const ViewAllAccounts = () => {
                         size={22}
                         color="#5a287d"
                         onPress={() => {
-                          navigation.navigate('View Details', {
+                          navigation.navigate("View Details", {
                             AccountId: account.AccountId,
                           });
                         }}
@@ -138,95 +147,114 @@ const ViewAllAccounts = () => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Select Your Bank');
+            navigation.navigate("Select Your Bank");
           }}
-          style={styles.footer}
-          activeOpacity={1}>
-          <Text style={styles.footerText}>Add New Bank Account</Text>
+          style={[styles.footer, way === "web" && styles.footerWeb]}
+          activeOpacity={1}
+        >
+          <Text
+            style={[styles.footerText, way === "web" && styles.footerTextWeb]}
+          >
+            Add New Bank Account
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   mainContent: {
     flex: 1,
+    width: "100%",
   },
   rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: hp('1%'),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: hp("1%"),
   },
   searchBar: {
-    height: hp('8%'),
-    borderRadius: 0,
-    width: wp('90%'),
+    borderRadius: wp("1%"),
+    backgroundColor: "#f4ebfe",
   },
   searchBarContainer: {
-    margin: wp('1%'),
+    margin: wp("1%"),
   },
   scrollContainer: {
     flex: 1,
-    padding: wp('1%'),
+    padding: wp("1%"),
   },
   card: {
-    marginBottom: hp('2%'),
-    backgroundColor: '#c8e1cc',
-    borderRadius: wp('2%'),
+    marginBottom: hp("2%"),
+    backgroundColor: "#c8e1cc",
+    borderRadius: wp("2%"),
     elevation: 3,
     width: cardWidth,
+    alignSelf: "center",
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: wp('3%'),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: wp("3%"),
   },
   title: {
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
   },
   iconBarclays: {
-    width: wp('14.5%'),
-    height: wp('14.5%'),
-    resizeMode: 'contain',
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
+    width: wp("14.5%"),
+    height: wp("14.5%"),
+    resizeMode: "contain",
+  },
+  iconBarclaysWeb: {
+    width: wp("10.5%"),
+    height: wp("10.5%"),
+    resizeMode: "contain",
   },
   iconNatwest: {
-    width: wp('14.5%'),
-    height: wp('14.5%'),
-    resizeMode: 'contain',
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
+    width: wp("14.5%"),
+    height: wp("14.5%"),
+    resizeMode: "contain",
+  },
+  iconNatwestWeb: {
+    width: wp("10.5%"),
+    height: wp("10.5%"),
+    resizeMode: "contain",
   },
   cardContent: {
-    flexDirection: 'row',
-    paddingHorizontal: wp('3%'),
+    flexDirection: "row",
+    paddingHorizontal: wp("3%"),
   },
   textContainer: {
     flex: 1,
   },
   iconButton: {
-    marginRight: -wp('4.5%'),
-    marginLeft: wp('2%'),
+    marginRight: wp("2%"),
+    marginLeft: wp("2%"),
   },
   footer: {
-    backgroundColor: '#5a287d',
-    padding: wp('4.2%'),
-    alignItems: 'center',
-    width: '100%',
+    backgroundColor: "#5a287d",
+    padding: wp("4.2%"),
+    alignItems: "center",
+    width: "100%",
   },
   footerText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: wp('5%'),
+    color: "white",
+    fontWeight: "bold",
+    fontSize: wp("5%"),
+  },
+  footerWeb: {
+    padding: wp("1%"),
+  },
+  footerTextWeb: {
+    fontSize: wp("2%"),
   },
 });
 
