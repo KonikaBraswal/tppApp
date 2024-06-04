@@ -3,7 +3,9 @@ import { Button } from 'react-native-paper';
 import AndroidClient from './../../DatabaseFactory/AndroidClientDb';
 
 const Demo=()=>{
-    let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp_transactions");
+    let androidClientVrpTra=new AndroidClient("NWG", "Sandbox", "vrp_transactions");
+    let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+    let androidClientCa=new AndroidClient("NWG", "Sandbox", "customer_checkout");
     let caToStore={
         userId: '9999999',
         consentId:'',
@@ -24,6 +26,8 @@ const Demo=()=>{
         // caToStore.customerDetails='90';
         // caToStore.accountDetails='90';
         // console.log(caToStore);
+        await androidClientCa.deleteTable();
+        await androidClientVrpTra.deleteTable();
         await androidClientVrp.deleteTable();
     };
 return(

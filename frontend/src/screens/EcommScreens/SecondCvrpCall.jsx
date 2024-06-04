@@ -228,12 +228,13 @@ const styles = StyleSheet.create({
     margin: 10,// Add space between the buttons
     alignItems: 'center', // Center text horizontally
     borderRadius: 20,
-    borderColor: '#114188',
+    borderColor: '#3559AA',
+    backgroundColor:'#3559AA',
     borderWidth: 3,
     width: wp('80%'),
   },
   footerText: {
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: wp('5%'),
   },
