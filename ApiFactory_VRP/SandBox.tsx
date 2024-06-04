@@ -244,7 +244,7 @@ class SandBox {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         grant_type: 'refresh_token',
-        refresh_token: refreshToken.refreshedtoken,
+        refresh_token: refreshToken.refreshtoken,
       };
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
