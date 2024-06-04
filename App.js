@@ -38,7 +38,7 @@ export default function App() {
               <Stack.Screen name="Consent" component={ConsentScreen} />
               <Stack.Screen name="Select Your Bank" component={SelectBank} />
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
-              {/* <Stack.Screen name="Transaction Successful" component={SuccessfullTransaction} /> */}
+              <Stack.Screen name="Transaction Successful" component={SuccessfullTransaction} />
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />

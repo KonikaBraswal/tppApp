@@ -176,6 +176,7 @@ const GrantedForm = ({route}) => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii insideeeeeeeeeeeeeeeeeeeeeeee");
     setFirstName(creditorName);
     setSortCode(sortcode);
     setAccountNumber(accountnumber);

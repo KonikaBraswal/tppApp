@@ -24,9 +24,9 @@ const SuccessfullTransaction = () => {
         You have successfully transferred money from ONEBank App
       </Text>
       </View>
-      <TouchableOpacity onPress={handlePress}>
+      {/* <TouchableOpacity onPress={handlePress}>
         <Text style={styles.linkText}>Go to Accounts and Transactions</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

@@ -80,7 +80,7 @@ class SandBox {
           headers: params.accessTokenParams.headers,
         },
       );
-
+      console.log('Access token', response.data.access_token);
       this.accessToken = response.data.access_token;
       return this.accountRequest(params.accessTokenParams.consentUrl);
     } catch (error) {
@@ -88,7 +88,7 @@ class SandBox {
     }
   }
 
-  async accountRequest(url: string): Promise<any> {
+  async accountRequest(url: string): Promise<string> {
     try {
       const body = this.permissions;
       const id = uuid.v4();
@@ -120,9 +120,18 @@ class SandBox {
         scope: 'vrp',
         account_details: JSON.stringify(Payload),
       };
+      const details2 ={
+        bankname: 'Natwest',
+        consentid : this.consentId,
+        status: Status,
+        scope: 'vrp'
+      };
+      console.log('details', details1);
 
       // addDetails(details1);
-      return response.data;
+      console.log('response of consent', this.consentId);
+      
+      return response.data.Data?.ConsentId || '';
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }

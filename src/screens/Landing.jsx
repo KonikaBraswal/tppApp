@@ -77,7 +77,7 @@ const Landing = () => {
               borderRadius: 5,
               backgroundColor: '#f4ebfe',
             }}
-          />
+          />w
         </View>
         <Text
           style={{
