@@ -110,7 +110,7 @@ const SecondCvrpCall = ({ route }) => {
                   iconColor={'black'}
                   size={wp('7%')}
                   style={{ marginTop: hp('1.5%'), marginLeft: wp('3.5%') }}
-                  onPress={() => navigation.navigate('Order Placed')}
+                  // onPress={() => navigation.navigate('Order Placed')}
                 />
               </Card.Actions>
             </View>

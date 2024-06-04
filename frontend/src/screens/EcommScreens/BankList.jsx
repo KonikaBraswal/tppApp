@@ -47,6 +47,7 @@ import { TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrderSuccessful from './OrderSuccessful';
 import { addDetailsCA } from '../../../database/Database';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';//importing database
 
 const mode = 'sandbox';
 const way = 'web';
@@ -57,6 +58,13 @@ const switchEnvironment = (newEnv) => {
   return apiClient;
   // Use the new apiClient as needed
  };
+ let caToStore={
+  userId: '999999999',
+  consentId:'',
+  scope:'customer_checkout',
+  customerDetails:'',
+  accountDetails:'',
+};
 const BankList = ({ route }) => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
@@ -181,6 +189,14 @@ const BankList = ({ route }) => {
       console.log("details1-->",customerDetails);
       console.log("details2-->",debitorDetails);
       const consentId=consentData.Data.ConsentId;
+      let androidClientCA=new AndroidClient("NWG", "Sandbox",'customer_checkout');
+        
+        //inserting data in CA table
+        caToStore.consentId=consentData.Data.ConsentId;
+        caToStore.customerDetails=JSON.stringify(customerDetails);
+        caToStore.accountDetails=JSON.stringify(debitorDetails);
+        console.log(caToStore);
+        await androidClientCA.insertDataCA(caToStore);
       navigation.navigate('Customer Details', {
         customerDetails, totalAmount,debitorDetails,consentId
       });

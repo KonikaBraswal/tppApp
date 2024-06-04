@@ -64,13 +64,7 @@ let pispToStore = {
   response: '',
   userId: '999999999',
 };
-let caToStore={
-  userId: '999999999',
-  consentId:'',
-  scope:'customer_checkout',
-  customerDetails:'',
-  accountDetails:'',
-};
+
 let vrpToStore = {
   userId: '999999999',
   consentId: '',
@@ -890,14 +884,7 @@ class SanboxApiFactory {
           debitorDetails:debitordetails.Data
         };
         androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
-        androidClientCA=new AndroidClient(companyName,apiClient,'customer_checkout');
         
-        //inserting data in CA table
-        caToStore.consentId=consentData.Data.ConsentId;
-        caToStore.customerDetails=JSON.stringify(detailsCa);
-        caToStore.accountDetails=JSON.stringify(debitordetails.Data);
-        console.log(caToStore);
-        await androidClientCA.insertDataCA(caToStore);
         //inserting data in VRP table
         vrpToStore.consentId=consentData.Data.ConsentId;
         vrpToStore.accountDetails=JSON.stringify(debitordetails.Data);

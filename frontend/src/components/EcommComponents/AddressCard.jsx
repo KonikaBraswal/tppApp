@@ -37,7 +37,7 @@ const AddressCard = props => {
           <Text style={styles.address}>{country}</Text>
         </View>
       </View>
-      <View style={styles.chevron}>
+      {/* <View style={styles.chevron}>
         <IconButton
           icon="chevron-right"
           size={32}
@@ -46,7 +46,7 @@ const AddressCard = props => {
             navigation.navigate('Banklist');
           }}
         />
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 };
