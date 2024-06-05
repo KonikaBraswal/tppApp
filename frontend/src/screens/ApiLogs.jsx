@@ -103,7 +103,7 @@ const ApiLogs = () => {
         <Text style={styles.title}>APILOG DASHBOARD</Text>
       </View>
 
-      <Button
+      {/* <Button
         icon="basket-fill"
         mode="contained-tonal"
         onPress={handleInsertData}
@@ -114,7 +114,7 @@ const ApiLogs = () => {
           color: '#5a287d',
         }}>
         Insert Data
-      </Button>
+      </Button> */}
 
       <Button
         icon="printer"
@@ -126,10 +126,10 @@ const ApiLogs = () => {
           fontWeight: 'bold',
           color: '#5a287d',
         }}>
-        Print Data
+        View Api Logs
       </Button>
 
-      <Button
+      {/* <Button
         icon="update"
         mode="contained-tonal"
         onPress={handleAlterTable}
@@ -140,7 +140,7 @@ const ApiLogs = () => {
           color: '#5a287d',
         }}>
         Alter Table
-      </Button>
+      </Button> */}
 
       <Button
         icon="delete"
@@ -152,7 +152,7 @@ const ApiLogs = () => {
           fontWeight: 'bold',
           color: '#5a287d',
         }}>
-        Delete Logs
+        Delete All API Logs
       </Button>
 
       <Button
@@ -165,7 +165,7 @@ const ApiLogs = () => {
           fontWeight: 'bold',
           color: '#5a287d',
         }}>
-        Delete Table
+        Delete API Logs Table
       </Button>
     </View>
   );
