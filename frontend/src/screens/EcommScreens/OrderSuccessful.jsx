@@ -38,7 +38,7 @@ const OrderSuccessful = props => {
         <Text style={styles.footerText}>
           You will receive an email confirmation
         </Text>
-        <Button
+        {/* <Button
           mode="contained-tonal"
           style={{
             ...styles.button,
@@ -51,7 +51,7 @@ const OrderSuccessful = props => {
           }}
           onPress={() => {}}>
           See Order Details
-        </Button>
+        </Button> */}
       </View>
     </View>
   );
