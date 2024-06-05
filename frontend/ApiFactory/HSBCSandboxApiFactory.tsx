@@ -302,7 +302,7 @@ class HSBCSandboxApiFactory {
   }
 
   async refreshToken(refreshToken:any,consentId:any){
-    console.log(consentId,"Inside hsbc api factory");
+    console.log(consentId,"Inside hsbc api factory",refreshToken);
     const payload={
       "refresh_token":refreshToken
     }

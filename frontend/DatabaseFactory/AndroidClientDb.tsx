@@ -548,8 +548,30 @@ class AndroidClientDb {
   }
  // Method to update the refresh token for AISP based on userId
  async updateRefreshTokenAisp(userId: string, newRefreshToken: string,consentId:string): Promise<void> {
+  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+  
+  await new Promise<void>((resolve, reject) => {
+    this.androidDb.transaction(tx => {
+      tx.executeSql(
+        `UPDATE ${tableName} SET refreshToken = ? WHERE userId = ? AND consentId=?;`,
+        [newRefreshToken, userId,consentId],
+        (_, result) => {
+          if (result.rowsAffected > 0) {
+            console.log('Refresh token updated successfully');
+            resolve();
+          } else {
+            console.error('No rows affected during update');
+            reject(new Error('No rows affected'));
+          }
+        },
+        (_, error) => {
+          console.error('Error updating refresh token:', error);
+          reject(error);
+        },
+      );
+    });
+  });
 }
-
   //fetch data according to scope or consentId
   async fetchDataUsingScope(scope: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
