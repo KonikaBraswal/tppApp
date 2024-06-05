@@ -78,7 +78,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
     const fetchData = async () => {
       try {
         await useRefresh("999934356");
-        const access_token = await env.refreshToken(refresh_token);
+        const access_token = await env.refreshToken(refresh_token,consentId);
         console.log("accessss",access_token);
         const data = await androidClientAisp.displayData();
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)

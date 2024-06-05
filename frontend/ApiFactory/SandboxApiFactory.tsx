@@ -1317,7 +1317,7 @@ class SanboxApiFactory {
     }
   }
 
-  async refreshToken(refreshToken: string): Promise<any> {
+  async refreshToken(refreshToken: string,consentId:any): Promise<any> {
     if (this.scopeForThisCall === 'accounts') {
       try {
         const body = generateBodyForRefresh(
