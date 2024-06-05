@@ -51,9 +51,9 @@ const ApiLogsList = ({ route }) => {
                 <View style={{ flexDirection: 'column' }}>
                   <Text style={{ fontSize: RFValue(14) }}>{log.date}</Text>
                   <Text style={{ fontSize: RFValue(14) }}>{log.time}</Text>
+                  <Text style={{ fontSize: RFValue(14) }}>{log.bankName}</Text>
                 </View>
               </DataTable.Cell>
-
               <DataTable.Cell style={[styles.cell, styles.expandedCell]}>
                 <Text style={{ fontSize: RFValue(14), textAlign: 'center' }}>
                   {log.api_name}
