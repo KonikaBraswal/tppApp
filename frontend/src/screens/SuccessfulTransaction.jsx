@@ -10,7 +10,10 @@ const SuccessfulTransaction = ({route}) => {
   console.log(status);
   const handlePress = () => {
     if (status === 'AcceptedSettlementCompleted') {
-      navigation.navigate('Added Bank Accounts');
+      navigation.navigate('Added Bank Accounts', {
+        bankName: "Natwest",
+      });
+      
     } else {
       navigation.navigate('Transfer Money');
     }
