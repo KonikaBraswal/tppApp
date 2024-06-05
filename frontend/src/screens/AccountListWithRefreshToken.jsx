@@ -24,39 +24,64 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {RFValue} from 'react-native-responsive-fontsize';
-import { fetchAISPData } from '../../database/LocalDatabase';
+import {fetchAISPData} from '../../database/LocalDatabase';
 import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 const {width} = Dimensions.get('window');
 const cardWidth = width * 0.95;
-const AccountListWithRefreshToken = () => {
-  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
+const AccountListWithRefreshToken = ({route}) => {
+  const {bankName} = route.params || {};
+  console.log('BankName', bankName);
+  const androidClientAispNWG = new AndroidClient('NWG', 'Sandbox', 'accounts');
+  const androidClientAispHSBC = new AndroidClient(
+    'HSBC',
+    'Sandbox',
+    'accounts',
+  );
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [retrievedData, setRetrievedData] = useState([]);
   const [localData, setlocalData] = useState([]);
   useEffect(() => {
-    if(global.env==='local'){
+    if (global.env === 'local') {
+      fetchAISPData().then(results => {
+        setlocalData(results);
+      });
+    } else {
+      const fetchData = async () => {
+        try {
+          const dataNWG = await androidClientAispNWG.displayData();
+          const dataHSBC = await androidClientAispHSBC.displayData();
 
-        fetchAISPData().then(results => {
-          setlocalData(results);
-        });
-      
+          //const data= [...dataNWG, ...dataHSBC];
+
+          let data = [];
+          if (bankName == 'all') {
+            // Check if dataNWG is not empty
+            if (dataNWG && dataNWG.length > 0) {
+              data = [...data, ...dataNWG];
+            }
+            // Check if dataHSBC is not empty
+            if (dataHSBC && dataHSBC.length > 0) {
+              data = [...data, ...dataHSBC];
+            }
+          } else if (bankName == 'Natwest') {
+            data = dataNWG;
+          } else if (bankName == 'HSBC') {
+            data = dataHSBC;
+          } else {
+            data = [];
+            console.log('Wrong bank');
+          }
+          const filteredData = data.filter(entry => entry.scope === 'accounts');
+          console.log(filteredData, '------------------');
+          setRetrievedData(filteredData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      fetchData();
     }
-    else{
-    const fetchData = async () => {
-      try {
-        console.log("heloooooooooooooooooooooooooo");
-        const data = await androidClientAisp.displayData();
-        const filteredData = data.filter(entry => entry.scope === "accounts");
-        console.log(filteredData, '------------------');
-        setRetrievedData(filteredData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }
   }, []);
 
   return (
@@ -85,194 +110,205 @@ const AccountListWithRefreshToken = () => {
           <View style={styles.rowContainer}>
             <View style={styles.searchBarContainer}></View>
           </View>
-          <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-  {retrievedData && retrievedData.length > 0? (
-    retrievedData.map((item, index) => {
-      const accounts = (() => {
-        if (!item.accountsList) {
-          console.error('accountsListString is null or undefined');
-          return [];
-        }
-        try {
-          const parsedAccounts = JSON.parse(item.accountsList);
-          return parsedAccounts.Account || [];
-        } catch (error) {
-          console.error('Error parsing accountsList:', error);
-          return [];
-        }
-      })();
-
-      return accounts.map((account, idx) => (
-        <Card key={account.AccountId} style={styles.card}>
-        <Card.Content>
-          <View style={styles.cardHeader}>
-            <Title style={[styles.title, {marginTop: -hp('1%')}]}>
-             {account.AccountSubType} Account
-            </Title>
-            <Image
-             source={require('../assets/images/natwest2.png')}
-             style={styles.iconNatwest}
-            />
-          </View>
-          <View style={styles.cardContent}>
-            <View style={styles.textContainer}>
-             <Paragraph>{account.AccountId}</Paragraph>
-             <Paragraph>{account.Account[0].Name}</Paragraph>
-             <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <IconButton
-                    icon="wallet"
-                    size={25}
-                    iconColor="#482164"
-                    style={{marginLeft: -wp('2%')}}
-                    onPress={() =>
-                      navigation.navigate('Transfer Money', {
-                        DebtorAccount: {
-                          SchemeName: account.Account[0].SchemeName,
-                          Identification: account.Account[0].Identification,
-                          Name: account.Account[0].Name,
-                        },
-                      })
-                    }
-                  />
-                  <Text
-                    style={{
-
-                      fontSize: RFValue(18),
-                      fontWeight: 'bold',
-                      color: '#5a287d',
-                      marginLeft: -wp('2%'),
-                    }}
-                    onPress={() =>
-                      navigation.navigate('Transfer Money', {
-                        DebtorAccount: {
-                          SchemeName: account.Account[0].SchemeName,
-                          Identification: account.Account[0].Identification,
-                          Name: account.Account[0].Name,
-                        },
-                      })
-                    }>
-                    Transfer Money
-                  </Text>
-                </View>
-                <Card.Actions>
-                  <IconButton
-                    icon="chevron-right"
-                    size={22}
-                    onPress={() => {
-                      navigation.navigate('View Added Bank Details', {
-                        AccountId: account.AccountId,
-                      });
-                    }}
-                    style={styles.iconButton}
-                  />
-                </Card.Actions>
-             </View>
-            </View>
-          </View>
-        </Card.Content>
-      </Card>
-      ));
-    })
-  ) : localData && localData.length > 0? (
-    localData.map(account => (
-      <Card key={account.accID} style={styles.card}>
-            <Card.Content>
-              <View style={styles.cardHeader}>
-                <Title style={[styles.title, {marginTop: -hp('1%')}]}>
-                 {account.accsubType} Account
-                </Title>
-                <Image
-                 source={require('../assets/images/natwest2.png')}
-                 style={styles.iconNatwest}
-                />
-              </View>
-              <View style={styles.cardContent}>
-                <View style={styles.textContainer}>
-                 <Paragraph>{account.accID}</Paragraph>
-                 <Paragraph>{account.debtorname}</Paragraph>
-                 <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <IconButton
-                        icon="wallet"
-                        size={25}
-                        iconColor="#482164"
-                        style={{marginLeft: -wp('2%')}}
-                        onPress={() =>
-                          navigation.navigate('Transfer Money', {
-                            DebtorAccount: {
-                              SchemeName: "UK.OBIE.SortCodeAccountNumber",
-                              Identification: account.accnum,
-                              Name: account.debtorname,
-                            },
-                          })
-                        }
+          <ScrollView
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
+            {retrievedData && retrievedData.length > 0 ? (
+              retrievedData.map((item, index) => {
+                const accounts = (() => {
+                  if (!item.accountsList) {
+                    console.error('accountsListString is null or undefined');
+                    return [];
+                  }
+                  try {
+                    const parsedAccounts = JSON.parse(item.accountsList);
+                    return parsedAccounts.Account || [];
+                  } catch (error) {
+                    console.error('Error parsing accountsList:', error);
+                    return [];
+                  }
+                })();
+                const bankName=item.bankName;
+                if (bankName=="HSBC") {
+                  imageSource = require('../assets/images/hsbc.png');
+                } else {
+                  imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
+                }
+                return accounts.map((account, idx) => (
+                  <Card key={account.AccountId} style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardHeader}>
+                        <Title style={[styles.title, {marginTop: -hp('1%')}]}>
+                          {account.AccountSubType} Account
+                        </Title>
+                        <Image
+                        source={imageSource}
+                          //source={require('../assets/images/natwest2.png')}
+                          style={styles.iconNatwest}
+                        />
+                      </View>
+                      <View style={styles.cardContent}>
+                        <View style={styles.textContainer}>
+                          <Paragraph>{account.AccountId}</Paragraph>
+                          <Paragraph>{account.Account[0].Name}</Paragraph>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}>
+                              <IconButton
+                                icon="wallet"
+                                size={25}
+                                iconColor="#482164"
+                                style={{marginLeft: -wp('2%')}}
+                                onPress={() =>
+                                  navigation.navigate('Transfer Money', {
+                                    DebtorAccount: {
+                                      SchemeName: account.Account[0].SchemeName,
+                                      Identification:
+                                        account.Account[0].Identification,
+                                      Name: account.Account[0].Name,
+                                    },
+                                  })
+                                }
+                              />
+                              <Text
+                                style={{
+                                  fontSize: RFValue(18),
+                                  fontWeight: 'bold',
+                                  color: '#5a287d',
+                                  marginLeft: -wp('2%'),
+                                }}
+                                onPress={() =>
+                                  navigation.navigate('Transfer Money', {
+                                    DebtorAccount: {
+                                      SchemeName: account.Account[0].SchemeName,
+                                      Identification:
+                                        account.Account[0].Identification,
+                                      Name: account.Account[0].Name,
+                                    },
+                                  })
+                                }>
+                                Transfer Money
+                              </Text>
+                            </View>
+                            <Card.Actions>
+                              <IconButton
+                                icon="chevron-right"
+                                size={22}
+                                onPress={() => {
+                                  navigation.navigate(
+                                    'View Added Bank Details',
+                                    {
+                                      AccountId: account.AccountId,
+                                      bankName:bankName,
+                                    },
+                                  );
+                                }}
+                                style={styles.iconButton}
+                              />
+                            </Card.Actions>
+                          </View>
+                        </View>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                ));
+              })
+            ) : localData && localData.length > 0 ? (
+              localData.map(account => (
+                <Card key={account.accID} style={styles.card}>
+                  <Card.Content>
+                    <View style={styles.cardHeader}>
+                      <Title style={[styles.title, {marginTop: -hp('1%')}]}>
+                        {account.accsubType} Account
+                      </Title>
+                      <Image
+                        source={require('../assets/images/natwest2.png')}
+                        style={styles.iconNatwest}
                       />
-                      <Text
-                        style={{
-                          fontSize: RFValue(18),
-                          fontWeight: 'bold',
-                          color: '#5a287d',
-                          marginLeft: -wp('2%'),
-                        }}
-                        onPress={() =>
-                          navigation.navigate('Transfer Money', {
-                            DebtorAccount: {
-                              SchemeName: "UK.OBIE.SortCodeAccountNumber",
-                              Identification: account.accnum,
-                              Name: account.debtorname,
-                            },
-                          })
-                        }>
-                        Transfer Money
-                      </Text>
                     </View>
-                    <Card.Actions>
-                      <IconButton
-                        icon="chevron-right"
-                        size={22}
-                        onPress={() => {
-                          navigation.navigate('Local Transactions');
-                        }}
-                        style={styles.iconButton}
-                      />
-                    </Card.Actions>
-                 </View>
-                </View>
-              </View>
-            </Card.Content>
-          </Card>
-    ))
-  ) : (
-    <Text>No data</Text>
-  )}
-  <TouchableOpacity
-    onPress={() => {
-      navigation.navigate('Select Your Bank');
-    }}
-  >
-    {/* TouchableOpacity content goes here */}
-  </TouchableOpacity>
-</ScrollView>
-
+                    <View style={styles.cardContent}>
+                      <View style={styles.textContainer}>
+                        <Paragraph>{account.accID}</Paragraph>
+                        <Paragraph>{account.debtorname}</Paragraph>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                            <IconButton
+                              icon="wallet"
+                              size={25}
+                              iconColor="#482164"
+                              style={{marginLeft: -wp('2%')}}
+                              onPress={() =>
+                                navigation.navigate('Transfer Money', {
+                                  DebtorAccount: {
+                                    SchemeName: 'UK.OBIE.SortCodeAccountNumber',
+                                    Identification: account.accnum,
+                                    Name: account.debtorname,
+                                  },
+                                })
+                              }
+                            />
+                            <Text
+                              style={{
+                                fontSize: RFValue(18),
+                                fontWeight: 'bold',
+                                color: '#5a287d',
+                                marginLeft: -wp('2%'),
+                              }}
+                              onPress={() =>
+                                navigation.navigate('Transfer Money', {
+                                  DebtorAccount: {
+                                    SchemeName: 'UK.OBIE.SortCodeAccountNumber',
+                                    Identification: account.accnum,
+                                    Name: account.debtorname,
+                                  },
+                                })
+                              }>
+                              Transfer Money
+                            </Text>
+                          </View>
+                          <Card.Actions>
+                            <IconButton
+                              icon="chevron-right"
+                              size={22}
+                              onPress={() => {
+                                navigation.navigate('Local Transactions');
+                              }}
+                              style={styles.iconButton}
+                            />
+                          </Card.Actions>
+                        </View>
+                      </View>
+                    </View>
+                  </Card.Content>
+                </Card>
+              ))
+            ) : (
+              <Text>No data</Text>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Select Your Bank');
+              }}>
+              {/* TouchableOpacity content goes here */}
+            </TouchableOpacity>
+          </ScrollView>
         </View>
         <TouchableOpacity
           onPress={() => {

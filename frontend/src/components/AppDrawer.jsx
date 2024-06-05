@@ -17,6 +17,7 @@ import ProductDetails from '../screens/EcommScreens/ProductDetails';
 import ProductListing from '../screens/EcommScreens/ProductListing';
 import Landing from '../components/Landing';
 import { initAISPLocalDatabase, initLocalDatabase } from '../../database/LocalDatabase';
+import BankList from '../screens/EcommScreens/BankList';
 
 import ApiLogs from '../screens/ApiLogs';
 import CustomerProfile from './CustomerProfile';
@@ -35,9 +36,7 @@ const CustomDrawerContent = ({ navigation }) => {
       initAISPLocalDatabase();
     }
  }, [mode]); 
-
-  console.log("hiiiiiiiiiiiiiiiiiiiiiii",global.env);
-
+ console.log("Environment:",global.env);
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -171,8 +170,8 @@ const AppDrawer = () => {
       />
       
       <Drawer.Screen
-        name="Notifications"
-        component={Dummy}
+        name="Banklist"
+        component={BankList}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="bell" color={color} size={28} />

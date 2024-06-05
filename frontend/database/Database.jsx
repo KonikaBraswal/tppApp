@@ -508,7 +508,7 @@ export const fetchRefreshedToken = userId => {
         },
         (_, error) => {
           //-----------------------------------------
-          console.error('Error fetching refreshedtoken: ', error);
+          console.log('Error fetching refreshedtoken: ', error);
           reject(error);
         },
       );
@@ -535,7 +535,7 @@ fetchRefreshedToken(userIdToFetch)
   })
   .catch(error => {
     //-----------------------------------------
-    console.error('Error fetching Refreshed Token:', error);
+    console.log('Error fetching Refreshed Token:', error);
   });
 
 export const processRefreshedToken = () => {

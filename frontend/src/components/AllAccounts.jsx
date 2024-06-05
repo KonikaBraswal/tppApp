@@ -21,12 +21,13 @@ import SantanderAccounts from './AccountLists/SantanderAccounts';
 import StarlingAccounts from './AccountLists/StarlingAccounts';
 import RevolutAccounts from './AccountLists/RevolutAccounts';
 import {useNavigation} from '@react-navigation/native';
-
+import AddingAccounts from './AccountLists/AddingAccounts';
 const AllAccounts = ({route}) => {
   const navigation = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [checkedBanks, setCheckedBanks] = useState({
     natwest: false,
+    hsbc:false,
     barclays: false,
     lloyds: false,
     santander: false,
@@ -37,6 +38,7 @@ const AllAccounts = ({route}) => {
 
   const banks = [
     'Natwest',
+    'HSBC',
     'Barclays',
     'Lloyds',
     'Santander',
@@ -44,8 +46,8 @@ const AllAccounts = ({route}) => {
     'Revolut',
     'Monzo',
   ];
-
-  const selectedBank = route.params.selectedBank;
+  const bankName = route.params.selectedBank;
+  //const selectedBank = route.params.selectedBank;
   const selectedIcon = route.params.selectedIcon;
   const accounts = route.params.accounts;
   const permissions = route.params.permissions;
@@ -67,9 +69,14 @@ const AllAccounts = ({route}) => {
         </View>
         <View style={styles.container}>
           <ScrollView style={styles.scrollContainer}>
-            <NatwestAccounts
+            {/* <NatwestAccounts
               accountsList={accounts}
               permissions={permissions}
+            /> */}
+            <AddingAccounts
+            accountsList={accounts}
+            permissions={permissions}
+            bankName={bankName}
             />
           </ScrollView>
           <TouchableOpacity

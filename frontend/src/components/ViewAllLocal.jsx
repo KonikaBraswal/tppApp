@@ -37,7 +37,7 @@ const ViewAllLocal = () => {
             }}>
             {card.accsubType === 'CurrentAccount' ? (
               <Card.Cover
-                source={require('../assets/images/card1.jpg')}
+                source={require('../assets/images/card1.png')}
                 style={styles.coverImage}
               />
             ) : (

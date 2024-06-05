@@ -28,14 +28,18 @@ import IconDialog from '../components/IconDialog';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 //import SanboxApiFactory from '../../ApiFactory/SandboxApiFactory';
 const screenWidth = wp('100%');
-const switchEnvironment = (newEnv) => {
-  global.env = newEnv; // Update the global environment variable
-  const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"accounts");
-  return apiClient;
-  // Use the new apiClient as needed
- };
-const ConsentScreen = () => {
+
+const ConsentScreen = ({route}) => {
+  const {bankName}=route.params;
+  console.log("BANK NAME",bankName);
+
+  const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankName);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
@@ -177,8 +181,8 @@ const ConsentScreen = () => {
       // console.log(permission);
       const data = await EnvApiClient.exchangeAccessToken(inputValue,null);
       navigation.navigate('Your Accounts', {
-        selectedBank: 'Natwest',
-        selectedIcon: "'../assets/icons/natwest.png'",
+        selectedBank: bankName,
+        selectedIcon: `../assets/images/${bankName.toLowerCase()}.png`,
         accounts: data,
         permissions: permission,
       });

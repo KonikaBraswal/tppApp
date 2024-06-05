@@ -7,24 +7,31 @@ import {RetrieveData} from '../../database/Database';
 import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 
 const ViewAll = () => {
-  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
+  const androidClientAispNWG = new AndroidClient('NWG', 'Sandbox', 'accounts');
+  const androidClientAispHSBC = new AndroidClient('HSBC','Sandbox','accounts');
   const navigation = useNavigation();
   const [retrievedData, setRetrievedData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("heloooooooooooooooooooooooooo");
-        const data = await androidClientAisp.displayData();
-        // if (!Array.isArray(data)) {
-        //   console.error('Expected data to be an array, received:', typeof data);
-        //   data = []; // Fallback to an empty array
-        // }
-        console.log("hiiiiiiiiiiiiiiiiiii",data);
-        console.log("Daaataaaa",data);
-        const filteredData = data.filter(entry => entry.scope === "accounts");
-        console.log("accountssssssss",filteredData); 
+        console.log('I AM IN VIEWALL.jsx');
+        const dataNWG = await androidClientAispNWG.displayData();
+        const dataHSBC = await androidClientAispHSBC.displayData();
+        let data = [];
+
+        // Check if dataNWG is not empty
+        if (dataNWG && dataNWG.length > 0) {
+          data = [...data, ...dataNWG];
+        }
+
+        // Check if dataHSBC is not empty
+        if (dataHSBC && dataHSBC.length > 0) {
+          data = [...data, ...dataHSBC];
+        }
+        const filteredData = data.filter(entry => entry.scope === 'accounts');
+        console.log('accounts', filteredData);
         setRetrievedData(filteredData);
-        console.log("minaaaaallll",retrievedData.length);
+        console.log('Length of data', retrievedData.length);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -43,7 +50,7 @@ const ViewAll = () => {
       case 'CurrentAccount':
         return require('../assets/images/card2.png');
       default:
-        return require('../assets/images/card1.jpg');
+        return require('../assets/images/card1.png');
     }
   };
   
@@ -77,6 +84,7 @@ const ViewAll = () => {
           onPress={() => {
             navigation.navigate('View Added Bank Details', {
               AccountId: account.AccountId,
+              bankName: item.bankName,
             });
           }}
         >
@@ -92,7 +100,7 @@ const ViewAll = () => {
               {account.Account[0]?.Identification}
             </Paragraph>
             <Paragraph style={styles.additionalInfo}>
-              {account.Nickname}
+              {account.Nickname},{item.bankName}
             </Paragraph>
           </Card.Content>
         </Card>
@@ -121,29 +129,13 @@ const ViewAll = () => {
           style={{
             marginLeft: 15,
           }}
-          onPress={() => navigation.navigate('Added Bank Accounts')}
+          onPress={() => navigation.navigate('Added Bank Accounts', { bankName: 'all' })}
         />
       </Card.Content>
     </Card>
   </ScrollView>
 </View>
-    // //hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii refer this
-
-  //   <View style={styles.container}>
-  //   <FlatList
-  //     data={retrievedData}
-  //     keyExtractor={(item, index) => index.toString()}
-  //     renderItem={({item}) => {
-  //       const accounts = parseAccountsList(item.accountsList);
-  //       return accounts.map((account, idx) => (
-  //         <View key={idx} style={styles.accountContainer}>
-  //           <Text style={styles.text}>Account ID: {account.AccountId}</Text>
-  //           <Text style={styles.text}>Account SubType: {account.AccountSubType}</Text>
-  //         </View>
-  //       ));
-  //     }}
-  //   />
-  // </View>
+  
   );
 };
 

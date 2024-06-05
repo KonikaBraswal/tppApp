@@ -23,22 +23,40 @@ import {fetchRefreshedToken, RetrieveData} from '../../database/Database';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 let refresh_token='';
+let consentId='';
 let env="";
 const apiFactory = new ApiFactory();
 // const sandboxApiClient = apiFactory.createApiClient(global.env,"accounts");
 const ViewDetailsWithRefreshToken = ({route}) => {
-  const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
+  //const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
   const [searchQuery, setSearchQuery] = useState('');
   const AccountId = route.params.AccountId;
+  const bankName=route.params.bankName;
   console.log(AccountId);
+  let bankNameForApiFactory="HSBC";
+  let bankNameForDBFactory="HSBC";
+  if(bankName=="NatWest"){
+    bankNameForApiFactory="Natwest";
+    bankNameForDBFactory="NWG";
+  }
+  const androidClientAisp= new AndroidClient(bankNameForDBFactory, "Sandbox", "accounts");
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [accountDetails, setAccountDetails] = useState(null);
   const [balanceDetails, setBalanceDetails] = useState(null);
   const [retrievedData, setRetrievedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankNameForApiFactory);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
   async function useRefresh(userId) {
     try {
       refresh_token = await androidClientAisp.fetchRefreshedToken(userId);
+      consentId= await androidClientAisp.fetchConsentId(userId)
+      console.log(consentId,"Consent ID");
       if (refresh_token) {
         console.log("Retrieved refreshToken here:", refresh_token);
        
@@ -49,13 +67,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
       console.error("Failed to retrieve refreshToken:", error);
     }
   }
-  const switchEnvironment = (newEnv) => {
-    global.env = newEnv; // Update the global environment variable
-    const apiFactory = new ApiFactory();
-    const apiClient = apiFactory.createApiClient(global.env,"accounts");
-    return apiClient;
-    // Use the new apiClient as needed
-   };
+  
    useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     env=newApiClient;    
@@ -66,17 +78,14 @@ const ViewDetailsWithRefreshToken = ({route}) => {
     const fetchData = async () => {
       try {
         await useRefresh("999934356");
-        console.log("tryingggggggggggg");
-        console.log("here is the ",refresh_token);
-        console.log("hello",refresh_token);
-        console.log(typeof refresh_token);
         const access_token = await env.refreshToken(refresh_token);
         console.log("accessss",access_token);
         const data = await androidClientAisp.displayData();
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
         const filteredData = data.filter(entry => entry.scope === "accounts");
         const jsonData = JSON.parse(filteredData[0].consentPayload);
         const permissions=jsonData.Data.Permissions
-        console.log("miniiiiii",permissions);
+        
         setRetrievedData(filteredData);
         const accountResponse =
           await env.fetchAccountsWithRefreshToken(access_token);
@@ -87,7 +96,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
           (permissions.includes('ReadTransactionsCredits') ||
             permissions.includes('ReadTransactionsDebits'))
         ) {
-          console.log("hii");
+          
           const transactionResponse =
             await env.allCallsWithRefreshToken(
               `${AccountId}/transactions`,
@@ -114,9 +123,14 @@ const ViewDetailsWithRefreshToken = ({route}) => {
     fetchData();
   }, [AccountId]);
 
-  const SelectedAccount = accountDetails?.Account.find(
-    account => account.AccountId === AccountId,
-  );
+  const SelectedAccount = accountDetails?.Account?.find(
+    account => account.AccountId === AccountId
+  ) || null;
+  if (bankName=="HSBC") {
+    imageSource = require('../assets/images/hsbc.png');
+  } else {
+    imageSource = require('../assets/images/natwest.png'); // replace with your other image path
+  }
 
   return (
     <KeyboardAvoidingView
@@ -132,7 +146,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
           <View style={styles.rowContainer}>
             <Surface elevation={6} category="medium" style={styles.surface}>
               <Image
-                source={require('../assets/images/natwest.png')}
+                source={imageSource}
                 style={styles.icon}
               />
             </Surface>

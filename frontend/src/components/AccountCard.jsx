@@ -13,13 +13,7 @@ import {
 import {IconButton} from 'react-native-paper';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 let env="";
-const switchEnvironment = (newEnv) => {
-  global.env = newEnv; // Update the global environment variable
-  const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"accounts");
-  return apiClient;
-  // Use the new apiClient as needed
- };
+
 
 const AccountCard = props => {
   useEffect(() => {
@@ -31,15 +25,20 @@ const AccountCard = props => {
   const navigation = useNavigation();
   const accountId = props.item.AccountId;
   const permissions = props.permissions;
-
+  const bankName=props.bankName;
   const [accountBalance, setAccountBalance] = useState(null);
-
+  const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankName);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
 
   useEffect(() => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         if(global.env=='local'){
-          console.log("%%%%%%%%%%%%%%%%555")
           setAccountBalance(balanceData);
           console.log(balanceData);
         }
@@ -65,10 +64,14 @@ const AccountCard = props => {
     navigation.navigate('Details', {
       accountDetails: props.item,
       permissions: permissions,
+      bankName:bankName,
     });
   };
 
   const item = props.item;
+  const iconSource = bankName === "HSBC" 
+  ? require('../assets/images/hsbc.png') 
+  : require('../assets/images/natwest2.png');
   return (
     <View style={styles.container}>
       <Surface style={styles.card}>
@@ -90,7 +93,8 @@ const AccountCard = props => {
         </View>
         <View style={styles.iconContainer}>
           <Image
-            source={require('../assets/images/natwest2.png')}
+          source={iconSource}
+            //source={require('../assets/images/natwest2.png')}
             style={styles.iconNatwest}
           />
           <IconButton

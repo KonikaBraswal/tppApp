@@ -26,8 +26,9 @@ const Landing = () => {
 
   const cards = [
     { id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png') },
-    { id: 2, name: 'Barclays', icon: require('../assets/icons/barclays.png') },
-    { id: 3, name: 'Lloyds', icon: require('../assets/icons/lloyds.png') },
+    { id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png') },
+    { id: 3, name: 'Barclays', icon: require('../assets/icons/barclays.png') },
+    { id: 4, name: 'Lloyds', icon: require('../assets/icons/lloyds.png') },
     { id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png') },
     { id: 6, name: 'Santander', icon: require('../assets/icons/santander.png') },
   ];
@@ -149,7 +150,7 @@ const Landing = () => {
                   marginBottom: 40,
                   marginTop: 10,
                 }}>
-                Add Bank Account
+                Add Bank
               </Text>
             </View>
             {cards.map(item => (
@@ -157,7 +158,11 @@ const Landing = () => {
                 key={item.id}
                 onPress={() => {
                   if (item.name === 'Natwest') {
-                    navigation.navigate('Added Bank Accounts');
+                    navigation.navigate('Added Bank Accounts', { bankName: 'Natwest' })
+                  }
+                  else if (item.name === 'HSBC') {
+                    navigation.navigate('Added Bank Accounts', { bankName: 'HSBC' })
+
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
                   } else {

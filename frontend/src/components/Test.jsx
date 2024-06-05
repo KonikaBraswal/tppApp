@@ -5,8 +5,7 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
+const sandboxApiClient = apiFactory.createApiClient('sandbox','accounts',"Natwest");
 export default function Test() {
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [accountDetails, setAccountDetails] = useState(null);
