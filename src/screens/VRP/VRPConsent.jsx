@@ -134,11 +134,12 @@ const VRPConsent = ({ route }) => {
         try {
             
             const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
-            
+            console.log(response)
+            console.log(consentData)
             const updatedResponse = {
                 ...response,
                 refreshtoken: response.refresh_token,
-                consentid: consentData.Data.ConsentId,
+                consentid: consentData,
               };
               
             navigation.navigate('GrantedForm', {

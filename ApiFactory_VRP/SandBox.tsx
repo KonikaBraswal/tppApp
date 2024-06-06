@@ -6,6 +6,7 @@ import 'setimmediate';
 import 'react-native-get-random-values';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GrantedForm from '../src/screens/VRP/GrantedForm';
 // import { addDetails, addTransactions, updateDetailsForVrp, } from '../database/Database';
 // interface BodyData {
 //   Data: {
@@ -217,7 +218,7 @@ class SandBox {
       // );
       await this.handleStore()
       refreshTokenExists = true;
-      this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
+      // this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
       return response.data;
 
     } catch (error) {
@@ -227,7 +228,8 @@ class SandBox {
 
   async refreshToken(refreshToken: any, grantedformData: any): Promise<any> {
     try {
-
+        console.log('grantedformData', grantedformData)
+        console.log('refreshToken', refreshToken)
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
@@ -320,7 +322,8 @@ class SandBox {
         },
         Risk: {},
       };
-
+        console.log(body)
+        console.log(headers)
       const vrpPaymentResponse: AxiosResponse<any> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.domesticVrpPayments}`,
         body,
