@@ -12,13 +12,13 @@ import {
 import {RFValue} from 'react-native-responsive-fontsize';
 const CreditorDetailsforVRP = () => {
   const navigation = useNavigation();
-  const [firstName, setFirstName] = useState('');
-  const [sortCode, setSortCode] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [reference, setReference] = useState('');
-  const [period, setPeriod] = useState('');
-  const [perPayment, setPerPayment] = useState('');
-  const [perPeriod, setPerPeriod] = useState('');
+  const [firstName, setFirstName] = useState('ACME');
+  const [sortCode, setSortCode] = useState('123456');
+  const [accountNumber, setAccountNumber] = useState('12345678');
+  const [reference, setReference] = useState('Tools');
+  const [period, setPeriod] = useState('Month');
+  const [perPayment, setPerPayment] = useState('50');
+  const [perPeriod, setPerPeriod] = useState('100');
   const [expiryDate, setExpiryDate] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date().toISOString());

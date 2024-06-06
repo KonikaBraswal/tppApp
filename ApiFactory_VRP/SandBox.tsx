@@ -65,6 +65,7 @@ class SandBox {
   }
   isupdateTransaction = false;
   async retrieveAccessToken(params: AccessTokenRequestParams): Promise<string> {
+    console.log("hiii insidee refreshhh");
     this.permissions = params.accessTokenParams.body;
     try {
       const body: Record<string, string> = {
@@ -165,7 +166,7 @@ class SandBox {
     }
   }
   async manualUserConsent(scope: string): Promise<string> {
-    // console.log('manual consent');
+    console.log('manual consent');
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
