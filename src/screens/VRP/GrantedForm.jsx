@@ -61,7 +61,7 @@ const GrantedForm = ({route}) => {
       );
       console.log('response', response);
       console.log('Form submitted:', formData);
-      navigation.navigate('VRP Details', {data: formData});
+      navigation.navigate('VRP Details', {data: response.Data.Status});
     } catch (error) {
       console.log('error in fetching refresh', error);
     }
@@ -80,7 +80,7 @@ const GrantedForm = ({route}) => {
               height: 50, // Adjusted height
               width: '80%',
               borderColor: 'gray',
-              fontSize: RFValue(32), // Adjusted font size
+              fontSize: RFValue(20), // Adjusted font size
               padding: 10,
               color: 'black',
             }}

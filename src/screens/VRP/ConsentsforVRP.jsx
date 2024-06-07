@@ -1064,8 +1064,8 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   iconNatwest: {
-    width: wp('7.5%'),
-    height: wp('7.5%'),
+    width: wp('5.5%'),
+    height: wp('5.5%'),
     resizeMode: 'contain',
     position: 'absolute',
     right: 0,
@@ -1074,7 +1074,7 @@ const styles = StyleSheet.create({
 
   footer: {
     backgroundColor: '#5a287d',
-    padding: wp('1.2%'),
+    padding: wp('0.1%'),
     width: '100%',
     alignItems: 'center',
   },
