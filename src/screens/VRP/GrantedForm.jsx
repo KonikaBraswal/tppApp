@@ -54,6 +54,7 @@ const GrantedForm = ({route}) => {
       amount,
     };
     try {
+      console.log('selectconsentData', selectconsentData.consentpayload)
       const response = await sandboxApiClient.refreshToken(
         selectconsentData,
         formData,
