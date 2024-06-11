@@ -607,6 +607,46 @@ class AndroidClientDb {
     });
   }
 
+  async checkTableOrEntryExist(): Promise<string> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    return new Promise((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `SELECT name FROM sqlite_master WHERE type='table' AND name=?;`,
+          [tableName],
+          (_, { rows: tableCheck }) => {
+            if (tableCheck.length === 0) {
+              console.log(`Table ${tableName} does not exist`);
+              resolve(`Table ${tableName} does not exist`); // Resolve with an empty array if the table does not exist
+            } else {
+              tx.executeSql(
+                `SELECT COUNT(*) FROM ${tableName};`,
+                [],
+                (_, { rows }) => {
+                  if (rows.length === 0 || rows === null || rows === undefined) {
+                    console.log('Table is empty');
+                    resolve('Table is empty'); // Resolve with an empty array if the table is empty
+                  } else {
+                    
+                    resolve(`Table ${tableName} and entries exist`); // Resolve the promise with the fetched data
+                  }
+                },
+                (_, error) => {
+                  console.error('Error retrieving data in display data:', error);
+                  resolve(error); // Resolve with an empty array if there's an error
+                }
+              );
+            }
+          },
+          (_, error) => {
+            console.error('Error checking table existence:', error);
+            resolve(error); // Resolve with an empty array if there's an error checking table existence
+          }
+        );
+      });
+    });
+  }
+
   async fetchDataUsingConsentId(consentId: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
