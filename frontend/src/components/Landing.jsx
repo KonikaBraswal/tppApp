@@ -17,13 +17,18 @@ import { Icon, Searchbar, Card, Title } from 'react-native-paper';
 import { useNavigation,useFocusEffect } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
 import ViewAll from './ViewAll';
 import ViewAllLocal from '../components/ViewAllLocal';
 import BottomTab from './BottomTab';
 
 const Landing = () => {
   const navigation = useNavigation();
-
+  let androidClientNWG=new AndroidClient("NWG", "Sandbox", "accounts");
+  let androidClientHSBC=new AndroidClient("HSBC", "Sandbox", "accounts");
+  const [checkNWB, setCheckNWB] = useState('');
+  const [checkHSBC, setCheckHSBC] = useState('');
+ 
   const cards = [
     { id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png') },
     { id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png') },
@@ -52,6 +57,25 @@ const Landing = () => {
         }
       };
       checkEnvChange();
+      const check= async () =>{
+        if(global.env==='sandbox'){
+          let resultNWB,resultHSBC;
+    try {
+      resultNWB = await androidClientNWG.checkTableOrEntryExist();
+      resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
+      if(resultNWB==='yes'){
+        setCheckNWB(resultNWB);
+      }
+       if(resultHSBC==='yes'){
+        setCheckHSBC(resultHSBC);
+      }
+      
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+        }
+      };
+      check();
   
       const intervalId = setInterval(checkEnvChange, 1000); // Check every second
       return () => clearInterval(intervalId); // Cleanup on unmount
@@ -159,6 +183,7 @@ const Landing = () => {
                 onPress={() => {
                   if (item.name === 'Natwest') {
                     navigation.navigate('Added Bank Accounts', { bankName: 'Natwest' })
+                    
                   }
                   else if (item.name === 'HSBC') {
                     navigation.navigate('Added Bank Accounts', { bankName: 'HSBC' })
