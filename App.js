@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import 'setimmediate'
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MakeTransfer from './src/screens/MakeTransfer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -23,9 +24,16 @@ import VRPDetails from './src/screens/VRP/VRPDetails';
 import TransactionList from './src/components/TransactionList';
 import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
+// import { initDatabase } from './database/Database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ConsentInfo from './src/screens/VRP/ConsentInfo';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
+  // useEffect(() => {
+  //   const transactions=[];
+  //   AsyncStorage.setItem('vrpTransactions_sandbox',JSON.stringify(transactions))
+  // }, []);
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -60,6 +68,7 @@ export default function App() {
               />
               <Stack.Screen name="GrantedForm" component={GrantedForm} />
               <Stack.Screen name="VrpTransactions" component={VrpTransactions} />
+              <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
             

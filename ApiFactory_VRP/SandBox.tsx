@@ -105,6 +105,7 @@ class SandBox {
           headers: headers,
         },
       );
+
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
       this.consentId = response.data.Data?.ConsentId || '';
@@ -113,6 +114,7 @@ class SandBox {
       newVRPConsent.status= Status,
       newVRPConsent.consentpayload= JSON.stringify(Payload),
       newVRPConsent.scope= 'vrp';
+
       const details1 = {
         bankname: 'Natwest',
         consentid: this.consentId,
@@ -217,7 +219,7 @@ class SandBox {
 
       // );
       newVRPConsent.refreshtoken= RefreshToken
-      await this.handleStore()
+      // await this.handleStore()
       refreshTokenExists = true;
       // this.getDomesticConsent(response.data.access_token, consentData.Links.Self);
       return response.data;
@@ -332,6 +334,7 @@ class SandBox {
           headers: headers,
         },
       );
+      console.log("inside VRPPP",vrpPaymentResponse)
       this.apiAccess = apiAccessToken;
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
     } catch (error) {
@@ -348,6 +351,7 @@ class SandBox {
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,
       });
+      
       console.log(
         'allVrpPaymentsResponse of final call',
         allVrpPaymentsResponse.data,
@@ -363,6 +367,18 @@ class SandBox {
         status: allVrpPaymentsResponse.data.Data.Status
       };
       // addTransactions(details);
+      newVRPConsent.vrppayload=JSON.stringify(payload);
+      await this.handleStore()
+      const vrpTransactions=await AsyncStorage.getItem('vrpTransactions_sandbox');
+      // let transactions;
+      let alltransactions = vrpTransactions ? JSON.parse(vrpTransactions) : [];
+      alltransactions.push(details);
+      // if(vrpTransactions!=null ){
+      //   transactions=JSON.parse(vrpTransactions)
+      //   transactions.push(details);
+      // }
+      await AsyncStorage.setItem('vrpTransactions_sandbox',JSON.stringify(alltransactions))
+      console.log(AsyncStorage.getItem('vrpTransactions_sandbox'));
       return allVrpPaymentsResponse.data;
     } catch (error) {
       console.log('error in getting in vrp payments', error);
