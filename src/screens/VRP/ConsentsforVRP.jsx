@@ -77,7 +77,7 @@ const ConsentsforVRP = () => {
       if (isFocused){
         try{
           const storedVRPData = await AsyncStorage.getItem("VRP_Data");
-          console.log("minalllllllllllllllllll",storedVRPData);
+          // console.log("minalllllllllllllllllll",storedVRPData);
           if(storedVRPData){
             const allVRPData = JSON.parse(storedVRPData);
             console.log("Retrieved form Data:", allVRPData);
@@ -311,7 +311,7 @@ const ConsentsforVRP = () => {
         }}
         style={styles.footer}
         activeOpacity={1}>
-        <Text style={styles.footerText}>Start a new VRP</Text>
+        <Text style={styles.footerText}>Start a VRP</Text>
       </TouchableOpacity>
     </>
   );
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
 
   footer: {
     backgroundColor: '#5a287d',
-    padding: wp('0.1%'),
+    padding: 15,
     width: '100%',
     alignItems: 'center',
   },
