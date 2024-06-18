@@ -77,7 +77,8 @@ const ConsentsforVRP = () => {
       if (isFocused){
         try{
           const storedVRPData = await AsyncStorage.getItem("VRP_Data");
-          if(storedVRPData !== null){
+          console.log("minalllllllllllllllllll",storedVRPData);
+          if(storedVRPData){
             const allVRPData = JSON.parse(storedVRPData);
             console.log("Retrieved form Data:", allVRPData);
             setConsentData(allVRPData);
@@ -218,7 +219,7 @@ const ConsentsforVRP = () => {
                             fontWeight: 'bold',
                             marginTop: hp('2.5%'),
                           }}>
-                          {
+                          {item.consentpayload &&
                             JSON.parse(item.consentpayload).Initiation
                               .CreditorAccount.Name
                           }

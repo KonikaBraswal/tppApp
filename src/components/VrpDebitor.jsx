@@ -8,6 +8,7 @@ import {StyleSheet} from 'react-native';
 
 const VrpDebitor = props => {
   const debitordetails = props.account;
+  console.log("inside VRPDEBITORRRRRRRRRRRRRRR",debitordetails);
   console.log('det', debitordetails);
   return (
     <Card style={styles.card}>
