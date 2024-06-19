@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,11 +12,11 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import { Surface, FAB } from '@react-native-material/core';
-import { Icon, Searchbar, Card, Title } from 'react-native-paper';
-import { useNavigation,useFocusEffect } from '@react-navigation/native';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {Surface, FAB} from '@react-native-material/core';
+import {Icon, Searchbar, Card, Title} from 'react-native-paper';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ViewAll from './ViewAll';
 import ViewAllLocal from '../components/ViewAllLocal';
 import BottomTab from './BottomTab';
@@ -25,23 +25,22 @@ const Landing = () => {
   const navigation = useNavigation();
 
   const cards = [
-    { id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png') },
-    { id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png') },
-    { id: 3, name: 'Barclays', icon: require('../assets/icons/barclays.png') },
-    { id: 4, name: 'Lloyds', icon: require('../assets/icons/lloyds.png') },
-    { id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png') },
-    { id: 6, name: 'Santander', icon: require('../assets/icons/santander.png') },
+    {id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png')},
+    {id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png')},
+    {id: 3, name: 'Barclays', icon: require('../assets/icons/barclays.png')},
+    {id: 4, name: 'Lloyds', icon: require('../assets/icons/lloyds.png')},
+    {id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png')},
+    {id: 6, name: 'Santander', icon: require('../assets/icons/santander.png')},
   ];
   const [env, setEnv] = useState(global.env);
-  const [key, setKey] = useState(Date.now()); 
-  const render=()=>{
-    if(env==='sandbox'){
-      return <ViewAll/>
+  const [key, setKey] = useState(Date.now());
+  const render = () => {
+    if (env === 'sandbox') {
+      return <ViewAll />;
+    } else {
+      return <ViewAllLocal />;
     }
-    else{
-      return <ViewAllLocal/>;
-    }
-  }
+  };
   useFocusEffect(
     React.useCallback(() => {
       // This function runs when the screen comes into focus
@@ -52,17 +51,14 @@ const Landing = () => {
         }
       };
       checkEnvChange();
-  
+
       const intervalId = setInterval(checkEnvChange, 1000); // Check every second
       return () => clearInterval(intervalId); // Cleanup on unmount
-    }, [env])
-  )
+    }, [env]),
+  );
 
   const renderCard = ({item}) => (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('Consent')
-      }>
+    <TouchableOpacity onPress={() => navigation.navigate('Consent')}>
       <Surface elevation={6} category="medium" style={styles.surface}>
         <Image source={item.icon} style={styles.icon} />
       </Surface>
@@ -74,7 +70,7 @@ const Landing = () => {
     name: 'Payments',
     image: require('../assets/icons/payments.png'),
   };
-  const VRP = { name: 'VRP', image: require('../assets/icons/VRP.png') };
+  const VRP = {name: 'VRP', image: require('../assets/icons/VRP.png')};
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const AddBank = () => {
@@ -83,10 +79,10 @@ const Landing = () => {
 
   return (
     <KeyboardAwareScrollView
-      style={{ flex: 1, backgroundColor: 'white' }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      style={{flex: 1, backgroundColor: 'white'}}
+      contentContainerStyle={{flexGrow: 1}}
       keyboardShouldPersistTaps="handled">
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <View
           style={{
             backgroundColor: '#5a287d',
@@ -158,11 +154,13 @@ const Landing = () => {
                 key={item.id}
                 onPress={() => {
                   if (item.name === 'Natwest') {
-                    navigation.navigate('Added Bank Accounts', { bankName: 'Natwest' })
-                  }
-                  else if (item.name === 'HSBC') {
-                    navigation.navigate('Added Bank Accounts', { bankName: 'HSBC' })
-
+                    navigation.navigate('Added Bank Accounts', {
+                      bankName: 'Natwest',
+                    });
+                  } else if (item.name === 'HSBC') {
+                    navigation.navigate('Added Bank Accounts', {
+                      bankName: 'HSBC',
+                    });
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
                   } else {
@@ -176,14 +174,12 @@ const Landing = () => {
             ))}
           </ScrollView>
 
-          <View style={styles.addBankContainer}>
-           {render()}
-          </View>
+          <View style={styles.addBankContainer}>{render()}</View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('Transfer Money', { DebtorAccount: null });
+                  navigation.navigate('Transfer Money', {DebtorAccount: null});
                 }}>
                 <Surface
                   elevation={1}
@@ -238,10 +234,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bottombar:{
-    marginBottom:0,
-    height:50,
-    width:'100%',
+  bottombar: {
+    marginBottom: 0,
+    height: 50,
+    width: '100%',
     backgroundColor: '#5a287d',
   },
   surface: {
