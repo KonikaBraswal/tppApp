@@ -1,10 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, View, StyleSheet} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {ScrollView, View, StyleSheet, Animated, Dimensions} from 'react-native';
 import {Card, Title, Paragraph, Text, IconButton} from 'react-native-paper';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {RetrieveData} from '../../database/Database';
-import { fetchAISPData } from '../../database/LocalDatabase';
+import {fetchAISPData} from '../../database/LocalDatabase';
 
 const ViewAllLocal = () => {
   const navigation = useNavigation();
@@ -20,73 +24,108 @@ const ViewAllLocal = () => {
       .catch(error => {
         console.error('Error fetching AISP data:', error);
       });
- }, []); 
-  
-  return (
-    <View style={{ flex: 1, marginTop: 5 }}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ padding: 8 }}>
-        {cards.map(card => (
-          <Card
-            key={card.accID}
-            style={styles.card}
-            onPress={() => {
-              navigation.navigate('Local Transactions');
-            }}>
-            {card.accsubType === 'CurrentAccount' ? (
-              <Card.Cover
-                source={require('../assets/images/card1.png')}
-                style={styles.coverImage}
-              />
-            ) : (
-              <Card.Cover
-                source={require('../assets/images/card2.png')}
-                style={styles.coverImage}
-              />
-            )}
-            <Card.Content style={styles.cardContent}>
-              <Title style={styles.title}>{card.accsubType}</Title>
+  }, []);
+  const screenWidth = Dimensions.get('window').width;
+  const translateX = useRef(new Animated.Value(-screenWidth)).current;
 
-              <Paragraph style={styles.additionalInfo}>
-                {card.accnum}
-              </Paragraph>
-              <Paragraph style={styles.additionalInfo}>
-                {card.debtorname}
-              </Paragraph>
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(translateX, {
+        toValue: screenWidth,
+        duration: 7000,
+        useNativeDriver: true,
+      }),
+    ).start();
+  }, [translateX, screenWidth]);
+
+  return (
+    <View style={{flex: 1, marginTop: 5}}>
+      {cards.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 8}}>
+          {cards.map(card => (
+            <Card
+              key={card.accID}
+              style={styles.card}
+              onPress={() => {
+                navigation.navigate('Local Transactions');
+              }}>
+              {card.accsubType === 'CurrentAccount' ? (
+                <Card.Cover
+                  source={require('../assets/images/card1.png')}
+                  style={styles.coverImage}
+                />
+              ) : (
+                <Card.Cover
+                  source={require('../assets/images/card2.png')}
+                  style={styles.coverImage}
+                />
+              )}
+              <Card.Content style={styles.cardContent}>
+                <Title style={styles.title}>{card.accsubType}</Title>
+
+                <Paragraph style={styles.additionalInfo}>
+                  {card.accnum}
+                </Paragraph>
+                <Paragraph style={styles.additionalInfo}>
+                  {card.debtorname}
+                </Paragraph>
+              </Card.Content>
+            </Card>
+          ))}
+          <Card key="viewAllCard" style={{elevation: 3}}>
+            <Card.Content>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginTop: 40,
+                  fontWeight: 'bold',
+                  fontSize: RFValue(18),
+                  color: '#5a287d',
+                }}>
+                View All
+              </Text>
+
+              <IconButton
+                mode="contained-tonal"
+                icon="chevron-right"
+                color="#5a287d"
+                containerColor="rgba(90, 40, 125, 0.3)"
+                size={26}
+                style={{
+                  marginLeft: 15,
+                }}
+                onPress={() => navigation.navigate('Added Bank Accounts')}
+              />
             </Card.Content>
           </Card>
-        ))}
-        <Card key="viewAllCard" style={{ elevation: 3 }}>
-          <Card.Content>
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 40,
-                fontWeight: 'bold',
-                fontSize: RFValue(18),
-                color: '#5a287d',
-              }}>
-              View All
-            </Text>
-
-            <IconButton
-              mode="contained-tonal"
-              icon="chevron-right"
-              color="#5a287d"
-              containerColor="rgba(90, 40, 125, 0.3)"
-              size={26}
-              style={{
-                marginLeft: 15,
-              }}
-              onPress={() => navigation.navigate('Added Bank Accounts')}
-            />
-          </Card.Content>
-        </Card>
-      </ScrollView>
+        </ScrollView>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'rgba(232, 232, 232, 0.3)',
+              alignContent: 'center',
+              width: '100%',
+              padding: hp('1%'),
+            }}>
+            <Animated.View
+              style={[styles.contentContainer, {transform: [{translateX}]}]}>
+              <Text style={styles.text}>No Added Bank Accounts</Text>
+              <IconButton icon="bank-plus" iconColor="#5a287d" />
+            </Animated.View>
+          </View>
+        </View>
+      )}
     </View>
- );
+  );
 };
 
 const styles = StyleSheet.create({
@@ -125,6 +164,16 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(200, 225, 204, 0.5)',
+  },
+  text: {
+    fontSize: RFValue(18),
+    fontWeight: 'bold',
+    color: '#5a287d',
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default ViewAllLocal;

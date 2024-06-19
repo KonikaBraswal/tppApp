@@ -14,6 +14,7 @@ function safeStringify(obj: any): string {
     return value;
   });
 }
+let ip="http://192.168.1.36:4000"
 let datafromcall1="";
 let androidClientAisp: AndroidClient;
 const logClient = new ApiLogsDb('NWG', 'Sandbox', 'logs');
@@ -99,8 +100,9 @@ class HSBCSandboxApiFactory {
 
     try {
       // Make the POST request
+      console.log(ip);
       const response: AxiosResponse<any> = await axios.post(
-        'http://192.168.1.34:4000/TokenConsentLogin_Sandbox_HSBC',payload,
+        `${ip}/TokenConsentLogin_Sandbox_HSBC`,payload,
        // Payload should be passed as the second argument to the POST request
         {
           headers: {
@@ -165,7 +167,7 @@ class HSBCSandboxApiFactory {
     try {
       // Make the POST request
       const response2: AxiosResponse<any> = await axios.post(
-        'http://192.168.1.34:4000/AccessToken_HSBC_Sandbox',
+        `${ip}/AccessToken_HSBC_Sandbox`,
         payloadUrl, 
         {
           headers: {
@@ -209,7 +211,7 @@ class HSBCSandboxApiFactory {
     try {
       // Make the POST request
       const response3: AxiosResponse<any> = await axios.post(
-        'http://192.168.1.34:4000/FetchAccounts_HSBC_Sandbox',
+        `${ip}/FetchAccounts_HSBC_Sandbox`,
         accesspayload, 
         {
           headers: {
@@ -257,7 +259,7 @@ class HSBCSandboxApiFactory {
     try {
       // Make the POST request
       const response3: AxiosResponse<any> = await axios.post(
-        `http://192.168.1.34:4000/FetchAccounts_HSBC_Sandbox/${endpoint}`,
+        `${ip}/FetchAccounts_HSBC_Sandbox/${endpoint}`,
         accesspayload, 
         {
           headers: {
@@ -309,7 +311,7 @@ class HSBCSandboxApiFactory {
     try {
       // Make the POST request
       const response2: AxiosResponse<any> = await axios.post(
-        'http://192.168.1.34:4000/RefreshAccessToken_HSBC_Sandbox',
+        `${ip}/RefreshAccessToken_HSBC_Sandbox`,
         payload, 
         {
           headers: {
@@ -355,7 +357,7 @@ class HSBCSandboxApiFactory {
 
       try {
         const response: AxiosResponse<any> = await axios.post(
-          'http://192.168.1.34:4000/FetchAccounts_HSBC_Sandbox',
+          `${ip}/FetchAccounts_HSBC_Sandbox`,
           { access_token },  // Assuming `accesspayload` was meant to contain `access_token`
           {
             headers: {
