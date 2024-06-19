@@ -627,7 +627,6 @@ class AndroidClientDb {
                     console.log('Table is empty');
                     resolve('Table is empty'); // Resolve with an empty array if the table is empty
                   } else {
-                    
                     resolve('yes'); // Resolve the promise with the fetched data
                   }
                 },
