@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,21 +14,21 @@ import {
 } from 'react-native';
 import { Surface, FAB } from '@react-native-material/core';
 import { Icon, Searchbar, Card, Title } from 'react-native-paper';
-import { useNavigation,useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';
+import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
 import ViewAll from './ViewAll';
 import ViewAllLocal from '../components/ViewAllLocal';
 import BottomTab from './BottomTab';
 
+
 const Landing = () => {
   const navigation = useNavigation();
-  let androidClientNWG=new AndroidClient("NWG", "Sandbox", "accounts");
-  let androidClientHSBC=new AndroidClient("HSBC", "Sandbox", "accounts");
+  let androidClientNWG = new AndroidClient("NWG", "Sandbox", "accounts");
+  let androidClientHSBC = new AndroidClient("HSBC", "Sandbox", "accounts");
   const [checkNWB, setCheckNWB] = useState('');
   const [checkHSBC, setCheckHSBC] = useState('');
- 
   const cards = [
     { id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png') },
     { id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png') },
@@ -38,13 +38,13 @@ const Landing = () => {
     { id: 6, name: 'Santander', icon: require('../assets/icons/santander.png') },
   ];
   const [env, setEnv] = useState(global.env);
-  const [key, setKey] = useState(Date.now()); 
-  const render=()=>{
-    if(env==='sandbox'){
-      return <ViewAll/>
+  const [key, setKey] = useState(Date.now());
+  const render = () => {
+    if (env === 'sandbox') {
+      return <ViewAll />
     }
-    else{
-      return <ViewAllLocal/>;
+    else {
+      return <ViewAllLocal />;
     }
   }
   useFocusEffect(
@@ -57,32 +57,32 @@ const Landing = () => {
         }
       };
       checkEnvChange();
-      const check= async () =>{
-        if(global.env==='sandbox'){
-          let resultNWB,resultHSBC;
-    try {
-      resultNWB = await androidClientNWG.checkTableOrEntryExist();
-      resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
-      if(resultNWB==='yes'){
-        setCheckNWB(resultNWB);
-      }
-       if(resultHSBC==='yes'){
-        setCheckHSBC(resultHSBC);
-      }
-      
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
+      const check = async () => {
+        if (global.env === 'sandbox') {
+          let resultNWB, resultHSBC;
+          try {
+            resultNWB = await androidClientNWG.checkTableOrEntryExist();
+            resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
+            if (resultNWB === 'yes') {
+              setCheckNWB(resultNWB);
+            }
+            if (resultHSBC === 'yes') {
+              setCheckHSBC(resultHSBC);
+            }
+
+          } catch (error) {
+            console.error('Error fetching transactions:', error);
+          }
         }
       };
       check();
-  
+
       const intervalId = setInterval(checkEnvChange, 1000); // Check every second
       return () => clearInterval(intervalId); // Cleanup on unmount
     }, [env])
   )
 
-  const renderCard = ({item}) => (
+  const renderCard = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('Consent')
@@ -104,6 +104,12 @@ const Landing = () => {
   const AddBank = () => {
     navigation.navigate('Select Your Bank');
   };
+  const filteredCards = cards.filter(card => {
+    if (card.name === 'Natwest' && checkNWB === 'yes') return true;
+    if (card.name === 'HSBC' && checkHSBC === 'yes') return true;
+    if (card.name !== 'Natwest' && card.name !== 'HSBC') return true;
+    return false;
+  });
 
   return (
     <KeyboardAwareScrollView
@@ -177,15 +183,15 @@ const Landing = () => {
                 Add Bank
               </Text>
             </View>
-            {cards.map(item => (
+            {filteredCards.map(item => (
               <TouchableOpacity
                 key={item.id}
                 onPress={() => {
-                  if (item.name === 'Natwest') {
+                  if ( item.name === 'Natwest' ) {
                     navigation.navigate('Added Bank Accounts', { bankName: 'Natwest' })
-                    
+
                   }
-                  else if (item.name === 'HSBC') {
+                  else if ( item.name === 'HSBC') {
                     navigation.navigate('Added Bank Accounts', { bankName: 'HSBC' })
 
                   } else if (item.name === 'Barclays') {
@@ -202,7 +208,7 @@ const Landing = () => {
           </ScrollView>
 
           <View style={styles.addBankContainer}>
-           {render()}
+            {render()}
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
@@ -263,11 +269,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bottombar:{
-    marginBottom:0,
-    height:50,
-    width:'100%',
+  bottombar: {
+    marginBottom: 0,
+    height: 50,
+    width: '100%',
     backgroundColor: '#5a287d',
+  },
+  image: {
+    width: 50,
+    height: 100,
+    // aspectRatio:1,
+    // marginTop: -hp('60%'),
+    resizeMode: 'contain',
+    // borderRadius: 8,
+    // marginBottom: 8,
+    // marginLeft: hp('7%'),
+    // marginRight: -hp('6%')
   },
   surface: {
     width: 90,

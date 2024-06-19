@@ -628,19 +628,19 @@ class AndroidClientDb {
                     resolve('Table is empty'); // Resolve with an empty array if the table is empty
                   } else {
                     
-                    resolve(`Table ${tableName} and entries exist`); // Resolve the promise with the fetched data
+                    resolve('yes'); // Resolve the promise with the fetched data
                   }
                 },
                 (_, error) => {
                   console.error('Error retrieving data in display data:', error);
-                  resolve(error); // Resolve with an empty array if there's an error
+                  resolve(error.toString()); // Resolve with an empty array if there's an error
                 }
               );
             }
           },
           (_, error) => {
             console.error('Error checking table existence:', error);
-            resolve(error); // Resolve with an empty array if there's an error checking table existence
+            resolve(error.toString()); // Resolve with an empty array if there's an error checking table existence
           }
         );
       });
