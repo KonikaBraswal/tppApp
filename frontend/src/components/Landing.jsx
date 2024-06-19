@@ -12,11 +12,6 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {Surface, FAB} from '@react-native-material/core';
-import {Icon, Searchbar, Card, Title} from 'react-native-paper';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import {RFValue} from 'react-native-responsive-fontsize';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { Surface, FAB } from '@react-native-material/core';
 import { Icon, Searchbar, Card, Title } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
