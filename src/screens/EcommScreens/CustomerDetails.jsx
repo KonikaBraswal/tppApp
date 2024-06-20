@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { fetchAllDataforScope } from '../../../database/Database';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../Apifactory/ApiFactory';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const apiFactory = new ApiFactory();
@@ -15,7 +15,7 @@ const CustomerDetails = ({ route }) => {
   const navigation = useNavigation();
   const scope = 'vrp';
 
-  
+
   function getObjectWithLatestCreationTime(objects) {
     const sortedArray = objects.sort(
       (a, b) =>
