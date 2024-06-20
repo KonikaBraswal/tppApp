@@ -1,5 +1,5 @@
 import IconDialog from '../../components/IconDialog';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../Apifactory/ApiFactory';
 import React, { useState, useEffect } from 'react';
 import * as products from '../../assets/data/product_catalogue.json';
 import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
@@ -31,7 +31,7 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+import sandboxConfig from '../../../configs/Sandbox.json' 
 import {
   ScrollView,
   Text,

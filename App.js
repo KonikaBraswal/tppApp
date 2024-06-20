@@ -24,13 +24,13 @@ import VRPDetails from './src/screens/VRP/VRPDetails';
 import TransactionList from './src/components/TransactionList';
 import ViewAllLocalDetails from './src/screens/ViewAllLocalDetails';
 import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
-//import BankList from './src/screens/EcommScreens/BankList';
+import BankList from './src/screens/EcommScreens/BankList';
 // import ConfirmDetails from './src/screens/EcommScreens/ConfirmDetails';
 // import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
  import ProductListing from './src/screens/EcommScreens/ProductListing';
  import ProductDetails from './src/screens/EcommScreens/ProductDetails';
  import CartScreen from './src/screens/EcommScreens/CartScreen';
-//  import AddressScreen from './src/screens/EcommScreens/AddressScreen';
+ import AddressScreen from './src/screens/EcommScreens/AddressScreen';
 // import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
 // import { initDatabase } from './database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -79,14 +79,14 @@ export default function App() {
               <Stack.Screen name="Consent Info" component={ConsentInfo} />
               <Stack.Screen name="Review Creditor" component={VRPConsent} />
               <Stack.Screen name="VRP Details" component={VRPDetails} />
-               {/* <Stack.Screen name="Banklist" component={BankList} /> */}
+              <Stack.Screen name="Banklist" component={BankList} />
               {/* <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
-              <Stack.Screen name="Order Placed" component={OrderSuccessful} />*/} 
+              <Stack.Screen name="Order Placed" component={OrderSuccessful} />*/}
                <Stack.Screen name="Online Store" component={ProductListing} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
                <Stack.Screen name="Cart" component={CartScreen} />
-             {/*<Stack.Screen name="Add Your Details" component={AddressScreen} />
-              <Stack.Screen name="Customer Details" component={CustomerDetails} />   */}
+           <Stack.Screen name="Add Your Details" component={AddressScreen} />
+               {/* <Stack.Screen name="Customer Details" component={CustomerDetails} />   */}
 
             
       </Stack.Navigator>
