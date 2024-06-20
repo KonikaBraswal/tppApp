@@ -3,13 +3,8 @@ import {
   View,
   StyleSheet,
   Text,
-  FlatList,
   Image,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  Dimensions,
   ScrollView,
 } from 'react-native';
 import { Surface, FAB } from '@react-native-material/core';
@@ -81,13 +76,6 @@ const Landing = () => {
     }, [env]),
   );
 
-  const renderCard = ({item}) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Consent')}>
-      <Surface elevation={6} category="medium" style={styles.surface}>
-        <Image source={item.icon} style={styles.icon} />
-      </Surface>
-    </TouchableOpacity>
-  );
 
   const snapToInterval = 100;
   const Payments = {

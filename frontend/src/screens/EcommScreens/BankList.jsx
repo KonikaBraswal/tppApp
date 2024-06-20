@@ -160,7 +160,6 @@ const BankList = ({ route }) => {
     // console.log(`Bank ID clicked: ${bankId}`);
     console.log("calling mode in VRP",global.env);
     try {
-      
       setLoading(true);
       setError(null);
       const consentdata = await EnvApiClient.callApiFactory('vrp',jsondata,null);

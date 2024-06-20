@@ -572,7 +572,7 @@ class AndroidClientDb {
     });
   });
 }
-  //fetch data according to scope or consentId
+  //fetch data according to scope
   async fetchDataUsingScope(scope: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
@@ -606,7 +606,7 @@ class AndroidClientDb {
       });
     });
   }
-
+//check whether table exists and entries in table exists or not
   async checkTableOrEntryExist(): Promise<string> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
@@ -645,7 +645,7 @@ class AndroidClientDb {
       });
     });
   }
-
+//fetch data according to consentId
   async fetchDataUsingConsentId(consentId: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
@@ -769,7 +769,7 @@ class AndroidClientDb {
       });
     });
   }
-
+//display data from table
   async displayData(): Promise<any[]> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
