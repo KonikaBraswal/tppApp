@@ -5,7 +5,7 @@ import config from './ConfigFiles/config_UBN.json';
 import sandboxConfig from './ConfigFiles/Ubn_Sandbox_AISP.json';
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb'; //importing database
-import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
+import sandboxConfigPisp from './ConfigFiles/Ubn_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
 import configVrp from './ConfigFiles/configvrp.json';
@@ -148,6 +148,7 @@ class UBNSanboxApiFactory {
     DebtorAccount: any,
   ) {
     this.permissions = permission;
+
     this.scopeForThisCall = apiScope;
     this.DebtorAccount = DebtorAccount;
     await logClient.initDatabaseApi();

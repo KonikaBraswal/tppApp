@@ -179,7 +179,7 @@ const Landing = () => {
             <View style={styles.lastrow}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('Transfer Money', {DebtorAccount: null});
+                  navigation.navigate('Select Bank For Payment');
                 }}>
                 <Surface
                   elevation={1}

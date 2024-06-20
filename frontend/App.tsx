@@ -60,6 +60,7 @@ import {GlobalEnvProvider} from './GlobalEnvContext';
 import {initDatabase, initDatabaseTransaction} from './database/Database';
 import {initDatabaseApi} from './database/DatabaseLogs';
 import HsbcDummy from './src/screens/hsbcDummy';
+import SelectBankPISP from './src/components/SelectBankPISP';
 
 function App(): React.JSX.Element {
   let androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
@@ -67,6 +68,8 @@ function App(): React.JSX.Element {
   let androidClientAisp_UBN = new AndroidClient('UBN', 'Sandbox', 'accounts');
   let androidClientAisp_RBS = new AndroidClient('RBS', 'Sandbox', 'accounts');
   let androidClientPisp = new AndroidClient('NWG', 'Sandbox', 'payments');
+  let androidClientPisp_UBN = new AndroidClient('UBN', 'Sandbox', 'payments');
+  let androidClientPisp_RBS = new AndroidClient('RBS', 'Sandbox', 'payments');
   let androidClientVrpTransact = new AndroidClient(
     'NWG',
     'Sandbox',
@@ -87,6 +90,8 @@ function App(): React.JSX.Element {
       androidClientAisp_UBN.initDatabaseAndroidAisp();
       androidClientAisp_RBS.initDatabaseAndroidAisp();
       androidClientPisp.initDatabaseAndroidPisp();
+      androidClientPisp_UBN.initDatabaseAndroidPisp();
+      androidClientPisp_RBS.initDatabaseAndroidPisp();
       initDatabaseApi();
       initDatabase();
       initDatabaseTransaction();
@@ -136,6 +141,10 @@ function App(): React.JSX.Element {
                 <Stack.Screen name="Demo" component={Demo} />
                 <Stack.Screen name="Consent" component={ConsentScreen} />
                 <Stack.Screen name="Select Your Bank" component={SelectBank} />
+                <Stack.Screen
+                  name="Select Bank For Payment"
+                  component={SelectBankPISP}
+                />
                 {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
                 <Stack.Screen name="Transactions" component={TransactionList} />
                 <Stack.Screen name="Details" component={MainScreen} />

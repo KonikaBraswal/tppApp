@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -38,22 +38,25 @@ const CustomListItem = ({title, value}) => (
     <Text style={styles.rightContent}>{value}</Text>
   </View>
 );
-const switchEnvironment = (newEnv) => {
+const switchEnvironment = (newEnv, bankName) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"payments","Natwest");
-  console.log("PISPPPPPPPPPPPPPP",global.env);
+  const apiClient = apiFactory.createApiClient(
+    global.env,
+    'payments',
+    bankName,
+  );
+  console.log('PISPPPPPPPPPPPPPP', global.env);
   return apiClient;
   // Use the new apiClient as needed
- };
+};
 const PaymentConsentScreen = ({route}) => {
   useEffect(() => {
-    const newApiClient = switchEnvironment(global.env);
+    const newApiClient = switchEnvironment(global.env, route.params.bankName);
 
     setEnvApiClient(newApiClient);
-    return () => {
-    };
- }, []);
+    return () => {};
+  }, []);
   const navigation = useNavigation();
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
@@ -79,29 +82,30 @@ const PaymentConsentScreen = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
 
   const handleConfirmButtonClick = async () => {
-      try {
-        const consentData = await EnvApiClient.callApiFactory(
-          'payments',
-          DebtorAccount,
-          null
-        );
-        console.log('Consent id:', consentData);
-        if (way == 'web') {
-          const consentUrl = await EnvApiClient.manualUserConsent(
-            consentData,
-          );
-          console.log(consentUrl);
-          showInputDialog();
-        }
-      } catch (error) {
-        console.error('Error:', error);
+    try {
+      const consentData = await EnvApiClient.callApiFactory(
+        'payments',
+        null,
+        DebtorAccount,
+      );
+      console.log('Consent id:', consentData);
+      if (way == 'web') {
+        const consentUrl = await EnvApiClient.manualUserConsent(consentData);
+        console.log(consentUrl);
+        showInputDialog();
       }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleSubmit = async () => {
     try {
       const data = await EnvApiClient.exchangeAccessToken(inputValue);
-      console.log("data from locallllllllllllllllllllllllllllllllllllllll",data);
+      console.log(
+        'data from locallllllllllllllllllllllllllllllllllllllll',
+        data,
+      );
       navigation.navigate('Transaction Successful', {status: data.Status});
     } catch (error) {
       console.error('Error:', error);

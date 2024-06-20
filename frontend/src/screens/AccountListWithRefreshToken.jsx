@@ -37,10 +37,27 @@ const AccountListWithRefreshToken = ({route}) => {
     'Sandbox',
     'accounts',
   );
+  const androidClientAispRBS = new AndroidClient('RBS', 'Sandbox', 'accounts');
+  const androidClientAispUBN = new AndroidClient('UBN', 'Sandbox', 'accounts');
+
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [retrievedData, setRetrievedData] = useState([]);
   const [localData, setlocalData] = useState([]);
+
+  const removeDuplicateAccounts = arr => {
+    const seen = {};
+    return arr.filter(item => {
+      const key = `${item.AccountId}-${item.bankName}`;
+      if (seen[key]) {
+        return false;
+      } else {
+        seen[key] = true;
+        return true;
+      }
+    });
+  };
+
   useEffect(() => {
     if (global.env === 'local') {
       fetchAISPData().then(results => {
@@ -51,6 +68,8 @@ const AccountListWithRefreshToken = ({route}) => {
         try {
           const dataNWG = await androidClientAispNWG.displayData();
           const dataHSBC = await androidClientAispHSBC.displayData();
+          const dataRBS = await androidClientAispRBS.displayData();
+          const dataUBN = await androidClientAispUBN.displayData();
 
           //const data= [...dataNWG, ...dataHSBC];
 
@@ -64,6 +83,12 @@ const AccountListWithRefreshToken = ({route}) => {
             if (dataHSBC && dataHSBC.length > 0) {
               data = [...data, ...dataHSBC];
             }
+            if (dataRBS && dataRBS.length > 0) {
+              data = [...data, ...dataRBS];
+            }
+            if (dataUBN && dataUBN.length > 0) {
+              data = [...data, ...dataUBN];
+            }
           } else if (bankName == 'Natwest') {
             data = dataNWG;
           } else if (bankName == 'HSBC') {
@@ -72,7 +97,9 @@ const AccountListWithRefreshToken = ({route}) => {
             data = [];
             console.log('Wrong bank');
           }
-          const filteredData = data.filter(entry => entry.scope === 'accounts');
+          const filtered = data.filter(entry => entry.scope === 'accounts');
+          const filteredData = removeDuplicateAccounts(filtered);
+
           console.log(filteredData, '------------------');
           setRetrievedData(filteredData);
         } catch (error) {
@@ -128,8 +155,8 @@ const AccountListWithRefreshToken = ({route}) => {
                     return [];
                   }
                 })();
-                const bankName=item.bankName;
-                if (bankName=="HSBC") {
+                const bankName = item.bankName;
+                if (bankName == 'HSBC') {
                   imageSource = require('../assets/images/hsbc.png');
                 } else {
                   imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
@@ -142,7 +169,7 @@ const AccountListWithRefreshToken = ({route}) => {
                           {account.AccountSubType} Account
                         </Title>
                         <Image
-                        source={imageSource}
+                          source={imageSource}
                           //source={require('../assets/images/natwest2.png')}
                           style={styles.iconNatwest}
                         />
@@ -193,6 +220,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                         account.Account[0].Identification,
                                       Name: account.Account[0].Name,
                                     },
+                                    bankName,
                                   })
                                 }>
                                 Transfer Money
@@ -207,7 +235,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                     'View Added Bank Details',
                                     {
                                       AccountId: account.AccountId,
-                                      bankName:bankName,
+                                      bankName: bankName,
                                     },
                                   );
                                 }}

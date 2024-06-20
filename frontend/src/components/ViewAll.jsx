@@ -25,14 +25,32 @@ const ViewAll = () => {
     'Sandbox',
     'accounts',
   );
+  const androidClientAispUBN = new AndroidClient('UBN', 'Sandbox', 'accounts');
+  const androidClientAispRBS = new AndroidClient('RBS', 'Sandbox', 'accounts');
   const navigation = useNavigation();
   const [retrievedData, setRetrievedData] = useState([]);
+
+  const removeDuplicateAccounts = arr => {
+    const seen = {};
+    return arr.filter(item => {
+      const key = `${item.AccountId}-${item.bankName}`;
+      if (seen[key]) {
+        return false;
+      } else {
+        seen[key] = true;
+        return true;
+      }
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         console.log('I AM IN VIEWALL.jsx');
         const dataNWG = await androidClientAispNWG.displayData();
         const dataHSBC = await androidClientAispHSBC.displayData();
+        const dataUBN = await androidClientAispUBN.displayData();
+        const dataRBS = await androidClientAispRBS.displayData();
         let data = [];
 
         // Check if dataNWG is not empty
@@ -44,7 +62,15 @@ const ViewAll = () => {
         if (dataHSBC && dataHSBC.length > 0) {
           data = [...data, ...dataHSBC];
         }
-        const filteredData = data.filter(entry => entry.scope === 'accounts');
+        if (dataRBS && dataRBS.length > 0) {
+          data = [...data, ...dataRBS];
+        }
+        if (dataUBN && dataUBN.length > 0) {
+          data = [...data, ...dataUBN];
+        }
+        const filtered = data.filter(entry => entry.scope === 'accounts');
+        const filteredData = removeDuplicateAccounts(filtered);
+
         console.log('accounts', filteredData);
         setRetrievedData(filteredData);
         console.log('Length of data', retrievedData.length);

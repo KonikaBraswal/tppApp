@@ -22,73 +22,88 @@ import LocalTransactionList from '../components/LocalTransactionList';
 import {fetchRefreshedToken, RetrieveData} from '../../database/Database';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 import AndroidClient from '../../DatabaseFactory/AndroidClientDb';
-let refresh_token='';
-let consentId='';
-let env="";
+let refresh_token = '';
+let consentId = '';
+let env = '';
 const apiFactory = new ApiFactory();
 // const sandboxApiClient = apiFactory.createApiClient(global.env,"accounts");
 const ViewDetailsWithRefreshToken = ({route}) => {
   //const androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
   const [searchQuery, setSearchQuery] = useState('');
   const AccountId = route.params.AccountId;
-  const bankName=route.params.bankName;
+  const bankName = route.params.bankName;
   console.log(AccountId);
-  let bankNameForApiFactory="HSBC";
-  let bankNameForDBFactory="HSBC";
-  if(bankName=="NatWest"){
-    bankNameForApiFactory="Natwest";
-    bankNameForDBFactory="NWG";
+  let bankNameForApiFactory = 'HSBC';
+  let bankNameForDBFactory = 'HSBC';
+  if (bankName == 'NatWest') {
+    bankNameForApiFactory = 'Natwest';
+    bankNameForDBFactory = 'NWG';
   }
-  const androidClientAisp= new AndroidClient(bankNameForDBFactory, "Sandbox", "accounts");
+  if (bankName == 'Ulster') {
+    bankNameForApiFactory = 'Ulster';
+    bankNameForDBFactory = 'UBN';
+  }
+  if (bankName == 'RBS') {
+    bankNameForApiFactory = 'RBS';
+    bankNameForDBFactory = 'RBS';
+  }
+  const androidClientAisp = new AndroidClient(
+    bankNameForDBFactory,
+    'Sandbox',
+    'accounts',
+  );
   const [transactionDetails, setTransactionDetails] = useState(null);
   const [accountDetails, setAccountDetails] = useState(null);
   const [balanceDetails, setBalanceDetails] = useState(null);
   const [retrievedData, setRetrievedData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const switchEnvironment = (newEnv) => {
+  const switchEnvironment = newEnv => {
     global.env = newEnv; // Update the global environment variable
     const apiFactory = new ApiFactory();
-    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankNameForApiFactory);
+    const apiClient = apiFactory.createApiClient(
+      global.env,
+      'accounts',
+      bankNameForApiFactory,
+    );
     return apiClient;
     // Use the new apiClient as needed
-   };
+  };
   async function useRefresh(userId) {
     try {
       refresh_token = await androidClientAisp.fetchRefreshedToken(userId);
-      consentId= await androidClientAisp.fetchConsentId(userId)
-      console.log(consentId,"Consent ID");
+      consentId = await androidClientAisp.fetchConsentId(userId);
+      console.log(consentId, 'Consent ID');
       if (refresh_token) {
-        console.log("Retrieved refreshToken here:", refresh_token);
-       
+        console.log('Retrieved refreshToken here:', refresh_token);
       } else {
-        console.log("No refreshToken found for the given userId.");
+        console.log('No refreshToken found for the given userId.');
       }
     } catch (error) {
-      console.error("Failed to retrieve refreshToken:", error);
+      console.error('Failed to retrieve refreshToken:', error);
     }
   }
-  
-   useEffect(() => {
+
+  useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-    env=newApiClient;    
-    return () => {
-    };
+    env = newApiClient;
+    return () => {};
   }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await useRefresh("999934356");
-        const access_token = await env.refreshToken(refresh_token,consentId);
-        console.log("accessss",access_token);
+        await useRefresh('999934356');
+        const access_token = await env.refreshToken(refresh_token, consentId);
+        console.log('accessss', access_token);
         const data = await androidClientAisp.displayData();
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
-        const filteredData = data.filter(entry => entry.scope === "accounts");
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!', data);
+        const filteredData = data.filter(entry => entry.scope === 'accounts');
         const jsonData = JSON.parse(filteredData[0].consentPayload);
-        const permissions=jsonData.Data.Permissions
-        
+        const permissions = jsonData.Data.Permissions;
+
         setRetrievedData(filteredData);
-        const accountResponse =
-          await env.fetchAccountsWithRefreshToken(access_token);
+        const accountResponse = await env.fetchAccountsWithRefreshToken(
+          access_token,
+        );
         setAccountDetails(accountResponse);
 
         if (
@@ -96,21 +111,18 @@ const ViewDetailsWithRefreshToken = ({route}) => {
           (permissions.includes('ReadTransactionsCredits') ||
             permissions.includes('ReadTransactionsDebits'))
         ) {
-          
-          const transactionResponse =
-            await env.allCallsWithRefreshToken(
-              `${AccountId}/transactions`,
-              access_token,
-            );
+          const transactionResponse = await env.allCallsWithRefreshToken(
+            `${AccountId}/transactions`,
+            access_token,
+          );
           setTransactionDetails(transactionResponse);
         }
 
         if (permissions.includes('ReadBalances')) {
-          const balanceResponse =
-            await env.allCallsWithRefreshToken(
-              `${AccountId}/balances`,
-              access_token,
-            );
+          const balanceResponse = await env.allCallsWithRefreshToken(
+            `${AccountId}/balances`,
+            access_token,
+          );
           setBalanceDetails(balanceResponse);
         }
         setLoading(false);
@@ -123,11 +135,15 @@ const ViewDetailsWithRefreshToken = ({route}) => {
     fetchData();
   }, [AccountId]);
 
-  const SelectedAccount = accountDetails?.Account?.find(
-    account => account.AccountId === AccountId
-  ) || null;
-  if (bankName=="HSBC") {
+  const SelectedAccount =
+    accountDetails?.Account?.find(account => account.AccountId === AccountId) ||
+    null;
+  if (bankName == 'HSBC') {
     imageSource = require('../assets/images/hsbc.png');
+  } else if (bankName == 'RBS') {
+    imageSource = require('../assets/images/Rbs.jpg');
+  } else if (bankName == 'Ulster') {
+    imageSource = require('../assets/images/Ulster.jpg');
   } else {
     imageSource = require('../assets/images/natwest.png'); // replace with your other image path
   }
@@ -145,10 +161,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
         <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
           <View style={styles.rowContainer}>
             <Surface elevation={6} category="medium" style={styles.surface}>
-              <Image
-                source={imageSource}
-                style={styles.icon}
-              />
+              <Image source={imageSource} style={styles.icon} />
             </Surface>
             <DropdownWithCheckboxes />
           </View>
