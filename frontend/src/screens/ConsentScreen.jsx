@@ -30,22 +30,25 @@ import ApiFactory from '../../ApiFactory/ApiFactory';
 const screenWidth = wp('100%');
 
 const ConsentScreen = ({route}) => {
-  const {bankName}=route.params;
-  console.log("BANK NAME",bankName);
+  const {bankName} = route.params;
+  console.log('BANK NAME', bankName);
 
-  const switchEnvironment = (newEnv) => {
+  const switchEnvironment = newEnv => {
     global.env = newEnv; // Update the global environment variable
     const apiFactory = new ApiFactory();
-    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankName);
+    const apiClient = apiFactory.createApiClient(
+      global.env,
+      'accounts',
+      bankName,
+    );
     return apiClient;
     // Use the new apiClient as needed
-   };
+  };
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
-    return () => {
-    };
- }, []);
+    return () => {};
+  }, []);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -132,54 +135,56 @@ const ConsentScreen = ({route}) => {
   };
 
   const handleConfirmButtonClick = async () => {
-    console.log("calling mode",global.env)
+    console.log('calling mode', global.env);
     // if (mode == 'sandbox') {
-      try {
-        const permissions = new Array();
-        if (checked1) {
-          permissions.push('ReadAccountsDetail');
-        }
-        if (checked2) {
-          permissions.push('ReadBalances');
-        }
-        if (checked3) {
-          permissions.push('ReadTransactionsDebits');
-        }
-        if (checked4) {
-          permissions.push('ReadTransactionsCredits');
-        }
-        if (checked5) {
-          permissions.push('ReadTransactionsDetail');
-        }
-        // console.log(permissions);
-        setPermission(permissions);
-
-        setLoading(true);
-        setError(null);
-        const consentData=await EnvApiClient.callApiFactory("accounts",permissions,null);
-        console.log('Consent id:', consentData);
-        // if (way == 'web') {
-        // const consentUrl = await EnvApiClient.manualUserConsent(
-        // consentData,
-        // );
-        //   console.log(consentUrl);
-        showInputDialog(permissions);
-        // }
- 
-      } catch (error) {
-        console.error('Error:', error);
-        setError('Failed to retrieve access token.');
-      } finally {
-        setLoading(false);
+    try {
+      const permissions = new Array();
+      if (checked1) {
+        permissions.push('ReadAccountsDetail');
       }
-  };
+      if (checked2) {
+        permissions.push('ReadBalances');
+      }
+      if (checked3) {
+        permissions.push('ReadTransactionsDebits');
+      }
+      if (checked4) {
+        permissions.push('ReadTransactionsCredits');
+      }
+      if (checked5) {
+        permissions.push('ReadTransactionsDetail');
+      }
+      // console.log(permissions);
+      setPermission(permissions);
 
+      setLoading(true);
+      setError(null);
+      const consentData = await EnvApiClient.callApiFactory(
+        'accounts',
+        permissions,
+        null,
+      );
+      console.log('Consent id:', consentData);
+      // if (way == 'web') {
+      // const consentUrl = await EnvApiClient.manualUserConsent(
+      // consentData,
+      // );
+      //   console.log(consentUrl);
+      showInputDialog(permissions);
+      // }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to retrieve access token.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async permission => {
     try {
       // console.log(inputValue);
       // console.log(permission);
-      const data = await EnvApiClient.exchangeAccessToken(inputValue,null);
+      const data = await EnvApiClient.exchangeAccessToken(inputValue, null);
       navigation.navigate('Your Accounts', {
         selectedBank: bankName,
         selectedIcon: `../assets/images/${bankName.toLowerCase()}.png`,

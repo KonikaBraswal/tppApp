@@ -12,20 +12,25 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {all} from 'axios';
 const commonbanks = [
   {id: 1, name: 'Natwest', icon: require('../assets/images/natwest.png')},
+  {id: 8, name: 'Ulster', icon: require('../assets/images/Ulster.jpg')},
   {id: 5, name: 'HSBC', icon: require('../assets/images/hsbc.png')},
   {id: 3, name: 'Barclays', icon: require('../assets/images/barclays.png')},
   {id: 4, name: 'Lloyds', icon: require('../assets/images/lloyds.png')},
   {id: 5, name: 'Monzo', icon: require('../assets/images/monzo.png')},
   {id: 6, name: 'Santander', icon: require('../assets/images/santander.png')},
+  {id: 7, name: 'RBS', icon: require('../assets/images/Rbs.jpg')},
+  {id: 8, name: 'Coutts', icon: require('../assets/images/coutts-logo.jpg')},
 ];
 const allbanks = [
   {id: 101, name: 'Barclays', icon: require('../assets/images/barclays.png')},
+  {id: 109, name: 'RBS', icon: require('../assets/images/Rbs.jpg')},
   {id: 102, name: 'HSBC', icon: require('../assets/images/hsbc.png')},
   {id: 103, name: 'Lloyds', icon: require('../assets/images/lloyds.png')},
   {id: 104, name: 'Monzo', icon: require('../assets/images/monzo.png')},
   {id: 105, name: 'Natwest', icon: require('../assets/images/natwest.png')},
   {id: 106, name: 'Revolut', icon: require('../assets/images/revolut.png')},
   {id: 107, name: 'Santander', icon: require('../assets/images/santander.png')},
+  {id: 110, name: 'Ulster', icon: require('../assets/images/Ulster.jpg')},
   {id: 108, name: 'Starling', icon: require('../assets/images/starling.png')},
 ];
 
@@ -47,8 +52,8 @@ const SelectBank = () => {
     setFilteredBanks(filtered);
   };
 
-  const handlePress = (bankName) => {
-    navigation.navigate('Consent',{bankName});
+  const handlePress = bankName => {
+    navigation.navigate('Consent', {bankName});
   };
   const rows = [];
   for (let i = 0; i < filteredBanks.length; i += 3) {
@@ -60,7 +65,9 @@ const SelectBank = () => {
         //spacing={10}
         style={SelectBankStyle.row}>
         {rowBanks.map(bank => (
-          <TouchableOpacity key={bank.id} onPress={() => handlePress(bank.name)}>
+          <TouchableOpacity
+            key={bank.id}
+            onPress={() => handlePress(bank.name)}>
             <Surface category="medium" style={SelectBankStyle.surface}>
               <Image source={bank.icon} style={SelectBankStyle.image} />
             </Surface>

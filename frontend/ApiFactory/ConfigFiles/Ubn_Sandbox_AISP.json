@@ -1,0 +1,14 @@
+{
+  "grant_type": "client_credentials",
+  "scope": "accounts",
+  "tokenEndpoint": "token",
+  "accountRequestEndpoint": "open-banking/v3.1/aisp/account-access-consents",
+  "consentUrl": "https://api.sandbox.ulsterbank.co.uk/authorize",
+  "redirectUri": "https://b0f22a9e-e0b2-40bc-aaa8-a1cbfdf07e72.example.org/redirect",
+  "accountsEndpoint": "open-banking/v3.1/aisp/accounts",
+  "teamDomain": "b0f22a9e-e0b2-40bc-aaa8-a1cbfdf07e72.example.org",
+  "customerId": "123456789012",
+  "psu": "123456789012@b0f22a9e-e0b2-40bc-aaa8-a1cbfdf07e72.example.org",
+  "financialId": "0015800000jfwxXAAQ",
+  "signatureJws": ""
+}
