@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 // import HomeScreen from '../screens/HomeScreen';
 import Dummy from '../screens/Dummy';
 import Landing from '../screens/Landing';
+import ProductListing from '../screens/EcommScreens/ProductListing';
 
 const Tab = createMaterialBottomTabNavigator();
 const BottomTab = () => {
@@ -25,11 +26,11 @@ const BottomTab = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Dummy}
+        component={ProductListing}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: 'Cart',
           tabBarIcon: ({color}) => (
-            <MaterialCommunityIcons name="account" color={color} size={28} />
+            <MaterialCommunityIcons name="cart" color={color} size={28} />
           ),
         }}
       />

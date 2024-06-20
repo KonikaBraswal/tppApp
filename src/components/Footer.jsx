@@ -13,7 +13,7 @@ const Footer = () => {
         </View>
         <View style={styles.iconWrapper}>
           <Icon style={styles.icon} source="account-outline" color={'#551a8b'} size={40} />
-          <Text style={styles.iconText}>Profile</Text>
+          <Text style={styles.iconText}>Cart</Text>
         </View>
       </View>
     </View>
