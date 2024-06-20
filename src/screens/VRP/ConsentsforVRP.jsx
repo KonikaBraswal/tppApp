@@ -15,7 +15,8 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+// import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../Apifactory/ApiFactory';
 import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Icon, Button, IconButton} from 'react-native-paper';
@@ -355,7 +356,7 @@ const styles = StyleSheet.create({
 
   footer: {
     backgroundColor: '#5a287d',
-    padding: 15,
+    padding: hp('1.5%'),
     width: '100%',
     alignItems: 'center',
   },

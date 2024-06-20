@@ -18,7 +18,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
-import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
+// import ApiFactory from '../../ApiFactory_AISP/ApiFactory';
+import ApiFactory from '../../Apifactory/ApiFactory';
 
 const mode = 'sandbox';
 const way = Platform.OS === 'web' ? 'web' : 'android';

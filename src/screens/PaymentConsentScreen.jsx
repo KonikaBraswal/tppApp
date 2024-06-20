@@ -4,7 +4,8 @@ import { Title, Button, Icon, Dialog, Portal, TextInput, Divider, Checkbox, List
 import { useNavigation } from '@react-navigation/native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { RFValue } from 'react-native-responsive-fontsize';
-import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
+// import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
+import ApiFactory from '../../Apifactory/ApiFactory';
 
 const mode = 'sandbox';
 const way = Platform.OS === 'web' ? 'web' : 'android'; // Adjusted platform detection
@@ -51,13 +52,14 @@ const PaymentConsentScreen = ({ route }) => {
   const handleConfirmButtonClick = async () => {
     if (mode == 'sandbox') {
       try {
-        const consentData = await sandboxApiClient.retrieveAccessToken(
+        const consentData = await sandboxApiClient.retrieveAccessToken_pisp(
           'payments',
           DebtorAccount,
         );
         console.log('Consent id:', consentData);
         if (way == 'web') {
-          const consentUrl = await sandboxApiClient.manualUserConsent(
+          console.log("callimgmgmgmgmg")
+          const consentUrl = await sandboxApiClient.manualUserConsent_pisp(
             consentData,
           );
           console.log(consentUrl);
@@ -73,7 +75,7 @@ const PaymentConsentScreen = ({ route }) => {
 
   const handleSubmit = async () => {
     try {
-      const data = await sandboxApiClient.exchangeAccessToken(inputValue);
+      const data = await sandboxApiClient.exchangeAccessToken_pisp(inputValue);
       navigation.navigate('Transaction Successful', { status: data.Status });
     } catch (error) {
       console.error('Error:', error);

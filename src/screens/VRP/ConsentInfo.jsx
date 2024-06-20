@@ -195,7 +195,7 @@
 
 import React, { useState, useEffect } from 'react';
 // import sandboxConfig from '../configs/Sandbox.json';
-import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+// import sandboxConfig from '../../../configs_VRP/Sandbox.json';
 import {
     Title,
     Text,
@@ -218,7 +218,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../../components/IconDialog';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+// import ApiFactory from '../../../TOBEDELETED/ApiFactory_VRP/ApiFactory';
 import { all } from 'axios';
 import { Surface } from '@react-native-material/core';
 

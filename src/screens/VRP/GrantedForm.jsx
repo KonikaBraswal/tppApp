@@ -1,7 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {TextInput} from '@react-native-material/core';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+// import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../Apifactory/ApiFactory';
 import {
   View,
   Text,
@@ -55,7 +56,7 @@ const GrantedForm = ({route}) => {
     };
     try {
       console.log('selectconsentData', selectconsentData.consentpayload)
-      const response = await sandboxApiClient.refreshToken(
+      const response = await sandboxApiClient.refreshToken_vrp(
         selectconsentData,
         formData,
       );

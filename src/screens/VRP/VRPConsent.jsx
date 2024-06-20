@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+// import sandboxConfig from '../../../configs_VRP/Sandbox.json';
+import sandboxConfig from '../../../configs/Sandbox.json';
 import {
     Title,
     Text,
@@ -23,7 +24,9 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconDialog from '../../components/IconDialog';
-import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+// import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
+import ApiFactory from '../../../Apifactory/ApiFactory';
+
 import { all } from 'axios';
 import { Surface } from '@react-native-material/core';
 
@@ -107,13 +110,13 @@ const VRPConsent = ({ route }) => {
                     body: permissions,
                     consentUrl: sandboxConfig.paymentRequestEndPoint
                 };
-                const consentdata = await sandboxApiClient.retrieveAccessToken(
+                const consentdata = await sandboxApiClient.retrieveAccessToken_vrp(
                     { accessTokenParams },
                 ); //here is data
                 setConsentData(consentdata);
                 if (way == 'web') {
                     const Vrpscope = 'openid payments';
-                    const consentUrl = await sandboxApiClient.manualUserConsent(
+                    const consentUrl = await sandboxApiClient.manualUserConsent_vrp(
                         Vrpscope,
                     );
                     
@@ -133,7 +136,7 @@ const VRPConsent = ({ route }) => {
     const handleSubmit = async () => {
         try {
             
-            const response=await sandboxApiClient.exchangeAccessToken(inputValue, formData,consentData);
+            const response=await sandboxApiClient.exchangeAccessToken_vrp(inputValue, formData,consentData);
             console.log(response)
             console.log(consentData)
             const updatedResponse = {
