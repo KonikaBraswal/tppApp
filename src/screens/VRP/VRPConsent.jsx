@@ -31,11 +31,24 @@ import { all } from 'axios';
 import { Surface } from '@react-native-material/core';
 
 const screenWidth = Dimensions.get('window').width;
-const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+// const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = (newEnv) => {
+    global.env = newEnv; // Update the global environment variable
+    const apiFactory = new ApiFactory();
+    const apiClient = apiFactory.createApiClient(global.env);
+    return apiClient;
+    // Use the new apiClient as needed
+   };
 const VRPConsent = ({ route }) => {
+    useEffect(() => {
+        const newApiClient = switchEnvironment(global.env);
+    
+        setSandboxApiClient(newApiClient);
+        return () => {
+        };
+     }, []);
     const formData = route.params?.formData;
     const identification =  formData.accountNumber+formData.sortCode ;
     const jsondata =
@@ -82,6 +95,7 @@ const VRPConsent = ({ route }) => {
     const [loading, setLoading] = useState(false);
     const [allPayments, setAllPayments] = useState('');
     const [error, setError] = useState(null);
+    const [sandboxApiClient, setSandboxApiClient] = useState(null);
     const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
     const showErrorDialog = () => setErrorDialogVisible(true);
     const hideErrorDialog = () => setErrorDialogVisible(false);
@@ -95,7 +109,6 @@ const VRPConsent = ({ route }) => {
 
 
     const handleConfirmButtonClick = async () => {
-        if (mode == 'sandbox') {
             try {
                 const permissions = jsondata;
 
@@ -127,10 +140,7 @@ const VRPConsent = ({ route }) => {
                 setError('Failed to retrieve access token.');
             } finally {
                 setLoading(false);
-            }
-        } else {
-            navigation.navigate('Consent');
-        }
+            }3
     };
 
     const handleSubmit = async () => {

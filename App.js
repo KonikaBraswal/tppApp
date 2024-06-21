@@ -27,6 +27,7 @@ import ViewNatwestAccounts from './src/screens/ViewNatwestAccounts';
 // import { initDatabase } from './database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
+import { TransactionsforLocal } from './src/components/TransactionsforLocal';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -50,6 +51,7 @@ export default function App() {
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />
+              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
               <Stack.Screen

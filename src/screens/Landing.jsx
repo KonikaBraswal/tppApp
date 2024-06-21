@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef,useState } from "react";
 import {
   View,
   StyleSheet,
@@ -12,12 +12,13 @@ import {
   Dimensions,
   ScrollView,
 } from "react-native";
+import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import { Surface, FAB } from "@react-native-material/core";
 import { Icon, Searchbar, Card, Title } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ViewAll from "../components/ViewAll";
+import ViewAllLocal from '../components/ViewAllLocal';
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -27,13 +28,34 @@ const Landing = () => {
     { id: 2, name: "Barclays", icon: require("../assets/icons/barclays.png") },
     { id: 3, name: "Lloyds", icon: require("../assets/icons/lloyds.png") },
     { id: 5, name: "Monzo", icon: require("../assets/icons/monzo.png") },
-    {
-      id: 6,
-      name: "Santander",
-      icon: require("../assets/icons/santander.png"),
+    {id: 6,name: "Santander",icon: require("../assets/icons/santander.png"),
     },
   ];
-
+  const [env, setEnv] = useState(global.env);
+  const [key, setKey] = useState(Date.now()); 
+  const render=()=>{
+    if(env==='sandbox'){
+      return <ViewAll/>
+    }
+    else{
+      return <ViewAllLocal/>;
+    }
+  }
+  useFocusEffect(
+    React.useCallback(() => {
+      // This function runs when the screen comes into focus
+      const checkEnvChange = () => {
+        if (global.env !== env) {
+          setEnv(global.env);
+          setKey(Date.now()); // Trigger remount by changing the key
+        }
+      };
+      checkEnvChange();
+  
+      const intervalId = setInterval(checkEnvChange, 1000); // Check every second
+      return () => clearInterval(intervalId); // Cleanup on unmount
+    }, [env])
+  )
   const renderCard = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
@@ -161,7 +183,7 @@ const Landing = () => {
           </ScrollView>
 
           <View style={styles.addBankContainer}>
-            <ViewAll />
+          {render()}
           </View>
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>

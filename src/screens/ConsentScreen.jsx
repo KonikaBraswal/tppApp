@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Title,
   Text,
@@ -24,9 +24,20 @@ import ApiFactory from '../../Apifactory/ApiFactory';
 const mode = 'sandbox';
 const way = Platform.OS === 'web' ? 'web' : 'android';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const ConsentScreen = () => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
@@ -42,7 +53,7 @@ const ConsentScreen = () => {
   const [permission, setPermission] = useState([]);
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const handlePress1 = () => setExpanded1(!expanded1);
   const handlePress2 = () => setExpanded2(!expanded2);
   const handlePress3 = () => setExpanded3(!expanded3);
@@ -56,7 +67,6 @@ const ConsentScreen = () => {
   const handleCheckbox7 = () => setChecked7(!checked7);
 
   const handleConfirmButtonClick = async () => {
-    if (mode === 'sandbox') {
       try {
         const permissions = [];
         if (checked1) permissions.push('ReadAccountsDetail');
@@ -95,9 +105,7 @@ const ConsentScreen = () => {
         console.error('Error:', error);
         // Handle error
       }
-    } else {
-      navigation.navigate('Consent');
-    }
+   
   };
 
   const handleSubmit = async () => {

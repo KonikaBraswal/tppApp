@@ -5,7 +5,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-// import ApiFactory from '../../TOBEDELETED/Apifactory_aisp/ApiFactory';
 import ApiFactory from '../../Apifactory/ApiFactory';
 
 const mode = 'sandbox';

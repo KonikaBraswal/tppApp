@@ -33,7 +33,7 @@ const MainScreen = ({route}) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
       <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
         <View style={styles.rowContainer}>

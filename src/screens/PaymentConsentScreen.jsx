@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { Title, Button, Icon, Dialog, Portal, TextInput, Divider, Checkbox, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -7,10 +7,9 @@ import { RFValue } from 'react-native-responsive-fontsize';
 // import ApiFactory from '../../ApiFactory_PISP/ApiFactory';
 import ApiFactory from '../../Apifactory/ApiFactory';
 
-const mode = 'sandbox';
+// const mode = 'sandbox';
 const way = Platform.OS === 'web' ? 'web' : 'android'; // Adjusted platform detection
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const CustomListItem = ({ title, value }) => (
   <View
     style={{
@@ -23,12 +22,27 @@ const CustomListItem = ({ title, value }) => (
     <Text style={styles.rightContent}>{value}</Text>
   </View>
 );
-
+const switchEnvironment = (newEnv) => {
+  global.env = newEnv; // Update the global environment variable
+  const apiFactory = new ApiFactory();
+  const apiClient = apiFactory.createApiClient(global.env);
+  console.log("PISPPPPPPPPPPPPPP",global.env);
+  return apiClient;
+  // Use the new apiClient as needed
+ };
 const PaymentConsentScreen = ({ route }) => {
+  useEffect(() => {
+    const newApiClient = switchEnvironment(global.env);
+
+    setSandboxApiClient(newApiClient);
+    return () => {
+    };
+ }, []);
   const navigation = useNavigation();
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
 
   const showInputDialog = () => setInputDialogVisible(true);
@@ -50,7 +64,6 @@ const PaymentConsentScreen = ({ route }) => {
   const DebtorAccount = route.params.DebtorAccount;
 
   const handleConfirmButtonClick = async () => {
-    if (mode == 'sandbox') {
       try {
         const consentData = await sandboxApiClient.retrieveAccessToken_pisp(
           'payments',
@@ -68,9 +81,7 @@ const PaymentConsentScreen = ({ route }) => {
       } catch (error) {
         console.error('Error:', error);
       }
-    } else {
-      navigation.navigate('PISP');
-    }
+  
   };
 
   const handleSubmit = async () => {
