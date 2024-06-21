@@ -51,7 +51,7 @@ const ConfirmDetails = ({ route }) => {
 
    try {
       const selectconsentData = JSON.parse(consentData);
-      const response = await sandboxApiClient.refreshToken(selectconsentData, formData);
+      const response = await sandboxApiClient.refreshToken_cvrp(selectconsentData, formData);
       console.log('response', response);
       if (response.Data.Status === 'AcceptedSettlementCompleted') {
         navigation.navigate('Order Placed');

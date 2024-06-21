@@ -4,6 +4,7 @@ import {Linking, Alert} from 'react-native';
 // import config from '../configs_AISP/config.json';
 import config from '../configs/config_Sandbox.json';
 import sandboxConfig from '../configs/Sandbox.json';
+
 // import config from '../configs_VRP/config.json';
 // import sandboxConfig from '../configs_VRP/Sandbox.json';
 // import config from '../configs_PISP/config.json';
@@ -166,6 +167,26 @@ class SanboxApiClient {
     }
     catch(error){
         throw new Error(`Failed to fetch data for age :${error}`);
+    }
+  }
+  async getDetailsCA(accessToken: any): Promise<any> {
+    try {
+      // const accessToken=this.accessTokenCA();
+      // console.log("accesstoken",this.apiAccessToken);
+      const headers = {
+        Authorization: 'Bearer ' + accessToken,
+      };
+      const url =
+        'zerocode/bankofapis.com/customer-checkout/v3/attributes/ecommerce-checkout';
+      const response: AxiosResponse<ResponseData> = await axios.get(
+        `${this.baseUrl}/${url}`,
+        {
+          headers: headers,
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch token: ${error}`);
     }
   }
   //****************AISP*********************** */
@@ -835,6 +856,7 @@ class SanboxApiClient {
   // ///**********************VRP**************************** *///
 
   async retrieveAccessToken_vrp(params: AccessTokenRequestParams): Promise<string> {
+    console.log("hi called me");
     this.permissions = params.accessTokenParams.body;
     try {
       const body: Record<string, string> = {
@@ -997,6 +1019,269 @@ class SanboxApiClient {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
+  // async exchangeAccessToken(authTokenUrl: string, consentData: any) {
+  //   try {
+  //     const start = authTokenUrl.indexOf('=') + 1;
+  //     const end = authTokenUrl.indexOf('&');
+  //     const authToken = authTokenUrl.slice(start, end);
+
+  //     const body: Record<string, string> = {
+  //       client_id: this.clientId,
+  //       client_secret: this.clientSecret,
+  //       redirect_uri: sandboxConfig.redirectUri,
+  //       grant_type: 'authorization_code',
+  //       code: authToken,
+  //     };
+  //     const headers = {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     };
+
+  //     const response: AxiosResponse<ResponseData> = await axios.post(
+  //       `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+  //       null,
+  //       {
+  //         headers: headers,
+  //         params: body,
+  //       },
+  //     );
+
+  //     const RefreshToken = response.data.refresh_token;
+  //     const consentExpiresIn = response.data.expires_in;
+
+  //     const updatedDetails2 = {
+  //       refreshedtoken: RefreshToken,
+  //       status: 'Authorised',
+  //       consentexpiry: consentExpiresIn,
+  //     };
+
+  //     const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+  //     // await updateDetailsForVrp(
+  //     //   updatedDetails2,
+  //     //   this.consentId,
+  //     //   columnsToUpdate2,
+  //     // );
+  //     refreshTokenExists = true;
+  //     const debitordetails=await this.getDomesticConsent_vrp(
+  //       response.data.access_token,
+  //       consentData.Links.Self,
+  //     );
+  //     console.log("debitor-->",debitordetails);
+  //     // return response.data;
+  //     const detailsCa=await this.getDetailsCA(response.data.access_token);
+  //     console.log("debitor2-->",detailsCa);
+  //     const result = {
+  //       responseData: response.data,
+  //       customerDetails: detailsCa,
+  //       debitorDetails:debitordetails
+  //     };
+  //     console.log("result",result);
+  //     return result;
+      
+  //   } catch (error) {
+  //     throw new Error(`Failed to fetch data: ${error}`);
+  //   }
+  // }
+  async accountRequest_cvrp(url: string): Promise<any> {
+    try {
+      const body = this.permissions;
+      const id = uuid.v4();
+      const headers = {
+        ...config.vrpHeaders,
+        Authorization: 'Bearer ' + this.accessToken,
+        'x-idempotency-key': `${id}`,
+      };
+      const response: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${url}`,
+        body,
+        {
+          headers: headers,
+        },
+      );
+      const Status = response.data.Data?.Status;
+      const Payload = response.data.Data;
+      this.consentId = response.data.Data?.ConsentId || '';
+      const details1 = {
+        bankname: 'Natwest',
+        consentid: this.consentId,
+        status: Status,
+        consentpayload: JSON.stringify(Payload),
+        scope: 'vrp',
+        account_details: JSON.stringify(Payload),
+      };
+
+      // addDetails(details1);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
+  async retrieveAccessToken_cvrp(params: AccessTokenRequestParams): Promise<string> {
+    this.permissions = params.accessTokenParams.body;
+    try {
+      const body: Record<string, string> = {
+        grant_type: sandboxConfig.grant_type,
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        scope: params.accessTokenParams.scope,
+      };
+      const response: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        body,
+        {
+          headers: params.accessTokenParams.headers,
+        },
+      );
+
+      this.accessToken = response.data.access_token;
+      return this.accountRequest_cvrp(params.accessTokenParams.consentUrl);
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
+  async manualUserConsent_cvrp(scope: string): Promise<string> {
+    // console.log('manual consent');
+    let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=${scope}&redirect_uri=${sandboxConfig.redirectUri}&request=${this.consentId}`;
+    Linking.openURL(consentUrlWithVariables);
+    console.log(consentUrlWithVariables);
+
+    return consentUrlWithVariables;
+  }
+  async exchangeAccessToken_cvrp(authTokenUrl: string, consentData: any) {
+    try {
+      const start = authTokenUrl.indexOf('=') + 1;
+      const end = authTokenUrl.indexOf('&');
+      const authToken = authTokenUrl.slice(start, end);
+
+      const body: Record<string, string> = {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        redirect_uri: sandboxConfig.redirectUri,
+        grant_type: 'authorization_code',
+        code: authToken,
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const response: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        null,
+        {
+          headers: headers,
+          params: body,
+        },
+      );
+
+      const RefreshToken = response.data.refresh_token;
+      const consentExpiresIn = response.data.expires_in;
+
+      const updatedDetails2 = {
+        refreshedtoken: RefreshToken,
+        status: 'Authorised',
+        consentexpiry: consentExpiresIn,
+      };
+
+      const columnsToUpdate2 = ['refreshedtoken', 'status', 'consentexpiry'];
+      // await updateDetailsForVrp(
+      //   updatedDetails2,
+      //   this.consentId,
+      //   columnsToUpdate2,
+      // );
+      refreshTokenExists = true;
+      const debitordetails=await this.getDomesticConsent_vrp(
+        response.data.access_token,
+        consentData.Links.Self,
+      );
+      console.log("debitor-->",debitordetails);
+      // return response.data;
+      const detailsCa=await this.getDetailsCA(response.data.access_token);
+      console.log("debitor2-->",detailsCa);
+      const result = {
+        responseData: response.data,
+        customerDetails: detailsCa,
+        debitorDetails:debitordetails
+      };
+      console.log("result",result);
+      return result;
+      
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
+  async getDomesticConsent_cvrp(accessToken: any, url: string) {
+    try {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'x-fapi-financial-id': '0015800000jfwxXAAQ',
+      };
+      const allVrpResponse = await axios.get(url, {
+        headers: headers,
+      });
+      console.log('allVrpResponse of  call', allVrpResponse.data);
+      const payload = allVrpResponse.data.Data;
+      const id = allVrpResponse.data.Data.ConsentId;
+
+      const updateDetails4 = {
+        account_details: JSON.stringify(payload),
+      };
+      const columnsToUpdate5 = ['account_details'];
+
+      // await updateDetailsForVrp(updateDetails4, id, columnsToUpdate5);
+      return allVrpResponse.data;
+    } catch (error) {
+      console.log('error in getting in vrp calls', error);
+    }
+  }
+  async refreshToken_cvrp(refreshToken: any, grantedformData: any): Promise<any> {
+    try {
+      const body: Record<string, string> = {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken.refreshtoken,
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        null,
+        {
+          headers: headers,
+          params: body,
+        },
+      );
+
+      console.log('Refresh call response', responseRefresh.data);
+      const RefreshToken = responseRefresh.data.refresh_token;
+      const updatedDetails3 = {
+        refreshedtoken: RefreshToken,
+      };
+
+      const columnsToUpdate3 = ['refreshedtoken'];
+      // await updateDetailsForVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
+      // await updateDetailsForCVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
+
+      return this.vrpPayments_vrp(
+        responseRefresh.data.access_token,
+        refreshToken.consentid,
+        grantedformData,
+      );
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
+
+
 
   async refreshToken_vrp(refreshToken: any, grantedformData: any): Promise<any> {
     try {

@@ -150,7 +150,7 @@ const BankList = ({ route }) => {
         body: permissions,
         consentUrl: sandboxConfig.paymentRequestEndPoint
       };
-      const consentdata = await sandboxApiClient.retrieveAccessToken(
+      const consentdata = await sandboxApiClient.retrieveAccessToken_cvrp(
         { accessTokenParams },
       );
       setConsentData(consentdata);
@@ -162,7 +162,7 @@ const BankList = ({ route }) => {
 
       if (way == 'web') {
         const Vrpscope = 'openid payments';
-        const consentUrl = await sandboxApiClient.manualUserConsent(
+        const consentUrl = await sandboxApiClient.manualUserConsent_cvrp(
           Vrpscope,
         );
 
@@ -177,7 +177,7 @@ const BankList = ({ route }) => {
 
   };
   const submit = async () => {
-    const customerDetails = await sandboxApiClient.getDomesticConsent();
+    const customerDetails = await sandboxApiClient.getDomesticConsent_cvrp();
     console.log("lo", customerDetails);
     navigation.navigate('Customer Details', {
       customerDetails, totalAmount
@@ -186,7 +186,7 @@ const BankList = ({ route }) => {
   const handleSubmit = async () => {
     try {
 
-      const { responseData, customerDetails, debitorDetails} = await sandboxApiClient.exchangeAccessToken(inputValue, consentData);
+      const { responseData, customerDetails, debitorDetails} = await sandboxApiClient.exchangeAccessToken_cvrp(inputValue, consentData);
       console.log("details2-->",customerDetails);
       console.log("details3-->",responseData);
       console.log("details4-->",debitorDetails);
