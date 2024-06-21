@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Title, Text, Button} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
+import balanceData from '../assets/data/balances.json';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -12,6 +13,7 @@ const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
 const sandboxApiClient = apiFactory.createApiClient('sandbox');
+// const sandboxApiClient = apiFactory.createApiClient(global.env);
 
 const AccountDetails = props => {
   const {
@@ -26,6 +28,11 @@ const AccountDetails = props => {
   const permissions = props.permissions;
   const [balanceDetails, setBalanceDetails] = useState(null);
   useEffect(() => {
+    if(global.env=='local')
+      {
+        setBalanceDetails(balanceData.Data);
+      }
+      else{
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         try {
@@ -37,9 +44,11 @@ const AccountDetails = props => {
           console.error('Error fetching balance:', error);
         }
       }
+      }
+      fetchBalance();
     };
 
-    fetchBalance();
+    
   }, [AccountId]);
 
   return (

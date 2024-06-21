@@ -95,6 +95,7 @@ import {Text, ActivityIndicator} from 'react-native-paper';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import TransactionCard from './TransactionCard';
 import ApiFactory from '../../Apifactory/ApiFactory';
+import transactionData from '../assets/data/transactions.json';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
@@ -108,6 +109,13 @@ const TransactionList = props => {
     'No Transactions Found',
   );
   useEffect(() => {
+    if(global.env==='local'){
+      console.log("inside local transactionListtttttttttt",transactionData.Data);
+      setTransactionDetails(transactionData.Data);
+      setLoading(false);
+
+    }
+    else{
     const fetchTransaction = async () => {
       if (
         permissions.includes('ReadTransactionsDetail') &&
@@ -131,6 +139,7 @@ const TransactionList = props => {
     };
 
     fetchTransaction();
+  }
   }, [AccountId]);
   const transactions = transactionDetails;
   return (

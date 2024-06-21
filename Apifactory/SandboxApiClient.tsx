@@ -1,21 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import {Linking, Alert} from 'react-native';
-// import * as Keychain from 'react-native-keychain';
-// import config from '../configs_AISP/config.json';
+
 import config from '../configs/config_Sandbox.json';
 import sandboxConfig from '../configs/Sandbox.json';
-
-// import config from '../configs_VRP/config.json';
-// import sandboxConfig from '../configs_VRP/Sandbox.json';
-// import config from '../configs_PISP/config.json';
-// import sandboxConfig from '../configs_PISP/Sandbox.json';
-// import sandboxConfig from '../configs_AISP/Sandbox.json';
-//clientId and clientSecret is different
-// import {addDetails} from '../database/Database';
-// import {updateDetails, fetchRefreshedToken} from '../database/Database';
-// import * as SecureStore from 'expo-secure-store';
-// import config from '../configs_AISP/config.json'
-// import sandboxConfig from '../configs_AISP/Sandbox.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
@@ -965,7 +952,6 @@ class SanboxApiClient {
     return consentUrlWithVariables;
   }
 
-
   async exchangeAccessToken_vrp(authTokenUrl: string, formData: any, consentData: any) {
     try {
       const start = authTokenUrl.indexOf('=') + 1;
@@ -1233,6 +1219,54 @@ class SanboxApiClient {
     }
   }
 
+  async refreshToken_cvrp(refreshToken: any, grantedformData: any): Promise<any> {
+    try {
+      const body: Record<string, string> = {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken.refreshtoken,
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
+        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
+        null,
+        {
+          headers: headers,
+          params: body,
+        },
+      );
+
+      console.log('Refresh call response', responseRefresh.data);
+      const RefreshToken = responseRefresh.data.refresh_token;
+      const updatedDetails3 = {
+        refreshedtoken: RefreshToken,
+      };
+
+      const columnsToUpdate3 = ['refreshedtoken'];
+      // await updateDetailsForVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
+      // await updateDetailsForCVrp(
+      //   updatedDetails3,
+      //   refreshToken.consentid,
+      //   columnsToUpdate3,
+      // );
+
+      return this.vrpPayments_vrp(
+        responseRefresh.data.access_token,
+        refreshToken.consentid,
+        grantedformData,
+      );
+    } catch (error) {
+      throw new Error(`Failed to fetch data: ${error}`);
+    }
+  }
 
 
   async refreshToken_vrp(refreshToken: any, grantedformData: any): Promise<any> {

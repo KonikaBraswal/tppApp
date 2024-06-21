@@ -691,18 +691,6 @@ const ConsentsforVRP = () => {
                     Transactions
                   </Button>
                 </View>
-                <IconButton
-                  icon="information"
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: hp('1.2%'),
-                  }}
-                  labelStyle={{color: 'black'}}
-                  // title={`Go to ${ConsentInfo}`}
-                  onPress={() => handleConsent(index, 'ConsentInfo')}>
-                  Info
-                </IconButton>
               </View>
             </Surface>
           ))}

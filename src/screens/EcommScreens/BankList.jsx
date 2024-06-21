@@ -44,28 +44,13 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrderSuccessful from './OrderSuccessful';
-// import { addDetailsCA } from '../../../database/Database';
+import { addDetailsCA } from '../../../database/Database';
 
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-// const sandboxApiClient = apiFactory.createApiClient('sandbox');
-const switchEnvironment = (newEnv) => {
-  global.env = newEnv; // Update the global environment variable
-  const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
-  return apiClient;
-  // Use the new apiClient as needed
- };
+const sandboxApiClient = apiFactory.createApiClient('sandbox');
 const BankList = ({ route }) => {
-
-  useEffect(() => {
-    const newApiClient = switchEnvironment(global.env);
-
-    setSandboxApiClient(newApiClient);
-    return () => {
-    };
- }, []);
   const totalAmount = route.params.totalAmount;
 
   const navigation = useNavigation();
@@ -75,7 +60,6 @@ const BankList = ({ route }) => {
   const [isErrorDialogVisible, setErrorDialogVisible] = useState(false);
   const showErrorDialog = () => setErrorDialogVisible(true);
   const hideErrorDialog = () => setErrorDialogVisible(false);
-  const [sandboxApiClient, setSandboxApiClient] = useState(null);
   const [isInputDialogVisible, setInputDialogVisible] = useState(false);
   const showInputDialog = () => setInputDialogVisible(true);
   const hideInputDialog = () => setInputDialogVisible(false);
@@ -171,12 +155,11 @@ const BankList = ({ route }) => {
       );
       setConsentData(consentdata);
       console.log(consentdata);
-      if(global.env=='sandbox'){
       await AsyncStorage.setItem(
         'EcommConsentId',
         JSON.stringify(consentdata.Data.ConsentId),
       );
-    }
+
       if (way == 'web') {
         const Vrpscope = 'openid payments';
         const consentUrl = await sandboxApiClient.manualUserConsent_cvrp(
@@ -223,7 +206,7 @@ const BankList = ({ route }) => {
       console.log("details-->",details);
       await AsyncStorage.setItem('consentData', JSON.stringify(details))
       console.log('Checking type of', typeof details);
-      // addDetailsCA(details);
+      addDetailsCA(details);
       navigation.navigate('Customer Details', {
         customerDetails, totalAmount, debitorDetails
       });
