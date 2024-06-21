@@ -2,9 +2,9 @@
 import axios from 'axios';
 // import config from '../configs_AISP/config.json';
 import config from '../configs/config_Sandbox.json'
-import sandboxConfig from '../configs_AISP/Sandbox.json';
 import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';
+import MockApiClient from './MockApiClient';
 import SanboxApiClient from './SandboxApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
 
@@ -34,11 +34,7 @@ class ApiFactory {
         );
       // Add other cases if needed
       case 'local':
-        return new SanboxApiClient(
-          this.baseUrl,
-          this.clientId,
-          this.clientSecret,
-          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
+        return new MockApiClient(
         );
       case 'sit':
         return new SanboxApiClient(

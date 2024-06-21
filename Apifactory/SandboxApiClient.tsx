@@ -1232,54 +1232,6 @@ class SanboxApiClient {
       console.log('error in getting in vrp calls', error);
     }
   }
-  async refreshToken_cvrp(refreshToken: any, grantedformData: any): Promise<any> {
-    try {
-      const body: Record<string, string> = {
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken.refreshtoken,
-      };
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-
-      const responseRefresh: AxiosResponse<ResponseData> = await axios.post(
-        `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
-        null,
-        {
-          headers: headers,
-          params: body,
-        },
-      );
-
-      console.log('Refresh call response', responseRefresh.data);
-      const RefreshToken = responseRefresh.data.refresh_token;
-      const updatedDetails3 = {
-        refreshedtoken: RefreshToken,
-      };
-
-      const columnsToUpdate3 = ['refreshedtoken'];
-      // await updateDetailsForVrp(
-      //   updatedDetails3,
-      //   refreshToken.consentid,
-      //   columnsToUpdate3,
-      // );
-      // await updateDetailsForCVrp(
-      //   updatedDetails3,
-      //   refreshToken.consentid,
-      //   columnsToUpdate3,
-      // );
-
-      return this.vrpPayments_vrp(
-        responseRefresh.data.access_token,
-        refreshToken.consentid,
-        grantedformData,
-      );
-    } catch (error) {
-      throw new Error(`Failed to fetch data: ${error}`);
-    }
-  }
 
 
 

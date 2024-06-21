@@ -32,6 +32,7 @@ import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
  import CartScreen from './src/screens/EcommScreens/CartScreen';
  import AddressScreen from './src/screens/EcommScreens/AddressScreen';
  import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
+ import { TransactionsforLocal } from './src/components/TransactionsforLocal';
 // import { initDatabase } from './database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
@@ -81,6 +82,7 @@ export default function App() {
               <Stack.Screen name="Banklist" component={BankList} />
               <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
               <Stack.Screen name="Order Placed" component={OrderSuccessful} />
+              <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
                <Stack.Screen name="Online Store" component={ProductListing} />
               <Stack.Screen name="Product Details" component={ProductDetails} />
                <Stack.Screen name="Cart" component={CartScreen} />

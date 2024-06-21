@@ -1,0 +1,38 @@
+{
+    "Data": {
+        "DomesticPaymentId": "6a177d1b-91ac-4738-bac8-a74dc55a988a",
+        "ConsentId": "6a177d1b-91ac-4738-bac8-a74dc55a988a",
+        "CreationDateTime": "2024-04-25T11:55:58.996Z",
+        "Status": "AcceptedSettlementCompleted",
+        "StatusUpdateDateTime": "2024-04-25T11:55:59.013Z",
+        "Initiation": {
+            "InstructionIdentification": "instr-identification",
+            "EndToEndIdentification": "e2e-identification",
+            "InstructedAmount": {
+                "Amount": "50.00",
+                "Currency": "GBP"
+            },
+            "CreditorAccount": {
+                "SchemeName": "IBAN",
+                "Identification": "BE56456394728288",
+                "Name": "ACME DIY",
+                "SecondaryIdentification": "secondary-identif"
+            },
+            "RemittanceInformation": {
+                "Unstructured": "Tools",
+                "Reference": "Tools"
+            }
+        },
+        "Debtor": {
+            "Name": "Sydney Beard",
+            "SchemeName": "UK.OBIE.BBAN",
+            "Identification": "NWBK50000012345602"
+        }
+    },
+    "Links": {
+        "Self": "https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-payments/6a177d1b-91ac-4738-bac8-a74dc55a988a"
+    },
+    "Meta": {
+        "TotalPages": 1
+    }
+}
