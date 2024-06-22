@@ -181,13 +181,24 @@ const ConsentScreen = ({route}) => {
   };
 
   const handleSubmit = async permission => {
+    let imageSource;
+    if (bankName == 'HSBC') {
+      imageSource = '../assets/images/hsbc.png';
+    } else if (bankName == 'RBS') {
+      imageSource = '../assets/images/Rbs2.png';
+    } else if (bankName == 'Ulster') {
+      imageSource = '../assets/images/Ubn2.png';
+    } else {
+      imageSource = '../assets/images/natwest.png'; // replace with your other image path
+    }
     try {
       // console.log(inputValue);
       // console.log(permission);
       const data = await EnvApiClient.exchangeAccessToken(inputValue, null);
       navigation.navigate('Your Accounts', {
         selectedBank: bankName,
-        selectedIcon: `../assets/images/${bankName.toLowerCase()}.png`,
+        // selectedIcon: `../assets/images/${bankName.toLowerCase()}.png`,
+        selectedIcon: imageSource,
         accounts: data,
         permissions: permission,
       });

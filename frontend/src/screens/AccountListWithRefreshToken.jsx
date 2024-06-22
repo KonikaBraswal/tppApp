@@ -158,6 +158,10 @@ const AccountListWithRefreshToken = ({route}) => {
                 const bankName = item.bankName;
                 if (bankName == 'HSBC') {
                   imageSource = require('../assets/images/hsbc.png');
+                } else if (bankName == 'Ulster') {
+                  imageSource = require('../assets/images/Ubn2.png');
+                } else if (bankName == 'RBS') {
+                  imageSource = require('../assets/images/Rbs2.png');
                 } else {
                   imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
                 }
@@ -202,6 +206,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                         account.Account[0].Identification,
                                       Name: account.Account[0].Name,
                                     },
+                                    bankName,
                                   })
                                 }
                               />

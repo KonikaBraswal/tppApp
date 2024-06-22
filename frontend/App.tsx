@@ -61,9 +61,12 @@ import {initDatabase, initDatabaseTransaction} from './database/Database';
 import {initDatabaseApi} from './database/DatabaseLogs';
 import HsbcDummy from './src/screens/hsbcDummy';
 import SelectBankPISP from './src/components/SelectBankPISP';
+import SelectBankVRP from './src/components/SelectBankVRP';
 
 function App(): React.JSX.Element {
   let androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
+  let androidClientVrp_UBN = new AndroidClient('UBN', 'Sandbox', 'vrp');
+  let androidClientVrp_RBS = new AndroidClient('RBS', 'Sandbox', 'vrp');
   let androidClientAisp = new AndroidClient('NWG', 'Sandbox', 'accounts');
   let androidClientAisp_UBN = new AndroidClient('UBN', 'Sandbox', 'accounts');
   let androidClientAisp_RBS = new AndroidClient('RBS', 'Sandbox', 'accounts');
@@ -72,6 +75,16 @@ function App(): React.JSX.Element {
   let androidClientPisp_RBS = new AndroidClient('RBS', 'Sandbox', 'payments');
   let androidClientVrpTransact = new AndroidClient(
     'NWG',
+    'Sandbox',
+    'vrp_transactions',
+  );
+  let androidClientVrpTransact_UBN = new AndroidClient(
+    'UBN',
+    'Sandbox',
+    'vrp_transactions',
+  );
+  let androidClientVrpTransact_RBS = new AndroidClient(
+    'RBS',
     'Sandbox',
     'vrp_transactions',
   );
@@ -84,8 +97,12 @@ function App(): React.JSX.Element {
   useEffect(() => {
     try {
       androidClientVrp.initDatabaseAndroidVrp();
+      androidClientVrp_UBN.initDatabaseAndroidVrp();
+      androidClientVrp_RBS.initDatabaseAndroidVrp();
       androidClientCA.initDatabaseAndroidCa();
       androidClientVrpTransact.initDatabaseAndroidVrpTransactions();
+      androidClientVrpTransact_UBN.initDatabaseAndroidVrpTransactions();
+      androidClientVrpTransact_RBS.initDatabaseAndroidVrpTransactions();
       androidClientAisp.initDatabaseAndroidAisp();
       androidClientAisp_UBN.initDatabaseAndroidAisp();
       androidClientAisp_RBS.initDatabaseAndroidAisp();
@@ -144,6 +161,10 @@ function App(): React.JSX.Element {
                 <Stack.Screen
                   name="Select Bank For Payment"
                   component={SelectBankPISP}
+                />
+                <Stack.Screen
+                  name="Select Bank For VRP"
+                  component={SelectBankVRP}
                 />
                 {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
                 <Stack.Screen name="Transactions" component={TransactionList} />

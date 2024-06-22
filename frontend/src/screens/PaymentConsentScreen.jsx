@@ -53,7 +53,6 @@ const switchEnvironment = (newEnv, bankName) => {
 const PaymentConsentScreen = ({route}) => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env, route.params.bankName);
-
     setEnvApiClient(newApiClient);
     return () => {};
   }, []);
@@ -82,6 +81,7 @@ const PaymentConsentScreen = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
 
   const handleConfirmButtonClick = async () => {
+    console.log(route.params.bankName);
     try {
       const consentData = await EnvApiClient.callApiFactory(
         'payments',

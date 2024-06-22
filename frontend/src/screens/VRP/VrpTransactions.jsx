@@ -20,7 +20,8 @@ import VrpDebitor from '../../components/VrpDebitor';
 import VrpTransactionList from '../../components/VrpTransactionList';
 var transactions;
 const VrpTransactions = ({route}) => {
-  const {transactiondetails} = route.params;
+  const {transactiondetails, bankName} = route.params;
+  let imageSource;
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -38,7 +39,15 @@ const VrpTransactions = ({route}) => {
     setLoading(false);
   }, [transactiondetails]);
   console.log('details::', transactions);
-
+  if (bankName == 'HSBC') {
+    imageSource = require('../../assets/images/hsbc.png');
+  } else if (bankName == 'RBS') {
+    imageSource = require('../../assets/images/Rbs.jpg');
+  } else if (bankName == 'Ulster') {
+    imageSource = require('../../assets/images/Ulster.jpg');
+  } else {
+    imageSource = require('../../assets/images/natwest2.png'); // replace with your other image path
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -52,10 +61,7 @@ const VrpTransactions = ({route}) => {
         <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
           <View style={styles.rowContainer}>
             <Surface elevation={6} category="medium" style={styles.surface}>
-              <Image
-                source={require('../../assets/images/natwest.png')}
-                style={styles.icon}
-              />
+              <Image source={imageSource} style={styles.icon} />
             </Surface>
             <DropdownWithCheckboxes />
           </View>

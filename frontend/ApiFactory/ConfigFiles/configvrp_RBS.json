@@ -1,11 +1,11 @@
 {
-    "clientId": "E91BESzQl1bSPp6qWTd-zG4x2dBx1IkntsoRHNoF2ks=",
-    "baseUrl": "https://ob.sandbox.natwest.com",
-    "clientSecret": "5scJee6GzTO3ys_ef2lENEpB30qZ_s067QaIPxuYQYQ=",
-    "contentType":"application/json",
-    "vrpHeaders":{
-      "x-fapi-financial-id":"0015800000jfwxXAAQ",
-      "Content-Type":"application/json",
-      "x-jws-signature":"DUMMY_SIG"
-    }
+  "clientId": "gclqSvpaHYmhgNmNIHsESNEjr-IepaH06WWoAJtJilo=",
+  "baseUrl": "https://ob.sandbox.rbs.co.uk",
+  "clientSecret": "0SK0Gnugf5oX-G2tuQ0imavu6ZjC9VkMt3oM7nhHEbE=",
+  "contentType": "application/json",
+  "vrpHeaders": {
+    "x-fapi-financial-id": "0015800000jfwB4AAI",
+    "Content-Type": "application/json",
+    "x-jws-signature": "DUMMY_SIG"
   }
+}

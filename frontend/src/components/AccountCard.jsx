@@ -12,66 +12,77 @@ import {
 
 import {IconButton} from 'react-native-paper';
 import ApiFactory from '../../ApiFactory/ApiFactory';
-let env="";
-
+let env = '';
 
 const AccountCard = props => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
-    env=newApiClient;    
-    return () => {
-    };
+    env = newApiClient;
+    return () => {};
   }, []);
   const navigation = useNavigation();
   const accountId = props.item.AccountId;
   const permissions = props.permissions;
-  const bankName=props.bankName;
+  const bankName = props.bankName;
   const [accountBalance, setAccountBalance] = useState(null);
-  const switchEnvironment = (newEnv) => {
+  const switchEnvironment = newEnv => {
     global.env = newEnv; // Update the global environment variable
     const apiFactory = new ApiFactory();
-    const apiClient = apiFactory.createApiClient(global.env,"accounts",bankName);
+    const apiClient = apiFactory.createApiClient(
+      global.env,
+      'accounts',
+      bankName,
+    );
     return apiClient;
     // Use the new apiClient as needed
-   };
+  };
 
   useEffect(() => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
-        if(global.env=='local'){
+        if (global.env == 'local') {
           setAccountBalance(balanceData);
           console.log(balanceData);
-        }
-        else{
-        try {
-          console.log("sandbox all calls");
-          console.log(env);
-          const response = await env.allCalls(
-            `${accountId}/balances`,
-          );
-          console.log(response);
-          setAccountBalance(response);
-        } catch (error) {
-          console.error('Error fetching balance:', error);
+        } else {
+          try {
+            console.log('sandbox all calls');
+            console.log(env);
+            const response = await env.allCalls(`${accountId}/balances`);
+            console.log(response);
+            setAccountBalance(response);
+          } catch (error) {
+            console.error('Error fetching balance:', error);
+          }
         }
       }
-    }
     };
     fetchBalance();
   }, [accountId]);
- 
+
   const handleCardClick = async accountId => {
     navigation.navigate('Details', {
       accountDetails: props.item,
       permissions: permissions,
-      bankName:bankName,
+      bankName: bankName,
     });
   };
 
   const item = props.item;
-  const iconSource = bankName === "HSBC" 
-  ? require('../assets/images/hsbc.png') 
-  : require('../assets/images/natwest2.png');
+  const iconSource =
+    bankName === 'HSBC'
+      ? require('../assets/images/hsbc.png')
+      : require('../assets/images/natwest2.png');
+
+  let imageSource = null;
+  if (bankName == 'HSBC') {
+    imageSource = require('../assets/images/hsbc.png');
+  } else if (bankName == 'RBS') {
+    imageSource = require('../assets/images/Rbs2.png');
+  } else if (bankName == 'Ulster') {
+    imageSource = require('../assets/images/Ubn2.png');
+  } else {
+    imageSource = require('../assets/images/natwest.png'); // replace with your other image path
+  }
   return (
     <View style={styles.container}>
       <Surface style={styles.card}>
@@ -93,7 +104,7 @@ const AccountCard = props => {
         </View>
         <View style={styles.iconContainer}>
           <Image
-          source={iconSource}
+            source={imageSource}
             //source={require('../assets/images/natwest2.png')}
             style={styles.iconNatwest}
           />

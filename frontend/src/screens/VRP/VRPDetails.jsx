@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Surface, Stack} from '@react-native-material/core';
 import {Title, IconButton} from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
@@ -13,8 +13,8 @@ import {RFValue} from 'react-native-responsive-fontsize';
 
 const VRPDetails = ({route}) => {
   //   const { Data } = route.params || {};
-  const status = route.params?.data ;
-  console.log("VRp",status);
+  const status = route.params?.data;
+  console.log('VRP', status);
   const navigation = useNavigation();
   if (!status) {
     return (
@@ -89,23 +89,22 @@ const VRPDetails = ({route}) => {
   );
 };
 
+const styles = {
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 40,
+  },
 
-  const styles = {
-    container: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginHorizontal: 20,
-      marginTop: 40,
-    },
-  
-    linkText: {
-      backgroundColor: '#c8e1cc',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      marginTop: 30,
-      fontSize: RFValue(18),
-      borderRadius: 8,
-    },
-  };
+  linkText: {
+    backgroundColor: '#c8e1cc',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 30,
+    fontSize: RFValue(18),
+    borderRadius: 8,
+  },
+};
 
 export default VRPDetails;

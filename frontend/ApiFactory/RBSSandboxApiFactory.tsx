@@ -903,11 +903,13 @@ class RBSSanboxApiFactory {
           response.data.access_token,
           consentData.Links.Self,
         );
-        const detailsCa = await this.getDetailsCA(response.data.access_token);
+
+        //---------------- CA not supported in Rbs----------------------
+        //  const detailsCa = await this.getDetailsCA(response.data.access_token);
         //sending result to caller
         const result = {
           response: response.data,
-          customerDetails: detailsCa,
+          //customerDetails: detailsCa,
           debitorDetails: debitordetails.Data,
         };
         androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
@@ -1179,7 +1181,7 @@ class RBSSanboxApiFactory {
       console.log('body', body);
 
       const vrpPaymentResponse: AxiosResponse = await axios.post(
-        'https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',
+        'https://ob.sandbox.rbs.co.uk/open-banking/v3.1/pisp/domestic-vrps',
         body,
         {
           headers: headers,
@@ -1250,7 +1252,7 @@ class RBSSanboxApiFactory {
     try {
       const headers = generateVrpAccountRequestHeaders(
         this.apiAccess,
-        '0015800000jfwxXAAQ',
+        '0015800000jfwB4AAI',
       );
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,

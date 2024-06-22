@@ -3,12 +3,12 @@ import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config_UBN.json';
 import sandboxConfig from './ConfigFiles/Ubn_Sandbox_AISP.json';
-import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
+import sandboxConfigvrp from './ConfigFiles/Ubn_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb'; //importing database
 import sandboxConfigPisp from './ConfigFiles/Ubn_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
-import configVrp from './ConfigFiles/configvrp.json';
+import configVrp from './ConfigFiles/configvrp_UBN.json';
 const {
   generateVrpAccountRequestHeaders,
   generateVrpPaymentBody,
@@ -904,11 +904,13 @@ class UBNSanboxApiFactory {
           response.data.access_token,
           consentData.Links.Self,
         );
-        const detailsCa = await this.getDetailsCA(response.data.access_token);
+
+        //---------------- CA not supported in Ulster----------------------
+        // const detailsCa = await this.getDetailsCA(response.data.access_token);
         //sending result to caller
         const result = {
           response: response.data,
-          customerDetails: detailsCa,
+          //customerDetails: detailsCa,
           debitorDetails: debitordetails.Data,
         };
         androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
@@ -1180,7 +1182,7 @@ class UBNSanboxApiFactory {
       console.log('body', body);
 
       const vrpPaymentResponse: AxiosResponse = await axios.post(
-        'https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',
+        'https://ob.sandbox.ulsterbank.co.uk/open-banking/v3.1/pisp/domestic-vrps',
         body,
         {
           headers: headers,

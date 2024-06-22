@@ -38,12 +38,10 @@ const ViewDetailsWithRefreshToken = ({route}) => {
   if (bankName == 'NatWest') {
     bankNameForApiFactory = 'Natwest';
     bankNameForDBFactory = 'NWG';
-  }
-  if (bankName == 'Ulster') {
+  } else if (bankName == 'Ulster') {
     bankNameForApiFactory = 'Ulster';
     bankNameForDBFactory = 'UBN';
-  }
-  if (bankName == 'RBS') {
+  } else if (bankName == 'RBS') {
     bankNameForApiFactory = 'RBS';
     bankNameForDBFactory = 'RBS';
   }

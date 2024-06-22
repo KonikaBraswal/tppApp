@@ -10,8 +10,9 @@ import {
   ScrollView,
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
-const CreditorDetailsforVRP = () => {
+const CreditorDetailsforVRP = ({route}) => {
   const navigation = useNavigation();
+  const bankName = route.params.bankName;
   const [firstName, setFirstName] = useState('ACME');
   const [sortCode, setSortCode] = useState('123456');
   const [accountNumber, setAccountNumber] = useState('12345678');
@@ -90,7 +91,7 @@ const CreditorDetailsforVRP = () => {
 
     console.log('Form submitted:', formData);
 
-    navigation.navigate('Review Payee', {formData});
+    navigation.navigate('Review Payee', {formData, bankName});
   };
 
   return (
