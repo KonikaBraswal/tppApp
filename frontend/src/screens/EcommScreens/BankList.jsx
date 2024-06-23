@@ -1,10 +1,10 @@
 import IconDialog from '../../components/IconDialog';
 import ApiFactory from '../../../ApiFactory/ApiFactory';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import * as products from '../../assets/data/product_catalogue.json';
 // import {Button, Searchbar, Icon} from 'react-native-paper';
 // import {Modal, Portal, Checkbox, Switch} from 'react-native-paper';
-import { Surface, Stack, Divider, ListItem } from '@react-native-material/core';
+import {Surface, Stack, Divider, ListItem} from '@react-native-material/core';
 import {
   Keyboard,
   Pressable,
@@ -25,15 +25,15 @@ import {
   DataTable,
 } from 'react-native-paper';
 
-import { RFValue } from 'react-native-responsive-fontsize';
+import {RFValue} from 'react-native-responsive-fontsize';
 import imgarray from '../../assets/data/images';
-import { GridLayout } from 'react-native-layout-grid';
+import {GridLayout} from 'react-native-layout-grid';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useNavigation } from '@react-navigation/native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {useNavigation} from '@react-navigation/native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   ScrollView,
   Text,
@@ -42,36 +42,35 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableHighlight } from 'react-native';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {TouchableHighlight} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrderSuccessful from './OrderSuccessful';
-import { addDetailsCA } from '../../../database/Database';
-import AndroidClient from '../../../DatabaseFactory/AndroidClientDb';//importing database
+import {addDetailsCA} from '../../../database/Database';
+import AndroidClient from '../../../DatabaseFactory/AndroidClientDb'; //importing database
 
 const mode = 'sandbox';
 const way = 'web';
-const switchEnvironment = (newEnv) => {
+const switchEnvironment = newEnv => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"vrp","Natwest");
+  const apiClient = apiFactory.createApiClient(global.env, 'vrp', 'Natwest');
   return apiClient;
   // Use the new apiClient as needed
- };
- let caToStore={
-  userId: '999999999',
-  consentId:'',
-  scope:'customer_checkout',
-  customerDetails:'',
-  accountDetails:'',
 };
-const BankList = ({ route }) => {
+let caToStore = {
+  userId: '999999999',
+  consentId: '',
+  scope: 'customer_checkout',
+  customerDetails: '',
+  accountDetails: '',
+};
+const BankList = ({route}) => {
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
-    return () => {
-    };
- }, []);
+    return () => {};
+  }, []);
 
   const totalAmount = route.params.totalAmount;
 
@@ -95,7 +94,7 @@ const BankList = ({ route }) => {
       name: 'Allied Irish Bank(NI)',
       icon: require('../../assets/images/ecomm-images/allied-irish-bank.jpeg'),
     },
-    { id: 102, name: 'Lloyds', icon: require('../../assets/images/lloyds.png') },
+    {id: 102, name: 'Lloyds', icon: require('../../assets/images/lloyds.png')},
     {
       id: 103,
       name: 'Bank Of Scotland',
@@ -141,36 +140,37 @@ const BankList = ({ route }) => {
         PSUAuthenticationMethods: ['UK.OBIE.SCANotRequired'],
       },
 
-      "Initiation": {
-        "CreditorAccount": {
-          "SchemeName": "SortCodeAccountNumber",
-          "Identification": "50499910000996",
-          "Name": "Natwest Cart",
-          "SecondaryIdentification": "secondary-identif"
+      Initiation: {
+        CreditorAccount: {
+          SchemeName: 'SortCodeAccountNumber',
+          Identification: '50499910000996',
+          Name: 'Natwest Cart',
+          SecondaryIdentification: 'secondary-identif',
         },
-        "RemittanceInformation": {
-          "Unstructured": "Tools",
-          "Reference": "Tools"
-        }
-      }
+        RemittanceInformation: {
+          Unstructured: 'Tools',
+          Reference: 'Tools',
+        },
+      },
     },
-    "Risk": {}
+    Risk: {},
   };
   const handleConfirmButtonClick = async () => {
     // console.log(`Bank ID clicked: ${bankId}`);
-    console.log("calling mode in VRP",global.env);
+    console.log('calling mode in VRP', global.env);
     try {
-      
       setLoading(true);
       setError(null);
-      const consentdata = await EnvApiClient.callApiFactory('vrp',jsondata,null);
+      const consentdata = await EnvApiClient.callApiFactory(
+        'vrp',
+        jsondata,
+        null,
+      );
       setConsentData(consentdata);
       console.log(consentdata);
-      
+
       if (way == 'web') {
-        await EnvApiClient.manualUserConsent(
-          consentdata.Data.ConsentId,
-        );
+        await EnvApiClient.manualUserConsent(consentdata.Data.ConsentId);
         showInputDialog();
       }
     } catch (error) {
@@ -179,28 +179,33 @@ const BankList = ({ route }) => {
     } finally {
       setLoading(false);
     }
-
   };
-  
+
   const handleSubmit = async () => {
     try {
+      const {customerDetails, debitorDetails, response} =
+        await EnvApiClient.exchangeAccessToken(inputValue, consentData);
+      console.log('details1-->', customerDetails);
+      console.log('details2-->', debitorDetails);
+      const consentId = consentData.Data.ConsentId;
+      let androidClientCA = new AndroidClient(
+        'NWG',
+        'Sandbox',
+        'customer_checkout',
+      );
 
-      const {customerDetails,debitorDetails,response } = await EnvApiClient.exchangeAccessToken(inputValue, consentData);
-      console.log("details1-->",customerDetails);
-      console.log("details2-->",debitorDetails);
-      const consentId=consentData.Data.ConsentId;
-      let androidClientCA=new AndroidClient("NWG", "Sandbox",'customer_checkout');
-        
-        //inserting data in CA table
-        caToStore.consentId=consentData.Data.ConsentId;
-        caToStore.customerDetails=JSON.stringify(customerDetails);
-        caToStore.accountDetails=JSON.stringify(debitorDetails);
-        console.log(caToStore);
-        await androidClientCA.insertDataCA(caToStore);
+      //inserting data in CA table
+      caToStore.consentId = consentData.Data.ConsentId;
+      caToStore.customerDetails = JSON.stringify(customerDetails);
+      caToStore.accountDetails = JSON.stringify(debitorDetails);
+      console.log(caToStore);
+      await androidClientCA.insertDataCA(caToStore);
       navigation.navigate('Customer Details', {
-        customerDetails, totalAmount,debitorDetails,consentId
+        customerDetails,
+        totalAmount,
+        debitorDetails,
+        consentId,
       });
-
     } catch (error) {
       console.error('Error:', error);
       setError('Failed to retrieve access token.');
@@ -210,22 +215,22 @@ const BankList = ({ route }) => {
     setInputValue('');
     hideInputDialog();
   };
-  const renderitem = ({ item, index }) => {
+  const renderitem = ({item, index}) => {
     return (
       <TouchableOpacity onPress={() => handleConfirmButtonClick()}>
         <View style={styles.bankItemContainer}>
           <Image
             key={index}
             source={item.icon}
-            style={{ height: 50, width: 50, resizeMode: 'contain' }}
+            style={{height: 50, width: 50, resizeMode: 'contain'}}
           />
           <Text style={styles.name}>{item.name}</Text>
         </View>
       </TouchableOpacity>
     );
-  }
+  };
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <View
         style={{
           backgroundColor: '#fff',
@@ -243,27 +248,28 @@ const BankList = ({ route }) => {
         />
         {/* <Button onPress={submit} title="Press">Press</Button> */}
       </View>
-      <Stack fill left style={{ backgroundColor: 'white', padding: 10 }}>
+      <Stack fill left style={{backgroundColor: 'white', padding: 10}}>
         <Surface elevation={10} category="medium">
-
           <FlatList
             data={allbanks}
             renderItem={renderitem}
             keyExtractor={bank => bank.id}
             contentContainerStyle={styles.container}
           />
-
         </Surface>
       </Stack>
       <View>
         <Portal>
-          <Dialog visible={isInputDialogVisible} style={{backgroundColor:'#E0FCFD'}} onDismiss={hideInputDialog}>
+          <Dialog
+            visible={isInputDialogVisible}
+            style={{backgroundColor: '#E0FCFD'}}
+            onDismiss={hideInputDialog}>
             <Dialog.Title>Redirect Input</Dialog.Title>
             <Dialog.Content>
               <TextInput
                 label="Paste URL from the browser"
                 value={inputValue}
-                style={{backgroundColor:'#E0FCFD',color:'black'}}
+                style={{backgroundColor: '#E0FCFD', color: 'black'}}
                 onChangeText={text => setInputValue(text)}
               />
             </Dialog.Content>
@@ -290,7 +296,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     fontWeight: 'bold',
-
   },
   container: {
     paddingHorizontal: 10,
@@ -300,7 +305,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     flexGrow: 1,
     marginBottom: 10,
-
   },
   itemContainer: {
     flex: 1,
@@ -308,7 +312,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 60,
     overflow: 'hidden',
-
   },
   item: {
     flex: 1,
@@ -334,13 +337,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 8,
     marginBottom: 8,
-
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: wp('5%'),
-
   },
   description: {
     fontSize: 14,
@@ -350,7 +351,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'green',
-
   },
   rowContainer: {
     flexDirection: 'row',
@@ -379,6 +379,5 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-around'
   },
 });
-
 
 export default BankList;

@@ -35,7 +35,7 @@ const ViewDetailsWithRefreshToken = ({route}) => {
   console.log(AccountId);
   let bankNameForApiFactory = 'HSBC';
   let bankNameForDBFactory = 'HSBC';
-  if (bankName == 'NatWest') {
+  if (bankName == 'Natwest') {
     bankNameForApiFactory = 'Natwest';
     bankNameForDBFactory = 'NWG';
   } else if (bankName == 'Ulster') {

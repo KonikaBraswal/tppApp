@@ -134,6 +134,7 @@ const ViewAll = () => {
                 key={`${index}-${idx}`} // Ensures each card has a unique key
                 style={styles.card}
                 onPress={() => {
+                  console.log(item.bankName);
                   navigation.navigate('View Added Bank Details', {
                     AccountId: account.AccountId,
                     bankName: item.bankName,

@@ -1,10 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
-import { Linking, Alert } from 'react-native';
+import axios, {AxiosResponse} from 'axios';
+import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import config from './ConfigFiles/config.json';
 import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
 import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
-import AndroidClient from '../DatabaseFactory/AndroidClientDb';//importing database
+import AndroidClient from '../DatabaseFactory/AndroidClientDb'; //importing database
 import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
@@ -66,7 +66,7 @@ let vrpToStore = {
   refreshToken: '',
   consentPayload: '',
   consentExpiry: '',
-  accountDetails:'',
+  accountDetails: '',
   status: '',
 };
 let pispToUpdate = {
@@ -76,11 +76,11 @@ let androidClientAisp: AndroidClient;
 let androidClientPisp: AndroidClient;
 let androidClientVrp: AndroidClient;
 let androidClientCA: AndroidClient;
-let androidClientVrpTransact:AndroidClient;
+let androidClientVrpTransact: AndroidClient;
 let aispToStore = {
   userId: '999934356',
   scope: '',
-  bankName: 'NatWest',
+  bankName: 'Natwest',
   consentId: '',
   consentPayload: '',
   refreshToken: '',
@@ -94,7 +94,7 @@ let logData = {
   scope: '',
   status: '',
   response: '',
-  bankName:"Natwest",
+  bankName: 'Natwest',
 };
 interface CommonHeaders {
   [key: string]: string;
@@ -176,14 +176,13 @@ class SanboxApiFactory {
     }
   }
 
-
   // call to retrieve access token for various scope
   async retrieveAccessToken() {
     if (this.scopeForThisCall == 'accounts') {
       try {
         const body = this.generateBody(sandboxConfig.tokenEndpoint, {});
 
-        const headers = { ...this.commonHeaders };
+        const headers = {...this.commonHeaders};
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
           null,
@@ -206,7 +205,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -227,7 +226,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -242,17 +241,18 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Retreive Access Token accounts: ${error}`);
+        throw new Error(
+          `Failed to fetch data Retreive Access Token accounts: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'payments') {
       try {
-
         const body = generateAccessTokenBody(
           sandboxConfig.grant_type,
           this.clientId,
@@ -283,7 +283,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -304,7 +304,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -319,12 +319,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Retreive Access Token payments: ${error}`);
+        throw new Error(
+          `Failed to fetch data Retreive Access Token payments: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'vrp') {
@@ -359,7 +361,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -380,7 +382,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -395,18 +397,19 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Retreive Access Token vrp: ${error}`);
+        throw new Error(
+          `Failed to fetch data Retreive Access Token vrp: ${error}`,
+        );
       }
     }
   }
 
-
-  // call to request for consent id 
+  // call to request for consent id
   async accountRequest(accessToken: string) {
     if (this.scopeForThisCall == 'accounts') {
       try {
@@ -442,7 +445,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -463,7 +466,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -478,12 +481,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Account Request accounts: ${error}`);
+        throw new Error(
+          `Failed to fetch data Account Request accounts: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -526,7 +531,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -547,7 +552,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -562,12 +567,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Account Request payments: ${error}`);
+        throw new Error(
+          `Failed to fetch data Account Request payments: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'vrp') {
@@ -596,12 +603,11 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
         return response.data;
-
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           logData = {
@@ -618,7 +624,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -633,7 +639,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
@@ -642,7 +648,6 @@ class SanboxApiFactory {
       }
     }
   }
-
 
   // redirect url to ask user for their consent
 
@@ -658,16 +663,14 @@ class SanboxApiFactory {
       consentUrlWithVariables = `${sandboxConfigPisp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfigPisp.redirectUri}&request=${consentId}`;
     }
     if (this.scopeForThisCall == 'vrp') {
-      console.log("manuallu",consentId);
-      
+      console.log('manuallu', consentId);
+
       consentUrlWithVariables = `${sandboxConfigvrp.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid payments&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
-      
     }
     Linking.openURL(consentUrlWithVariables);
     console.log(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
-
 
   //alternative approach to get consent programmatically
   async userConsentProgammatically(consentId: string) {
@@ -737,7 +740,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -759,7 +762,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -774,12 +777,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Exchange Code for access token aisp: ${error}`);
+        throw new Error(
+          `Failed to fetch data Exchange Code for access token aisp: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -819,7 +824,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -840,8 +845,10 @@ class SanboxApiFactory {
             api_name: 'Exchange Code for access token',
             scope: this.scopeForThisCall,
             status: error.response?.status.toString() || 'unknown',
-            response: JSON.stringify(error.response?.data || 'No response data'),
-            bankName:"Natwest",
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -856,12 +863,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Exchange Code for access token payments: ${error}`)
+        throw new Error(
+          `Failed to fetch data Exchange Code for access token payments: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'vrp') {
@@ -897,19 +906,19 @@ class SanboxApiFactory {
         const detailsCa = await this.getDetailsCA(response.data.access_token);
         //sending result to caller
         const result = {
-          response:response.data,
+          response: response.data,
           customerDetails: detailsCa,
-          debitorDetails:debitordetails.Data
+          debitorDetails: debitordetails.Data,
         };
         androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
-        
+
         //inserting data in VRP table
-        vrpToStore.consentId=consentData.Data.ConsentId;
-        vrpToStore.accountDetails=JSON.stringify(debitordetails.Data);
-        vrpToStore.consentPayload=JSON.stringify(consentData);
-        vrpToStore.consentExpiry=String(consentExpiresIn);
-        vrpToStore.refreshToken=RefreshToken;
-        vrpToStore.status='Authorised';
+        vrpToStore.consentId = consentData.Data.ConsentId;
+        vrpToStore.accountDetails = JSON.stringify(debitordetails.Data);
+        vrpToStore.consentPayload = JSON.stringify(consentData);
+        vrpToStore.consentExpiry = String(consentExpiresIn);
+        vrpToStore.refreshToken = RefreshToken;
+        vrpToStore.status = 'Authorised';
         await androidClientVrp.insertDataVrp(vrpToStore);
         //Storing APILOGS
         logData = {
@@ -924,11 +933,10 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         return result;
-
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           logData = {
@@ -942,8 +950,10 @@ class SanboxApiFactory {
             api_name: 'Exchange Code for access token',
             scope: this.scopeForThisCall,
             status: error.response?.status.toString() || 'unknown',
-            response: JSON.stringify(error.response?.data || 'No response data'),
-            bankName:"Natwest",
+            response: JSON.stringify(
+              error.response?.data || 'No response data',
+            ),
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -958,12 +968,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data Exchange Code for access token vrp: ${error}`)
+        throw new Error(
+          `Failed to fetch data Exchange Code for access token vrp: ${error}`,
+        );
       }
     }
   }
@@ -977,7 +989,7 @@ class SanboxApiFactory {
         headers: headers,
       });
       console.log('allVrpResponse of  call', allVrpResponse.data);
-      
+
       //Storing APILOGS
       logData = {
         date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -991,7 +1003,7 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: allVrpResponse.status.toString(),
         response: JSON.stringify(allVrpResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1010,7 +1022,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1025,12 +1037,14 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
       await logClient.insertLog(logData);
-      throw new Error(`Failed to fetch data for get domestic consent: ${error}`)
+      throw new Error(
+        `Failed to fetch data for get domestic consent: ${error}`,
+      );
     }
   }
   async getDetailsCA(accessToken: any): Promise<any> {
@@ -1061,7 +1075,7 @@ class SanboxApiFactory {
         scope: 'CVRP',
         status: response.status.toString(),
         response: JSON.stringify(response),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1080,7 +1094,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1095,7 +1109,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
@@ -1159,13 +1173,11 @@ class SanboxApiFactory {
         },
         Risk: {},
       };
-      console.log("amount",body.Data.Instruction.InstructedAmount.Amount);
-      
-      
-      console.log("head",headers);
-      console.log("body",body);
-      
-  
+      console.log('amount', body.Data.Instruction.InstructedAmount.Amount);
+
+      console.log('head', headers);
+      console.log('body', body);
+
       const vrpPaymentResponse: AxiosResponse = await axios.post(
         'https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',
         body,
@@ -1174,7 +1186,7 @@ class SanboxApiFactory {
         },
       );
       this.apiAccess = apiAccessToken;
-      console.log("api",apiAccessToken);
+      console.log('api', apiAccessToken);
       console.log('payments-->', vrpPaymentResponse.data.Links.Self);
 
       //Storing APILOGS
@@ -1190,7 +1202,7 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: vrpPaymentResponse.status.toString(),
         response: JSON.stringify(vrpPaymentResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1209,7 +1221,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1224,7 +1236,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
@@ -1232,7 +1244,6 @@ class SanboxApiFactory {
 
       throw new Error(`Failed to fetch data for vrp payments: ${error}`);
     }
-
   }
 
   async getAllVrpPayments(url: string): Promise<any> {
@@ -1249,17 +1260,27 @@ class SanboxApiFactory {
         allVrpPaymentsResponse.data,
       );
 
-      if (allVrpPaymentsResponse.data.Data.Status === 'AcceptedSettlementCompleted') {
+      if (
+        allVrpPaymentsResponse.data.Data.Status ===
+        'AcceptedSettlementCompleted'
+      ) {
         const payload = allVrpPaymentsResponse.data.Data;
         const id = allVrpPaymentsResponse.data.Data.ConsentId;
 
         //inserting data in VRP TRansactions Table
-        vrpTransactToStore.consentId=id;
-        vrpTransactToStore.vrpId=allVrpPaymentsResponse.data.Data.DomesticVRPId;
-        vrpTransactToStore.vrpPayload= JSON.stringify(payload);
-        vrpTransactToStore.status=allVrpPaymentsResponse.data.Data.Status;
-        androidClientVrpTransact=new AndroidClient(companyName,apiClient,'vrp_transactions');
-        await androidClientVrpTransact.insertDataVrpTransact(vrpTransactToStore);
+        vrpTransactToStore.consentId = id;
+        vrpTransactToStore.vrpId =
+          allVrpPaymentsResponse.data.Data.DomesticVRPId;
+        vrpTransactToStore.vrpPayload = JSON.stringify(payload);
+        vrpTransactToStore.status = allVrpPaymentsResponse.data.Data.Status;
+        androidClientVrpTransact = new AndroidClient(
+          companyName,
+          apiClient,
+          'vrp_transactions',
+        );
+        await androidClientVrpTransact.insertDataVrpTransact(
+          vrpTransactToStore,
+        );
       }
       //Storing APILOGS
       logData = {
@@ -1274,7 +1295,7 @@ class SanboxApiFactory {
         scope: 'CVRP',
         status: allVrpPaymentsResponse.status.toString(),
         response: JSON.stringify(allVrpPaymentsResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1293,7 +1314,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1308,7 +1329,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
@@ -1317,7 +1338,7 @@ class SanboxApiFactory {
     }
   }
 
-  async refreshToken(refreshToken: string,consentId:any): Promise<any> {
+  async refreshToken(refreshToken: string, consentId: any): Promise<any> {
     if (this.scopeForThisCall === 'accounts') {
       try {
         const body = generateBodyForRefresh(
@@ -1349,7 +1370,7 @@ class SanboxApiFactory {
           scope: 'accounts',
           status: responseRefresh.status.toString(),
           response: JSON.stringify(responseRefresh),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1370,9 +1391,8 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
-
         } else {
           logData = {
             date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
@@ -1386,12 +1406,14 @@ class SanboxApiFactory {
             scope: 'accounts',
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data refresh token accounts: ${error}`);
+        throw new Error(
+          `Failed to fetch data refresh token accounts: ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -1428,15 +1450,19 @@ class SanboxApiFactory {
       const details = {
         refreshToken: RefreshToken,
       };
-      const columnsToUpdate=['refreshToken'];
-      
-      const id=refreshToken.consentId;
+      const columnsToUpdate = ['refreshToken'];
+
+      const id = refreshToken.consentId;
       // console.log("id",id);
       // console.log("details-->",details);
       // console.log(id);
       androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
-      await androidClientVrp.updateDataByConsentId(id, details,columnsToUpdate);
-          
+      await androidClientVrp.updateDataByConsentId(
+        id,
+        details,
+        columnsToUpdate,
+      );
+
       // console.log('Refresh call response', responseRefresh.data);
       //Storing APILOGS
       logData = {
@@ -1451,10 +1477,10 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: responseRefresh.status.toString(),
         response: JSON.stringify(responseRefresh),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
-      
+
       return this.vrpPayments(
         responseRefresh.data.access_token,
         refreshToken.consentId,
@@ -1474,7 +1500,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1489,7 +1515,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
@@ -1541,7 +1567,7 @@ class SanboxApiFactory {
         scope: 'payments',
         status: paymentResponse.status.toString(),
         response: JSON.stringify(paymentResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1563,7 +1589,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1578,12 +1604,14 @@ class SanboxApiFactory {
           scope: 'payments',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
       await logClient.insertLog(logData);
-      throw new Error(`Failed to fetch data for accounts domestic payments pisp: ${error}`);
+      throw new Error(
+        `Failed to fetch data for accounts domestic payments pisp: ${error}`,
+      );
     }
   }
   async getPaymentSatus(
@@ -1608,7 +1636,7 @@ class SanboxApiFactory {
       pispToStore.response = JSON.stringify(payResponse);
       pispToStore.paymentId = payResponse.data.Data.DomesticPaymentId;
       console.log(pispToStore);
-      
+
       await androidClientPisp.insertDataPisp(pispToStore);
       console.log('Storing this to the table');
       await androidClientPisp.displayData();
@@ -1625,7 +1653,7 @@ class SanboxApiFactory {
         scope: 'payments',
         status: payResponse.status.toString(),
         response: JSON.stringify(payResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1644,7 +1672,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1659,12 +1687,14 @@ class SanboxApiFactory {
           scope: 'payments',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
       await logClient.insertLog(logData);
-      throw new Error(`Failed to fetch data for accounts payment status pisp: ${error}`);
+      throw new Error(
+        `Failed to fetch data for accounts payment status pisp: ${error}`,
+      );
     }
   }
   async fetchAccounts(apiAccessToken: string) {
@@ -1696,7 +1726,7 @@ class SanboxApiFactory {
       aispToStore.accountsList = JSON.stringify(accountResponse.data.Data);
       //print aispToSTore
       console.log(aispToStore);
-     
+
       await androidClientAisp.insertDataAisp(aispToStore);
 
       await androidClientAisp.displayData();
@@ -1714,7 +1744,7 @@ class SanboxApiFactory {
         scope: 'accounts',
         status: accountResponse.status.toString(),
         response: JSON.stringify(accountResponse),
-        bankName:"Natwest",
+        bankName: 'Natwest',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1733,7 +1763,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       } else {
         logData = {
@@ -1748,7 +1778,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
       }
 
@@ -1795,7 +1825,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1816,7 +1846,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -1831,7 +1861,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
@@ -1906,7 +1936,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1927,7 +1957,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -1942,12 +1972,14 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 
         await logClient.insertLog(logData);
-        throw new Error(`Failed to fetch data for fetch with refresh token : ${error}`);
+        throw new Error(
+          `Failed to fetch data for fetch with refresh token : ${error}`,
+        );
       }
     }
     if (this.scopeForThisCall == 'payments') {
@@ -1992,7 +2024,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName:"Natwest",
+          bankName: 'Natwest',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -2013,7 +2045,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         } else {
           logData = {
@@ -2028,7 +2060,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName:"Natwest",
+            bankName: 'Natwest',
           };
         }
 

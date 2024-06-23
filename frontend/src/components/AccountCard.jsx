@@ -81,7 +81,7 @@ const AccountCard = props => {
   } else if (bankName == 'Ulster') {
     imageSource = require('../assets/images/Ubn2.png');
   } else {
-    imageSource = require('../assets/images/natwest.png'); // replace with your other image path
+    imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
   }
   return (
     <View style={styles.container}>

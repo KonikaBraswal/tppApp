@@ -155,16 +155,17 @@ const AccountListWithRefreshToken = ({route}) => {
                     return [];
                   }
                 })();
-                const bankName = item.bankName;
-                if (bankName == 'HSBC') {
+
+                if (item.bankName == 'HSBC') {
                   imageSource = require('../assets/images/hsbc.png');
-                } else if (bankName == 'Ulster') {
+                } else if (item.bankName == 'Ulster') {
                   imageSource = require('../assets/images/Ubn2.png');
-                } else if (bankName == 'RBS') {
+                } else if (item.bankName == 'RBS') {
                   imageSource = require('../assets/images/Rbs2.png');
                 } else {
                   imageSource = require('../assets/images/natwest2.png'); // replace with your other image path
                 }
+
                 return accounts.map((account, idx) => (
                   <Card key={account.AccountId} style={styles.card}>
                     <Card.Content>
@@ -206,7 +207,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                         account.Account[0].Identification,
                                       Name: account.Account[0].Name,
                                     },
-                                    bankName,
+                                    bankName: item.bankName,
                                   })
                                 }
                               />
@@ -225,7 +226,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                         account.Account[0].Identification,
                                       Name: account.Account[0].Name,
                                     },
-                                    bankName,
+                                    bankName: item.bankName,
                                   })
                                 }>
                                 Transfer Money
@@ -240,7 +241,7 @@ const AccountListWithRefreshToken = ({route}) => {
                                     'View Added Bank Details',
                                     {
                                       AccountId: account.AccountId,
-                                      bankName: bankName,
+                                      bankName: item.bankName,
                                     },
                                   );
                                 }}

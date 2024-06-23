@@ -18,10 +18,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-const switchEnvironment = (newEnv, bankName) => {
+const switchEnvironment = newEnv => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env, 'vrp', bankName);
+  const apiClient = apiFactory.createApiClient(global.env, 'vrp', 'Natwest');
   return apiClient;
   // Use the new apiClient as needed
 };
@@ -31,22 +31,13 @@ const SecondCvrpCall = ({route}) => {
     route.params;
   const isFocused = useIsFocused();
   const [vrpData, setVrpData] = useState(null);
-  // let androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
+  let androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
   // const debitorDetails=(debitordetails);
   // const customerDetails=(customerdetails);
   // console.log(JSON.parse(customerdetails));
-  let androidClientVrp;
-  if (route.params.bankName === 'Natwest') {
-    androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
-  }
-  if (route.params.bankName === 'Ulster') {
-    androidClientVrp = new AndroidClient('UBN', 'Sandbox', 'vrp');
-  }
-  if (route.params.bankName === 'RBS') {
-    androidClientVrp = new AndroidClient('RBS', 'Sandbox', 'vrp');
-  }
+
   useEffect(() => {
-    const newApiClient = switchEnvironment(global.env, route.params.bankName);
+    const newApiClient = switchEnvironment(global.env);
     setEnvApiClient(newApiClient);
     const fetchData = async () => {
       if (isFocused) {
