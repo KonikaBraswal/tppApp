@@ -36,6 +36,8 @@ import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
 // import { initDatabase } from './database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
+import ApiLogsList from './src/screens/ApiLogsList';
+import ApiLogDetails from './src/screens/ApiLogDetails';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -88,6 +90,8 @@ export default function App() {
                <Stack.Screen name="Cart" component={CartScreen} />
             <Stack.Screen name="Add Your Details" component={AddressScreen} />
                <Stack.Screen name="Customer Details" component={CustomerDetails} />
+               <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
+               <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
             </Stack.Navigator>
       </NavigationContainer>
       </PaperProvider>

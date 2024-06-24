@@ -6,7 +6,12 @@ import sandboxConfig from '../configs/Sandbox.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
+
 import "setimmediate";
+import { insertLog } from '../APILogs_async/AsyncDB';
+
+const now = new Date();
+
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -130,6 +135,25 @@ class SanboxApiClient {
           headers: headers,
         }
       );
+
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Retrieve Access Token',
+  scope: 'eComm Quick Checkout', 
+  status: checkoutResponse.status.toString(), 
+  response: JSON.stringify(checkoutResponse), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
+
+
       const data=checkoutResponse.data.data;
       console.log(data);
     }
@@ -149,6 +173,22 @@ class SanboxApiClient {
                 headers: headers,
             }
         );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Age',
+  scope: 'CVRP', 
+  status: ageResponse.status.toString(), 
+  response: JSON.stringify(ageResponse), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
         const age=ageResponse.data.data[0].age;
         console.log(age);
     }
@@ -171,6 +211,22 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Get CA Details',
+  scope: 'CVRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch token: ${error}`);
@@ -196,6 +252,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Retrieve Access Token',
+  scope: 'Accounts', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       //store
       //storing scope in database
       const scope = response.data.scope;
@@ -234,6 +306,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+      //Storing APILOGS
+      const logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Account Request',
+        scope: 'Accounts',
+        status: response.status.toString(), 
+        response: JSON.stringify(response),
+        bankName: 'Natwest',
+      };
+
+      await insertLog(logData);
+
+      //Storing APILOGS
       //store
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
@@ -299,6 +385,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+            //Storing APILOGS
+            const logData = {
+              date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+              time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+              api_name: 'Exchange Code for access token',
+              scope: 'Accounts',
+              status: response.status.toString(), 
+              response: JSON.stringify(response),
+              bankName: 'Natwest',
+            };
+            console.log(logData);
+            
+      
+            await insertLog(logData);
+      
+            //Storing APILOGS
       //store
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
@@ -346,6 +448,20 @@ class SanboxApiClient {
           params: body,
         },
       );
+      //Storing APILOGS
+      const logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Refresh Token',
+        scope: 'Accounts',
+        status: responseRefresh.status.toString(), 
+        response: JSON.stringify(responseRefresh),
+        bankName: 'Natwest',
+      };
+
+      await insertLog(logData);
+
+      //Storing APILOGS
 
       console.log('Refresh call response', responseRefresh.data);
       const RefreshToken = responseRefresh.data.refresh_token;
@@ -378,6 +494,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+            //Storing APILOGS
+            const logData = {
+              date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+              time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+              api_name: 'Fetch Accounts',
+              scope: 'Accounts',
+              status: accountResponse.status.toString(), 
+              response: JSON.stringify(accountResponse),
+              bankName: 'Natwest',
+            };
+      
+            await insertLog(logData);
+      
+            //Storing APILOGS
       //store
       const acDetails = accountResponse.data.Data;
       const accountIds = acDetails.Account.map(
@@ -424,6 +554,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+                  //Storing APILOGS
+                  const logData = {
+                    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+                    time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+                    api_name: 'endPoint',
+                    scope: 'Accounts',
+                    status: accountResponse.status.toString(), 
+                    response: JSON.stringify(accountResponse),
+                    bankName: 'Natwest',
+                  };
+            
+                  await insertLog(logData);
+            
+                  //Storing APILOGS
 
       return accountResponse.data.Data;
     } catch (error) {
@@ -476,6 +620,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+                  //Storing APILOGS
+                  const logData = {
+                    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+                    time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+                    api_name: 'Fetch Account with Refresh Token',
+                    scope: 'Accounts',
+                    status: accountResponse.status.toString(), 
+                    response: JSON.stringify(accountResponse),
+                    bankName: 'Natwest',
+                  };
+            
+                  await insertLog(logData);
+            
+                  //Storing APILOGS
 
       return accountResponse.data.Data;
     } catch (error) {
@@ -503,6 +661,20 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+                  //Storing APILOGS
+                  const logData = {
+                    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+                    time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+                    api_name: endPoint + ' with refresh token',
+                    scope: 'Accounts',
+                    status: accountResponse.status.toString(), 
+                    response: JSON.stringify(accountResponse),
+                    bankName: 'Natwest',
+                  };
+            
+                  await insertLog(logData);
+            
+                  //Storing APILOGS
 
       return accountResponse.data.Data;
     } catch (error) {
@@ -542,6 +714,21 @@ class SanboxApiClient {
           params: body,
         },
       );
+      //Api logs//
+      const logData = {
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+        api_name: 'Retrieve Access Token',
+        scope: 'Payments', 
+        status: response.status.toString(), 
+        response: JSON.stringify(response), 
+        bankName: 'Natwest',
+      };
+      
+      // Insert the log
+      await insertLog(logData);
+      
+      //Api logs//
       //store
       //storing scope in database
       const scope = response.data.scope;
@@ -629,6 +816,21 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+            //Api logs//
+            const logData = {
+              date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+              time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+              api_name: 'Account Request',
+              scope: 'Payments', 
+              status: response.status.toString(), 
+              response: JSON.stringify(response), 
+              bankName: 'Natwest',
+            };
+            
+            // Insert the log
+            await insertLog(logData);
+            
+            //Api logs//
 
       //store
       var Status = response.data.Data?.Status;
@@ -694,6 +896,21 @@ class SanboxApiClient {
           params: body,
         },
       );
+            //Api logs//
+            const logData = {
+              date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+              time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+              api_name: 'Exchange Code for access token',
+              scope: 'Payments', 
+              status: response.status.toString(), 
+              response: JSON.stringify(response), 
+              bankName: 'Natwest',
+            };
+            
+            // Insert the log
+            await insertLog(logData);
+            
+            //Api logs//
       //store
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
@@ -747,6 +964,21 @@ class SanboxApiClient {
           params: body,
         },
       );
+  //Api logs//
+  const logData = {
+    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+    time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+    api_name: 'Refresh Token',
+    scope: 'Payments', 
+    status: responseRefresh.status.toString(), 
+    response: JSON.stringify(responseRefresh), 
+    bankName: 'Natwest',
+  };
+  
+  // Insert the log
+  await insertLog(logData);
+  
+  //Api logs//    
 
       console.log('Refresh call response', responseRefresh.data);
 
@@ -804,6 +1036,21 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+        //Api logs//
+        const logData = {
+          date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+          time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+          api_name: 'Domestic Payments',
+          scope: 'Payments', 
+          status: paymentResponse.status.toString(), 
+          response: JSON.stringify(paymentResponse), 
+          bankName: 'Natwest',
+        };
+        
+        // Insert the log
+        await insertLog(logData);
+        
+        //Api logs//    
 
       // Additional processing...
       console.log('success');
@@ -832,6 +1079,21 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+              //Api logs//
+              const logData = {
+                date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+                time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+                api_name: 'Payment Status',
+                scope: 'Payments', 
+                status: payResponse.status.toString(), 
+                response: JSON.stringify(payResponse), 
+                bankName: 'Natwest',
+              };
+              
+              // Insert the log
+              await insertLog(logData);
+              
+              //Api logs// 
       console.log(payResponse.data.Data);
       console.log('AllSet');
       return payResponse.data.Data;
@@ -859,6 +1121,22 @@ class SanboxApiClient {
           headers: params.accessTokenParams.headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Retrieve Access Token',
+  scope: 'VRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       console.log('Access token', response.data.access_token);
       this.accessToken = response.data.access_token;
       return this.accountRequest_vrp(params.accessTokenParams.consentUrl);
@@ -883,6 +1161,22 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Account Request',
+  scope: 'VRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
@@ -977,6 +1271,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Exchange Code for access token',
+  scope: 'VRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
@@ -1083,6 +1393,22 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Account Request',
+  scope: 'CVRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       const Status = response.data.Data?.Status;
       const Payload = response.data.Data;
       this.consentId = response.data.Data?.ConsentId || '';
@@ -1117,6 +1443,22 @@ class SanboxApiClient {
           headers: params.accessTokenParams.headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Retrieve Access Token',
+  scope: 'CVRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       this.accessToken = response.data.access_token;
       return this.accountRequest_cvrp(params.accessTokenParams.consentUrl);
@@ -1157,6 +1499,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Exchange Code for access token',
+  scope: 'CVRP', 
+  status: response.status.toString(), 
+  response: JSON.stringify(response), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       const RefreshToken = response.data.refresh_token;
       const consentExpiresIn = response.data.expires_in;
@@ -1239,6 +1597,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Refresh Token',
+  scope: 'CVRP', 
+  status: responseRefresh.status.toString(), 
+  response: JSON.stringify(responseRefresh), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       console.log('Refresh call response', responseRefresh.data);
       const RefreshToken = responseRefresh.data.refresh_token;
@@ -1291,6 +1665,22 @@ class SanboxApiClient {
           params: body,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Refresh Token',
+  scope: 'VRP', 
+  status: responseRefresh.status.toString(), 
+  response: JSON.stringify(responseRefresh), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
 
       console.log('Refresh call response', responseRefresh.data);
       const RefreshToken = responseRefresh.data.refresh_token;
@@ -1374,6 +1764,22 @@ class SanboxApiClient {
           headers: headers,
         },
       );
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'VRP Payment',
+  scope: 'VRP', 
+  status: vrpPaymentResponse.status.toString(), 
+  response: JSON.stringify(vrpPaymentResponse), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       console.log("inside VRPPP",vrpPaymentResponse)
       this.apiAccess = apiAccessToken;
       return this.getAllVrpPayments(vrpPaymentResponse.data.Links.Self);
@@ -1391,6 +1797,22 @@ class SanboxApiClient {
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,
       });
+//Api logs//
+
+const logData = {
+  date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
+  time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
+  api_name: 'Get All VRP Payments',
+  scope: 'VRP', 
+  status: allVrpPaymentsResponse.status.toString(), 
+  response: JSON.stringify(allVrpPaymentsResponse), 
+  bankName: 'Natwest',
+};
+
+// Insert the log
+await insertLog(logData);
+
+//Api logs//
       
       console.log(
         'allVrpPaymentsResponse of final call',
