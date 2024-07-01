@@ -1,9 +1,9 @@
 //const uuid = require('uuid');
 import uuid from 'react-native-uuid';
-const config = require('./config.json');
-const configVRP = require('./configvrp.json');
+const config = require('./config_RBS.json');
+const configVRP = require('./configvrp_RBS.json');
 
-const sandboxConfig = require('./Nwb_Sandbox_AISP.json');
+const sandboxConfig = require('./Rbs_Sandbox_AISP.json');
 
 interface CommonHeaders {
   [key: string]: string;

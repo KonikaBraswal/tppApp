@@ -13,6 +13,7 @@ import {
 import {RFValue} from 'react-native-responsive-fontsize';
 const MakeTransfer = ({route}) => {
   const DebtorAccount = route.params.DebtorAccount;
+  const bankName = route.params.bankName;
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState('ACME');
   const [lastName, setLastName] = useState('DIY');
@@ -39,6 +40,7 @@ const MakeTransfer = ({route}) => {
       Reference: reference,
       Amount: amount,
       DebtorAccount: DebtorAccount,
+      bankName: bankName,
     });
   };
 

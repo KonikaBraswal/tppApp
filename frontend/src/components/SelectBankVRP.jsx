@@ -34,7 +34,7 @@ const allbanks = [
   {id: 108, name: 'Starling', icon: require('../assets/images/starling.png')},
 ];
 
-const SelectBank = () => {
+const SelectBankVRP = () => {
   const navigation = useNavigation();
   const [banklist, setbanklist] = useState([]);
   useEffect(() => {
@@ -53,7 +53,7 @@ const SelectBank = () => {
   };
 
   const handlePress = bankName => {
-    navigation.navigate('Consent', {bankName});
+    navigation.navigate('Payee Details', {bankName: bankName});
   };
   const rows = [];
   for (let i = 0; i < filteredBanks.length; i += 3) {
@@ -153,7 +153,7 @@ const SelectBank = () => {
     </>
   );
 };
-export default SelectBank;
+export default SelectBankVRP;
 
 const SelectBankStyle = StyleSheet.create({
   row: {

@@ -1,43 +1,51 @@
 import MockApiFactory from './MockApiFactory';
 import NWBSandboxApiFactory from './SandboxApiFactory';
 import HSBCSandboxApiFactory from './HSBCSandboxApiFactory';
+import UBNSanboxApiFactory from './UBNSandboxApiFactory';
+
 import OtherBanks from './OtherBanks';
+import RBSSanboxApiFactory from './RBSSandboxApiFactory';
 class ApiFactory {
   createApiClient(type: string, scope: any, bankName: any) {
-    console.log("Creating API Client for", bankName, "with", scope, "scope");
-    
+    console.log('Creating API Client for', bankName, 'with', scope, 'scope');
+
     switch (type) {
       case 'sandbox':
         switch (bankName) {
           case 'Natwest':
-            console.log("Using NWB Sandbox API Factory");
+            console.log('Using NWB Sandbox API Factory');
             return new NWBSandboxApiFactory(scope);
           case 'HSBC':
-            console.log("Using HSBC Sandbox API Factory");
+            console.log('Using HSBC Sandbox API Factory');
             return new HSBCSandboxApiFactory(scope);
+          case 'Ulster':
+            console.log('Using Ulster Sandbox API Factory');
+            return new UBNSanboxApiFactory(scope);
+          case 'RBS':
+            console.log('Using RBS Sandbox API Factory');
+            return new RBSSanboxApiFactory(scope);
           default:
-            console.log("Other Bank for sandbox type:", bankName);
+            console.log('Other Bank for sandbox type:', bankName);
             return new OtherBanks(scope);
-            //throw new Error(`Unknown bank for sandbox type: ${bankName}`);
+          //throw new Error(`Unknown bank for sandbox type: ${bankName}`);
         }
-        
+
       case 'local':
-        console.log("Using Mock API Factory for local");
+        console.log('Using Mock API Factory for local');
         return new MockApiFactory(scope);
-        
+
       case 'sit':
-        console.log("Using Mock API Factory for SIT");
+        console.log('Using Mock API Factory for SIT');
         return new MockApiFactory(scope);
-        
+
       default:
-        console.log("Invalid Type:", type);
+        console.log('Invalid Type:', type);
         throw new Error(`Invalid API client type: ${type}`);
     }
   }
 }
 
 export default ApiFactory;
-
 
 // // ApiFactory.ts
 // import MockApiFactory from './MockApiFactory';

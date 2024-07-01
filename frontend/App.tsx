@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import type { PropsWithChildren } from 'react';
+import React, {useEffect} from 'react';
+import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -10,11 +10,11 @@ import {
   View,
   Appearance,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { PaperProvider } from 'react-native-paper';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {PaperProvider} from 'react-native-paper';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppDrawer from './src/components/AppDrawer';
 import ConsentScreen from './src/screens/ConsentScreen';
 import SelectBank from './src/components/SelectBank';
@@ -54,27 +54,61 @@ import AndroidClient from './DatabaseFactory/AndroidClientDb';
 import Demo from './src/screens/Demo';
 import ApiLogsList from './src/screens/ApiLogsList';
 import ApiLogDetails from './src/screens/ApiLogDetails';
-import { TransactionsforLocal } from './src/screens/TransactionsforLocal';
+import {TransactionsforLocal} from './src/screens/TransactionsforLocal';
 import './global';
-import { GlobalEnvProvider } from './GlobalEnvContext';
-import { initDatabase, initDatabaseTransaction } from './database/Database';
-import { initDatabaseApi } from './database/DatabaseLogs';
+import {GlobalEnvProvider} from './GlobalEnvContext';
+import {initDatabase, initDatabaseTransaction} from './database/Database';
+import {initDatabaseApi} from './database/DatabaseLogs';
 import HsbcDummy from './src/screens/hsbcDummy';
+import SelectBankPISP from './src/components/SelectBankPISP';
+import SelectBankVRP from './src/components/SelectBankVRP';
 
 function App(): React.JSX.Element {
-  let androidClientVrp = new AndroidClient("NWG", "Sandbox", "vrp");
-  let androidClientAisp = new AndroidClient("NWG", "Sandbox", "accounts");
-  let androidClientPisp = new AndroidClient("NWG", "Sandbox", "payments");
-  let androidClientVrpTransact = new AndroidClient("NWG", "Sandbox", "vrp_transactions");
-  let androidClientCA = new AndroidClient("NWG", "Sandbox", "customer_checkout");
+  let androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
+  let androidClientVrp_UBN = new AndroidClient('UBN', 'Sandbox', 'vrp');
+  let androidClientVrp_RBS = new AndroidClient('RBS', 'Sandbox', 'vrp');
+  let androidClientAisp = new AndroidClient('NWG', 'Sandbox', 'accounts');
+  let androidClientAisp_UBN = new AndroidClient('UBN', 'Sandbox', 'accounts');
+  let androidClientAisp_RBS = new AndroidClient('RBS', 'Sandbox', 'accounts');
+  let androidClientPisp = new AndroidClient('NWG', 'Sandbox', 'payments');
+  let androidClientPisp_UBN = new AndroidClient('UBN', 'Sandbox', 'payments');
+  let androidClientPisp_RBS = new AndroidClient('RBS', 'Sandbox', 'payments');
+  let androidClientVrpTransact = new AndroidClient(
+    'NWG',
+    'Sandbox',
+    'vrp_transactions',
+  );
+  let androidClientVrpTransact_UBN = new AndroidClient(
+    'UBN',
+    'Sandbox',
+    'vrp_transactions',
+  );
+  let androidClientVrpTransact_RBS = new AndroidClient(
+    'RBS',
+    'Sandbox',
+    'vrp_transactions',
+  );
+  let androidClientCA = new AndroidClient(
+    'NWG',
+    'Sandbox',
+    'customer_checkout',
+  );
 
   useEffect(() => {
     try {
       androidClientVrp.initDatabaseAndroidVrp();
+      androidClientVrp_UBN.initDatabaseAndroidVrp();
+      androidClientVrp_RBS.initDatabaseAndroidVrp();
       androidClientCA.initDatabaseAndroidCa();
       androidClientVrpTransact.initDatabaseAndroidVrpTransactions();
+      androidClientVrpTransact_UBN.initDatabaseAndroidVrpTransactions();
+      androidClientVrpTransact_RBS.initDatabaseAndroidVrpTransactions();
       androidClientAisp.initDatabaseAndroidAisp();
+      androidClientAisp_UBN.initDatabaseAndroidAisp();
+      androidClientAisp_RBS.initDatabaseAndroidAisp();
       androidClientPisp.initDatabaseAndroidPisp();
+      androidClientPisp_UBN.initDatabaseAndroidPisp();
+      androidClientPisp_RBS.initDatabaseAndroidPisp();
       initDatabaseApi();
       initDatabase();
       initDatabaseTransaction();
@@ -117,18 +151,29 @@ function App(): React.JSX.Element {
                 <Stack.Screen
                   name="Home"
                   component={AppDrawer}
-                  options={{ headerShown: false }}
+                  options={{headerShown: false}}
                 />
                 <Stack.Screen name="Online Store" component={ProductListing} />
                 <Stack.Screen name="ONEBank" component={Landing} />
                 <Stack.Screen name="Demo" component={Demo} />
                 <Stack.Screen name="Consent" component={ConsentScreen} />
                 <Stack.Screen name="Select Your Bank" component={SelectBank} />
+                <Stack.Screen
+                  name="Select Bank For Payment"
+                  component={SelectBankPISP}
+                />
+                <Stack.Screen
+                  name="Select Bank For VRP"
+                  component={SelectBankVRP}
+                />
                 {/* <Stack.Screen name="Accounts" component={AllAccounts} /> */}
                 <Stack.Screen name="Transactions" component={TransactionList} />
                 <Stack.Screen name="Details" component={MainScreen} />
                 <Stack.Screen name="Your Accounts" component={AllAccounts} />
-                <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
+                <Stack.Screen
+                  name="Bank Accounts"
+                  component={ViewAllAccounts}
+                />
                 <Stack.Screen
                   name="Added Bank Accounts"
                   component={AccountListWithRefreshToken}
@@ -159,7 +204,10 @@ function App(): React.JSX.Element {
                 />
                 <Stack.Screen name="Transfer Money" component={MakeTransfer} />
                 <Stack.Screen name="PISP" component={PaymentConsentScreen} />
-                <Stack.Screen name="ConsentsforVRP" component={ConsentsforVRP} />
+                <Stack.Screen
+                  name="ConsentsforVRP"
+                  component={ConsentsforVRP}
+                />
                 <Stack.Screen
                   name="Payee Details"
                   component={CreditorDetailsforVRP}
@@ -169,18 +217,33 @@ function App(): React.JSX.Element {
                   name="Vrp Transactions"
                   component={VrpTransactions}
                 />
-                <Stack.Screen name="Local Transactions" component={TransactionsforLocal} />
+                <Stack.Screen
+                  name="Local Transactions"
+                  component={TransactionsforLocal}
+                />
                 <Stack.Screen name="Review Payee" component={VRPConsent} />
                 <Stack.Screen name="VRP Details" component={VRPDetails} />
                 <Stack.Screen name="ApiLogsList" component={ApiLogsList} />
                 <Stack.Screen name="ApiLogDetails" component={ApiLogDetails} />
                 <Stack.Screen name="Consent Info" component={ConsentInfo} />
-                <Stack.Screen name="Product Details" component={ProductDetails} />
-                <Stack.Screen name="Customer Details" component={CustomerDetails} />
+                <Stack.Screen
+                  name="Product Details"
+                  component={ProductDetails}
+                />
+                <Stack.Screen
+                  name="Customer Details"
+                  component={CustomerDetails}
+                />
                 <Stack.Screen name="Banklist" component={BankList} />
                 <Stack.Screen name="Cart" component={CartScreen} />
-                <Stack.Screen name="Add Your Details" component={AddressScreen} />
-                <Stack.Screen name="Confirm Details" component={ConfirmDetails} />
+                <Stack.Screen
+                  name="Add Your Details"
+                  component={AddressScreen}
+                />
+                <Stack.Screen
+                  name="Confirm Details"
+                  component={ConfirmDetails}
+                />
                 <Stack.Screen name="Order Placed" component={OrderSuccessful} />
                 <Stack.Screen name="Make Payment" component={SecondCvrpCall} />
                 <Stack.Screen name="Hsbc Dummy" component={HsbcDummy} />

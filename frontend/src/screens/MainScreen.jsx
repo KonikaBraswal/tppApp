@@ -23,10 +23,22 @@ const MainScreen = ({route}) => {
   const permissions = route.params.permissions;
   const {AccountId} = route.params.accountDetails;
   const [searchQuery, setSearchQuery] = useState('');
-  const bankName=route.params.bankName;
-  const iconSource = bankName === "HSBC" 
-  ? require('../assets/images/hsbc.png') 
-  : require('../assets/images/natwest2.png');
+  const bankName = route.params.bankName;
+  const iconSource =
+    bankName === 'HSBC'
+      ? require('../assets/images/hsbc.png')
+      : require('../assets/images/natwest2.png');
+
+  let imageSource = null;
+  if (bankName == 'HSBC') {
+    imageSource = require('../assets/images/hsbc.png');
+  } else if (bankName == 'RBS') {
+    imageSource = require('../assets/images/Rbs2.png');
+  } else if (bankName == 'Ulster') {
+    imageSource = require('../assets/images/Ubn2.png');
+  } else {
+    imageSource = require('../assets/images/natwest.png'); // replace with your other image path
+  }
 
   return (
     <KeyboardAvoidingView
@@ -36,15 +48,18 @@ const MainScreen = ({route}) => {
         <View style={styles.rowContainer}>
           <Surface elevation={6} category="medium" style={styles.surface}>
             <Image
-            source={iconSource}
+              source={imageSource}
               //source={require('../assets/icons/natwest.png')}
               style={styles.icon}
             />
           </Surface>
           <DropdownWithCheckboxes />
         </View>
-        <AccountDetails account={accountDetails} permissions={permissions} 
-        bankName={bankName}/>
+        <AccountDetails
+          account={accountDetails}
+          permissions={permissions}
+          bankName={bankName}
+        />
 
         <View style={styles.transactionsContainer}>
           <View style={styles.transactionsHeader}>
@@ -57,8 +72,11 @@ const MainScreen = ({route}) => {
             value={searchQuery}
             style={styles.searchbar}
           />
-          <TransactionList accountId={AccountId} permissions={permissions}
-          bankName={bankName} />
+          <TransactionList
+            accountId={AccountId}
+            permissions={permissions}
+            bankName={bankName}
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

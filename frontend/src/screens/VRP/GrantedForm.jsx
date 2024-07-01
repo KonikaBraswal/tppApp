@@ -14,35 +14,29 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 import {RFValue} from 'react-native-responsive-fontsize';
-let env="";
-const switchEnvironment = (newEnv) => {
+let env = '';
+const switchEnvironment = (newEnv, bankName) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env,"vrp","Natwest");
+  const apiClient = apiFactory.createApiClient(global.env, 'vrp', bankName);
   return apiClient;
   // Use the new apiClient as needed
- };
+};
 const GrantedForm = ({route}) => {
   const isFocused = useIsFocused();
-  
+
   useEffect(() => {
-    const newApiClient = switchEnvironment(global.env);
-    env=newApiClient;
+    const newApiClient = switchEnvironment(global.env, route.params.bankName);
+    env = newApiClient;
     console.log(env);
     setEnvApiClient(newApiClient);
-    return () => {
-    };
- }, []);
-  const {
-    creditorName,
-    accountnumber,
-    sortcode,
-    referencenumber,
-    consentId
-  } = route.params;
+    return () => {};
+  }, []);
+  const {creditorName, accountnumber, sortcode, referencenumber, consentId} =
+    route.params;
   const [edit, setEdit] = useState(true);
   const [firstName, setFirstName] = useState('');
   const [status, setStatus] = useState('');
@@ -54,9 +48,20 @@ const GrantedForm = ({route}) => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-  let androidClientVrp=new AndroidClient("NWG", "Sandbox", "vrp");
+  console.log(route.params.bankName);
+  let androidClientVrp;
+  if (route.params.bankName === 'Natwest') {
+    androidClientVrp = new AndroidClient('NWG', 'Sandbox', 'vrp');
+  }
+  if (route.params.bankName === 'Ulster') {
+    androidClientVrp = new AndroidClient('UBN', 'Sandbox', 'vrp');
+  }
+  if (route.params.bankName === 'RBS') {
+    androidClientVrp = new AndroidClient('RBS', 'Sandbox', 'vrp');
+  }
+
   const [vrpData, setVrpData] = useState(null);
-  
+
   useEffect(() => {
     setFirstName(creditorName);
     setSortCode(sortcode);
@@ -68,19 +73,24 @@ const GrantedForm = ({route}) => {
     const fetchData = async () => {
       if (isFocused) {
         try {
-          console.log("id in form",consentId);
-          const data = await androidClientVrp.fetchDataUsingConsentId(consentId);
-          console.log("data in granted form", data[0].refreshToken);
+          console.log('id in form', consentId);
+          const data = await androidClientVrp.fetchDataUsingConsentId(
+            consentId,
+          );
+          console.log('data in granted form', data[0].refreshToken);
           setVrpData(data[0]);
         } catch (error) {
-          console.error('Error fetching data in second vrp call screen:', error);
+          console.error(
+            'Error fetching data in second vrp call screen:',
+            error,
+          );
         }
       }
     };
-    if(global.env=='sandbox'){
+    if (global.env == 'sandbox') {
       fetchData();
     }
-  }, [creditorName, accountNumber, sortcode, referencenumber,isFocused]);
+  }, [creditorName, accountNumber, sortcode, referencenumber, isFocused]);
 
   const handleSubmit = async () => {
     const formData = {
@@ -90,37 +100,36 @@ const GrantedForm = ({route}) => {
       reference,
       amount,
     };
-    
+
     setLoading(true);
-    setTimeout(async ()=>{
-      try{
-        if(global.env=='local'){
+    setTimeout(async () => {
+      try {
+        if (global.env == 'local') {
           await env.refreshTokenForVRP();
-          navigation.navigate('VRP Details', {data: 'AcceptedSettlementCompleted'});
-        }
-        else{
+          navigation.navigate('VRP Details', {
+            data: 'AcceptedSettlementCompleted',
+          });
+        } else {
           const selectconsentData = {
             consentId: consentId,
-            refreshToken: vrpData.refreshToken
+            refreshToken: vrpData.refreshToken,
           };
           const response = await env.refreshTokenForVRP(
-              selectconsentData,
-              formData,
-            );
+            selectconsentData,
+            formData,
+          );
 
-            if(response.Data.Status=== 'AcceptedSettlementCompleted'){
-              navigation.navigate('VRP Details', {data: response.Data.Status});
-            }
+          if (response.Data.Status === 'AcceptedSettlementCompleted') {
+            navigation.navigate('VRP Details', {data: response.Data.Status});
+          }
         }
-        }catch (error) {
+      } catch (error) {
         console.error('Error in refreshing token for VRP:', error.message);
       } finally {
         // Set loader to false after the refresh token call is completed
         setLoading(false);
       }
-      },5000);
-      
-    
+    }, 5000);
   };
 
   return (
@@ -131,7 +140,7 @@ const GrantedForm = ({route}) => {
           <Text style={{fontSize: RFValue(18)}}>Performing Transactions</Text>
         </View>
       )}
-          <View style={styles.container}>
+      <View style={styles.container}>
         <Text style={{color: 'black', fontSize: RFValue(20)}}>
           Paying {firstName}
         </Text>

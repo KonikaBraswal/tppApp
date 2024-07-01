@@ -1,14 +1,14 @@
 import axios, {AxiosResponse} from 'axios';
 import {Linking, Alert} from 'react-native';
 import * as Keychain from 'react-native-keychain';
-import config from './ConfigFiles/config.json';
-import sandboxConfig from './ConfigFiles/Nwb_Sandbox_AISP.json';
-import sandboxConfigvrp from './ConfigFiles/Nwb_Sandbox_VRP.json';
+import config from './ConfigFiles/config_RBS.json';
+import sandboxConfig from './ConfigFiles/Rbs_Sandbox_AISP.json';
+import sandboxConfigvrp from './ConfigFiles/Rbs_Sandbox_VRP.json';
 import AndroidClient from '../DatabaseFactory/AndroidClientDb'; //importing database
-import sandboxConfigPisp from './ConfigFiles/Nwb_Sandbox_PISP.json';
+import sandboxConfigPisp from './ConfigFiles/Rbs_Sandbox_PISP.json';
 import uuid from 'react-native-uuid';
 import ApiLogsDb from '../DatabaseFactory/ApiLogsDb';
-import configVrp from './ConfigFiles/configvrp.json';
+import configVrp from './ConfigFiles/configvrp_RBS.json';
 const {
   generateVrpAccountRequestHeaders,
   generateVrpPaymentBody,
@@ -23,9 +23,9 @@ const {
   generateHeadersForPisp,
   generateDomesticPaymentRequestBody,
   generatePaymentStatusHeaders,
-} = require('./ConfigFiles/apiUtils.tsx');
+} = require('./ConfigFiles/apiUtils_RBS.tsx');
 
-const companyName = 'NWG'; // Replace "YourCompanyName" with the actual company name
+const companyName = 'RBS'; // Replace "YourCompanyName" with the actual company name
 const apiClient = 'Sandbox'; // Replace "YourApiClient" with the actual API client
 const logClient = new ApiLogsDb('NWG', 'Sandbox', 'logs');
 
@@ -80,7 +80,7 @@ let androidClientVrpTransact: AndroidClient;
 let aispToStore = {
   userId: '999934356',
   scope: '',
-  bankName: 'Natwest',
+  bankName: 'RBS',
   consentId: '',
   consentPayload: '',
   refreshToken: '',
@@ -94,12 +94,12 @@ let logData = {
   scope: '',
   status: '',
   response: '',
-  bankName: 'Natwest',
+  bankName: 'RBS',
 };
 interface CommonHeaders {
   [key: string]: string;
 }
-class SanboxApiFactory {
+class RBSSanboxApiFactory {
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
@@ -154,18 +154,18 @@ class SanboxApiFactory {
     switch (apiScope) {
       case 'accounts':
         androidClientAisp = new AndroidClient(companyName, apiClient, apiScope);
-        console.log('******NWB SANDBOX ACCOUNTS CALL********');
+        console.log('******RBS SANDBOX ACCOUNTS CALL********');
         this.scopeForThisCall = 'accounts';
         let returnthisAisp = this.retrieveAccessToken();
         return returnthisAisp;
       case 'payments':
         androidClientPisp = new AndroidClient(companyName, apiClient, apiScope);
-        console.log('******NWB SANDBOX PAYMENTS CALL********');
+        console.log('******RBS SANDBOX PAYMENTS CALL********');
         this.scopeForThisCall = 'payments';
         let returnthisPisp = this.retrieveAccessToken();
         return returnthisPisp;
       case 'vrp':
-        console.log('******NWB VRP CALL********');
+        console.log('******RBS VRP CALL********');
         this.scopeForThisCall = 'vrp';
         let returnthisVrp = this.retrieveAccessToken();
         return returnthisVrp;
@@ -205,7 +205,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -226,7 +226,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -241,7 +241,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -283,7 +283,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -304,7 +304,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -319,7 +319,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -361,7 +361,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -382,7 +382,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -397,7 +397,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -445,7 +445,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -466,7 +466,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -481,7 +481,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -531,7 +531,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -552,7 +552,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -567,7 +567,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -603,7 +603,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -624,7 +624,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -639,7 +639,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -740,7 +740,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -762,7 +762,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -777,7 +777,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -824,7 +824,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -848,7 +848,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -863,7 +863,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -903,11 +903,13 @@ class SanboxApiFactory {
           response.data.access_token,
           consentData.Links.Self,
         );
-        const detailsCa = await this.getDetailsCA(response.data.access_token);
+
+        //---------------- CA not supported in Rbs----------------------
+        //  const detailsCa = await this.getDetailsCA(response.data.access_token);
         //sending result to caller
         const result = {
           response: response.data,
-          customerDetails: detailsCa,
+          //customerDetails: detailsCa,
           debitorDetails: debitordetails.Data,
         };
         androidClientVrp = new AndroidClient(companyName, apiClient, 'vrp');
@@ -933,7 +935,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: response.status.toString(),
           response: JSON.stringify(response),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         return result;
@@ -953,7 +955,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -968,7 +970,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -1003,7 +1005,7 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: allVrpResponse.status.toString(),
         response: JSON.stringify(allVrpResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1022,7 +1024,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1037,7 +1039,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1075,7 +1077,7 @@ class SanboxApiFactory {
         scope: 'CVRP',
         status: response.status.toString(),
         response: JSON.stringify(response),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1094,7 +1096,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1109,7 +1111,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1179,7 +1181,7 @@ class SanboxApiFactory {
       console.log('body', body);
 
       const vrpPaymentResponse: AxiosResponse = await axios.post(
-        'https://ob.sandbox.natwest.com/open-banking/v3.1/pisp/domestic-vrps',
+        'https://ob.sandbox.rbs.co.uk/open-banking/v3.1/pisp/domestic-vrps',
         body,
         {
           headers: headers,
@@ -1202,7 +1204,7 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: vrpPaymentResponse.status.toString(),
         response: JSON.stringify(vrpPaymentResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1221,7 +1223,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1236,7 +1238,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1250,7 +1252,7 @@ class SanboxApiFactory {
     try {
       const headers = generateVrpAccountRequestHeaders(
         this.apiAccess,
-        '0015800000jfwxXAAQ',
+        '0015800000jfwB4AAI',
       );
       const allVrpPaymentsResponse = await axios.get(url, {
         headers: headers,
@@ -1295,7 +1297,7 @@ class SanboxApiFactory {
         scope: 'CVRP',
         status: allVrpPaymentsResponse.status.toString(),
         response: JSON.stringify(allVrpPaymentsResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1314,7 +1316,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1329,7 +1331,7 @@ class SanboxApiFactory {
           scope: 'CVRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1370,7 +1372,7 @@ class SanboxApiFactory {
           scope: 'accounts',
           status: responseRefresh.status.toString(),
           response: JSON.stringify(responseRefresh),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1391,7 +1393,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -1406,7 +1408,7 @@ class SanboxApiFactory {
             scope: 'accounts',
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -1477,7 +1479,7 @@ class SanboxApiFactory {
         scope: 'VRP',
         status: responseRefresh.status.toString(),
         response: JSON.stringify(responseRefresh),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
 
@@ -1500,7 +1502,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1515,7 +1517,7 @@ class SanboxApiFactory {
           scope: 'VRP',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1567,7 +1569,7 @@ class SanboxApiFactory {
         scope: 'payments',
         status: paymentResponse.status.toString(),
         response: JSON.stringify(paymentResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1589,7 +1591,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1604,7 +1606,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1653,7 +1655,7 @@ class SanboxApiFactory {
         scope: 'payments',
         status: payResponse.status.toString(),
         response: JSON.stringify(payResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1672,7 +1674,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1687,7 +1689,7 @@ class SanboxApiFactory {
           scope: 'payments',
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1744,7 +1746,7 @@ class SanboxApiFactory {
         scope: 'accounts',
         status: accountResponse.status.toString(),
         response: JSON.stringify(accountResponse),
-        bankName: 'Natwest',
+        bankName: 'RBS',
       };
       await logClient.insertLog(logData);
       //Storing APILOGS
@@ -1763,7 +1765,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: error.response?.status.toString() || 'unknown',
           response: JSON.stringify(error.response?.data || 'No response data'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       } else {
         logData = {
@@ -1778,7 +1780,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: 'unknown',
           response: JSON.stringify(error.message || 'Unknown error'),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
       }
 
@@ -1825,7 +1827,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1846,7 +1848,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -1861,7 +1863,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -1936,7 +1938,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -1957,7 +1959,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -1972,7 +1974,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -2024,7 +2026,7 @@ class SanboxApiFactory {
           scope: this.scopeForThisCall,
           status: accountResponse.status.toString(),
           response: JSON.stringify(accountResponse),
-          bankName: 'Natwest',
+          bankName: 'RBS',
         };
         await logClient.insertLog(logData);
         //Storing APILOGS
@@ -2045,7 +2047,7 @@ class SanboxApiFactory {
             response: JSON.stringify(
               error.response?.data || 'No response data',
             ),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         } else {
           logData = {
@@ -2060,7 +2062,7 @@ class SanboxApiFactory {
             scope: this.scopeForThisCall,
             status: 'unknown',
             response: JSON.stringify(error.message || 'Unknown error'),
-            bankName: 'Natwest',
+            bankName: 'RBS',
           };
         }
 
@@ -2076,4 +2078,4 @@ class SanboxApiFactory {
   }
 }
 
-export default SanboxApiFactory;
+export default RBSSanboxApiFactory;

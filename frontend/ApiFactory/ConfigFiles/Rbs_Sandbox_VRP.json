@@ -1,0 +1,17 @@
+{
+  "grant_type": "client_credentials",
+  "scope": "accounts",
+  "tokenEndpoint": "token",
+  "accountRequestEndpoint": "open-banking/v3.1/aisp/account-access-consents",
+  "consentUrl": "https://api.sandbox.rbs.co.uk/authorize",
+  "redirectUri": "https://bb7be717-1c14-45bc-9a6b-ae0ecef6eba0.example.org/redirect",
+  "accountsEndpoint": "open-banking/v3.1/aisp/accounts",
+  "teamDomain": "bb7be717-1c14-45bc-9a6b-ae0ecef6eba0.example.org",
+  "customerId": "123456789012",
+  "psu": "123456789012@bb7be717-1c14-45bc-9a6b-ae0ecef6eba0.example.org",
+  "comment": "VRP",
+  "paymentRequestEndPoint": "open-banking/v3.1/pisp/domestic-vrp-consents",
+  "vrpScope": "openid payments",
+  "domesticVrpPayments": "open-banking/v3.1/pisp/domestic-vrps",
+  "allVrpPayments": "cb077d7f-9613-482b-a79b-7176228fb202"
+}

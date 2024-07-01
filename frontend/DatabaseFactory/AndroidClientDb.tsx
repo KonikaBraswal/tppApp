@@ -1,4 +1,4 @@
-import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
+import SQLite, {SQLiteDatabase} from 'react-native-sqlite-storage';
 
 class AndroidClientDb {
   private companyName: string;
@@ -97,7 +97,7 @@ class AndroidClientDb {
 
   async updateDataByConsentIdPisp(
     consentId: string,
-    newData: { [key: string]: any },
+    newData: {[key: string]: any},
   ): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
@@ -125,12 +125,11 @@ class AndroidClientDb {
     });
   }
 
-
   //AISP
   // Method to initialize the SQLite database for Android AISP
   async initDatabaseAndroidAisp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-    console.log("hi using aisp me");
+    console.log('hi using aisp me');
     await new Promise<void>((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
@@ -218,9 +217,9 @@ class AndroidClientDb {
         tx.executeSql(
           `SELECT refreshToken FROM ${tableName} WHERE userId =?;`,
           [userId], // Pass userId as a parameter to prevent SQL injection
-          (_, { rows }) => {
+          (_, {rows}) => {
             if (rows.length > 0) {
-              console.log("refreshToken", rows.item(0).refreshToken)
+              console.log('refreshToken', rows.item(0).refreshToken);
               // Assuming refreshToken is stored directly in the row, adjust if structure is different
               resolve(rows.item(0).refreshToken); // Return the refreshToken of the first matching row
             } else {
@@ -245,7 +244,7 @@ class AndroidClientDb {
           [userId], // Pass userId as a parameter to prevent SQL injection
           (_, {rows}) => {
             if (rows.length > 0) {
-              console.log("consentId", rows.item(0).consentId);
+              console.log('consentId', rows.item(0).consentId);
               // Assuming consentId is stored directly in the row, adjust if structure is different
               resolve(rows.item(0).consentId); // Return the consentId of the first matching row
             } else {
@@ -260,7 +259,6 @@ class AndroidClientDb {
       });
     });
   }
-
 
   //create table for vrp transactions
   async initDatabaseAndroidVrpTransactions(): Promise<void> {
@@ -281,7 +279,9 @@ class AndroidClientDb {
       );`,
           [],
           (_, result) => {
-            console.log(`VRP Transactions Table ${tableName} created successfully.`);
+            console.log(
+              `VRP Transactions Table ${tableName} created successfully.`,
+            );
             resolve();
           },
           (_, error) => {
@@ -303,14 +303,8 @@ class AndroidClientDb {
     last_updated_date?: any;
     last_updated_time?: any;
   }): Promise<void> {
-    const {
-      userId,
-      scope,
-      consentId,
-      vrpId,
-      vrpPayload,
-      status
-    } = vrpTransactToStore;
+    const {userId, scope, consentId, vrpId, vrpPayload, status} =
+      vrpTransactToStore;
 
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
@@ -336,11 +330,14 @@ class AndroidClientDb {
             vrpPayload,
             status,
             currentDate,
-            currentTime
+            currentTime,
           ],
           (_, results) => {
             if (results.rowsAffected > 0) {
-              console.log('Data inserted successfully in Vrp Transactions table', results);
+              console.log(
+                'Data inserted successfully in Vrp Transactions table',
+                results,
+              );
               resolve();
             } else {
               console.error('No rows affected during insertion');
@@ -348,14 +345,17 @@ class AndroidClientDb {
             }
           },
           (_, error) => {
-            console.error('Error inserting data in Vrp transactions Table: ', error);
+            console.error(
+              'Error inserting data in Vrp transactions Table: ',
+              error,
+            );
             reject(error);
           },
         );
       });
     });
   }
-  //create table for vrp 
+  //create table for vrp
   async initDatabaseAndroidVrp(): Promise<void> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
@@ -387,7 +387,7 @@ class AndroidClientDb {
       });
     });
   }
-  //insert VRP 
+  //insert VRP
   async insertDataVrp(vrpToStore: {
     userId: any;
     scope: any;
@@ -408,7 +408,7 @@ class AndroidClientDb {
       consentPayload,
       consentExpiry,
       status,
-      accountDetails
+      accountDetails,
     } = vrpToStore;
 
     const currentDate = new Date().toLocaleDateString();
@@ -439,11 +439,11 @@ class AndroidClientDb {
             status,
             accountDetails,
             currentDate,
-            currentTime
+            currentTime,
           ],
           (_, results) => {
             if (results.rowsAffected > 0) {
-              console.log('Data inserted successfully in Vrp table',results);
+              console.log('Data inserted successfully in Vrp table', results);
               resolve();
             } else {
               console.error('No rows affected during insertion');
@@ -497,13 +497,8 @@ class AndroidClientDb {
     last_updated_date?: any;
     last_updated_time?: any;
   }): Promise<void> {
-    const {
-      userId,
-      scope,
-      consentId,
-      customerDetails,
-      accountDetails
-    } = caToStore;
+    const {userId, scope, consentId, customerDetails, accountDetails} =
+      caToStore;
 
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
@@ -527,7 +522,7 @@ class AndroidClientDb {
             customerDetails,
             accountDetails,
             currentDate,
-            currentTime
+            currentTime,
           ],
           (_, results) => {
             if (results.rowsAffected > 0) {
@@ -546,32 +541,36 @@ class AndroidClientDb {
       });
     });
   }
- // Method to update the refresh token for AISP based on userId
- async updateRefreshTokenAisp(userId: string, newRefreshToken: string,consentId:string): Promise<void> {
-  const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
-  
-  await new Promise<void>((resolve, reject) => {
-    this.androidDb.transaction(tx => {
-      tx.executeSql(
-        `UPDATE ${tableName} SET refreshToken = ? WHERE userId = ? AND consentId=?;`,
-        [newRefreshToken, userId,consentId],
-        (_, result) => {
-          if (result.rowsAffected > 0) {
-            console.log('Refresh token updated successfully');
-            resolve();
-          } else {
-            console.error('No rows affected during update');
-            reject(new Error('No rows affected'));
-          }
-        },
-        (_, error) => {
-          console.error('Error updating refresh token:', error);
-          reject(error);
-        },
-      );
+  // Method to update the refresh token for AISP based on userId
+  async updateRefreshTokenAisp(
+    userId: string,
+    newRefreshToken: string,
+    consentId: string,
+  ): Promise<void> {
+    const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+
+    await new Promise<void>((resolve, reject) => {
+      this.androidDb.transaction(tx => {
+        tx.executeSql(
+          `UPDATE ${tableName} SET refreshToken = ? WHERE userId = ? AND consentId=?;`,
+          [newRefreshToken, userId, consentId],
+          (_, result) => {
+            if (result.rowsAffected > 0) {
+              console.log('Refresh token updated successfully');
+              resolve();
+            } else {
+              console.error('No rows affected during update');
+              reject(new Error('No rows affected'));
+            }
+          },
+          (_, error) => {
+            console.error('Error updating refresh token:', error);
+            reject(error);
+          },
+        );
+      });
     });
-  });
-}
+  }
   //fetch data according to scope
   async fetchDataUsingScope(scope: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
@@ -606,7 +605,7 @@ class AndroidClientDb {
       });
     });
   }
-//check whether table exists and entries in table exists or not
+  //check whether table exists and entries in table exists or not
   async checkTableOrEntryExist(): Promise<string> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
@@ -614,7 +613,7 @@ class AndroidClientDb {
         tx.executeSql(
           `SELECT name FROM sqlite_master WHERE type='table' AND name=?;`,
           [tableName],
-          (_, { rows: tableCheck }) => {
+          (_, {rows: tableCheck}) => {
             if (tableCheck.length === 0) {
               console.log(`Table ${tableName} does not exist`);
               resolve(`Table ${tableName} does not exist`); // Resolve with an empty array if the table does not exist
@@ -622,8 +621,12 @@ class AndroidClientDb {
               tx.executeSql(
                 `SELECT COUNT(*) FROM ${tableName};`,
                 [],
-                (_, { rows }) => {
-                  if (rows.length === 0 || rows === null || rows === undefined) {
+                (_, {rows}) => {
+                  if (
+                    rows.length === 0 ||
+                    rows === null ||
+                    rows === undefined
+                  ) {
                     console.log('Table is empty');
                     resolve('Table is empty'); // Resolve with an empty array if the table is empty
                   } else {
@@ -631,21 +634,24 @@ class AndroidClientDb {
                   }
                 },
                 (_, error) => {
-                  console.error('Error retrieving data in display data:', error);
+                  console.error(
+                    'Error retrieving data in display data:',
+                    error,
+                  );
                   resolve(error.toString()); // Resolve with an empty array if there's an error
-                }
+                },
               );
             }
           },
           (_, error) => {
             console.error('Error checking table existence:', error);
             resolve(error.toString()); // Resolve with an empty array if there's an error checking table existence
-          }
+          },
         );
       });
     });
   }
-//fetch data according to consentId
+  //fetch data according to consentId
   async fetchDataUsingConsentId(consentId: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
@@ -653,7 +659,7 @@ class AndroidClientDb {
         tx.executeSql(
           `SELECT * FROM ${tableName} WHERE consentId = ?ORDER BY last_updated_date DESC,last_updated_time DESC ;`,
           [consentId],
-          (_, { rows }) => {
+          (_, {rows}) => {
             if (rows.length > 0) {
               const rowData = [];
               for (let i = 0; i < rows.length; i++) {
@@ -675,7 +681,7 @@ class AndroidClientDb {
       });
     });
   }
-  // Method to update data based on consentId 
+  // Method to update data based on consentId
   async updateDataByConsentId(
     consentId: string,
     details: any,
@@ -701,7 +707,9 @@ class AndroidClientDb {
         const currentDate = new Date().toLocaleDateString();
         const currentTime = new Date().toLocaleTimeString();
         const parameters = [
-          ...columnsToUpdate.map((column: string | number) => details[column].toString()),
+          ...columnsToUpdate.map((column: string | number) =>
+            details[column].toString(),
+          ),
           currentDate,
           currentTime,
           consentId,
@@ -723,11 +731,10 @@ class AndroidClientDb {
     });
   }
 
-
   //COMMON
   // Method to delete all data entries from the database
   async deleteAllData(): Promise<void> {
-    console.log("clicked");
+    console.log('clicked');
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
     await new Promise<void>((resolve, reject) => {
@@ -769,7 +776,7 @@ class AndroidClientDb {
       });
     });
   }
-//display data from table
+  //display data from table
   async displayData(): Promise<any[]> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
     return new Promise((resolve, reject) => {
@@ -777,7 +784,7 @@ class AndroidClientDb {
         tx.executeSql(
           `SELECT name FROM sqlite_master WHERE type='table' AND name=?;`,
           [tableName],
-          (_, { rows: tableCheck }) => {
+          (_, {rows: tableCheck}) => {
             if (tableCheck.length === 0) {
               console.log(`Table ${tableName} does not exist`);
               resolve([]); // Resolve with an empty array if the table does not exist
@@ -785,8 +792,12 @@ class AndroidClientDb {
               tx.executeSql(
                 `SELECT * FROM ${tableName};`,
                 [],
-                (_, { rows }) => {
-                  if (rows.length === 0 || rows === null || rows === undefined) {
+                (_, {rows}) => {
+                  if (
+                    rows.length === 0 ||
+                    rows === null ||
+                    rows === undefined
+                  ) {
                     console.log('Table is empty');
                     resolve([]); // Resolve with an empty array if the table is empty
                   } else {
@@ -798,23 +809,23 @@ class AndroidClientDb {
                   }
                 },
                 (_, error) => {
-                  console.error('Error retrieving data in display data:', error);
+                  console.error(
+                    'Error retrieving data in display data:',
+                    error,
+                  );
                   resolve([]); // Resolve with an empty array if there's an error
-                }
+                },
               );
             }
           },
           (_, error) => {
             console.error('Error checking table existence:', error);
             resolve([]); // Resolve with an empty array if there's an error checking table existence
-          }
+          },
         );
       });
     });
   }
-  
-  
-
 }
 
 export default AndroidClientDb;
