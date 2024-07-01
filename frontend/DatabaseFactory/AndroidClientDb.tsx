@@ -571,7 +571,7 @@ class AndroidClientDb {
       });
     });
   }
-  //fetch data according to scope or consentId
+  //fetch data according to scope
   async fetchDataUsingScope(scope: string): Promise<any> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
 
