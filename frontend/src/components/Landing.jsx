@@ -6,7 +6,12 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Dimensions
 } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import { Surface, FAB } from '@react-native-material/core';
 import { Icon, Searchbar, Card, Title } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -17,20 +22,23 @@ import ViewAll from './ViewAll';
 import ViewAllLocal from '../components/ViewAllLocal';
 import BottomTab from './BottomTab';
 
-
+const { width: screenWidth } = Dimensions.get('window');
 const Landing = () => {
   const navigation = useNavigation();
   let androidClientNWG = new AndroidClient("NWG", "Sandbox", "accounts");
+  let androidClientRBS = new AndroidClient("RBS", "Sandbox", "accounts");
+  let androidClientUBN = new AndroidClient("UBN", "Sandbox", "accounts");
   let androidClientHSBC = new AndroidClient("HSBC", "Sandbox", "accounts");
   const [checkNWB, setCheckNWB] = useState('');
+  const [checkRBS, setCheckRBS] = useState('');
+  const [checkUBN, setCheckUBN] = useState('');
   const [checkHSBC, setCheckHSBC] = useState('');
   const cards = [
     {id: 1, name: 'Natwest', icon: require('../assets/icons/natwest.png')},
     {id: 2, name: 'HSBC', icon: require('../assets/icons/hsbc.png')},
     {id: 3, name: 'Barclays', icon: require('../assets/icons/barclays.png')},
-    {id: 4, name: 'Lloyds', icon: require('../assets/icons/lloyds.png')},
-    {id: 5, name: 'Monzo', icon: require('../assets/icons/monzo.png')},
-    {id: 6, name: 'Santander', icon: require('../assets/icons/santander.png')},
+    {id: 4, name: 'RBS', icon: require('../assets/images/Rbs.jpg')},
+    {id: 5, name: 'Ulster', icon: require('../assets/images/Ulster.jpg')},
   ];
   const [env, setEnv] = useState(global.env);
   const [key, setKey] = useState(Date.now());
@@ -53,15 +61,24 @@ const Landing = () => {
       checkEnvChange();
       const check = async () => {
         if (global.env === 'sandbox') {
-          let resultNWB, resultHSBC;
+          let resultNWB, resultHSBC,resultRBS,resultUBN;
           try {
             resultNWB = await androidClientNWG.checkTableOrEntryExist();
+            resultRBS = await androidClientRBS.checkTableOrEntryExist();
+            resultUBN = await androidClientUBN.checkTableOrEntryExist();
             resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
+            console.log("resultRBS",resultRBS);
             if (resultNWB === 'yes') {
               setCheckNWB(resultNWB);
             }
             if (resultHSBC === 'yes') {
               setCheckHSBC(resultHSBC);
+            }
+            if (resultUBN === 'yes') {
+              setCheckUBN(resultUBN);
+            }
+            if (resultRBS === 'yes') {
+              setCheckRBS(resultRBS);
             }
 
           } catch (error) {
@@ -91,8 +108,11 @@ const Landing = () => {
   const filteredCards = cards.filter(card => {
     if (card.name === 'Natwest' && checkNWB === 'yes') return true;
     if (card.name === 'HSBC' && checkHSBC === 'yes') return true;
-    if (card.name !== 'Natwest' && card.name !== 'HSBC') return true;
+    if (card.name === 'RBS' && checkRBS === 'yes') return true;
+    if (card.name === 'Ulster' && checkUBN === 'yes') return true;
+    if (card.name !== 'Natwest' && card.name !== 'HSBC'&& card.name !== 'Ulster' && card.name !== 'RBS') return true;
     return false;
+    // return true;
   });
 
   return (
@@ -138,15 +158,16 @@ const Landing = () => {
               backgroundColor: '#c8e1cc',
               justifyContent: 'space-around',
               alignItems: 'center',
-              maxHeight: 175,
-              marginTop: 5,
-              borderRadius: 200,
+              maxHeight: wp('60%'),
+              marginTop: wp('1%'),
+              borderRadius: wp('10%'),
             }}>
             <View
               style={{
                 flexDirection: 'column',
                 marginTop: 40,
-                marginHorizontal: 10,
+                marginHorizontal: wp('5%'),
+                width: screenWidth * 0.2,
               }}>
               <FAB
                 icon={() => <Icon source="plus" color="white" size={20} />}
@@ -178,6 +199,14 @@ const Landing = () => {
                   } else if (item.name === 'HSBC') {
                     navigation.navigate('Added Bank Accounts', {
                       bankName: 'HSBC',
+                    });
+                  }else if (item.name === 'Ulster') {
+                    navigation.navigate('Added Bank Accounts', {
+                      bankName: 'UBN',
+                    });
+                  }  else if (item.name === 'RBS') {
+                    navigation.navigate('Added Bank Accounts', {
+                      bankName: 'RBS',
                     });
                   } else if (item.name === 'Barclays') {
                     navigation.navigate('Your Barclays Accounts');
@@ -251,6 +280,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    
   },
   bottombar: {
     marginBottom: 0,
@@ -274,11 +304,11 @@ const styles = StyleSheet.create({
     height: 90,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
+    marginHorizontal: wp('3%'),
   },
   icon: {
-    width: 80,
-    height: 80,
+    width: wp('40%'),
+    height: hp('8%'),
     resizeMode: 'contain',
   },
   addBankContainer: {
@@ -288,7 +318,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   ListContainer: {
-    paddingHorizontal: 5,
+    paddingHorizontal: wp('17%'),
   },
 
   lastrowBackground: {

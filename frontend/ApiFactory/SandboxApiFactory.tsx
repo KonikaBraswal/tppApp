@@ -514,7 +514,7 @@ class SanboxApiFactory {
             headers: headers,
           },
         );
-        console.log(response.data);
+        // console.log(response.data);
         const consentId = response.data.Data?.ConsentId ?? ''; // Using nullish coalescing operator
         pispToStore.consentId = consentId; // Storing consent ID in toStore object
         pispToStore.payload = JSON.stringify(body);
@@ -582,7 +582,7 @@ class SanboxApiFactory {
         const body = this.permissions;
         const headers = generateAccountRequestHeaders(accessToken);
 
-        console.log(body);
+        // console.log(body);
         const response: AxiosResponse<ResponseData> = await axios.post(
           `${this.baseUrl}/${sandboxConfigvrp.paymentRequestEndPoint}`,
           body,
@@ -654,7 +654,7 @@ class SanboxApiFactory {
   async manualUserConsent(consentId: string) {
     let consentUrlWithVariables = '';
 
-    console.log('manual consent');
+    // console.log('manual consent');
     if (this.scopeForThisCall == 'accounts') {
       consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
     }

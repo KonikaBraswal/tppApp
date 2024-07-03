@@ -608,6 +608,7 @@ class AndroidClientDb {
   //check whether table exists and entries in table exists or not
   async checkTableOrEntryExist(): Promise<string> {
     const tableName = `${this.scope}_${this.apiClient}_${this.companyName}`;
+    console.log("table",tableName);
     return new Promise((resolve, reject) => {
       this.androidDb.transaction(tx => {
         tx.executeSql(
@@ -619,17 +620,16 @@ class AndroidClientDb {
               resolve(`Table ${tableName} does not exist`); // Resolve with an empty array if the table does not exist
             } else {
               tx.executeSql(
-                `SELECT COUNT(*) FROM ${tableName};`,
+                `SELECT COUNT(*) AS count FROM ${tableName};`,
                 [],
                 (_, {rows}) => {
                   if (
-                    rows.length === 0 ||
-                    rows === null ||
-                    rows === undefined
+                    (rows.item(0).count === 0)
                   ) {
-                    console.log('Table is empty');
-                    resolve('Table is empty'); // Resolve with an empty array if the table is empty
+                    console.log(`Table ${tableName} is empty`);
+                    resolve(`Table ${tableName} is empty`); // Resolve with an empty array if the table is empty
                   } else {
+                    // console.log("rows",rows);
                     resolve('yes'); // Resolve the promise with the fetched data
                   }
                 },
