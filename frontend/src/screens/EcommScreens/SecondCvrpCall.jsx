@@ -89,10 +89,11 @@ const SecondCvrpCall = ({route}) => {
       if (response.Data.Status === 'AcceptedSettlementCompleted') {
         navigation.navigate('Order Placed');
       } else {
-        Alert.alert('Payment Failed ', 'Account Balance is insufficient', [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ]);
-        console.log('error');
+        navigation.navigate('Order Not Placed')
+        // Alert.alert('Payment Failed ', 'Account Balance is insufficient', [
+        //   {text: 'OK', onPress: () => console.log('OK Pressed')},
+        // ]);
+        // console.log('error');
       }
     } catch (error) {
       console.log('error in fetching refresh', error);

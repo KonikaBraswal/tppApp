@@ -45,6 +45,7 @@ import ProductListing from './src/screens/EcommScreens/ProductListing';
 import Landing from './src/components/Landing';
 import CartScreen from './src/screens/EcommScreens/CartScreen';
 import OrderSuccessful from './src/screens/EcommScreens/OrderSuccessful';
+import OrderUnsuccessful from './src/screens/EcommScreens/OrderUnsccessful';
 import CustomerDetails from './src/screens/EcommScreens/CustomerDetails';
 import BankList from './src/screens/EcommScreens/BankList';
 import AddressScreen from './src/screens/EcommScreens/AddressScreen';
@@ -245,6 +246,7 @@ function App(): React.JSX.Element {
                   component={ConfirmDetails}
                 />
                 <Stack.Screen name="Order Placed" component={OrderSuccessful} />
+                <Stack.Screen name="Order Not Placed" component={OrderUnsuccessful} />
                 <Stack.Screen name="Make Payment" component={SecondCvrpCall} />
                 <Stack.Screen name="Hsbc Dummy" component={HsbcDummy} />
               </Stack.Navigator>
