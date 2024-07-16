@@ -96,9 +96,10 @@ const ConfirmDetails = ({route}) => {
       if (response.Data.Status === 'AcceptedSettlementCompleted') {
         navigation.navigate('Order Placed');
       } else {
-        Alert.alert('Payment Failed', 'Please Try Again', [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ]);
+        navigation.navigate('Order Not Placed');
+        // Alert.alert('Payment Failed', 'Please Try Again', [
+        //   {text: 'OK', onPress: () => console.log('OK Pressed')},
+        // ]);
       }
     } catch (error) {
       console.log('error in fetching refresh', error);
