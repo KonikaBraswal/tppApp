@@ -1,4 +1,6 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef,useCallback} from 'react';
+import {  useFocusEffect } from '@react-navigation/native';
+
 import {
   ScrollView,
   View,
@@ -43,44 +45,84 @@ const ViewAll = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log('I AM IN VIEWALL.jsx');
-        const dataNWG = await androidClientAispNWG.displayData();
-        const dataHSBC = await androidClientAispHSBC.displayData();
-        const dataUBN = await androidClientAispUBN.displayData();
-        const dataRBS = await androidClientAispRBS.displayData();
-        let data = [];
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       console.log('I AM IN VIEWALL.jsx');
+  //       const dataNWG = await androidClientAispNWG.displayData();
+  //       const dataHSBC = await androidClientAispHSBC.displayData();
+  //       const dataUBN = await androidClientAispUBN.displayData();
+  //       const dataRBS = await androidClientAispRBS.displayData();
+  //       let data = [];
 
-        // Check if dataNWG is not empty
-        if (dataNWG && dataNWG.length > 0) {
-          data = [...data, ...dataNWG];
-        }
+  //       // Check if dataNWG is not empty
+  //       if (dataNWG && dataNWG.length > 0) {
+  //         data = [...data, ...dataNWG];
+  //       }
 
-        // Check if dataHSBC is not empty
-        if (dataHSBC && dataHSBC.length > 0) {
-          data = [...data, ...dataHSBC];
-        }
-        if (dataRBS && dataRBS.length > 0) {
-          data = [...data, ...dataRBS];
-        }
-        if (dataUBN && dataUBN.length > 0) {
-          data = [...data, ...dataUBN];
-        }
-        const filtered = data.filter(entry => entry.scope === 'accounts');
-        const filteredData = removeDuplicateAccounts(filtered);
+  //       // Check if dataHSBC is not empty
+  //       if (dataHSBC && dataHSBC.length > 0) {
+  //         data = [...data, ...dataHSBC];
+  //       }
+  //       if (dataRBS && dataRBS.length > 0) {
+  //         data = [...data, ...dataRBS];
+  //       }
+  //       if (dataUBN && dataUBN.length > 0) {
+  //         data = [...data, ...dataUBN];
+  //       }
+  //       const filtered = data.filter(entry => entry.scope === 'accounts');
+  //       const filteredData = removeDuplicateAccounts(filtered);
 
-        console.log('accounts', filteredData);
-        setRetrievedData(filteredData);
-        console.log('Length of data', retrievedData.length);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  //       console.log('accounts', filteredData);
+  //       setRetrievedData(filteredData);
+  //       console.log('Length of data', retrievedData.length);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  const fetchData = async () => {
+    try {
+      console.log('I AM IN VIEWALL.jsx');
+      const dataNWG = await androidClientAispNWG.displayData();
+      const dataHSBC = await androidClientAispHSBC.displayData();
+      const dataUBN = await androidClientAispUBN.displayData();
+      const dataRBS = await androidClientAispRBS.displayData();
+      let data = [];
+
+      // Check if dataNWG is not empty
+      if (dataNWG && dataNWG.length > 0) {
+        data = [...data, ...dataNWG];
       }
-    };
 
-    fetchData();
-  }, []);
+      // Check if dataHSBC is not empty
+      if (dataHSBC && dataHSBC.length > 0) {
+        data = [...data, ...dataHSBC];
+      }
+      if (dataRBS && dataRBS.length > 0) {
+        data = [...data, ...dataRBS];
+      }
+      if (dataUBN && dataUBN.length > 0) {
+        data = [...data, ...dataUBN];
+      }
+      const filtered = data.filter(entry => entry.scope === 'accounts');
+      const filteredData = removeDuplicateAccounts(filtered);
+
+      console.log('accounts', filteredData);
+      setRetrievedData(filteredData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []) // Empty dependency array ensures fetchData runs only once when the screen is focused
+  );
 
   // Helper function to determine the image source based on AccountId
   const getImageSource = subtype => {
