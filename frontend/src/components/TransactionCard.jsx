@@ -41,9 +41,7 @@ const TransactionCard = ({transaction}) => {
             </Text>
           </View>
           <Text style={styles.amountText}>
-            {transaction.Amount && transaction.Amount.Currency
-              ? transaction.Amount.Currency
-              : 'N/A'}{' '}
+          £
             {transaction.Amount && transaction.Amount.Amount
               ? transaction.Amount.Amount
               : '0.00'}
