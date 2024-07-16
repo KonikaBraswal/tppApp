@@ -65,7 +65,7 @@ const CustomDrawerContent = ({ navigation }) => {
     left={props => <List.Icon {...props} icon="bank-plus" />}
   />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Updates')}>
       <List.Item
     title="Notifications"
     left={props => <List.Icon {...props} icon="bell" />}
@@ -94,7 +94,7 @@ const CustomDrawerContent = ({ navigation }) => {
     left={props => <List.Icon {...props} icon="account" />}
   />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Messages')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Updates')}>
       <List.Item
     title="Messages"
     left={props => <List.Icon {...props} icon="message" />}
