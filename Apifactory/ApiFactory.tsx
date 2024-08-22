@@ -6,6 +6,8 @@ import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';
 import MockApiClient from './MockApiClient';
 import SanboxApiClient from './SandboxApiClient';
+import RbsSanboxApiClient from './RbsSandboxApiClient';
+import UbnSanboxApiClient from './UlsterSandboxApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
 
 let permissions: string[] = [];
@@ -25,7 +27,21 @@ class ApiFactory {
 
   createApiClient(type: string) {
     switch (type) {
-      case 'sandbox':
+      case 'sandbox|RBS':
+        return new RbsSanboxApiClient(
+          this.baseUrl,
+          this.clientId,
+          this.clientSecret,
+          this.commonHeaders,
+        );
+        case 'sandbox|Ulster':
+          return new UbnSanboxApiClient(
+            this.baseUrl,
+            this.clientId,
+            this.clientSecret,
+            this.commonHeaders,
+          );
+        case 'sandbox|Natwest':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,

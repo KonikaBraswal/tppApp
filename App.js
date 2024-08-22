@@ -38,13 +38,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsentInfo from './src/screens/VRP/ConsentInfo';
 import ApiLogsList from './src/screens/ApiLogsList';
 import ApiLogDetails from './src/screens/ApiLogDetails';
+import ViewAll from './src/components/ViewAll';
+import SelectBankPISP from './src/screens/SelectBankPISP';
+import SelectBankVRP from './src/screens/SelectBankVRP';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-  // useEffect(() => {
-  //   const transactions=[];
-  //   AsyncStorage.setItem('vrpTransactions_sandbox',JSON.stringify(transactions))
-  // }, []);
+  
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -59,12 +59,21 @@ export default function App() {
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Transaction Successful" component={SuccessfullTransaction} />
               <Stack.Screen name="Transactions" component={TransactionList} />
+              <Stack.Screen
+                  name="Select Bank For Payment"
+                  component={SelectBankPISP}
+                />
+                <Stack.Screen
+                  name="Select Bank For VRP"
+                  component={SelectBankVRP}
+                />
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />
               <Stack.Screen name="Details" component={MainScreen} />
               <Stack.Screen name="Bank Accounts" component={ViewAllAccounts} />
+              <Stack.Screen name="ViewAll" component={ViewAll}/>
               <Stack.Screen
-                name="View Details"
+                name="ViewAllLocal"
                 component={ViewAllLocalDetails}
               />
               <Stack.Screen

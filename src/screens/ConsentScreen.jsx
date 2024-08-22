@@ -313,13 +313,20 @@ const apiFactory = new ApiFactory();
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  console.log(global.brand);
+  const client = global.env + "|" +global.brand;
+  console.log(client);
+  const apiClient = apiFactory.createApiClient(client);
   return apiClient;
   // Use the new apiClient as needed
  };
-const ConsentScreen = () => {
+ const ConsentScreen = ({route}) => {
+  const {bankName} = route.params;
+  console.log('BANK NAME', bankName);
+  global.brand=bankName;
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
+    console.log(newApiClient);
     setSandboxApiClient(newApiClient);
     return () => {
     };

@@ -1,175 +1,193 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {ScrollView, View, StyleSheet, Animated, Dimensions} from 'react-native';
+import {Card, Title, Paragraph, Text, IconButton} from 'react-native-paper';
 import {
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Text,
-  KeyboardAvoidingView,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
   widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Searchbar} from 'react-native-paper';
-import {Surface} from '@react-native-material/core';
-import LocalAccountDetails from '../components/LocalAccountDetails';
-import DropdownWithCheckboxes from '../components/DropdownWithCheckboxes';
-import SortDropdown from '../components/SortDropdown';
-import readNatwestAccount from '../assets/data/accounts.json';
-import readNatwestBalance from '../assets/data/balances.json';
-import readBarclaysAccount from '../assets/data/barclaysAccounts.json';
-import readBarclaysBalance from '../assets/data/barclaysBalances.json';
-import readNatwestTransaction from '../assets/data/transactions.json';
-import readBarclaysTransaction from '../assets/data/barclaysTransactions.json';
-import LocalTransactionList from '../components/LocalTransactionList';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NatwestAccountData = readNatwestAccount?.Data?.Account;
-const NatwestBalanceData = readNatwestBalance?.Data?.Balance;
-const NatwestTransactionData = readNatwestTransaction?.Data?.Transaction;
-const BarclaysAccountData = readBarclaysAccount?.Data?.Account;
-const BarclaysBalanceData = readBarclaysBalance?.Data?.Balance;
-const BarclaysTransactionData = readBarclaysTransaction?.Data?.Transaction;
-const mergedAccounts = [...NatwestAccountData, ...BarclaysAccountData];
-const mergedBalances = [...NatwestBalanceData, ...BarclaysBalanceData];
-const mergedTransactions = [
-  ...NatwestTransactionData,
-  ...BarclaysTransactionData,
-];
-
-const findAccountBalances = accountId => {
-  const foundBalances = mergedBalances.filter(
-    balance => balance.AccountId === accountId,
-  );
-
-  if (foundBalances.length > 0) {
-    return foundBalances;
-  } else {
-    return null;
-  }
-};
-findAccountTransactions = accountId => {
-  const foundTransactions = mergedTransactions.filter(
-    transaction => transaction.AccountId === accountId,
-  );
-  if (foundTransactions.length > 0) {
-    return foundTransactions;
-  } else {
-    return null;
+const fetchAISPData = async () => {
+  try {
+    const data = await AsyncStorage.getItem('aispData');
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error fetching AISP data from AsyncStorage:', error);
+    return [];
   }
 };
 
-const ViewAllLocalDetails = ({route}) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const accountId = route.params.AccountId;
-  const accountDetails = mergedAccounts.find(
-    account => account.AccountId == accountId,
+const ViewAllLocal = () => {
+  const navigation = useNavigation();
+  const [cards, setCards] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const data = await fetchAISPData();
+      setCards(data);
+    } catch (error) {
+      console.error('Error fetching AISP data:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
   );
-  const transactionDetails = findAccountTransactions(accountId);
+
+  const screenWidth = Dimensions.get('window').width;
+  const translateX = useRef(new Animated.Value(-screenWidth)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(translateX, {
+        toValue: screenWidth,
+        duration: 7000,
+        useNativeDriver: true,
+      }),
+    ).start();
+  }, [translateX, screenWidth]);
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
-        <View style={styles.rowContainer}>
-          <Surface elevation={6} category="medium" style={styles.surface}>
-            {BarclaysAccountData.find(
-              barclaysAccount => barclaysAccount.AccountId === accountId,
-            ) ? (
-              <Image
-                source={require('../assets/images/barclays.png')}
-                style={styles.icon}
-              />
-            ) : (
-              <Image
-                source={require('../assets/images/natwest.png')}
-                style={styles.icon}
-              />
-            )}
-          </Surface>
-          <DropdownWithCheckboxes />
-        </View>
-        <LocalAccountDetails
-          account={accountDetails}
-          balance={findAccountBalances(accountId)}
-        />
+    <View style={{flex: 1, marginTop: 5}}>
+      {cards.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{padding: 8}}>
+          {cards.map(card => (
+            <Card
+              key={card.accID}
+              style={styles.card}
+              onPress={() => {
+                navigation.navigate('Local Transactions');
+              }}>
+              {card.accsubType === 'CurrentAccount' ? (
+                <Card.Cover
+                  source={require('../assets/images/card1.png')}
+                  style={styles.coverImage}
+                />
+              ) : (
+                <Card.Cover
+                  source={require('../assets/images/card2.png')}
+                  style={styles.coverImage}
+                />
+              )}
+              <Card.Content style={styles.cardContent}>
+                <Title style={styles.title}>{card.accsubType}</Title>
 
-        <View style={styles.transactionsContainer}>
-          <View style={styles.transactionsHeader}>
-            <Text style={styles.transactionsHeaderText}>Transactions</Text>
-            <SortDropdown />
+                <Paragraph style={styles.additionalInfo}>
+                  {card.accnum}
+                </Paragraph>
+                <Paragraph style={styles.additionalInfo}>
+                  {card.debtorname}
+                </Paragraph>
+              </Card.Content>
+            </Card>
+          ))}
+          <Card key="viewAllCard" style={{elevation: 3}}>
+            <Card.Content>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginTop: 40,
+                  fontWeight: 'bold',
+                  fontSize: RFValue(18),
+                  color: '#5a287d',
+                }}>
+                View All
+              </Text>
+
+              <IconButton
+                mode="contained-tonal"
+                icon="chevron-right"
+                color="#5a287d"
+                containerColor="rgba(90, 40, 125, 0.3)"
+                size={26}
+                style={{
+                  marginLeft: 15,
+                }}
+                onPress={() => navigation.navigate('Added Bank Accounts')}
+              />
+            </Card.Content>
+          </Card>
+        </ScrollView>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'rgba(232, 232, 232, 0.3)',
+              alignContent: 'center',
+              width: '100%',
+              padding: hp('1%'),
+            }}>
+            <Animated.View
+              style={[styles.contentContainer, {transform: [{translateX}]}]}>
+              <Text style={styles.text}>No Added Bank Accounts</Text>
+              <IconButton icon="bank-plus" iconColor="#5a287d" />
+            </Animated.View>
           </View>
-          <Searchbar
-            placeholder="Search Transaction"
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-            style={styles.searchbar}
-          />
-          <LocalTransactionList transactionDetails={transactionDetails} />
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
+  card: {
+    marginRight: 16,
+    width: 275,
+    overflow: 'hidden',
+    height: '100%',
   },
-  scrollView: {
-    padding: wp('1%'),
-    marginVertical: hp('1%'),
-    flex: 1,
+  coverImage: {
+    height: '110%',
+    resizeMode: 'cover',
+    marginTop: -10,
   },
-  rowContainer: {
+  cardContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    // backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    padding: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  title: {
+    color: 'white',
+    fontSize: RFValue(15),
+    marginBottom: -6,
+  },
+  additionalInfo: {
+    color: 'white',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(200, 225, 204, 0.5)',
+  },
+  text: {
+    fontSize: RFValue(18),
+    fontWeight: 'bold',
+    color: '#5a287d',
+  },
+  contentContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  surface: {
-    width: wp('17%'),
-    height: wp('17%'),
     justifyContent: 'center',
     alignItems: 'center',
-    margin: wp('3%'),
-  },
-  icon: {
-    width: wp('16%'),
-    height: wp('16%'),
-    resizeMode: 'contain',
-    marginVertical: wp('1.2%'),
-  },
-  transactionsContainer: {
-    flexDirection: 'column',
-    backgroundColor: '#c8e1cc',
-    borderRadius: wp('2%'),
-    padding: wp('1%'),
-    margin: wp('2%'),
-    shadowOpacity: 0.3,
-    elevation: 3,
-    shadowColor: '#000',
-  },
-  transactionsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: hp('1%'),
-    marginLeft: wp('3%'),
-    marginRight: wp('3%'),
-  },
-  transactionsHeaderText: {
-    fontSize: wp('5%'),
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  searchbar: {
-    borderRadius: wp('2%'),
-    width: '95%',
-    marginTop: hp('1%'),
-    alignSelf: 'center',
   },
 });
 
-export default ViewAllLocalDetails;
+export default ViewAllLocal;
