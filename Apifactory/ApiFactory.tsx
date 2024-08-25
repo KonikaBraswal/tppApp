@@ -27,21 +27,23 @@ class ApiFactory {
 
   createApiClient(type: string) {
     switch (type) {
-      case 'sandbox|RBS':
+      case 'sandboxRBS':
+        console.log("called RBS");
         return new RbsSanboxApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,
           this.commonHeaders,
         );
-        case 'sandbox|Ulster':
+        case 'sandboxUlster':
+          console.log("called Ulster");
           return new UbnSanboxApiClient(
             this.baseUrl,
             this.clientId,
             this.clientSecret,
             this.commonHeaders,
           );
-        case 'sandbox|Natwest':
+        case 'sandbox':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,

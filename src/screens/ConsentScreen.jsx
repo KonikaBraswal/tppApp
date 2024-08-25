@@ -310,13 +310,18 @@ import ApiFactory from '../../Apifactory/ApiFactory';
 const mode = 'sandbox';
 const way = Platform.OS === 'web' ? 'web' : 'android';
 const apiFactory = new ApiFactory();
+let apiClient;
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
   console.log(global.brand);
-  const client = global.env + "|" +global.brand;
-  console.log(client);
-  const apiClient = apiFactory.createApiClient(client);
+  if(global.brand!='Natwest')
+  {
+    apiClient = apiFactory.createApiClient(global.env+global.brand);
+  }
+  else {
+    apiClient = apiFactory.createApiClient(global.env);
+  }
   return apiClient;
   // Use the new apiClient as needed
  };
