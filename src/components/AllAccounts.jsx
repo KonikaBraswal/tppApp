@@ -70,6 +70,7 @@ const AllAccounts = ({route}) => {
             <NatwestAccounts
               accountsList={accounts}
               permissions={permissions}
+              bankName={selectedBank}
             />
           </ScrollView>
           <TouchableOpacity

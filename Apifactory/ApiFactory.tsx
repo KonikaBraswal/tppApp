@@ -1,7 +1,9 @@
 // ApiFactory.ts
 import axios from 'axios';
 // import config from '../configs_AISP/config.json';
-import config from '../configs/config_Sandbox.json'
+import config from '../configs/config_Sandbox.json';
+import config_rbs from '../configs/config_RBS.json';
+import config_ubn from '../configs/config_UBN.json';
 import {Linking} from 'react-native';
 import {TextInput, Button, View, Text} from 'react-native';
 import MockApiClient from './MockApiClient';
@@ -30,18 +32,18 @@ class ApiFactory {
       case 'sandboxRBS':
         console.log("called RBS");
         return new RbsSanboxApiClient(
-          this.baseUrl,
-          this.clientId,
-          this.clientSecret,
-          this.commonHeaders,
+          config_rbs.baseUrl,
+          config_rbs.clientId,
+          config_rbs.clientSecret,
+          config_rbs.contentType,
         );
         case 'sandboxUlster':
           console.log("called Ulster");
           return new UbnSanboxApiClient(
-            this.baseUrl,
-            this.clientId,
-            this.clientSecret,
-            this.commonHeaders,
+            config_ubn.baseUrl,
+            config_ubn.clientId,
+            config_ubn.clientSecret,
+            config_ubn.contentType,
           );
         case 'sandbox':
         return new SanboxApiClient(

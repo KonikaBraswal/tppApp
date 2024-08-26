@@ -344,7 +344,9 @@ await insertLog(logData);
 
   async manualUserConsent(consentId: string): Promise<string> {
     console.log('manual consent');
+    // let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
     let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
+    console.log(consentUrlWithVariables)
     Linking.openURL(consentUrlWithVariables);
     return consentUrlWithVariables;
   }
@@ -538,7 +540,7 @@ await insertLog(logData);
     const access_token = await this.getAccessToken();
     if (access_token !== null) {
       this.apiAccess = access_token;
-      //console.log(access_token);
+      console.log(access_token);
     } else {
       console.log('No access token stored');
     }

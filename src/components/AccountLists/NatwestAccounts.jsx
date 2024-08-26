@@ -9,6 +9,7 @@ import AccountCard from '../AccountCard';
 const NatwestAccounts = props => {
   const accounts = props.accountsList.Account;
   const permissions = props.permissions;
+  const bankName=props.bankName;
 
   return (
     <View contentContainerStyle={styles.container}>
@@ -17,6 +18,7 @@ const NatwestAccounts = props => {
           key={item.AccountId}
           item={item}
           permissions={permissions}
+          bankName={bankName}
         />
       ))}
     </View>

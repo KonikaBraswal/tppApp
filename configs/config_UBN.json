@@ -1,7 +1,7 @@
 {
-  "clientId": "vqSlKmREJidNmh65k9u1WndGI0IqHMKD2l4w3KS3SM8=",
+  "clientId": "ZvpMFwWL-_QaBdWbENEyxn1Pj1UamCezzNBfGelANMc=",
   "baseUrl": "https://ob.sandbox.ulsterbank.co.uk",
-  "clientSecret": "6B4gIS0TO0cownu714ZHOvt7np4QXoWzc5_2Tpp5upY=",
+  "clientSecret": "lT3v8OWoxgj-930salYcAPgiq2DP9yOYKnLgTD4CxoI=",
   "contentType": "application/json",
   "vrpHeaders": {
     "x-fapi-financial-id": "0015800000jfwxXAAQ",

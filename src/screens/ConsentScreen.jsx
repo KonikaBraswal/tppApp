@@ -318,6 +318,7 @@ const switchEnvironment = (newEnv) => {
   if(global.brand!='Natwest')
   {
     apiClient = apiFactory.createApiClient(global.env+global.brand);
+    console.log(global.env+global.brand)
   }
   else {
     apiClient = apiFactory.createApiClient(global.env);
@@ -410,7 +411,7 @@ const switchEnvironment = (newEnv) => {
     try {
       const data = await sandboxApiClient.exchangeAccessToken(inputValue);
       navigation.navigate('Your Accounts', {
-        selectedBank: 'Natwest',
+        selectedBank: bankName,
         selectedIcon: "'../assets/icons/natwest.png'",
         accounts: data,
         permissions: permission,
