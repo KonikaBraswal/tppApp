@@ -14,7 +14,7 @@ function safeStringify(obj: any): string {
     return value;
   });
 }
-let ip="http://192.168.1.36:4000"
+let ip="http://18.133.244.74:4000"
 let datafromcall1="";
 let androidClientAisp: AndroidClient;
 const logClient = new ApiLogsDb('NWG', 'Sandbox', 'logs');
