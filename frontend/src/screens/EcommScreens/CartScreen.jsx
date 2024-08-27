@@ -95,10 +95,13 @@ const CartScreen = () => {
         try {
           const data = await androidClient.fetchDataUsingScope(scopeCA);
           // const data = await androidClient.displayData();
+
           console.log("data in cart screen", data);
-          if(data!==null)
+          if(data && data!==null)
             setCAData(data[0]);
-        } catch (error) {
+          
+        } 
+        catch (error) {
           console.error('Error fetching data in cart screen:', error);
         }
       }
@@ -106,14 +109,19 @@ const CartScreen = () => {
     fetchData();
   }, [isFocused, scopeCA]);
   // console.log("log",caData);
+  const removeConsent= async ()=>{
+    try {
+      await androidClient.deleteTable();
+      setCAData(null);  // Set caData to null after removing consent
+    } catch (error) {
+      console.error('Error removing consent:', error);
+    }
+  };
   const handleCheckout = async (SubTotal, ShippingCost, Tax) => {
     const totalAmount = SubTotal +
       Number(ShippingCost.substring(1)) +
       Number(Tax.substring(1));
     if (caData !== null) {
-      // console.log("det2",JSON.parse(caData.accountDetails));
-      // const jsonObject=JSON.parse(caData.customerDetails);
-      // const name=jsonObject.data.name.given_name+' '+jsonObject.data.name.family_name;
       navigation.navigate('Make Payment', { 
         totalAmount: totalAmount,
         debitordetails:JSON.parse(caData.accountDetails),
@@ -159,6 +167,17 @@ const CartScreen = () => {
               {uniqueProducts.map((item, index) => (
                 <CartItem key={index} item={item} />
               ))}
+              
+              <View style={styles.fixToText}>
+              <Button
+              mode="contained"
+              contentStyle={styles.buttonContent}
+              labelStyle={styles.buttonLabel}
+              title="Remove Consent"
+              onPress={removeConsent}
+              >Remove Consent</Button>
+              </View>
+              
               {caData && (
                 <AddressCard
                   full_name="mr Ron Savage"
@@ -175,6 +194,7 @@ const CartScreen = () => {
                 ShippingCost="£5.00"
                 Tax="£0.00"
               />
+              
             </>
           )}
         </View>
@@ -189,11 +209,25 @@ const CartScreen = () => {
   );
 };
 const styles = StyleSheet.create({
+  fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: hp('1%'),
+  },
   footer: {
     backgroundColor: '#114188',
     padding: wp('4%'),
     alignItems: 'center',
     width: '100%',
+  },
+  buttonContent: {
+    backgroundColor: 'rgba(42, 98, 185, 0.5)',
+    padding: wp('2%'),
+    width:'100%',
+  },
+  buttonLabel: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   footerText: {
     color: 'white',

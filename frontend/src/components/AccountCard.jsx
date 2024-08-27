@@ -113,7 +113,7 @@ const AccountCard = props => {
             mode="outlined"
             iconColor={'black'}
             size={wp('7%')}
-            style={{marginTop: hp('1.5%'), marginLeft: wp('3.5%')}}
+            style={{marginTop: hp('4.5%'), marginLeft: wp('3.5%')}}
             onPress={() => handleCardClick(item.AccountId)}
           />
         </View>

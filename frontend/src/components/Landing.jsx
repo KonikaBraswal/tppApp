@@ -59,41 +59,33 @@ const Landing = () => {
         }
       };
       checkEnvChange();
-      const check = async () => {
-        if (global.env === 'sandbox') {
-          let resultNWB, resultHSBC,resultRBS,resultUBN;
-          try {
-            resultNWB = await androidClientNWG.checkTableOrEntryExist();
-            resultRBS = await androidClientRBS.checkTableOrEntryExist();
-            resultUBN = await androidClientUBN.checkTableOrEntryExist();
-            resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
-            console.log("resultRBS",resultRBS);
-            if (resultNWB === 'yes') {
-              setCheckNWB(resultNWB);
-            }
-            if (resultHSBC === 'yes') {
-              setCheckHSBC(resultHSBC);
-            }
-            if (resultUBN === 'yes') {
-              setCheckUBN(resultUBN);
-            }
-            if (resultRBS === 'yes') {
-              setCheckRBS(resultRBS);
-            }
-
-          } catch (error) {
-            console.error('Error fetching transactions:', error);
-          }
-        }
-      };
-      check();
+      
+      checkBank();
 
       const intervalId = setInterval(checkEnvChange, 1000); // Check every second
       return () => clearInterval(intervalId); // Cleanup on unmount
     }, [env]),
   );
 
+  const checkBank = async () => {
+    if (global.env === 'sandbox') {
+      let resultNWB, resultHSBC,resultRBS,resultUBN;
+      try {
+        resultNWB = await androidClientNWG.checkTableOrEntryExist();
+        resultRBS = await androidClientRBS.checkTableOrEntryExist();
+        resultUBN = await androidClientUBN.checkTableOrEntryExist();
+        resultHSBC = await androidClientHSBC.checkTableOrEntryExist();
+        console.log("resultRBS",resultRBS);
+        setCheckHSBC(resultHSBC==='yes'?'yes':'no');
+        setCheckNWB(resultNWB==='yes'?'yes':'no');
+        setCheckUBN(resultUBN==='yes'?'yes':'no');
+        setCheckRBS(resultRBS==='yes'?'yes':'no');
 
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    }
+  };
   const snapToInterval = 100;
   const Payments = {
     name: 'Payments',
@@ -106,10 +98,10 @@ const Landing = () => {
     navigation.navigate('Select Your Bank');
   };
   const filteredCards = cards.filter(card => {
-    if (card.name === 'Natwest' && checkNWB === 'yes') return true;
-    if (card.name === 'HSBC' && checkHSBC === 'yes') return true;
-    if (card.name === 'RBS' && checkRBS === 'yes') return true;
-    if (card.name === 'Ulster' && checkUBN === 'yes') return true;
+    if (card.name === 'Natwest' && checkNWB !== 'no') return true;
+    if (card.name === 'HSBC' && checkHSBC !== 'no') return true;
+    if (card.name === 'RBS' && checkRBS !== 'no') return true;
+    if (card.name === 'Ulster' && checkUBN !== 'no') return true;
     if (card.name !== 'Natwest' && card.name !== 'HSBC'&& card.name !== 'Ulster' && card.name !== 'RBS') return true;
     return false;
     // return true;
@@ -202,7 +194,7 @@ const Landing = () => {
                     });
                   }else if (item.name === 'Ulster') {
                     navigation.navigate('Added Bank Accounts', {
-                      bankName: 'UBN',
+                      bankName: 'Ulster',
                     });
                   }  else if (item.name === 'RBS') {
                     navigation.navigate('Added Bank Accounts', {

@@ -93,6 +93,10 @@ const AccountListWithRefreshToken = ({route}) => {
             data = dataNWG;
           } else if (bankName == 'HSBC') {
             data = dataHSBC;
+          }else if (bankName == 'Ulster') {
+            data = dataUBN;
+          }else if (bankName == 'RBS') {
+            data = dataRBS;
           } else {
             data = [];
             console.log('Wrong bank');
