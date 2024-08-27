@@ -5,10 +5,10 @@ import AndroidClient from './../../DatabaseFactory/AndroidClientDb';
 const Demo=()=>{
     // let androidClient=new AndroidClient("NWG", "Sandbox", "accounts");
     // let androidClient=new AndroidClient("NWG", "Sandbox", "vrp_transactions");
-    // let androidClient=new AndroidClient("NWG", "Sandbox", "customer_checkout");
+    let androidClient=new AndroidClient("NWG", "Sandbox", "customer_checkout");
     // let androidClient=new AndroidClient("NWG", "Sandbox", "vrp");
     // let androidClient=new AndroidClient("NWG", "Sandbox", "payments");
-    let androidClient=new AndroidClient("RBS", "Sandbox", "accounts");
+    // let androidClient=new AndroidClient("RBS", "Sandbox", "accounts");
     // let androidClient=new AndroidClient("UBN", "Sandbox", "accounts");
     // let androidClient=new AndroidClient("HSBC", "Sandbox", "accounts");
     let caToStore={
