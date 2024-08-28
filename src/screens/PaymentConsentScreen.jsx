@@ -429,12 +429,23 @@ const CustomListItem = ({ title, value }) => (
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  console.log(global.brand);
+  if(global.brand!='Natwest')
+    {
+      apiClient = apiFactory.createApiClient(global.env+global.brand);
+      console.log(global.env+global.brand)
+    }
+    else {
+          apiClient = apiFactory.createApiClient(global.env);
   console.log("PISPPPPPPPPPPPPPP",global.env);
+    }
   return apiClient;
   // Use the new apiClient as needed
  };
 const PaymentConsentScreen = ({ route }) => {
+  const {bankName} = route.params;
+  console.log('BANK NAME', bankName);
+  global.brand=bankName;
   useEffect(() => {
     const newApiClient = switchEnvironment(global.env);
 

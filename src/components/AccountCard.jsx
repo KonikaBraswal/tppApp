@@ -14,8 +14,18 @@ import {IconButton} from 'react-native-paper';
 import ApiFactory from '../../Apifactory/ApiFactory';
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+let apiClient;
+
+
+ const switchEnvironment = () => {
+  const apiFactory = new ApiFactory();
+  if (global.brand !== 'Natwest') {
+    return apiFactory.createApiClient(global.env+global.brand);
+  } else {
+    console.log("callediinggg sandddboxxxx ")
+    return apiFactory.createApiClient(global.env);
+  }
+};
 
 const AccountCard = props => {
   const navigation = useNavigation();
@@ -23,6 +33,11 @@ const AccountCard = props => {
   const permissions = props.permissions;
 
   const [accountBalance, setAccountBalance] = useState(null);
+  // const [apiClient, setApiClient] = useState(null);
+
+  useEffect(() => {
+    apiClient=switchEnvironment();
+  }, []);
   useEffect(() => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
@@ -31,7 +46,8 @@ const AccountCard = props => {
         }
         else{
         try {
-          const response = await sandboxApiClient.allCalls(
+          console.log("calling all calls");
+          const response = await apiClient.allCalls(
             `${accountId}/balances`,
           );
           setAccountBalance(response);

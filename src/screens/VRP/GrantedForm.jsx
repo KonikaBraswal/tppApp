@@ -1,146 +1,4 @@
-// import {useNavigation} from '@react-navigation/native';
-// import React, {useState, useEffect} from 'react';
-// import {TextInput} from '@react-native-material/core';
-// // import ApiFactory from '../../../ApiFactory_VRP/ApiFactory';
-// import ApiFactory from '../../../Apifactory/ApiFactory';
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   TouchableOpacity,
-//   ScrollView,
-//   ActivityIndicator,
-// } from 'react-native';
-// import {RFValue} from 'react-native-responsive-fontsize';
-// const apiFactory = new ApiFactory();
-// const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
-// const GrantedForm = ({route}) => {
-//   const {
-//     creditorName,
-//     accountnumber,
-//     sortcode,
-//     referencenumber,
-//     selectconsentData,
-//   } = route.params;
-//   const [edit, setEdit] = useState(true);
-//   const [firstName, setFirstName] = useState('');
-//   const [sortCode, setSortCode] = useState('');
-//   const [accountNumber, setAccountNumber] = useState('');
-//   const [reference, setReference] = useState('');
-//   const [amount, setAmount] = useState('');
-//   const [loading, setLoading] = useState(true);
-
-//   const navigation = useNavigation();
-
-//   useEffect(() => {
-//     setFirstName(creditorName);
-//     setSortCode(sortcode);
-//     setAccountNumber(accountnumber);
-//     setReference(referencenumber);
-//     // console.log("acc:",accountNumber);
-//     // console.log("acc:",sortCode);
-//     console.log('passed data' + selectconsentData);
-//     if (creditorName && accountNumber && sortcode && referencenumber) {
-//       setEdit(false);
-//     }
-//   }, [creditorName, accountNumber, sortcode, referencenumber]);
-
-//   const handleSubmit = async () => {
-//     const formData = {
-//       firstName,
-//       sortCode,
-//       accountNumber,
-//       reference,
-//       amount,
-//     };
-//     try {
-//       console.log('selectconsentData', selectconsentData.consentpayload)
-//       const response = await sandboxApiClient.refreshToken_vrp(
-//         selectconsentData,
-//         formData,
-//       );
-//       console.log('response', response);
-//       console.log('Form submitted:', formData);
-//       navigation.navigate('VRP Details', {data: response.Data.Status});
-//     } catch (error) {
-//       console.log('error in fetching refresh', error);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <View style={styles.container}>
-//         <Text style={{color: 'black', fontSize: RFValue(20)}}>
-//           Paying {firstName}
-//         </Text>
-//         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-//           <Text style={{fontSize: 50}}>£</Text>
-//           <TextInput
-//             style={{
-//               height: 50, // Adjusted height
-//               width: '80%',
-//               borderColor: 'gray',
-//               fontSize: RFValue(20), // Adjusted font size
-//               padding: 10,
-//               color: 'black',
-//             }}
-//             placeholder="Enter amount"
-//             keyboardType="default"
-//             value={amount.toString()}
-//             onChangeText={setAmount}
-//           />
-//         </View>
-//       </View>
-//       <TouchableOpacity
-//         onPress={handleSubmit}
-//         style={styles.footer}
-//         activeOpacity={1}>
-//         <Text style={styles.footerText}>Proceed To Pay</Text>
-//       </TouchableOpacity>
-//     </>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   sectionContainer: {
-//     marginBottom: 20,
-//     borderRadius: 10,
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     padding: 10,
-//   },
-//   sectionTitle: {
-//     fontSize: RFValue(18),
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//   },
-//   footer: {
-//     backgroundColor: '#5a287d',
-//     padding: 15,
-//     width: '100%',
-//     alignItems: 'center',
-//   },
-//   footerText: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//     fontSize: RFValue(20),
-//   },
-//   input: {
-//     height: 200,
-//     width: '80%', // Adjust the width as needed
-//     borderColor: 'gray',
-//     fontSize: 78,
-//     padding: 10,
-//   },
-// });
-
-// export default GrantedForm;
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {TextInput} from '@react-native-material/core';
@@ -155,12 +13,20 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
+let apiClient;
 const switchEnvironment = (newEnv) => {
   global.env = newEnv; // Update the global environment variable
   const apiFactory = new ApiFactory();
-  const apiClient = apiFactory.createApiClient(global.env);
+  console.log(global.brand);
+  if(global.brand!=='Natwest')
+  {
+    apiClient = apiFactory.createApiClient(global.env+global.brand);
+    console.log(global.env+global.brand)
+  }
+  else {
+    apiClient = apiFactory.createApiClient(global.env);
+  }
   return apiClient;
-  // Use the new apiClient as needed
  };
 const GrantedForm = ({route}) => {
   useEffect(() => {

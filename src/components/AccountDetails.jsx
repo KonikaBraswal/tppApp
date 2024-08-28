@@ -6,14 +6,21 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-// import ApiFactory from '../../TOBEDELETED/Apifactory_aisp/ApiFactory';
 import ApiFactory from '../../Apifactory/ApiFactory';
 
 const mode = 'sandbox';
 const way = 'web';
-const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
-// const sandboxApiClient = apiFactory.createApiClient(global.env);
+let apiClient;
+// const sandboxApiClient = apiFactory.createApiClient('sandbox');
+const switchEnvironment = () => {
+  const apiFactory = new ApiFactory();
+  if (global.brand !== 'Natwest') {
+    return apiFactory.createApiClient(global.env+global.brand);
+  } else {
+    console.log("callediinggg sandddboxxxx ")
+    return apiFactory.createApiClient(global.env);
+  }
+};
 
 const AccountDetails = props => {
   const {
@@ -28,6 +35,9 @@ const AccountDetails = props => {
   const permissions = props.permissions;
   const [balanceDetails, setBalanceDetails] = useState(null);
   useEffect(() => {
+    apiClient=switchEnvironment();
+  }, []);
+  useEffect(() => {
     if(global.env=='local')
       {
         setBalanceDetails(balanceData.Data);
@@ -36,7 +46,7 @@ const AccountDetails = props => {
     const fetchBalance = async () => {
       if (permissions.includes('ReadBalances')) {
         try {
-          const response = await sandboxApiClient.allCalls(
+          const response = await apiClient.allCalls(
             `${AccountId}/balances`,
           );
           setBalanceDetails(response);
