@@ -8,6 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppDrawer from './src/components/AppDrawer';
 import SelectBank from './src/components/SelectBank';
 import ConsentScreen from './src/screens/ConsentScreen';
+import './global.js';
 // import AllAccounts from './src/components/AllAccounts';
 import { Provider as PaperProvider } from 'react-native-paper';
 import MainScreen from './src/screens/MainScreen';

@@ -8,7 +8,16 @@ import transactionData from '../assets/data/transactions.json';
 const mode = 'sandbox';
 const way = 'web';
 const apiFactory = new ApiFactory();
-const sandboxApiClient = apiFactory.createApiClient('sandbox');
+let apiClient;
+const switchEnvironment = () => {
+  const apiFactory = new ApiFactory();
+  if (global.brand !== 'Natwest') {
+    return apiFactory.createApiClient(global.env+global.brand);
+  } else {
+    console.log("callediinggg sandddboxxxx ")
+    return apiFactory.createApiClient(global.env);
+  }
+};
 const TransactionList = props => {
   const permissions = props.permissions;
   const AccountId = props.accountId;
@@ -17,6 +26,9 @@ const TransactionList = props => {
   const [transactionText, setTransactionText] = useState(
     'No Transactions Found',
   );
+  useEffect(() => {
+    apiClient=switchEnvironment();
+  }, []);
   useEffect(() => {
     if(global.env==='local'){
       console.log("inside local transactionListtttttttttt",transactionData.Data);
@@ -32,7 +44,7 @@ const TransactionList = props => {
           permissions.includes('ReadTransactionsDebits'))
       ) {
         try {
-          const response = await sandboxApiClient.allCalls(
+          const response = await apiClient.allCalls(
             `${AccountId}/transactions`,
           );
           setTransactionDetails(response);

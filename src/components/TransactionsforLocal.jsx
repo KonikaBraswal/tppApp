@@ -24,12 +24,8 @@ import readaccountData from '../assets/data/accounts.json';
 import readtransactionData  from '../assets/data/transactions.json' ;
 const mode = 'sandbox';
 const way = 'web';
-// const apiFactory = new ApiFactory();
-// const sandboxApiClient = apiFactory.createApiClient(global.env);
+
 export  const TransactionsforLocal = () => {
-//   const accountDetails = route.params.accountDetails;
-//   const permissions = route.params.permissions;
-//   const {AccountId} = route.params.accountDetails;
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
