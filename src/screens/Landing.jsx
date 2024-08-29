@@ -217,9 +217,13 @@ const Landing = () => {
                 </Surface>
               </TouchableOpacity>
               <TouchableOpacity
+                // onPress={() => {
+                //   navigation.navigate("ConsentsforVRP");
+                // }}
                 onPress={() => {
-                  navigation.navigate("ConsentsforVRP");
+                  navigation.navigate("Banks for VRP");
                 }}
+
               >
                 <Surface
                   elevation={1}

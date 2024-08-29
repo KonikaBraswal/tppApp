@@ -43,6 +43,7 @@ import ViewAll from './src/components/ViewAll';
 import SelectBankPISP from './src/screens/SelectBankPISP';
 import SelectBankVRP from './src/screens/SelectBankVRP';
 import PISPSelectBank from './src/screens/PISPSelectBank';
+import VRPSelectBank from './src/screens/VRPSelectBank';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -62,6 +63,7 @@ export default function App() {
               <Stack.Screen name="Transaction Successful" component={SuccessfullTransaction} />
               <Stack.Screen name="Transactions" component={TransactionList} />
               <Stack.Screen name="Banks for Payment" component={PISPSelectBank} />
+              <Stack.Screen name="Banks for VRP" component={VRPSelectBank} />
               {/* <Stack.Screen
                   name="Select Bank For Payment"
                   component={SelectBankPISP}

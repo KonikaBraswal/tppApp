@@ -30,7 +30,7 @@ const allbanks=[
   {id: 110, name: 'Ulster', icon: require('../assets/images/Ulster.jpg')},
 ]
 
-const PISPSelectBank = () => {
+const VRPSelectBank = () => {
   const navigation = useNavigation();
   const [banklist, setbanklist] = useState([]);
   useEffect(() => {
@@ -50,7 +50,7 @@ const PISPSelectBank = () => {
     global.brand=bankName;
     console.log("insideselectbank",global.brand);
     
-    navigation.navigate('Transfer Money', {DebtorAccount:null});
+    navigation.navigate('ConsentsforVRP');
   };
   const rows = [];
   for (let i = 0; i < filteredBanks.length; i += 3) {
@@ -151,7 +151,7 @@ const PISPSelectBank = () => {
     </>
   );
 };
-export default PISPSelectBank;
+export default VRPSelectBank;
 
 const SelectBankStyle = StyleSheet.create({
   row: {
