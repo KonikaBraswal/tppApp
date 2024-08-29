@@ -30,6 +30,7 @@ const switchEnvironment = () => {
 };
 const PaymentConsentScreen = ({ route }) => {
   useEffect(() => {
+    console.log("heyyyyy brandd,",global.brand);
     apiClient=switchEnvironment();
   }, []);
   const navigation = useNavigation();

@@ -188,10 +188,13 @@ const Landing = () => {
           <View style={styles.lastrowBackground}>
             <View style={styles.lastrow}>
               <TouchableOpacity
+                // onPress={() => {
+                //   navigation.navigate("Transfer Money", {
+                //     DebtorAccount: null,
+                //   });
+                // }}
                 onPress={() => {
-                  navigation.navigate("Transfer Money", {
-                    DebtorAccount: null,
-                  });
+                  navigation.navigate("Banks for Payment");
                 }}
               >
                 <Surface

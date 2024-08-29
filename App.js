@@ -8,7 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppDrawer from './src/components/AppDrawer';
 import SelectBank from './src/components/SelectBank';
 import ConsentScreen from './src/screens/ConsentScreen';
-import './global.js';
+import './global';
 // import AllAccounts from './src/components/AllAccounts';
 import { Provider as PaperProvider } from 'react-native-paper';
 import MainScreen from './src/screens/MainScreen';
@@ -42,6 +42,7 @@ import ApiLogDetails from './src/screens/ApiLogDetails';
 import ViewAll from './src/components/ViewAll';
 import SelectBankPISP from './src/screens/SelectBankPISP';
 import SelectBankVRP from './src/screens/SelectBankVRP';
+import PISPSelectBank from './src/screens/PISPSelectBank';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -60,14 +61,15 @@ export default function App() {
               <Stack.Screen name="Your Accounts" component={AllAccounts} />
               <Stack.Screen name="Transaction Successful" component={SuccessfullTransaction} />
               <Stack.Screen name="Transactions" component={TransactionList} />
-              <Stack.Screen
+              <Stack.Screen name="Banks for Payment" component={PISPSelectBank} />
+              {/* <Stack.Screen
                   name="Select Bank For Payment"
                   component={SelectBankPISP}
                 />
                 <Stack.Screen
                   name="Select Bank For VRP"
                   component={SelectBankVRP}
-                />
+                /> */}
               <Stack.Screen name="Transfer Money" component={MakeTransfer} />
               <Stack.Screen name="PISP" component={PaymentConsentScreen} />
               <Stack.Screen name="Details" component={MainScreen} />

@@ -12,7 +12,11 @@ import {
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 const MakeTransfer = ({route}) => {
-  const DebtorAccount = route.params.DebtorAccount;
+  // const {bankName} = route.params;
+  const {DebtorAccount}=route.params;
+  // global.brand=bankName;
+  // console.log(global.brand);
+
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState('ACME');
   const [lastName, setLastName] = useState('DIY');
@@ -30,7 +34,7 @@ const MakeTransfer = ({route}) => {
       reference,
       amount,
     });
-
+    console.log("pisppppppppppppppp",global.brand)
     navigation.navigate('PISP', {
       FirstName: firstName,
       LastName: lastName,
